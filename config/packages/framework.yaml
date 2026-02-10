@@ -1,0 +1,29 @@
+# see https://symfony.com/doc/current/reference/configuration/framework.html
+framework:
+    secret: '%env(APP_SECRET)%'
+
+    # Note that the session will be started ONLY if you read or write from it.
+    session:
+        handler_id: Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
+        cookie_secure: false  # Set to true in production with HTTPS
+        cookie_samesite: lax
+        cookie_httponly: true
+        cookie_lifetime: 0  # Session cookie (until browser closes, but session lives 8 hours on server)
+        gc_maxlifetime: 28800   # 8 hours - actual session lifetime on server
+        gc_probability: 1
+        gc_divisor: 100  # 1% chance to run garbage collection on each request
+        metadata_update_threshold: 120  # Update session metadata every 2 minutes to avoid race conditions
+
+    #esi: true
+    #fragments: true
+
+when@prod:
+    framework:
+        session:
+            cookie_secure: true  # Force HTTPS cookies in production
+
+when@test:
+    framework:
+        test: true
+        session:
+            storage_factory_id: session.storage.factory.mock_file

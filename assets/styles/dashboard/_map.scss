@@ -1,0 +1,560 @@
+/**
+ * SIA SLYFOX Confidential
+ *
+ * Copyright (C) 2025 SIA SLYFOX.
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of SIA SLYFOX, its suppliers and Customers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to SIA SLYFOX
+ * its Suppliers and Customers are protected by trade secret or copyright law.
+ *
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained.
+ */
+
+// Стили для карты водителя
+.driver-location-map-wrapper {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.driver-location-map {
+  width: 100%;
+  height: 500px;
+  min-height: 400px;
+  border-radius: 4px;
+  overflow: hidden;
+  z-index: 1;
+
+  // Базовые стили карты
+  .leaflet-container {
+    font-family: inherit;
+    border-radius: 4px;
+  }
+
+  // Стили для контролов карты
+  .leaflet-control-zoom {
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+    a {
+      border-radius: 4px;
+      transition: background-color 0.2s ease;
+
+      color: white !important;
+
+      &:hover {
+        background-color: #f4f4f4;
+      }
+    }
+  }
+
+  // Стили для маркера
+  .leaflet-marker-icon {
+    img {
+      transition: transform 0.3s ease-in-out;
+    }
+  }
+
+  // Стили для круга погрешности GPS
+  .driver-accuracy-circle {
+    // Стили применяются через Leaflet
+    // Но можно переопределить здесь если нужно
+  }
+
+  // Стили для контура круга
+  .leaflet-path.driver-accuracy-circle {
+    pointer-events: none;  // Круг не перехватывает клики мыши
+  }
+
+  // Стили для popup
+  .leaflet-popup-content-wrapper {
+    border-radius: 4px;
+    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
+  }
+
+  .leaflet-popup-content {
+    margin: 13px 19px;
+    line-height: 1.4;
+    font-size: 13px;
+  }
+
+  .leaflet-popup-tip-container {
+    .leaflet-popup-tip {
+      box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
+    }
+  }
+}
+
+// Адаптивность для планшетов
+@media (max-width: 991px) {
+  .driver-location-map {
+    height: 400px;
+    min-height: 350px;
+  }
+}
+
+// Адаптивность для мобильных устройств
+@media (max-width: 767px) {
+  .driver-location-map {
+    height: 350px;
+    min-height: 300px;
+    border-radius: 2px;
+
+    // Уменьшаем контролы на мобильных
+    .leaflet-control-zoom {
+      a {
+        width: 26px;
+        height: 26px;
+        line-height: 26px;
+        font-size: 16px;
+      }
+    }
+
+    // Уменьшаем popup на мобильных
+    .leaflet-popup-content {
+      margin: 10px 14px;
+      font-size: 12px;
+    }
+  }
+}
+
+// Адаптивность для очень маленьких экранов
+@media (max-width: 480px) {
+  .driver-location-map {
+    height: 300px;
+    min-height: 250px;
+
+    .leaflet-control-zoom {
+      a {
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+// Стили для режима landscape на мобильных
+@media (max-height: 500px) and (orientation: landscape) {
+  .driver-location-map {
+    height: 250px;
+    min-height: 200px;
+  }
+}
+
+// Исправление для корректного отображения в Sonata Admin
+.sonata-ba-field {
+  .driver-location-map-wrapper {
+    margin-left: -15px;
+    margin-right: -15px;
+    padding: 0 15px;
+  }
+}
+
+// Стили для информационного блока маркера
+.driver-location-information-wrapper {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  min-height: 120px;
+
+  .location-info-content {
+    width: 100%;
+
+    .info-item {
+      padding: 6px 0;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #333;
+
+      strong {
+        color: #555;
+        font-weight: 600;
+        display: inline-block;
+        min-width: 110px;
+      }
+
+      span {
+        font-family: 'Courier New', monospace;
+        color: #333;
+      }
+    }
+  }
+}
+
+// Стили для темы (если используется темная тема)
+@media (prefers-color-scheme: dark) {
+  .driver-location-map {
+    .leaflet-control-zoom {
+      background-color: #2d2d2d;
+      border-color: #444;
+
+      a {
+        background-color: #2d2d2d;
+        color: #fff;
+        border-color: #444;
+
+        &:hover {
+          background-color: #3d3d3d;
+        }
+      }
+    }
+  }
+
+  .driver-location-information-wrapper {
+    background-color: #2d2d2d;
+    border-color: #444;
+
+    .location-info-content {
+      .info-item {
+        color: #ddd;
+
+        strong {
+          color: #fff;
+        }
+
+        span {
+          color: #ddd;
+        }
+      }
+    }
+  }
+}
+
+// Адаптивность для информационного блока
+@media (max-width: 767px) {
+  .driver-location-information-wrapper {
+    padding: 12px;
+
+    .location-info-content {
+      .info-item {
+        font-size: 12px;
+        padding: 4px 0;
+      }
+    }
+  }
+}
+
+// ========================================
+// Стили для карты маршрутов заказов
+// ========================================
+
+// Карта в модальном окне
+#route-map {
+  width: 100%;
+  height: 500px;
+  border-radius: 4px;
+  
+  .leaflet-container {
+    font-family: inherit;
+    border-radius: 4px;
+    cursor: crosshair; // Курсор для выбора точек
+  }
+  
+  // Стили для кастомных маркеров маршрута
+  .custom-map-marker {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+  
+  // Стили для линии маршрута
+  .leaflet-interactive {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+// Модальное окно с картой
+#mapModal {
+  .modal-dialog {
+    margin: 30px auto;
+  }
+  
+  .modal-body {
+    padding: 20px;
+  }
+  
+  // Информационный блок в модалке
+  .alert-info {
+    margin-bottom: 15px;
+    
+    ol {
+      margin-bottom: 0;
+      
+      li {
+        margin-bottom: 5px;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+// Адаптивность для карты маршрутов
+@media (max-width: 991px) {
+  #route-map {
+    height: 400px;
+  }
+  
+  #mapModal {
+    .modal-dialog {
+      width: 95%;
+      margin: 20px auto;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  #route-map {
+    height: 350px;
+  }
+  
+  #mapModal {
+    .modal-dialog {
+      width: 98%;
+      margin: 10px auto;
+    }
+    
+    .modal-body {
+      padding: 15px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  #route-map {
+    height: 300px;
+  }
+}
+
+// Стили для формы создания заказа
+#order-form {
+  .form-group {
+    margin-bottom: 20px;
+    
+    label {
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: block;
+      font-size: 14px;
+      color: #333;
+    }
+    
+    input[readonly] {
+      background-color: #f9f9f9;
+      cursor: not-allowed;
+    }
+    
+    // Стили для обычных input полей
+    .form-control {
+      height: 34px;
+      padding: 6px 12px;
+      font-size: 14px;
+      line-height: 1.42857143;
+      color: #555;
+      background-color: #fff;
+      border: 1px solid #d2d6de;
+      border-radius: 4px;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+      transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+      
+      &:focus {
+        border-color: #3c8dbc;
+        outline: 0;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(60, 141, 188, 0.6);
+      }
+    }
+  }
+  
+  // Стили для Select2 контейнера (Member autocomplete)
+  .select2-container {
+    width: 100% !important;
+    
+    .select2-selection--single {
+      height: 34px !important;
+      padding: 6px 12px;
+      font-size: 14px;
+      line-height: 1.42857143;
+      color: #555;
+      background-color: #fff;
+      border: 1px solid #d2d6de !important;
+      border-radius: 4px !important;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+      transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+      
+      &:focus,
+      &:focus-within {
+        border-color: #3c8dbc !important;
+        outline: 0;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(60, 141, 188, 0.6) !important;
+      }
+      
+      .select2-selection__rendered {
+        line-height: 22px !important;
+        padding-left: 0;
+        padding-right: 20px;
+        color: #555;
+      }
+      
+      .select2-selection__placeholder {
+        color: #999;
+      }
+      
+      .select2-selection__arrow {
+        height: 32px !important;
+        top: 1px;
+        right: 1px;
+        width: 20px;
+        
+        b {
+          border-color: #888 transparent transparent transparent;
+          border-width: 5px 4px 0 4px;
+        }
+      }
+      
+      .select2-selection__clear {
+        font-size: 18px;
+        line-height: 22px;
+        margin-right: 5px;
+        color: #999;
+        
+        &:hover {
+          color: #333;
+        }
+      }
+    }
+  }
+  
+  // Открытое состояние Select2
+  .select2-container--open {
+    .select2-selection--single {
+      border-color: #3c8dbc !important;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(60, 141, 188, 0.6) !important;
+    }
+  }
+  
+  // Dropdown Select2
+  .select2-dropdown {
+    border: 1px solid #d2d6de;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
+    .select2-search__field {
+      height: 34px;
+      padding: 6px 12px;
+      font-size: 14px;
+      border: 1px solid #d2d6de;
+      border-radius: 4px;
+      
+      &:focus {
+        border-color: #3c8dbc;
+        outline: 0;
+      }
+    }
+    
+    .select2-results__option {
+      padding: 6px 12px;
+      font-size: 14px;
+      
+      &--highlighted {
+        background-color: #3c8dbc !important;
+        color: #fff !important;
+      }
+    }
+  }
+  
+  .alert {
+    margin-top: 20px;
+    
+    i {
+      margin-right: 5px;
+    }
+  }
+}
+
+// Стили для информации о маршруте в модалке
+[data-order-list-target="routeInfo"] {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  border-left: 3px solid #3c8dbc;
+  font-size: 13px;
+  
+  strong {
+    color: #333;
+    margin-right: 5px;
+    
+    i {
+      margin-right: 3px;
+      color: #3c8dbc;
+    }
+  }
+  
+  span {
+    color: #666;
+    font-weight: 500;
+  }
+}
+
+// Анимация для появления блока маршрута
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+[data-order-list-target="routeInfo"][style*="display: block"] {
+  animation: fadeIn 0.3s ease-out;
+}
+
+// Стили для лейблов точек в модалке
+.label {
+  &.label-success {
+    background-color: #5cb85c;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-right: 8px;
+  }
+  
+  &.label-danger {
+    background-color: #d9534f;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-right: 8px;
+  }
+  
+  &.label-warning {
+    background-color: #f0ad4e;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-right: 8px;
+  }
+}
+

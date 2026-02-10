@@ -1,0 +1,84 @@
+welcome:       Welcome!
+authorization: Log in with your email address.
+remember_me:   Remember me
+email:         Email
+password:      Password
+login:         Login
+loading:       Loading...
+
+breadcrumb:
+    link_manager_list:   List of Managers
+    link_manager_create: Create
+
+filter:
+    label_status: Status
+
+list:
+    label_created_at: Created at
+    label_updated_at: Updated at
+    label__action:    Actions
+    label_username:   Username
+    label_last_login: Last login
+    label_status:     Status
+    label_name:       Name
+
+form:
+    label_generate_password:   Generate password
+    label_clear_parent_field:  Clear parent field
+    group_tabs_general:        General
+    group_tabs_roles:          Roles
+    label_state:               State
+    label_email:               Email
+    label_plain_password:      Password
+    label_help_plain_password: Leave the field blank if you don't want to change member password
+    group_form_tabs_profile:   Profile
+    label_first_name:          First name
+    label_last_name:           Last name
+    label_name:                Name
+    label_phone_number:        Phone number
+    label_status:              Status
+    group_general:             General
+    group_profile:             Profile
+    group_roles:               Roles
+
+show:
+    group_tabs_general:      General
+    group_tabs_roles:        Roles
+    label_state:             State
+    label_email:             Email
+    label_roles:             Roles
+    label_created_at:        Created At
+    label_updated_at:        Updated At
+    label_last_login:        Last login
+    label_name:              Name
+    label_first_name:        First name
+    label_last_name:         Last name
+    group_show_tabs_profile: Profile
+    label_phone_number:      Phone number
+    group_general:           General
+    group_profile:           Profile
+    group_roles:             Roles
+
+field:
+    label_roles_editable: Editable
+    label_roles_readonly: Readonly
+
+menu:
+    security: Security
+    managers: Managers
+
+ACTIVE:        Active
+INACTIVE:      Inactive
+DEACTIVATED:   Deactivated
+DELETED:       Deleted
+
+at:            at
+ago:           ago
+just_now:      just now
+second:        second
+minute:        minute
+hour:          hour
+day:           day
+week:          week
+month:         month
+year:          year

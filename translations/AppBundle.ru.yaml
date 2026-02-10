@@ -1,0 +1,291 @@
+menu:
+    users: Пользователи
+    carriers: Перевозчики
+    orders: Заказы
+    cargo: Грузы
+    offers: Коммерческие предложения
+    order_history: История заказов
+    order_assignments: Назначения заказов
+    service_areas: Зоны обслуживания
+    matrix_items: Элементы матрицы
+
+breadcrumb:
+    link_user_list:   Список пользователей
+    link_user_create: Создать
+    link_order_list:   Список заказов
+    link_order_create: Создать заказ
+    link_cargo_list:   Список грузов
+    link_cargo_create: Создать груз
+    link_servicearea_list:   Список зон обслуживания
+    link_servicearea_create: Создать зону обслуживания
+    link_matrixitem_list:   Список элементов матрицы
+    link_matrixitem_create: Создать элемент матрицы
+
+filter:
+    label_status:                 Статус
+    label_sender:                 Отправитель
+    label_carrier:                Перевозчик
+    label_latest_offer_status:    Статус последнего предложения
+    label_last_assignment_status: Статус последнего назначения
+    label_order:                  Заказ
+    label_changed_by:             Изменено
+    label_name:                   Название
+    label_mileage_from:           Километраж от
+    label_mileage_to:             Километраж до
+    label_price:                  Цена
+
+list:
+    label_fullname:       Имя
+    label_email:          Email
+    label_created_at:     Создан
+    label_updated_at:     Обновлен
+    label__action:        Действия
+    label_id:             ID
+    label_status:         Статус
+    label_sender:         Отправитель
+    label_carrier:        Перевозчик
+    label_addresses:      Адреса
+    label_pickup_address: Адрес забора
+    label_dropout_address: Адрес доставки
+    label_cargo_count:    Количество грузов
+    label_delivery_gross_price: Цена доставки (Брутто)
+    label_order_assignments: Назначения
+    label_no_assignments: Нет назначений
+    label_assigned_by:    Назначено
+    label_name:           Название
+    label_type:           Тип
+    label_quantity:       Количество
+    label_weight_kg:      Вес (кг)
+    label_stackable:      Штабелируемый
+    label_manipulator_needed: Требуется манипулятор
+    label_order:          Заказ
+    label_changed_by:     Изменено
+    label_changed_at:     Дата изменения
+    label_geo_areas_count: Количество гео-зон
+    label_matrix_items_count: Количество элементов матрицы
+    label_mileage_from:   Километраж от
+    label_mileage_to:     Километраж до
+    label_price:          Цена
+    label_service_area:   Зона обслуживания
+
+show:
+    group_menu_users:     Пользователь
+    group_menu_orders:    Заказ
+    group_menu_cargo:     Груз
+    group_menu_service_areas: Зона обслуживания
+    label_first_name:     Имя
+    label_last_name:      Фамилия
+    label_phone:          Телефон
+    label_email:          Email
+    label_locale:         Язык
+    label_created_at:     Создан
+    label_updated_at:     Обновлен
+    label_id:             ID
+    label_status:         Статус
+    label_sender:         Отправитель
+    label_carrier:        Перевозчик
+    label_pickup_address: Адрес забора
+    label_dropout_address: Адрес доставки
+    label_notes:          Заметки
+    label_cargo:          Грузы
+    label_offers:         Коммерческие предложения
+    label_order_assignments: Назначения заказа
+    label_assigned_by:    Назначено
+    label_brutto:         Брутто цена
+    label_netto:          Нетто цена
+    label_vat:            НДС (%)
+    label_offer_status:   Статус предложения
+    label_name:           Название
+    label_type:           Тип
+    label_quantity:       Количество
+    label_weight_kg:      Вес (кг)
+    label_dimensions_cm:  Размеры (см)
+    label_comment:        Комментарий
+    label_stackable:      Штабелируемый
+    label_manipulator_needed: Требуется манипулятор
+    label_related_order:  Связанный заказ
+    label_order:          Заказ
+    label_changed_by:     Изменено
+    label_meta:           Метаданные
+    label_status_history: История изменений статуса
+    label_matrix_items:   Элементы матрицы
+    label_mileage_from:   Километраж от
+    label_mileage_to:     Километраж до
+    label_price:          Цена
+    label_service_area:   Зона обслуживания
+
+form:
+    group_tabs_general:        Общее
+    group_tabs_cargo:          Грузы
+    group_tabs_offers:         Коммерческие предложения
+    group_tabs_assigment:      Назначения
+    group_tabs_geo_areas:      Гео-зоны
+    group_tabs_matrix_items:   Элементы матрицы
+    group_profile:             Профиль
+    group_contacts:            Контакты
+    group_general:             Основное
+    group_order_info:          Информация о заказе
+    group_addresses:           Адреса
+    group_cargo_list:          Список грузов
+    group_offers_list:         Список коммерческих предложений
+    group_assigment_list:      Список назначений
+    group_cargo_info:          Информация о грузе
+    group_cargo_properties:    Свойства груза
+    group_service_area_info:   Информация о зоне обслуживания
+    group_geo_areas_selection: Выбор гео-зон
+    group_matrix_items_list:   Список элементов матрицы
+    label_first_name:          Имя
+    label_last_name:           Фамилия
+    label_phone:               Телефон
+    label_email:               Email
+    label_locale:              Язык
+    label_state:               Состояние
+    label_plain_password:      Пароль
+    label_help_plain_password: Оставьте поле пустым, если не хотите менять пароль
+    label_status:              Статус
+    label_sender:              Отправитель
+    label_carrier:             Перевозчик
+    label_assigned_by:         Назначено менеджером
+    label_help_assigned_by:    Автоматически заполняется текущим менеджером. Можно изменить вручную при необходимости.
+    label_pickup_address:      Адрес забора
+    label_dropout_address:     Адрес доставки
+    label_notes:               Заметки
+    label_cargo:               Грузы
+    label_name:                Название
+    label_type:                Тип
+    label_quantity:            Количество
+    label_weight_kg:           Вес (кг)
+    label_dimensions_cm:       Размеры (см)
+    label_comment:             Комментарий
+    label_stackable:           Штабелируемый
+    label_manipulator_needed:  Требуется манипулятор
+    help_dimensions_cm:        "Формат: Длина,Ширина,Высота (например, 120,80,100)"
+    label_matrix_items:        Элементы матрицы
+    label_mileage_from:        Километраж от
+    label_mileage_to:          Километраж до
+    label_price:               Цена
+    label_service_area:        Зона обслуживания
+    label_offers:              Коммерческие предложения
+    label_brutto:              Брутто цена
+    label_netto:               Нетто цена
+    label_vat:                 НДС (%)
+    label_offer_status:        Статус предложения
+    label_add_offer:           Добавить предложение
+
+# Cargo Type choices
+PALLET: Паллет
+OVERSIZED: Негабаритный
+
+# Address Map Component
+address_map:
+    modal:
+        title: Выбор адреса на карте
+        search_placeholder: Введите адрес для поиска...
+        search_button: Найти
+        search_help: Введите адрес и нажмите "Найти" или выберите точку на карте
+        button_cancel: Отмена
+        button_confirm: Подтвердить
+        instruction: 'Кликните на карту для выбора точки или используйте поиск. После выбора нажмите "Подтвердить" для применения адреса.'
+    button:
+        select_on_map: Выбрать на карте
+    error:
+        no_selection: Пожалуйста, выберите адрес на карте или введите его в поле поиска
+        address_not_found: Адрес не найден. Попробуйте уточнить запрос.
+        geocoding_failed: Не удалось получить адрес для выбранной точки
+        search_failed: Ошибка при поиске адреса. Попробуйте позже.
+        empty_search: Введите адрес для поиска
+    status:
+        searching: Поиск...
+
+# Address View Component (для просмотра в list view)
+address_view:
+    modal:
+        title: Просмотр адреса на карте
+        title_pickup: Адрес забора
+        title_dropout: Адрес доставки
+        current_address: Текущий адрес
+        button_close: Закрыть
+    button:
+        view_on_map: Посмотреть на карте
+    error:
+        geocoding_failed: Не удалось найти адрес на карте. Проверьте правильность адреса.
+    status:
+        loading: Загрузка карты...
+
+# GeoArea View Component (для show view)
+geo_area_view:
+    label:
+        selected_areas: Выбранные гео-зоны
+        map: Карта зон
+    scope:
+        country: Страна
+        city: Город
+    help:
+        map_info: Отображаются границы всех выбранных гео-зон
+    message:
+        no_areas: Нет выбранных гео-зон
+    error:
+        load_geometry: Не удалось загрузить геометрию зоны
+
+# GeoArea Selection Component
+geo_area_selection:
+    title: Выбор гео-зон на карте
+    label:
+        country: Страна
+        city: Город
+        selected_areas: Выбранные зоны
+    select:
+        no_country: -- Выберите страну --
+        no_city: -- Выберите город --
+    button:
+        add: Добавить
+        remove: Удалить
+    help:
+        select_country_first: Сначала выберите страну для загрузки списка городов
+        select_city: Выберите страну, затем город и нажмите "+" для добавления на карту
+        map_info: Выбранные гео-зоны отображаются на карте в виде полигонов
+    message:
+        no_selected: Нет выбранных зон
+    error:
+        load_countries: Не удалось загрузить список стран
+        load_cities: Не удалось загрузить список городов
+        load_geometry: Не удалось загрузить геометрию зоны
+        area_already_added: Эта зона уже добавлена
+    status:
+        loading_cities: Загрузка городов...
+
+# OrderOffer статусы
+DRAFT: Черновик
+ACCEPTED: Принято
+REJECTED: Отклонено
+
+# OrderAssignment статусы
+ASSIGNED: Назначено
+# ACCEPTED для OrderAssignment также будет "Принято"
+# REJECTED для OrderAssignment также будет "Отклонено"
+
+# OrderOffer компонент
+order_offer:
+    button:
+        calculate: Рассчитать предложение
+        add_manual: Добавить вручную
+    success:
+        calculated: Коммерческое предложение успешно рассчитано
+        auto_created: Коммерческое предложение автоматически создано
+        can_calculate: Возможно рассчитать стоимость для данного заказа
+    warning:
+        auto_create_failed: 'Не удалось автоматически создать коммерческое предложение. Причина: %reason%'
+        service_area_not_found: Не найдена зона обслуживания для указанного адреса доставки
+        missing_coordinates_for_calculation: Для автоматического расчета стоимости выберите адрес доставки на карте
+    error:
+        missing_coordinates: Отсутствуют координаты адреса доставки
+        service_area_not_found: Не найдена зона обслуживания для указанного адреса
+        no_cargo_weight: В заказе отсутствуют грузы или их вес равен нулю
+        matrix_item_not_found: Не найден тарифный план для указанного веса груза
+        calculation_failed: Ошибка при расчете стоимости доставки
+        unknown: Неизвестная ошибка
+    help:
+        brutto_info: Цена с учетом НДС
+        netto_info: Цена без учета НДС
+        vat_info: Процент налога на добавленную стоимость
+        auto_calculation: При сохранении заказа коммерческое предложение будет создано автоматически

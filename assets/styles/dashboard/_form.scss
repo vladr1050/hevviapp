@@ -1,0 +1,31 @@
+.skin-black {
+    .nav-tabs-custom {
+        > .nav-tabs {
+            > li {
+                &.active {
+                    border-top-color: #864CDB;
+                }
+            }
+
+            &.success {
+                > li {
+                    &.active {
+                        border-top-color: #00a65a;
+                    }
+                }
+            }
+        }
+    }
+
+    .badge-danger {
+        background-color: #dc3545;
+    }
+
+    .badge-warning {
+        background-color: #ffc107;
+    }
+
+    .badge-success {
+        background-color: #00a65a;
+    }
+}

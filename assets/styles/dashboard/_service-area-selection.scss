@@ -1,0 +1,48 @@
+.service-area-selection-container {
+    .form-group {
+        margin-bottom: 15px;
+        
+        label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: block;
+        }
+    }
+
+    .selected-areas-list {
+        h5 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .list-group {
+            margin-bottom: 0;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .list-group-item {
+            padding: 8px 12px;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .btn-remove {
+                padding: 0 5px;
+                color: #d9534f;
+                cursor: pointer;
+                
+                &:hover {
+                    color: #c9302c;
+                }
+            }
+        }
+    }
+
+    #service-area-map {
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        z-index: 1;
+    }
+}

@@ -1,0 +1,25 @@
+{#
+/**
+ * Custom template for OrderOffer collection with Stimulus controller
+ * 
+ * This template wraps the standard Sonata collection with our order_offer_controller
+ * to handle automatic calculation when adding new offers.
+ */
+#}
+
+{% block collection_widget %}
+    {# Get Order ID from the root form #}
+    {% if form.parent.parent.vars.data.id is defined %}
+        {% set orderId = form.parent.parent.vars.data.id.toRfc4122() %}
+        {% set calculateUrl = path('admin_order_offer_calculate', {'id': orderId}) %}
+        
+        <div data-controller="order-offer"
+             data-order-offer-calculate-url-value="{{ calculateUrl }}"
+             data-order-offer-order-id-value="{{ orderId }}">
+            
+            {{ parent() }}
+        </div>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}

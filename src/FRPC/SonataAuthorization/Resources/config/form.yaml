@@ -1,0 +1,5 @@
+services:
+    sonata_authorization.form.type.plain_password_type:
+        class: FRPC\SonataAuthorization\Form\Type\PlainPasswordType
+        tags:
+            - { name: form.type }

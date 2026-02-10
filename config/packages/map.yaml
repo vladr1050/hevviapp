@@ -1,0 +1,7 @@
+parameters:
+    # Map configuration parameters
+    app.map.nominatim_api_url: '%env(MAP_NOMINATIM_API_URL)%'
+    app.map.default_latitude: '%env(float:MAP_DEFAULT_LATITUDE)%'
+    app.map.default_longitude: '%env(float:MAP_DEFAULT_LONGITUDE)%'
+    app.map.default_zoom: '%env(int:MAP_DEFAULT_ZOOM)%'
+    app.map.user_agent: '%env(MAP_USER_AGENT)%'

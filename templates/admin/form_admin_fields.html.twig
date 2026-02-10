@@ -1,0 +1,18 @@
+{# Extend default Sonata form theme #}
+{% extends '@SonataAdmin/Form/form_admin_fields.html.twig' %}
+
+{# Add Order Init controller to the form #}
+{% block form_start %}
+    {% set isOrderForm = form.vars.name == 'form' and form.vars.data.id is defined %}
+    
+    {% if isOrderForm %}
+        <form{{ block('form_enctype') }} id="{{ id }}" 
+              name="{{ full_name }}" 
+              method="{{ method|lower }}"
+              data-controller="order-init"
+              {% if action != '' %} action="{{ action }}"{% endif %}
+              {% for attrname, attrvalue in attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}

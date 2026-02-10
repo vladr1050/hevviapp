@@ -1,0 +1,110 @@
+{#
+/**
+ * GeoArea Selection Widget Template
+ *
+ * Шаблон для рендеринга поля выбора гео-зон с интерактивной картой.
+ * Используется в Sonata Admin для полей типа GeoAreaSelectionType.
+ */
+#}
+
+{% block geo_area_selection_widget %}
+    {% if enable_map and show_country_filter %}
+        <div class="geo-area-selection-wrapper"
+             data-controller="geo-area-map"
+             data-geo-area-map-api-countries-url-value="{{ path('api_geo_area_countries') }}"
+             data-geo-area-map-api-cities-url-value="{{ path('api_geo_area_cities') }}"
+             data-geo-area-map-api-geometry-url-value="{{ path('api_geo_area_geometry', {'id': '__ID__'}) }}"
+             data-geo-area-map-default-lat-value="{{ map_config.default_latitude }}"
+             data-geo-area-map-default-lng-value="{{ map_config.default_longitude }}"
+             data-geo-area-map-default-zoom-value="{{ map_config.default_zoom }}"
+             data-geo-area-map-translation-no-country-value="{{ 'geo_area_selection.select.no_country'|trans({}, 'AppBundle') }}"
+             data-geo-area-map-translation-no-city-value="{{ 'geo_area_selection.select.no_city'|trans({}, 'AppBundle') }}"
+             data-geo-area-map-translation-loading-cities-value="{{ 'geo_area_selection.status.loading_cities'|trans({}, 'AppBundle') }}"
+             data-geo-area-map-translation-error-load-countries-value="{{ 'geo_area_selection.error.load_countries'|trans({}, 'AppBundle') }}"
+             data-geo-area-map-translation-error-load-cities-value="{{ 'geo_area_selection.error.load_cities'|trans({}, 'AppBundle') }}"
+             data-geo-area-map-translation-error-load-geometry-value="{{ 'geo_area_selection.error.load_geometry'|trans({}, 'AppBundle') }}"
+             data-geo-area-map-translation-error-area-already-added-value="{{ 'geo_area_selection.error.area_already_added'|trans({}, 'AppBundle') }}"
+             data-geo-area-map-translation-add-button-value="{{ 'geo_area_selection.button.add'|trans({}, 'AppBundle') }}"
+             data-geo-area-map-translation-remove-button-value="{{ 'geo_area_selection.button.remove'|trans({}, 'AppBundle') }}">
+
+            <div class="row">
+                {# Левая колонка: Фильтры и список #}
+                <div class="col-md-4">
+                    {# Селект страны - Select2 будет инициализирован автоматически Sonata Admin #}
+                    <div class="form-group">
+                        <label>{{ 'geo_area_selection.label.country'|trans({}, 'AppBundle') }}</label>
+                        <select class="form-select"
+                                data-geo-area-map-target="countrySelect"
+                                data-placeholder="{{ 'geo_area_selection.select.no_country'|trans({}, 'AppBundle') }}">
+                            <option
+                                value="">{{ 'geo_area_selection.select.no_country'|trans({}, 'AppBundle') }}</option>
+                        </select>
+                        <small class="form-text text-muted">
+                            <i class="fas fa-info-circle"></i>
+                            {{ 'geo_area_selection.help.select_country_first'|trans({}, 'AppBundle') }}
+                        </small>
+                    </div>
+
+                    {# Селект города с кнопкой добавления - Select2 будет инициализирован автоматически #}
+                    <div class="form-group" data-geo-area-map-target="citySelectWrapper">
+                        <label>{{ 'geo_area_selection.label.city'|trans({}, 'AppBundle') }}</label>
+                        <div class="input-group">
+                            <select class="form-select"
+                                    data-geo-area-map-target="citySelect"
+                                    data-placeholder="{{ 'geo_area_selection.select.no_city'|trans({}, 'AppBundle') }}"
+                                    disabled>
+                                <option
+                                    value="">{{ 'geo_area_selection.select.no_city'|trans({}, 'AppBundle') }}</option>
+                            </select>
+                            <span class="input-group-btn">
+                                <button type="button"
+                                        class="btn btn-success"
+                                        data-geo-area-map-target="addButton"
+                                        data-action="geo-area-map#addGeoArea"
+                                        disabled
+                                        title="{{ 'geo_area_selection.button.add'|trans({}, 'AppBundle') }}">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            </span>
+                        </div>
+                        <small class="form-text text-muted">
+                            {{ 'geo_area_selection.help.select_city'|trans({}, 'AppBundle') }}
+                        </small>
+                    </div>
+
+                    {# Список выбранных зон #}
+                    <div class="form-group">
+                        <label>{{ 'geo_area_selection.label.selected_areas'|trans({}, 'AppBundle') }}</label>
+                        <div class="selected-areas-list p-2"
+                             style="max-height: 300px; overflow-y: auto;"
+                             data-geo-area-map-target="selectedList">
+                            <div
+                                class="text-muted small">{{ 'geo_area_selection.message.no_selected'|trans({}, 'AppBundle') }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Правая колонка: Карта #}
+                <div class="col-md-8">
+                    <div class="map-container border rounded"
+                         data-geo-area-map-target="map"
+                         style="height: 500px; width: 100%;"></div>
+                    <div class="map-legend mt-2">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle"></i>
+                            {{ 'geo_area_selection.help.map_info'|trans({}, 'AppBundle') }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            {# Скрытое поле для хранения выбранных ID (стандартное Symfony поле) #}
+            <div style="display: none;" data-geo-area-map-target="hiddenInput">
+                {{ block('choice_widget') }}
+            </div>
+        </div>
+    {% else %}
+        {# Фолбек: обычный селект без карты #}
+        {{ block('choice_widget') }}
+    {% endif %}
+{% endblock %}

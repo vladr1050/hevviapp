@@ -1,0 +1,60 @@
+{#
+/**
+ * GeoAreas Show Field Template
+ *
+ * Шаблон для отображения гео-зон в show view с картой.
+ * Используется в Sonata Admin для просмотра связанных гео-зон.
+ */
+#}
+
+{% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %}
+
+{% block field %}
+    {% set areas = value %}
+
+    <div class="geo-areas-show-wrapper"
+         data-controller="geo-area-view-map"
+         data-geo-area-view-map-api-geometry-url-value="{{ path('api_geo_area_geometry', {'id': '__ID__'}) }}"
+         data-geo-area-view-map-default-lat-value="{{ map_config.default_latitude }}"
+         data-geo-area-view-map-default-lng-value="{{ map_config.default_longitude }}"
+         data-geo-area-view-map-default-zoom-value="{{ map_config.default_zoom }}"
+         data-geo-area-view-map-area-ids-value="{{ areas|map(a => a.id)|json_encode }}"
+         data-geo-area-view-map-translation-error-load-geometry-value="{{ 'geo_area_view.error.load_geometry'|trans({}, 'AppBundle') }}">
+
+        {% if areas is not empty %}
+            <div class="row">
+                {# Левая колонка: Список зон #}
+                <div class="col-md-4">
+                    <div class="list-group list-group-flush" style="max-height: 400px; overflow-y: auto;">
+                        {% for area in areas %}
+                            <div class="list-group-item">
+                                <div>
+                                    <strong>{{ area.name }}</strong>
+                                </div>
+                                <span class="badge bg-secondary">
+                                                {{ area.scope == 1 ? 'geo_area_view.scope.country'|trans({}, 'AppBundle') : 'geo_area_view.scope.city'|trans({}, 'AppBundle') }}
+                                </span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {# Правая колонка: Карта #}
+                <div class="col-md-8">
+                    <div class="map-container"
+                         data-geo-area-view-map-target="map"
+                         style="height: 500px; width: 100%;"></div>
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle"></i>
+                        {{ 'geo_area_view.help.map_info'|trans({}, 'AppBundle') }}
+                    </small>
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                {{ 'geo_area_view.message.no_areas'|trans({}, 'AppBundle') }}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

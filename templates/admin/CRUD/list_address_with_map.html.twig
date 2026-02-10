@@ -1,0 +1,101 @@
+{#
+/**
+ * Template for displaying address with map view button in Sonata Admin list view
+ *
+ * Variables:
+ * - value: The address string to display
+ * - object: The current entity object
+ * - field_description: Field description from Sonata Admin
+ */
+#}
+{% extends '@SonataAdmin/CRUD/base_list_field.html.twig' %}
+
+{% block field %}
+    {% set unique_id = 'address_view_' ~ random() %}
+    {% set map_config = map_config() %}
+
+    <div
+        class="address-with-map-view"
+        data-controller="address-view"
+        data-address-view-address-value="{{ value }}"
+        data-address-view-nominatim-url-value="{{ map_config.nominatim_url }}"
+        data-address-view-default-lat-value="{{ map_config.default_lat }}"
+        data-address-view-default-lng-value="{{ map_config.default_lng }}"
+        data-address-view-default-zoom-value="{{ map_config.default_zoom }}"
+        data-address-view-user-agent-value="{{ map_config.user_agent }}"
+        data-address-view-error-geocoding-value="{{ 'address_view.error.geocoding_failed'|trans({}, 'AppBundle') }}"
+        data-address-view-loading-text-value="{{ 'address_view.status.loading'|trans({}, 'AppBundle') }}"
+    >
+        <span class="address-text">{{ value }}</span>
+        <button
+            type="button"
+            class="btn btn-sm btn-outline-primary ms-2"
+            data-action="click->address-view#openModal"
+            title="{{ 'address_view.button.view_on_map'|trans({}, 'AppBundle') }}"
+        >
+            <i class="fas fa-map-marked-alt"></i>
+        </button>
+
+        {# Modal для просмотра карты #}
+        <div
+            class="modal fade address-view-modal"
+            id="{{ unique_id }}_modal"
+            data-address-view-target="modal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="{{ unique_id }}_modal_label"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="{{ unique_id }}_modal_label">
+                            {{ 'address_view.modal.title'|trans({}, 'AppBundle') }}
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        {# Индикатор загрузки #}
+                        <div
+                            class="alert alert-info text-center"
+                            data-address-view-target="loadingIndicator"
+                            style="display: none;"
+                        >
+                            <i class="fas fa-spinner fa-spin me-2"></i>
+                            {{ 'address_view.status.loading'|trans({}, 'AppBundle') }}
+                        </div>
+
+                        {# Сообщение об ошибке #}
+                        <div
+                            class="alert alert-danger"
+                            data-address-view-target="errorMessage"
+                            style="display: none;"
+                        ></div>
+
+                        {# Информация об адресе #}
+                        <div class="alert alert-secondary mb-3">
+                            <strong>{{ 'address_view.modal.current_address'|trans({}, 'AppBundle') }}:</strong><br>
+                            {{ value }}
+                        </div>
+
+                        {# Контейнер для карты #}
+                        <div
+                            id="{{ unique_id }}_map"
+                            data-address-view-target="map"
+                            class="address-view-map"
+                            style="height: 400px; width: 100%;"
+                        ></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-action="click->address-view#closeModal"
+                        >
+                            {{ 'address_view.modal.button_close'|trans({}, 'AppBundle') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

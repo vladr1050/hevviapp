@@ -1,0 +1,118 @@
+/* ===== noUiSlider "Round skin" (accent: #864CDB) ===== */
+
+.slider-wrap {
+  padding: 10px 15px;
+}
+
+.noUi-target {
+  border: 0;
+  border-radius: 999px;
+  background: #E9EEF6;
+  box-shadow: none;
+  height: 8px;
+  padding: 0;
+  margin-bottom: 30px;
+  margin-top: 35px;
+}
+
+.noUi-base,
+.noUi-connects {
+  border-radius: 999px;
+}
+
+.noUi-connect {
+  background: #864CDB;
+}
+
+.noUi-horizontal .noUi-handle {
+  width: 26px;
+  height: 26px;
+  right: -13px; /* центрирование */
+  top: -9px; /* чтобы ручка "лежала" на треке */
+  border-radius: 50%;
+  background: #fff;
+  border: 4px solid #864CDB;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.10);
+  cursor: grab;
+}
+
+/* убираем "рёбра" внутри handle */
+.noUi-handle:before,
+.noUi-handle:after {
+  display: none;
+}
+
+/* Tooltip как "плашка" над ручкой */
+.noUi-tooltip {
+  border: 0;
+  border-radius: 8px;
+  padding: 6px 10px;
+  background: #864CDB;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.14);
+  margin-bottom: 10px;
+}
+
+/* маленький "хвостик" у tooltip */
+.noUi-tooltip:after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 7px solid #864CDB;
+}
+
+/* чуть увеличиваем клик-зону без изменения вида */
+.noUi-touch-area {
+  width: 100%;
+  height: 100%;
+}
+
+/* ticks/пипсы если используешь pips() */
+.noUi-marker {
+  background: #C9D3E4;
+}
+
+.noUi-marker-normal {
+  height: 8px;
+}
+
+.noUi-marker-large {
+  height: 12px;
+}
+
+.noUi-value {
+  color: #9AA7BF;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+/* Малые подписи будут пустыми строками — убираем место */
+.noUi-value-normal {
+  display: none; /* оставляем только риски */
+}
+
+/* Крупные подписи */
+.noUi-value-large {
+  font-size: 12px;
+  font-weight: 600;
+  color: #9AA7BF;
+}
+
+/* Крупные/мелкие риски */
+.noUi-marker-large {
+  height: 12px;
+}
+
+.noUi-marker-normal {
+  height: 7px;
+  opacity: 0.55;
+}

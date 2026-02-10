@@ -1,0 +1,19 @@
+twig:
+    file_name_pattern: '*.twig'
+    
+    form_themes:
+        - 'form/address_with_map_widget.html.twig'
+        - 'form/geo_area_selection_widget.html.twig'
+
+    globals:
+        project_name:     '%env(PROJECT_NAME)%'
+        map_config:
+            nominatim_api_url: '%app.map.nominatim_api_url%'
+            default_latitude:  '%app.map.default_latitude%'
+            default_longitude: '%app.map.default_longitude%'
+            default_zoom:      '%app.map.default_zoom%'
+            user_agent:        '%app.map.user_agent%'
+
+when@test:
+    twig:
+        strict_variables: true

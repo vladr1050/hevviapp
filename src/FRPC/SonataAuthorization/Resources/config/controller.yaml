@@ -1,0 +1,10 @@
+services:
+    sonata_authorization.controller.admin_security_controller:
+        class: FRPC\SonataAuthorization\Controller\AdminSecurityController
+        arguments:
+            - '@form.factory'
+            - '@twig'
+        tags:
+            - { name: controller.service_arguments }
+        calls:
+            - [ setContainer, [ '@Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface' ] ]

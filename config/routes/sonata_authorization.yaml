@@ -1,0 +1,19 @@
+sonata_authorization:
+    resource: '@SonataAuthorizationBundle/Controller/AdminSecurityController.php'
+    type:     attribute
+
+_user_admin_security_login:
+    path:       /admin/login
+    controller: sonata_authorization.controller.admin_security_controller::loginAction
+    options:
+        - { expose: true }
+
+_user_admin_security_login_check:
+    path:       /admin/login_check
+    controller: sonata_authorization.controller.admin_security_controller::checkAction
+    methods:
+        - POST
+
+_user_admin_security_logout:
+    path:       /admin/logout
+    controller: sonata_authorization.controller.admin_security_controller::logoutAction

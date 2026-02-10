@@ -1,0 +1,123 @@
+<?php
+/**
+ * SIA SLYFOX Confidential
+ *
+ * Copyright (C) 2022 SIA SLYFOX.
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of SIA SLYFOX, its suppliers and Customers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to SIA SLYFOX
+ * its Suppliers and Customers are protected by trade secret or copyright law.
+ *
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained.
+ */
+
+namespace FRPC\SonataAuthorization\Security\RolesBuilder;
+
+use Sonata\AdminBundle\Admin\AdminInterface;
+use Sonata\AdminBundle\Admin\Pool;
+use Sonata\AdminBundle\SonataConfiguration;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
+final class AdminRolesBuilder implements AdminRolesBuilderInterface
+{
+    private AuthorizationCheckerInterface $authorizationChecker;
+
+    private Pool $pool;
+
+    private SonataConfiguration $configuration;
+
+    private TranslatorInterface $translator;
+
+    /**
+     * @var string[]
+     */
+    private array $excludeAdmins = [];
+
+    public function __construct(
+        AuthorizationCheckerInterface $authorizationChecker,
+        Pool $pool,
+        SonataConfiguration $configuration,
+        TranslatorInterface $translator
+    ) {
+        $this->authorizationChecker = $authorizationChecker;
+        $this->pool = $pool;
+        $this->configuration = $configuration;
+        $this->translator = $translator;
+    }
+
+    public function getPermissionLabels(): array
+    {
+        $permissionLabels = [];
+        foreach ($this->getRoles() as $attributes) {
+            if (isset($attributes['label'])) {
+                $permissionLabels[$attributes['label']] = $attributes['label'];
+            }
+        }
+
+        return $permissionLabels;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getExcludeAdmins(): array
+    {
+        return $this->excludeAdmins;
+    }
+
+    public function addExcludeAdmin(string $exclude): void
+    {
+        $this->excludeAdmins[] = $exclude;
+    }
+
+    public function getRoles(?string $domain = null): array
+    {
+        $adminRoles = [];
+
+        foreach ($this->pool->getAdminServiceCodes() as $id) {
+            if (\in_array($id, $this->excludeAdmins, true)) {
+                continue;
+            }
+
+            $admin = $this->pool->getInstance($id);
+            $securityHandler = $admin->getSecurityHandler();
+            $baseRole = $securityHandler->getBaseRole($admin);
+
+            foreach (array_keys($admin->getSecurityInformation()) as $key) {
+                $role = sprintf($baseRole, $key);
+                $adminRoles[$role] = [
+                    'role' => $role,
+                    'label' => $key,
+                    'role_translated' => $this->translateRole($role, $domain),
+                    'is_granted' => $this->isMaster($admin) || $this->authorizationChecker->isGranted($role),
+                    'admin_label' => $this->translateRole($admin->getLabel(), $domain),
+                ];
+            }
+        }
+
+        return $adminRoles;
+    }
+
+    /**
+     * @param AdminInterface<object> $admin
+     */
+    private function isMaster(AdminInterface $admin): bool
+    {
+        return $admin->isGranted('MASTER') || $admin->isGranted('OPERATOR')
+            || $this->authorizationChecker->isGranted($this->configuration->getOption('role_super_admin'));
+    }
+
+    private function translateRole(string $role, ?string $domain): string
+    {
+        if (null !== $domain) {
+            return $this->translator->trans($role, [], $domain);
+        }
+
+        return $role;
+    }
+}

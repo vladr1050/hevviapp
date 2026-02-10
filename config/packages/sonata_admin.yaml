@@ -1,0 +1,192 @@
+# yaml-language-server: $schema=../../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+sonata_admin:
+    title: '%env(PROJECT_NAME)%'
+    search: false
+    show_mosaic_button: false
+    dashboard:
+        blocks:
+            - { type: sonata.admin.block.admin_list, position: left }
+        groups:
+            managers:
+                on_top:          true
+                label:           menu.managers
+                label_catalogue: SonataAuthorizationBundle
+                icon:            '<i class="fas fa-solid fa-user-tie"></i>'
+                items:
+                    -   route: admin_app_manager_list
+                        label: menu.managers
+            users:
+                label:           menu.users
+                label_catalogue: AppBundle
+                icon:            '<i class="fas fa-solid fa-users"></i>'
+                items:
+                    -   route: admin_app_user_list
+                        label: menu.users
+                    -   route: admin_app_carrier_list
+                        label: menu.carriers
+            orders:
+                label:           menu.orders
+                label_catalogue: AppBundle
+                icon:            '<i class="fas fa-solid fa-shopping-cart"></i>'
+                items:
+                    -   route: admin_app_order_list
+                        label: menu.orders
+                    -   route: admin_app_cargo_list
+                        label: menu.cargo
+            service_areas:
+                on_top:          true
+                label:           menu.service_areas
+                label_catalogue: AppBundle
+                icon:            '<i class="fas fa-map-marked-alt"></i>'
+                items:
+                    -   route: admin_app_servicearea_list
+                        label: menu.service_areas
+    templates:
+        layout: 'admin/main_layout.html.twig'
+
+sonata_block:
+    blocks:
+        sonata.admin.block.admin_list:
+            contexts: [admin]
+
+services:
+    ### Sonata Admin ###
+    FRPC\SonataAuthorization\Admin\ManagerAdmin:
+        tags:
+            -   name:                      sonata.admin
+                code:                      ~
+                model_class:               App\Entity\Manager
+                controller:                ~
+                manager_type:              orm
+                label:                     menu.managers
+                label_translator_strategy: sonata.admin.label.strategy.underscore
+                show_in_roles_matrix:      false
+        calls:
+            - [ setTranslationDomain, [ 'SonataAuthorizationBundle' ] ]
+
+    App\Admin\UserAdmin:
+        tags:
+            -   name:                      sonata.admin
+                code:                      ~
+                model_class:               App\Entity\User
+                controller:                ~
+                manager_type:              orm
+                label:                     menu.users
+                label_translator_strategy: sonata.admin.label.strategy.underscore
+                show_in_roles_matrix:      false
+        calls:
+            - [ setTranslationDomain, [ 'AppBundle' ] ]
+
+    App\Admin\OrderAdmin:
+        tags:
+            -   name:                      sonata.admin
+                code:                      ~
+                model_class:               App\Entity\Order
+                controller:                ~
+                manager_type:              orm
+                label:                     menu.orders
+                label_translator_strategy: sonata.admin.label.strategy.underscore
+                show_in_roles_matrix:      false
+        calls:
+            - [ setTranslationDomain, [ 'AppBundle' ] ]
+            - [ setFormTheme, [ ['admin/form_admin_fields.html.twig'] ] ]
+            - [ addChild, [ '@App\Admin\CargoAdmin', 'cargo' ] ]
+            - [ addChild, [ '@App\Admin\OrderOfferAdmin', 'offers' ] ]
+            - [ addChild, [ '@App\Admin\OrderAssignmentAdmin', 'orderAssignments' ] ]
+            - [ addChild, [ '@App\Admin\OrderHistoryAdmin', 'histories' ] ]
+
+    App\Admin\CargoAdmin:
+        tags:
+            -   name:                      sonata.admin
+                code:                      ~
+                model_class:               App\Entity\Cargo
+                controller:                ~
+                manager_type:              orm
+                label:                     menu.cargo
+                label_translator_strategy: sonata.admin.label.strategy.underscore
+                show_in_roles_matrix:      false
+        calls:
+            - [ setTranslationDomain, [ 'AppBundle' ] ]
+
+    App\Admin\CarrierAdmin:
+        tags:
+            -   name:                      sonata.admin
+                code:                      ~
+                model_class:               App\Entity\Carrier
+                controller:                ~
+                manager_type:              orm
+                label:                     menu.carriers
+                label_translator_strategy: sonata.admin.label.strategy.underscore
+                show_in_roles_matrix:      false
+        calls:
+            - [ setTranslationDomain, [ 'AppBundle' ] ]
+
+    App\Admin\OrderOfferAdmin:
+        tags:
+            -   name:                      sonata.admin
+                code:                      ~
+                model_class:               App\Entity\OrderOffer
+                controller:                ~
+                manager_type:              orm
+                label:                     menu.offers
+                label_translator_strategy: sonata.admin.label.strategy.underscore
+                show_in_dashboard:         false
+                show_in_roles_matrix:      false
+        calls:
+            - [ setTranslationDomain, [ 'AppBundle' ] ]
+
+    App\Admin\OrderHistoryAdmin:
+        tags:
+            -   name:                      sonata.admin
+                code:                      ~
+                model_class:               App\Entity\OrderHistory
+                controller:                ~
+                manager_type:              orm
+                label:                     menu.order_history
+                label_translator_strategy: sonata.admin.label.strategy.underscore
+                show_in_dashboard:         false
+                show_in_roles_matrix:      false
+        calls:
+            - [ setTranslationDomain, [ 'AppBundle' ] ]
+
+    App\Admin\OrderAssignmentAdmin:
+        tags:
+            -   name:                      sonata.admin
+                code:                      ~
+                model_class:               App\Entity\OrderAssignment
+                controller:                ~
+                manager_type:              orm
+                label:                     menu.order_assignments
+                label_translator_strategy: sonata.admin.label.strategy.underscore
+                show_in_dashboard:         false
+                show_in_roles_matrix:      false
+        calls:
+            - [ setTranslationDomain, [ 'AppBundle' ] ]
+
+    App\Admin\ServiceAreaAdmin:
+        tags:
+            -   name:                      sonata.admin
+                code:                      ~
+                model_class:               App\Entity\ServiceArea
+                controller:                ~
+                manager_type:              orm
+                label:                     menu.service_areas
+                label_translator_strategy: sonata.admin.label.strategy.underscore
+                show_in_roles_matrix:      false
+        calls:
+            - [ setTranslationDomain, [ 'AppBundle' ] ]
+            - [ addChild, [ '@App\Admin\MatrixItemAdmin', 'matrixItems' ] ]
+
+    App\Admin\MatrixItemAdmin:
+        tags:
+            -   name:                      sonata.admin
+                code:                      ~
+                model_class:               App\Entity\MatrixItem
+                controller:                ~
+                manager_type:              orm
+                label:                     menu.matrix_items
+                label_translator_strategy: sonata.admin.label.strategy.underscore
+                show_in_dashboard:         false
+                show_in_roles_matrix:      false
+        calls:
+            - [ setTranslationDomain, [ 'AppBundle' ] ]

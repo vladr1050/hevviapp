@@ -1,0 +1,118 @@
+{#
+/**
+ * Address With Map Widget Template
+ *
+ * Шаблон для рендеринга поля адреса с кнопкой открытия карты.
+ * Используется в Sonata Admin для полей типа AddressWithMapType.
+ */
+#}
+
+{% block address_with_map_widget %}
+    {# Определяем ID для скрытых полей координат #}
+    {# Просто заменяем Address на Latitude/Longitude в ID поля #}
+    {# Например: s69888d577d7f8_dropoutAddress -> s69888d577d7f8_dropoutLatitude #}
+    {% set lat_input_id = id|replace({'Address': 'Latitude'}) %}
+    {% set lng_input_id = id|replace({'Address': 'Longitude'}) %}
+    
+    <div class="address-with-map-wrapper"
+         data-controller="address-map"
+         data-address-map-nominatim-url-value="{{ map_config.nominatim_api_url }}"
+         data-address-map-default-lat-value="{{ map_config.default_latitude }}"
+         data-address-map-default-lng-value="{{ map_config.default_longitude }}"
+         data-address-map-default-zoom-value="{{ map_config.default_zoom }}"
+         data-address-map-user-agent-value="{{ map_config.user_agent }}"
+         data-address-map-target-input-id-value="{{ id }}"
+         data-address-map-lat-input-id-value="{{ lat_input_id }}"
+         data-address-map-lng-input-id-value="{{ lng_input_id }}"
+         data-address-map-error-no-selection-value="{{ 'address_map.error.no_selection'|trans({}, 'AppBundle') }}"
+         data-address-map-error-not-found-value="{{ 'address_map.error.address_not_found'|trans({}, 'AppBundle') }}"
+         data-address-map-error-geocoding-value="{{ 'address_map.error.geocoding_failed'|trans({}, 'AppBundle') }}"
+         data-address-map-error-search-value="{{ 'address_map.error.search_failed'|trans({}, 'AppBundle') }}"
+         data-address-map-error-empty-value="{{ 'address_map.error.empty_search'|trans({}, 'AppBundle') }}"
+         data-address-map-searching-text-value="{{ 'address_map.status.searching'|trans({}, 'AppBundle') }}"
+         data-address-map-search-button-text-value="{{ 'address_map.modal.search_button'|trans({}, 'AppBundle') }}">
+
+        {# Основное поле ввода адреса #}
+        <div class="input-group">
+            {{ block('form_widget_simple') }}
+
+            {% if enable_map %}
+                <button
+                    type="button"
+                    class="btn btn-outline-primary"
+                    data-action="address-map#openModal"
+                    title="{{ map_button_label }}"
+                >
+                    <i class="{{ map_button_icon }}"></i>
+                    <span class="d-none d-md-inline ms-1">{{ map_button_label }}</span>
+                </button>
+            {% endif %}
+        </div>
+
+        {% if enable_map %}
+            {# Модальное окно #}
+            <div class="modal fade address-map-modal"
+                 data-address-map-target="modal"
+                 tabindex="-1">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">{{ 'address_map.modal.title'|trans({}, 'AppBundle') }}</h5>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="address-search-container mb-3">
+                                <div class="input-group">
+                                    <input type="text" 
+                                           class="form-control" 
+                                           placeholder="{{ 'address_map.modal.search_placeholder'|trans({}, 'AppBundle') }}"
+                                           data-address-map-target="searchInput"
+                                           data-action="keydown.enter->address-map#searchAddress:prevent"
+                                           autocomplete="off">
+                                    <button class="btn btn-primary"
+                                            type="button"
+                                            data-address-map-target="searchButton"
+                                            data-action="address-map#searchAddress">
+                                        <i class="fas fa-search"></i> {{ 'address_map.modal.search_button'|trans({}, 'AppBundle') }}
+                                    </button>
+                                </div>
+                                <small class="form-text text-muted">
+                                    {{ 'address_map.modal.search_help'|trans({}, 'AppBundle') }}
+                                </small>
+                            </div>
+
+                            <div class="alert alert-danger"
+                                 style="display: none;"
+                                 data-address-map-target="errorMessage">
+                            </div>
+
+                            <div class="map-container"
+                                 data-address-map-target="map"
+                                 style="height: 500px; width: 100%;"></div>
+
+                            <div class="map-instructions mt-3">
+                                <p class="text-muted mb-0">
+                                    <i class="fas fa-info-circle"></i>
+                                    {{ 'address_map.modal.instruction'|trans({}, 'AppBundle') }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button"
+                                    class="btn btn-secondary"
+                                    data-action="address-map#closeModal">
+                                {{ 'address_map.modal.button_cancel'|trans({}, 'AppBundle') }}
+                            </button>
+                            <button type="button"
+                                    class="btn btn-success"
+                                    data-action="address-map#confirmSelection">
+                                <i class="fas fa-check"></i> {{ 'address_map.modal.button_confirm'|trans({}, 'AppBundle') }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

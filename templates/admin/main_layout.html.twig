@@ -1,0 +1,45 @@
+{#
+# SIA SLYFOX Confidential
+#
+# Copyright (C) 2024 SIA SLYFOX.
+# All Rights Reserved.
+#
+# NOTICE:  All information contained herein is, and remains
+# the property of SIA SLYFOX, its suppliers and Customers,
+# if any.  The intellectual and technical concepts contained
+# herein are proprietary to SIA SLYFOX
+# its Suppliers and Customers are protected by trade secret or copyright law.
+#
+# Dissemination of this information or reproduction of this material
+# is strictly forbidden unless prior written permission is obtained.
+#
+# @author Pavel Ustimenko steve.jsfolio@gmail.com
+#}
+
+{% extends '@SonataAdmin/standard_layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{#    <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('build/images/favicon/favicon-96x96.png') }}">#}
+{#    <link rel="icon" type="image/svg+xml" href="{{ asset('build/images/favicon/favicon.svg') }}">#}
+{#    <link rel="shortcut icon" href="{{ asset('build/images/favicon/favicon.ico') }}"/>#}
+{#    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('build/images/favicon/apple-touch-icon.png') }}"/>#}
+{#    <meta name="apple-mobile-web-app-title" content="{% block title %}{{ project_name }}{% endblock %}"/>#}
+{#    <link rel="manifest" href="{{ asset('build/images/favicon/site.webmanifest') }}"/>#}
+    {{ encore_entry_link_tags('app') }}
+{% endblock %}
+
+{% block side_bar_after_nav %}
+    <p class="text-center small" style="border-top: 1px solid #e4e4e7; padding-top: 10px; margin-top: 10px;">
+        {% block side_bar_after_nav_content %}
+            {{ project_name }}
+        {% endblock %}
+    </p>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% block importmap %}
+        {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+{% endblock %}

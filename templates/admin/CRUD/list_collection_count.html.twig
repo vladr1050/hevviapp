@@ -1,0 +1,14 @@
+{#
+/**
+ * Template for displaying collection count in Sonata Admin list view
+ */
+#}
+{% extends '@SonataAdmin/CRUD/base_list_field.html.twig' %}
+
+{% block field %}
+    {% if value is iterable %}
+        <span class="badge badge-info">{{ value|length }}</span>
+    {% else %}
+        <span class="badge badge-secondary">0</span>
+    {% endif %}
+{% endblock %}

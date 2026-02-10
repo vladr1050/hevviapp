@@ -1,0 +1,35 @@
+services:
+    sonata_authorization.command.activate_manager:
+        class: FRPC\SonataAuthorization\Command\ActivateManagerCommand
+        arguments:
+            - '@doctrine.orm.default_entity_manager'
+        tags:
+            - { name: console.command }
+
+    sonata_authorization.command.deactivate_manager:
+        class: FRPC\SonataAuthorization\Command\DeactivateManagerCommand
+        arguments:
+            - '@doctrine.orm.default_entity_manager'
+        tags:
+            - { name: console.command }
+
+    sonata_authorization.command.change_password:
+        class: FRPC\SonataAuthorization\Command\ChangePasswordCommand
+        arguments:
+            - '@doctrine.orm.default_entity_manager'
+        tags:
+            - { name: console.command }
+
+    sonata_authorization.command.create_manager:
+        class: FRPC\SonataAuthorization\Command\CreateManagerCommand
+        arguments:
+            - '@doctrine.orm.default_entity_manager'
+        tags:
+            - { name: console.command }
+
+    sonata_authorization.command.remove_manager:
+        class: FRPC\SonataAuthorization\Command\RemoveManagerCommand
+        arguments:
+            - '@doctrine.orm.default_entity_manager'
+        tags:
+            - { name: console.command }

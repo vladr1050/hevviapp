@@ -1,0 +1,314 @@
+menu:
+    users:             Users
+    carriers:          Carriers
+    orders:            Orders
+    cargo:             Cargo
+    offers:            Offers
+    order_history:     Order History
+    order_assignments: Order Assignments
+    service_areas:     Service Areas
+    matrix_items:      Matrix Items
+
+breadcrumb:
+    link_user_list:           List of Users
+    link_user_create:         Create
+    link_order_list:          List of Orders
+    link_order_create:        Create Order
+    link_cargo_list:          List of Cargo
+    link_cargo_create:        Create Cargo
+    link_carrier_list:        List of Carriers
+    link_carrier_create:      Create Carrier
+    link_servicearea_list:    List of Service Areas
+    link_servicearea_create:  Create Service Area
+    link_matrixitem_list:     List of Matrix Items
+    link_matrixitem_create:   Create Matrix Item
+    link_service_area_list:   List of Service Areas
+    link_service_area_create: Create Service Area
+
+filter:
+    label_status:                 Status
+    label_sender:                 Sender
+    label_carrier:                Carrier
+    label_latest_offer_status:    Offer Status
+    label_last_assignment_status: Assignment Status
+    label_order:                  Order
+    label_changed_by:             Changed By
+    label_name:                   Name
+    label_mileage_from:           Mileage From
+    label_mileage_to:             Mileage To
+    label_price:                  Price
+
+
+list:
+    label_fullname:             Name
+    label_email:                Email
+    label_created_at:           Created At
+    label_updated_at:           Updated At
+    label__action:              Actions
+    label_id:                   ID
+    label_status:               Status
+    label_sender:               Sender
+    label_carrier:              Carrier
+    label_addresses:            Addresses
+    label_pickup_address:       Pickup Address
+    label_dropout_address:      Dropout Address
+    label_cargo_count:          Cargo Items
+    label_delivery_gross_price: Delivery Gross Price
+    label_order_assignments:    Assignments
+    label_no_assignments:       No assignments
+    label_assigned_by:          Assigned By
+    label_name:                 Name
+    label_type:                 Type
+    label_quantity:             Quantity
+    label_weight_kg:            Weight (kg)
+    label_stackable:            Stackable
+    label_manipulator_needed:   Manipulator Needed
+    label_order:                Order
+    label_changed_by:           Changed By
+    label_changed_at:           Changed At
+    label_registration_number:  Registration Number
+    label_phone:                Phone number
+    label_legal_name:           Legal Name
+    label_state:                State
+    label_geo_areas_count:      Geo Areas Count
+    label_matrix_items_count:   Matrix Items Count
+    label_weight_from:          Weight From
+    label_weight_to:            Weight To
+    label_price:                Price
+    label_service_area:         Service Area
+    label_currency:             Currency
+    label_offers:               Offers
+
+show:
+    group_menu_users:          User
+    group_menu_orders:         Order
+    group_menu_cargo:          Cargo
+    group_menu_carriers:       Carrier
+    group_menu_service_areas:  Service Area
+    label_first_name:          First Name
+    label_last_name:           Last Name
+    label_phone:               Phone Number
+    label_email:               Email
+    label_locale:              Locale
+    label_created_at:          Created At
+    label_updated_at:          Updated At
+    label_id:                  ID
+    label_status:              Status
+    label_sender:              Sender
+    label_carrier:             Carrier
+    label_pickup_address:      Pickup Address
+    label_dropout_address:     Dropout Address
+    label_notes:               Notes
+    label_cargo:               Cargo
+    label_offers:              Offers
+    label_order_assignments:   Order Assignments
+    label_assigned_by:         Assigned By
+    label_brutto:              Gross Price
+    label_netto:               Net Price
+    label_vat:                 VAT (%)
+    label_offer_status:        Offer Status
+    label_name:                Name
+    label_type:                Type
+    label_quantity:            Quantity
+    label_weight_kg:           Weight (kg)
+    label_dimensions_cm:       Dimensions (cm)
+    label_comment:             Comment
+    label_stackable:           Stackable
+    label_manipulator_needed:  Manipulator Needed
+    label_related_order:       Related Order
+    label_order:               Order
+    label_changed_by:          Changed By
+    label_meta:                Metadata
+    label_status_history:      Status History
+    label_address:             Address
+    label_registration_number: Registration Number
+    label_legal_name:          Legal Name
+    label_state:               State
+    label_matrix_items:        Matrix Items
+    label_weight_from:         Weight From
+    label_weight_to:           Weight To
+    label_price:               Price
+    label_service_area:        Service Area
+    label_geo_areas:           Geo Areas
+    label_currency:            Currency
+
+
+form:
+    group_tabs_general:        General
+    group_tabs_cargo:          Cargo
+    group_tabs_offers:         Offers
+    group_tabs_assigment:      Assignments
+    group_tabs_geo_areas:      Geo Areas
+    group_tabs_matrix_items:   Matrix Items
+    group_profile:             Profile
+    group_contacts:            Contact
+    group_general:             General
+    group_order_info:          Order Information
+    group_addresses:           Addresses
+    group_cargo_list:          Cargo Items
+    group_offers_list:         Offers List
+    group_assigment_list:      Assignments List
+    group_cargo_info:          Cargo Information
+    group_cargo_properties:    Cargo Properties
+    group_service_area_info:   Service Area Information
+    group_geo_areas_selection: Geo Areas Selection
+    group_matrix_items_list:   Matrix Items List
+    label_first_name:          First Name
+    label_last_name:           Last Name
+    label_phone:               Phone Number
+    label_email:               Email
+    label_locale:              Locale
+    label_state:               State
+    label_plain_password:      Password
+    label_help_plain_password: Leave the field blank if you don't want to change member password
+    label_status:              Status
+    label_sender:              Sender
+    label_carrier:             Carrier
+    label_assigned_by:         Assigned By Manager
+    label_help_assigned_by:    Automatically filled with current manager. Can be changed manually if needed.
+    label_pickup_address:      Pickup Address
+    label_dropout_address:     Dropout Address
+    label_notes:               Notes
+    label_cargo:               Cargo
+    label_name:                Name
+    label_type:                Type
+    label_quantity:            Quantity
+    label_weight_kg:           Weight (kg)
+    label_dimensions_cm:       Dimensions (cm)
+    label_comment:             Comment
+    label_stackable:           Stackable
+    label_manipulator_needed:  Manipulator Needed
+    help_dimensions_cm:        "Format: Length,Width,Height (e.g., 120,80,100)"
+    label_address:             Address
+    label_registration_number: Registration Number
+    label_legal_name:          Legal Name
+    label_matrix_items:        Matrix Items
+    label_price:               Price
+    label_service_area:        Service Area
+    label_currency:            Currency
+    label_weight_from:         Weight From
+    label_weight_to:           Weight To
+    label_offers:              Offers
+    label_brutto:              Gross Price
+    label_netto:               Net Price
+    label_vat:                 VAT (%)
+    label_offer_status:        Offer Status
+    label_help_order_currency: Leave this field empty, and it will be filled automatically after the successful calculation of the order’s shipping cost.
+
+
+# Cargo Type choices
+PALLET:    Pallet
+OVERSIZED: Oversized
+
+# Address Map Component
+address_map:
+    modal:
+        title:              Select address on map
+        search_placeholder: Enter address to search...
+        search_button:      Search
+        search_help:        Enter an address and click "Search" or select a point on the map
+        button_cancel:      Cancel
+        button_confirm:     Confirm
+        instruction:        'Click on the map to select a point or use the search. After selecting, click "Confirm" to apply the address.'
+    button:
+        select_on_map: Select on map
+    error:
+        no_selection:      Please select an address on the map or enter it in the search field
+        address_not_found: Address not found. Try to clarify the query.
+        geocoding_failed:  Failed to get address for selected point
+        search_failed:     Error searching for address. Try again later.
+        empty_search:      Enter an address to search
+    status:
+        searching: Searching...
+
+# Address View Component (for list view)
+address_view:
+    modal:
+        title:           View address on map
+        title_pickup:    Pickup Address
+        title_dropout:   Dropout Address
+        current_address: Current address
+        button_close:    Close
+    button:
+        view_on_map: View on map
+    error:
+        geocoding_failed: Failed to find address on map. Please check if the address is correct.
+    status:
+        loading: Loading map...
+
+# GeoArea View Component (for show view)
+geo_area_view:
+    label:
+        selected_areas: Selected Geo Areas
+        map:            Areas Map
+    scope:
+        country: Country
+        city:    City
+    help:
+        map_info: Displays boundaries of all selected geo areas
+    message:
+        no_areas: No selected geo areas
+    error:
+        load_geometry: Failed to load area geometry
+
+# GeoArea Selection Component
+geo_area_selection:
+    title: Geo Areas Selection on Map
+    label:
+        country:        Country
+        city:           City
+        selected_areas: Selected Areas
+    select:
+        no_country: -- Select Country --
+        no_city:    -- Select City --
+    button:
+        add:    Add
+        remove: Remove
+    help:
+        select_country_first: First select a country to load the list of cities
+        select_city:          Select a country, then a city and click "+" to add to the map
+        map_info:             Selected geo areas are displayed on the map as polygons
+    message:
+        no_selected: No selected areas
+    error:
+        load_countries:     Failed to load countries list
+        load_cities:        Failed to load cities list
+        load_geometry:      Failed to load area geometry
+        area_already_added: This area has already been added
+    status:
+        loading_cities: Loading cities...
+
+# OrderOffer statuses
+DRAFT:     Draft
+ACCEPTED:  Accepted
+REJECTED:  Rejected
+
+# OrderAssignment statuses
+ASSIGNED:  Assigned
+# ACCEPTED for OrderAssignment will also be "Accepted"
+# REJECTED for OrderAssignment will also be "Rejected"
+
+# OrderOffer component
+order_offer:
+    button:
+        calculate:  Calculate Offer
+        add_manual: Add Manually
+    success:
+        calculated:    Offer successfully calculated
+        auto_created:  Offer automatically created
+        can_calculate: Can calculate price for this order
+    warning:
+        auto_create_failed:     'Failed to automatically create offer. Reason: %reason%'
+        service_area_not_found: Service area not found for the specified delivery address
+    error:
+        missing_coordinates:    Missing delivery address coordinates
+        service_area_not_found: Service area not found for specified address
+        no_cargo_weight:        Order has no cargo or cargo weight is zero
+        matrix_item_not_found:  Pricing plan not found for specified cargo weight
+        calculation_failed:     Error calculating delivery cost
+        unknown:                Unknown error
+    help:
+        brutto_info:      Price including VAT
+        netto_info:       Price excluding VAT
+        vat_info:         Value Added Tax percentage
+        auto_calculation: Offer will be created automatically when saving the order

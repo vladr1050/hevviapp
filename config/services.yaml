@@ -1,0 +1,101 @@
+# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+# See also https://symfony.com/doc/current/service_container/import.html
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/FRPC/'
+            - '../src/Admin/'
+            - '../src/Kernel.php'
+
+    ### LISTENERS ###
+    App\Listener\PlainPasswordListener:
+        arguments:
+            - '@security.user_password_hasher'
+        tags:
+            - { name: doctrine.orm.entity_listener }
+
+    App\Listener\OrderAssignmentListener:
+        tags:
+            - { name: doctrine.orm.entity_listener, event: prePersist, entity: App\Entity\OrderAssignment }
+
+    ### TWIG EXTENSIONS ###
+    App\Twig\MapConfigExtension:
+        arguments:
+            $nominatimUrl: '%app.map.nominatim_api_url%'
+            $defaultLat: '%app.map.default_latitude%'
+            $defaultLng: '%app.map.default_longitude%'
+            $defaultZoom: '%app.map.default_zoom%'
+            $userAgent: '%app.map.user_agent%'
+        tags:
+            - { name: twig.extension }
+
+    App\Twig\OrderStatusCounterExtension:
+        arguments:
+            - '@App\Service\OrderStatusCounterService'
+        tags:
+            - { name: twig.extension }
+
+    ### SESSION HANDLER ###
+    Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
+        arguments:
+            - !service
+                class: PDO
+                factory: ['@doctrine.dbal.default_connection', 'getNativeConnection']
+            - { db_table: 'sessions', db_id_col: 'sess_id', db_data_col: 'sess_data', db_time_col: 'sess_time', db_lifetime_col: 'sess_lifetime', lock_mode: 1 }
+
+    ### ORDER OFFER SERVICES ###
+    # Interface binding for OrderOffer calculator
+    App\Service\OrderOffer\Contract\OrderOfferCalculatorInterface:
+        class: App\Service\OrderOffer\OrderOfferCalculatorService
+
+    ### GEO AREA PARSER SERVICES ###
+    # Interfaces bindings
+    App\Service\GeoArea\Contract\OsmDataProviderInterface:
+        class: App\Service\GeoArea\OsmDataProvider\OverpassApiClient
+
+    App\Service\GeoArea\Contract\GeometryParserInterface:
+        class: App\Service\GeoArea\GeometryParser\OsmGeometryParser
+
+    App\Service\GeoArea\Contract\GeoAreaDataDumperInterface:
+        class: App\Service\GeoArea\DataDumper\GeoAreaSqlDumper
+    
+    App\Service\GeoArea\Contract\GadmDataProviderInterface:
+        class: App\Service\GeoArea\GadmDataProvider\GadmJsonProvider
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    # GADM Parser
+    App\Service\GeoArea\GadmGeoAreaParser:
+        arguments:
+            $gadmProvider: '@App\Service\GeoArea\Contract\GadmDataProviderInterface'
+
+    # Commands with project directory parameter
+    App\Command\ParseGeoAreasCommand:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+    
+    App\Command\ImportFromGeoFabrikCommand:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+    
+    App\Command\ParseGeoAreasGadmCommand:
+        arguments:
+            $projectDir: '%kernel.project_dir%'

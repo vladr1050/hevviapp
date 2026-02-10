@@ -1,0 +1,125 @@
+{#
+# DOO TECHGURU Confidential
+#
+# Copyright (C) 2022 DOO TECHGURU.
+# All Rights Reserved.
+#
+# NOTICE:  All information contained herein is, and remains
+# the property of DOO TECHGURU, its suppliers and Customers,
+# if any.  The intellectual and technical concepts contained
+# herein are proprietary to DOO TECHGURU
+# its Suppliers and Customers are protected by trade secret or copyright law.
+#
+# Dissemination of this information or reproduction of this material
+# is strictly forbidden unless prior written permission is obtained.
+#
+# @author Pavel Ustimenko steve.jsfolio@gmail.com
+#}
+
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    {% block meta_tags %}
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta charset="UTF-8">
+        <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+    {% endblock %}
+
+    {% block stylesheets %}
+        <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('build/images/favicon/favicon-96x96.png') }}">
+        <link rel="icon" type="image/svg+xml" href="{{ asset('build/images/favicon/favicon.svg') }}">
+        <link rel="shortcut icon" href="{{ asset('build/images/favicon/favicon.ico') }}"/>
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('build/images/favicon/apple-touch-icon.png') }}"/>
+        <meta name="apple-mobile-web-app-title" content="{% block title %}{{ project_name }}{% endblock %}"/>
+        <link rel="manifest" href="{{ asset('build/images/favicon/site.webmanifest') }}"/>
+        <link rel="stylesheet" href="{{ asset('bundles/sonataauthorization/css/login.css') }}">
+    {% endblock %}
+
+    {% block javascripts %}
+        <script src="{{ asset('bundles/sonataauthorization/js/jquery.slim.min.js') }}"></script>
+        <script src="{{ asset('bundles/sonataauthorization/js/login.form.js') }}"></script>
+    {% endblock %}
+
+    <title>
+        {{ 'welcome'|trans({}, 'SonataAuthorizationBundle') }}
+    </title>
+</head>
+<body class="login-page">
+<div class="login-box">
+    <div id="bg">
+        <canvas width="1512" height="466"></canvas>
+        <canvas width="1512" height="466"></canvas>
+        <canvas width="1512" height="466"></canvas>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-section">
+                    <div class="logo clearfix">
+                        <a href="{{ path('sonata_admin_dashboard') }}" class="cubic-bezier">
+                            <span>{{ 'welcome'|trans({}, 'SonataAuthorizationBundle') }}</span>
+                        </a>
+                        <div class="loading cubic-bezier">
+                            {{ 'loading'|trans({}, 'SonataAuthorizationBundle') }}
+                        </div>
+                    </div>
+                    <div class="login-box-body">
+                        {% if error %}
+                            <div class="alert">
+                                {{ error.messageKey|trans(error.messageData, 'security') }}
+                            </div>
+                        {% endif %}
+                        {% for label, flashes in app.session.flashbag.all %}
+                            {% for flash in flashes %}
+                                <div class="alert">
+                                    {{ flash }}
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                        <p class="login-box-msg">{{ 'authorization'|trans({}, 'SonataAuthorizationBundle') }}</p>
+                        <form method="post" role="form" id="loginForm">
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
+                            <input class="form-check-input" type="hidden" id="remember_me"
+                                   name="_remember_me" checked>
+                            <div class="form-group form-box">
+                                <label for="_email"
+                                       class="form-label">{{ 'email'|trans({}, 'SonataAuthorizationBundle') }}</label>
+                                <input type="text" class="form-control" id="_email"
+                                       name="{{ form.email.vars.name }}"
+                                       value="{{ last_username }}" required="required"
+                                       autocomplete="email"
+                                       placeholder="{{ 'email'|trans({}, 'SonataAuthorizationBundle') }}"/>
+                            </div>
+
+                            <div class="form-group form-box password-box">
+                                <label for="password"
+                                       class="form-label">{{ 'password'|trans({}, 'SonataAuthorizationBundle') }}</label>
+                                <input type="password" class="form-control" id="password"
+                                       name="{{ form.password.vars.name }}" required="required"
+                                       autocomplete="off"
+                                       placeholder="{{ 'password'|trans({}, 'SonataAuthorizationBundle') }}"/>
+                                <span id="eye">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                                 viewBox="0 0 24 24" class="hide"><path
+                                                        d="M12 4.998c-1.836 0-3.356.389-4.617.971L3.707 2.293 2.293 3.707l3.315 3.316c-2.613 1.952-3.543 4.618-3.557 4.66l-.105.316.105.316C2.073 12.382 4.367 19 12 19c1.835 0 3.354-.389 4.615-.971l3.678 3.678 1.414-1.414-3.317-3.317c2.614-1.952 3.545-4.618 3.559-4.66l.105-.316-.105-.316c-.022-.068-2.316-6.686-9.949-6.686zM4.074 12c.103-.236.274-.586.521-.989l5.867 5.867C6.249 16.23 4.523 13.035 4.074 12zm9.247 4.907-7.48-7.481a8.138 8.138 0 0 1 1.188-.982l8.055 8.054a8.835 8.835 0 0 1-1.763.409zm3.648-1.352-1.541-1.541c.354-.596.572-1.28.572-2.015 0-.474-.099-.924-.255-1.349A.983.983 0 0 1 15 11a1 1 0 0 1-1-1c0-.439.288-.802.682-.936A3.97 3.97 0 0 0 12 7.999c-.735 0-1.419.218-2.015.572l-1.07-1.07A9.292 9.292 0 0 1 12 6.998c5.351 0 7.425 3.847 7.926 5a8.573 8.573 0 0 1-2.957 3.557z"></path></svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                                 viewBox="0 0 24 24" class="show"><path
+                                                        d="M12 9a3.02 3.02 0 0 0-3 3c0 1.642 1.358 3 3 3 1.641 0 3-1.358 3-3 0-1.641-1.359-3-3-3z"></path><path
+                                                        d="M12 5c-7.633 0-9.927 6.617-9.948 6.684L1.946 12l.105.316C2.073 12.383 4.367 19 12 19s9.927-6.617 9.948-6.684l.106-.316-.105-.316C21.927 11.617 19.633 5 12 5zm0 12c-5.351 0-7.424-3.846-7.926-5C4.578 10.842 6.652 7 12 7c5.351 0 7.424 3.846 7.926 5-.504 1.158-2.578 5-7.926 5z"></path></svg>
+                                        </span>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <button type="submit"
+                                            class="btn-md btn-theme">{{ 'login'|trans({}, 'SonataAuthorizationBundle') }}</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

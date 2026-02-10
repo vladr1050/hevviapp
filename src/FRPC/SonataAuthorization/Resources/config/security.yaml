@@ -1,0 +1,62 @@
+services:
+    sonata_authorization.security.user.manager_user_provider:
+        class: FRPC\SonataAuthorization\Security\User\ManagerUserProvider
+        arguments:
+            - '@doctrine.orm.default_entity_manager'
+            - '%sonata_authorization.security_classes%'
+
+    sonata_authorization.security.admin_login_authenticator:
+        class: FRPC\SonataAuthorization\Security\AdminLoginAuthenticator
+        arguments:
+            - '@doctrine.orm.default_entity_manager'
+            - '@router'
+
+    sonata_authorization.security.authentication_entry_point:
+        class: FRPC\SonataAuthorization\Security\AuthenticationEntryPoint
+        arguments:
+            - '@router'
+
+    sonata_authorization.security.roles_builder.matrix_roles_builder:
+        class: FRPC\SonataAuthorization\Security\RolesBuilder\MatrixRolesBuilder
+        arguments:
+            - '@security.token_storage'
+            - '@sonata_authorization.security.roles_builder.admin_roles_builder'
+            - '@sonata_authorization.security.roles_builder.security_roles_builder'
+
+    sonata_authorization.security.roles_builder.admin_roles_builder:
+        class: FRPC\SonataAuthorization\Security\RolesBuilder\AdminRolesBuilder
+        arguments:
+            - '@security.authorization_checker'
+            - '@sonata.admin.pool'
+            - '@sonata.admin.configuration'
+            - '@translator'
+
+    sonata_authorization.security.roles_builder.security_roles_builder:
+        class: FRPC\SonataAuthorization\Security\RolesBuilder\SecurityRolesBuilder
+        arguments:
+            - '@security.authorization_checker'
+            - '@sonata.admin.configuration'
+            - '@translator'
+            - '%security.role_hierarchy.roles%'
+
+    sonata_authorization.form.type.roles_matrix_type:
+        class: FRPC\SonataAuthorization\Form\Type\RolesMatrixType
+        arguments:
+            - '@sonata_authorization.security.roles_builder.matrix_roles_builder'
+        tags:
+            - { name: form.type }
+
+    sonata_authorization.twig.roles_matrix_extension:
+        class: FRPC\SonataAuthorization\Twig\RolesMatrixExtension
+        arguments:
+            - '@sonata_authorization.security.roles_builder.matrix_roles_builder'
+        tags:
+            - { name: twig.extension }
+
+    sonata_authorization.twig.sonata_authorization_extension:
+        class: FRPC\SonataAuthorization\Twig\SonataAuthorizationExtension
+        arguments:
+            - '@translator'
+        tags:
+            - { name: twig.extension }
+

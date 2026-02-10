@@ -1,0 +1,47 @@
+{#
+/**
+ * Template for displaying order assignments in Sonata Admin list view
+ * Shows carrier and status for each assignment
+ *
+ * Variables:
+ * - object: The current entity object (Order)
+ */
+#}
+{% extends '@SonataAdmin/CRUD/base_list_field.html.twig' %}
+
+{% block field %}
+    {% set assignments = object.orderAssignments %}
+    
+    {% if assignments is empty %}
+        <span class="text-muted">
+            <i class="fas fa-minus"></i> {{ 'list.label_no_assignments'|trans({}, 'AppBundle') }}
+        </span>
+    {% else %}
+        <div class="order-assignments-list">
+            {% for assignment in assignments %}
+                <div class="assignment-item mb-1 {% if not loop.last %}pb-1 border-bottom{% endif %}">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <i class="fas fa-truck text-primary me-1"></i>
+                            <strong>{{ assignment.carrier.legalName }}</strong>
+                        </div>
+                        <div class="ms-2">
+                            {% set statuses = constant('App\\Entity\\OrderAssignment::STATUS') %}
+                            {% set status_key = '' %}
+                            {% for key, value in statuses %}
+                                {% if value == assignment.status %}
+                                    {% set status_key = key %}
+                                {% endif %}
+                            {% endfor %}
+                            {% set status_class = assignment.status == statuses['ASSIGNED'] ? 'info' : 
+                                                 (assignment.status == statuses['ACCEPTED'] ? 'success' : 'danger') %}
+                            <span class="badge badge-{{ status_class }}">
+                                {{ status_key|lower|capitalize|trans({}, 'AppBundle') }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
