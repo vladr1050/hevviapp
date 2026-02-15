@@ -5,21 +5,21 @@ import { GeoAreaService } from '../services/GeoAreaService.js';
 
 /**
  * GeoArea Map Controller
- * 
+ *
  * Управляет интерактивной картой для выбора гео-зон с фильтрацией по странам и городам.
- * 
+ *
  * Следует принципам SOLID:
  * - Single Responsibility: координирует работу UI и сервисов
  * - Open/Closed: расширяемый через values и сервисы
  * - Liskov Substitution: может быть заменён другим контроллером
  * - Interface Segregation: использует только нужные методы сервисов
  * - Dependency Inversion: зависит от абстракций (сервисов), а не конкретных реализаций
- * 
+ *
  * Использует композицию сервисов:
  * - MapService: управление картой Leaflet
  * - ApiService: HTTP запросы к API
  * - GeoAreaService: управление состоянием зон
- * 
+ *
  * Интеграция с Select2 через jQuery события.
  */
 export default class extends Controller {
@@ -97,7 +97,7 @@ export default class extends Controller {
 
         // Состояние UI
         this.currentCountryISO3 = null;
-        
+
         // Инициализация
         this.mapService.initialize();
         this._loadCountries();
@@ -115,18 +115,18 @@ export default class extends Controller {
             jQuery(this.countrySelectTarget).off('select2:select.geoAreaMap change.geoAreaMap');
             jQuery(this.citySelectTarget).off('select2:select.geoAreaMap change.geoAreaMap');
         }
-        
+
         // Очищаем сервисы
         if (this.mapService) {
             this.mapService.destroy();
             this.mapService = null;
         }
-        
+
         if (this.geoAreaService) {
             this.geoAreaService.clear();
             this.geoAreaService = null;
         }
-        
+
         this.apiService = null;
     }
 
@@ -187,7 +187,7 @@ export default class extends Controller {
      */
     async _handleCountryChange(data) {
         const countryId = data.id;
-        
+
         if (!countryId) {
             this._resetCitySelect();
             return;
@@ -203,7 +203,7 @@ export default class extends Controller {
             // Фолбек: ищем опцию по значению
             $option = window.jQuery(this.countrySelectTarget).find(`option[value="${countryId}"]`);
         }
-        
+
         this.currentCountryISO3 = $option.data('iso3') || $option.attr('data-iso3');
 
         console.log('[GeoAreaMap] Country selected:', {
@@ -214,7 +214,7 @@ export default class extends Controller {
 
         await this._loadCities(this.currentCountryISO3);
         await this._loadCustomAreas(this.currentCountryISO3);
-        
+
         // Активируем кнопку создания кастомной зоны
         if (this.hasCreateCustomAreaButtonTarget) {
             this.createCustomAreaButtonTarget.disabled = false;
@@ -229,7 +229,7 @@ export default class extends Controller {
     _handleCityChange(data) {
         const cityId = data.id;
         this.addButtonTarget.disabled = !cityId;
-        
+
         console.log('[GeoAreaMap] City selected:', cityId);
     }
 
@@ -240,7 +240,7 @@ export default class extends Controller {
     async onCountryChange(event) {
         console.warn('[GeoAreaMap] onCountryChange called directly. This should not happen if Select2 is working.');
         const countryId = event.target.value;
-        
+
         if (!countryId) {
             this._resetCitySelect();
             this._resetCustomAreaSelect();
@@ -269,7 +269,7 @@ export default class extends Controller {
      */
     async addGeoArea(event) {
         event.preventDefault();
-        
+
         const cityId = this.citySelectTarget.value;
         if (!cityId) return;
 
@@ -290,21 +290,21 @@ export default class extends Controller {
             name: cityName,
             countryISO3: this.currentCountryISO3,
         };
-        
+
         this.geoAreaService.addArea(cityId, areaData);
-        
+
         // Загружаем геометрию и отображаем на карте (через сервисы)
         await this._loadAndDisplayGeometry(cityId);
-        
+
         // Обновляем список
         this._updateSelectedList();
-        
+
         // Обновляем скрытое поле
         this._updateHiddenInput();
-        
+
         // Отключаем эту опцию в селекте
         this._disableCityOption(cityId);
-        
+
         // Сбрасываем выбор города и обновляем Select2
         this._resetCitySelection();
     }
@@ -315,31 +315,31 @@ export default class extends Controller {
     removeGeoArea(event) {
         const areaId = event.currentTarget.dataset.areaId;
         const isCustomArea = event.currentTarget.dataset.isCustomArea === 'true';
-        
+
         console.log('[GeoAreaMap] Removing area:', areaId, 'isCustomArea:', isCustomArea);
-        
+
         // Удаляем с карты через MapService
         this.mapService.removeLayer(areaId);
-        
+
         // Удаляем из GeoAreaService
         this.geoAreaService.removeArea(areaId);
-        
+
         // Включаем эту опцию обратно в селекте
         if (isCustomArea) {
             this._enableCustomAreaOption(areaId);
         } else {
             this._enableCityOption(areaId);
         }
-        
+
         // Обновляем отображение
         this._updateSelectedList();
         this._updateHiddenInput();
-        
+
         // Обновляем текст кнопки если удалили кастомную зону
         if (isCustomArea) {
             this._updateCreateCustomAreaButtonText();
         }
-        
+
         // Автозуминг на оставшиеся элементы через MapService
         this.mapService.fitToAllLayers({
             padding: [50, 50],
@@ -353,7 +353,7 @@ export default class extends Controller {
      */
     async addCustomArea(event) {
         event.preventDefault();
-        
+
         const customAreaId = this.customAreaSelectTarget.value;
         if (!customAreaId) return;
 
@@ -375,21 +375,21 @@ export default class extends Controller {
             countryISO3: this.currentCountryISO3,
             isCustomArea: true,
         };
-        
+
         this.geoAreaService.addArea(customAreaId, areaData);
-        
+
         // Загружаем геометрию и отображаем на карте
         await this._loadAndDisplayGeometry(customAreaId);
-        
+
         // Обновляем список
         this._updateSelectedList();
-        
+
         // Обновляем скрытое поле
         this._updateHiddenInput();
-        
+
         // Отключаем эту опцию в селекте
         this._disableCustomAreaOption(customAreaId);
-        
+
         // Сбрасываем выбор кастомной зоны
         this._resetCustomAreaSelection();
     }
@@ -438,7 +438,7 @@ export default class extends Controller {
      */
     async openEditCustomAreaModal(event) {
         event.preventDefault();
-        
+
         const areaId = event.currentTarget.dataset.areaId;
         const area = this.geoAreaService.getArea(areaId);
 
@@ -507,10 +507,10 @@ export default class extends Controller {
     async _loadCountries() {
         try {
             const countries = await this.apiService.getCountries();
-            
+
             // Очищаем селект
             this.countrySelectTarget.innerHTML = `<option value="">${this.translationNoCountryValue}</option>`;
-            
+
             // Добавляем страны с data-iso3 атрибутом
             countries.forEach(country => {
                 const option = document.createElement('option');
@@ -520,10 +520,10 @@ export default class extends Controller {
                 option.dataset.iso3 = country.countryISO3;
                 this.countrySelectTarget.appendChild(option);
             });
-            
+
             // Обновляем Select2 если инициализирован
             this._updateSelect2(this.countrySelectTarget);
-            
+
         } catch (error) {
             console.error('[GeoAreaMap] Error loading countries:', error);
             alert(this.translationErrorLoadCountriesValue);
@@ -536,7 +536,7 @@ export default class extends Controller {
      */
     async _loadCities(countryISO3) {
         console.log('[GeoAreaMap] Loading cities for country:', countryISO3);
-        
+
         // Показываем индикатор загрузки
         this.citySelectTarget.innerHTML = `<option value="">${this.translationLoadingCitiesValue}</option>`;
         this.citySelectTarget.disabled = true;
@@ -545,10 +545,10 @@ export default class extends Controller {
 
         try {
             const cities = await this.apiService.getCities(countryISO3);
-            
+
             // Очищаем селект
             this.citySelectTarget.innerHTML = `<option value="">${this.translationNoCityValue}</option>`;
-            
+
             // Добавляем города
             cities.forEach(city => {
                 const option = document.createElement('option');
@@ -556,18 +556,18 @@ export default class extends Controller {
                 option.textContent = city.name;
                 this.citySelectTarget.appendChild(option);
             });
-            
+
             // ВАЖНО: Активируем селект
             this.citySelectTarget.disabled = false;
-            
+
             console.log('[GeoAreaMap] City select enabled, options:', this.citySelectTarget.options.length);
-            
+
             // Отключаем уже добавленные города
             this._updateCityOptionsState();
-            
+
             // Обновляем Select2
             this._updateSelect2(this.citySelectTarget);
-            
+
         } catch (error) {
             console.error('[GeoAreaMap] Error loading cities:', error);
             alert(this.translationErrorLoadCitiesValue);
@@ -581,7 +581,7 @@ export default class extends Controller {
      */
     async _loadCustomAreas(countryISO3) {
         console.log('[GeoAreaMap] Loading custom areas for country:', countryISO3);
-        
+
         if (!this.hasCustomAreaSelectTarget) {
             console.warn('[GeoAreaMap] customAreaSelectTarget not found');
             return;
@@ -599,12 +599,12 @@ export default class extends Controller {
 
         try {
             const customAreas = await this.apiService.getCustomAreas(countryISO3);
-            
+
             console.log('[GeoAreaMap] Custom areas loaded:', customAreas.length);
-            
+
             // Очищаем селект
             this.customAreaSelectTarget.innerHTML = `<option value="">${this.translationCustomAreaPlaceholderValue}</option>`;
-            
+
             // Добавляем кастомные зоны
             customAreas.forEach(area => {
                 const option = document.createElement('option');
@@ -612,18 +612,18 @@ export default class extends Controller {
                 option.textContent = area.name;
                 this.customAreaSelectTarget.appendChild(option);
             });
-            
+
             // ВАЖНО: Активируем селект
             this.customAreaSelectTarget.disabled = false;
-            
+
             console.log('[GeoAreaMap] customAreaSelect enabled, options count:', this.customAreaSelectTarget.options.length);
-            
+
             // Отключаем уже добавленные кастомные зоны
             this._updateCustomAreaOptionsState();
-            
+
             // Обновляем Select2
             this._updateSelect2(this.customAreaSelectTarget);
-            
+
         } catch (error) {
             console.error('[GeoAreaMap] Error loading custom areas:', error);
             this._resetCustomAreaSelect();
@@ -640,7 +640,7 @@ export default class extends Controller {
         try {
             // Загружаем геометрию через ApiService
             const data = await this.apiService.getGeometry(areaId);
-            
+
             // Добавляем на карту через MapService
             this.mapService.addGeoJsonLayer(areaId, data.geometry, {
                 color: '#3388ff',
@@ -649,7 +649,7 @@ export default class extends Controller {
                 fillOpacity: 0.3,
                 popupContent: data.name
             });
-            
+
             // Автозуминг только если явно запрошен
             if (autoZoom) {
                 // Небольшая задержка для корректной отрисовки слоя
@@ -661,7 +661,7 @@ export default class extends Controller {
                     });
                 }, 50);
             }
-            
+
         } catch (error) {
             console.error('[GeoAreaMap] Error loading geometry:', error);
             alert(this.translationErrorLoadGeometryValue);
@@ -674,11 +674,11 @@ export default class extends Controller {
      */
     async _loadExistingAreas() {
         if (!this.hasHiddenInputTarget) return;
-        
+
         // Находим select внутри hiddenInput
         const selectElement = this.hiddenInputTarget.querySelector('select');
         if (!selectElement) return;
-        
+
         const selectedOptions = Array.from(selectElement.selectedOptions);
         if (selectedOptions.length === 0) return;
 
@@ -691,13 +691,13 @@ export default class extends Controller {
         for (const option of selectedOptions) {
             const areaId = option.value;
             const areaName = option.textContent;
-            
+
             try {
                 const data = await this.apiService.getGeometry(areaId);
-                
+
                 // Определяем является ли зона кастомной (scope = 3)
                 const isCustomArea = data.scope === 3;
-                
+
                 console.log('[GeoAreaMap] Loading area:', {
                     id: areaId,
                     name: areaName,
@@ -705,38 +705,38 @@ export default class extends Controller {
                     countryISO3: data.countryISO3,
                     scope: data.scope
                 });
-                
+
                 const areaData = {
                     id: areaId,
                     name: areaName,
                     countryISO3: data.countryISO3 || '',
                     isCustomArea: isCustomArea,
                 };
-                
+
                 // Добавляем через GeoAreaService
                 this.geoAreaService.addArea(areaId, areaData);
-                
+
                 // Собираем ISO3 коды
                 if (data.countryISO3) {
                     countryISO3Set.add(data.countryISO3);
                 }
-                
+
                 // Загружаем геометрию БЕЗ автозума
                 await this._loadGeometryWithoutZoom(areaId, data);
-                
+
             } catch (error) {
                 console.error('[GeoAreaMap] Error loading existing area:', error);
             }
         }
-        
+
         console.log('[GeoAreaMap] All areas loaded, count:', this.mapService.getLayersCount());
-        
+
         this._updateSelectedList();
-        
+
         // ВАЖНО: Обновляем скрытое поле после загрузки существующих зон
         // Иначе при submit формы Symfony думает что все зоны удалены
         this._updateHiddenInput();
-        
+
         // Зумим ОДИН РАЗ на все загруженные элементы с задержкой
         // Задержка нужна чтобы все слои успели отрисоваться
         setTimeout(() => {
@@ -750,7 +750,7 @@ export default class extends Controller {
                 console.log('[GeoAreaMap] Zoomed to all loaded layers:', layersCount);
             }
         }, 200);  // 200ms задержка для отрисовки
-        
+
         // Автоматически выбираем страну (используя GeoAreaService для получения ISO3)
         await this._autoSelectCountry();
     }
@@ -777,7 +777,7 @@ export default class extends Controller {
     _updateSelectedList() {
         // Получаем массив через GeoAreaService (уже в обратном порядке)
         const areas = this.geoAreaService.getAreasReversed();
-        
+
         if (areas.length === 0) {
             this.selectedListTarget.innerHTML = '<div class="text-muted small">Нет выбранных зон</div>';
             return;
@@ -785,12 +785,13 @@ export default class extends Controller {
 
         this.selectedListTarget.innerHTML = areas.map(area => {
             const isCustomArea = area.isCustomArea || false;
-            const badge = isCustomArea ? `<span class="badge bg-info text-white ms-2">${this.translationCustomBadgeValue}</span>` : '';
-            
+            const badge = isCustomArea ? `<span class="badge bg-info text-white ms-2" style="margin-left: 7px">${this.translationCustomBadgeValue}</span>` : '';
+
             // Кнопка редактирования только для кастомных зон
             const editButton = isCustomArea ? `
-                <button type="button" 
-                        class="btn btn-sm btn-warning me-1" 
+                <button type="button"
+                        class="btn btn-sm btn-warning me-1"
+                        style="margin-right: 7px;"
                         data-area-id="${area.id}"
                         data-action="geo-area-map#openEditCustomAreaModal"
                         title="${this.translationEditButtonValue}">
@@ -803,8 +804,8 @@ export default class extends Controller {
                     <span class="selected-area-name">${this._escapeHtml(area.name)}${badge}</span>
                     <div>
                         ${editButton}
-                        <button type="button" 
-                                class="btn btn-sm btn-danger" 
+                        <button type="button"
+                                class="btn btn-sm btn-danger"
                                 data-area-id="${area.id}"
                                 data-is-custom-area="${isCustomArea}"
                                 data-action="geo-area-map#removeGeoArea"
@@ -823,16 +824,16 @@ export default class extends Controller {
      */
     _updateHiddenInput() {
         if (!this.hasHiddenInputTarget) return;
-        
+
         // Находим select внутри hiddenInput
         const selectElement = this.hiddenInputTarget.querySelector('select');
         if (!selectElement) return;
-        
+
         // Очищаем все опции
         Array.from(selectElement.options).forEach(option => {
             option.selected = false;
         });
-        
+
         // Выбираем нужные опции через GeoAreaService
         this.geoAreaService.getAllAreas().forEach(area => {
             const areaId = area.id;
@@ -862,7 +863,7 @@ export default class extends Controller {
         this.citySelectTarget.disabled = true;
         this.addButtonTarget.disabled = true;
         this.currentCountryISO3 = null;
-        
+
         // Обновляем Select2 после сброса
         if (window.jQuery && window.jQuery(this.citySelectTarget).hasClass('select2-hidden-accessible')) {
             window.jQuery(this.citySelectTarget).trigger('change.select2');
@@ -877,7 +878,7 @@ export default class extends Controller {
     _resetCitySelection() {
         this.citySelectTarget.value = '';
         this.addButtonTarget.disabled = true;
-        
+
         // Обновляем Select2 чтобы показать placeholder
         if (window.jQuery && window.jQuery(this.citySelectTarget).hasClass('select2-hidden-accessible')) {
             window.jQuery(this.citySelectTarget).val('').trigger('change.select2');
@@ -895,7 +896,7 @@ export default class extends Controller {
         if (option) {
             option.disabled = true;
             console.log('[GeoAreaMap] Disabled city option:', cityId);
-            
+
             // Обновляем Select2
             if (window.jQuery && window.jQuery(this.citySelectTarget).hasClass('select2-hidden-accessible')) {
                 window.jQuery(this.citySelectTarget).trigger('change.select2');
@@ -913,7 +914,7 @@ export default class extends Controller {
         if (option) {
             option.disabled = false;
             console.log('[GeoAreaMap] Enabled city option:', cityId);
-            
+
             // Обновляем Select2
             if (window.jQuery && window.jQuery(this.citySelectTarget).hasClass('select2-hidden-accessible')) {
                 window.jQuery(this.citySelectTarget).trigger('change.select2');
@@ -932,7 +933,7 @@ export default class extends Controller {
             // Проверяем через GeoAreaService
             option.disabled = cityId && this.geoAreaService.hasArea(cityId);
         });
-        
+
         console.log('[GeoAreaMap] Updated city options state:', {
             total: options.length,
             disabled: Array.from(options).filter(o => o.disabled).length
@@ -950,11 +951,11 @@ export default class extends Controller {
 
         this.customAreaSelectTarget.innerHTML = `<option value="">${this.translationCustomAreaPlaceholderValue}</option>`;
         this.customAreaSelectTarget.disabled = true;
-        
+
         if (this.hasAddCustomAreaButtonTarget) {
             this.addCustomAreaButtonTarget.disabled = true;
         }
-        
+
         // Обновляем Select2 после сброса
         if (window.jQuery && window.jQuery(this.customAreaSelectTarget).hasClass('select2-hidden-accessible')) {
             window.jQuery(this.customAreaSelectTarget).trigger('change.select2');
@@ -971,11 +972,11 @@ export default class extends Controller {
         }
 
         this.customAreaSelectTarget.value = '';
-        
+
         if (this.hasAddCustomAreaButtonTarget) {
             this.addCustomAreaButtonTarget.disabled = true;
         }
-        
+
         // Обновляем Select2 чтобы показать placeholder
         if (window.jQuery && window.jQuery(this.customAreaSelectTarget).hasClass('select2-hidden-accessible')) {
             window.jQuery(this.customAreaSelectTarget).val('').trigger('change.select2');
@@ -995,7 +996,7 @@ export default class extends Controller {
         const option = this.customAreaSelectTarget.querySelector(`option[value="${customAreaId}"]`);
         if (option) {
             option.disabled = true;
-            
+
             // Обновляем Select2
             if (window.jQuery && window.jQuery(this.customAreaSelectTarget).hasClass('select2-hidden-accessible')) {
                 window.jQuery(this.customAreaSelectTarget).trigger('change.select2');
@@ -1016,7 +1017,7 @@ export default class extends Controller {
         const option = this.customAreaSelectTarget.querySelector(`option[value="${customAreaId}"]`);
         if (option) {
             option.disabled = false;
-            
+
             // Обновляем Select2
             if (window.jQuery && window.jQuery(this.customAreaSelectTarget).hasClass('select2-hidden-accessible')) {
                 window.jQuery(this.customAreaSelectTarget).trigger('change.select2');
@@ -1039,12 +1040,12 @@ export default class extends Controller {
             // Проверяем через GeoAreaService
             option.disabled = areaId && this.geoAreaService.hasArea(areaId);
         });
-        
+
         console.log('[GeoAreaMap] Updated custom area options state:', {
             total: options.length,
             disabled: Array.from(options).filter(o => o.disabled).length
         });
-        
+
         // ВАЖНО: Обновляем Select2 после изменения состояния опций
         this._updateSelect2(this.customAreaSelectTarget);
     }
@@ -1057,12 +1058,12 @@ export default class extends Controller {
         // Слушаем событие сохранения из модального окна
         document.addEventListener('custom-area-modal:save', async (event) => {
             const detail = event.detail;
-            
+
             console.log('[GeoAreaMap] Custom area modal save event:', detail);
 
             try {
                 let response;
-                
+
                 // Если есть ID - обновляем существующую зону, иначе создаем новую
                 if (detail.mode === 'edit' && detail.id) {
                     // Обновление существующей зоны
@@ -1070,24 +1071,24 @@ export default class extends Controller {
                         name: detail.name,
                         geometry: detail.geometry,
                     });
-                    
+
                     console.log('[GeoAreaMap] Custom area updated:', response.id);
-                    
+
                     // Перезагружаем геометрию на карте
                     this.mapService.removeLayer(detail.id);
                     await this._loadAndDisplayGeometry(detail.id);
-                    
+
                     // Обновляем данные в GeoAreaService
                     const areaData = this.geoAreaService.getArea(detail.id);
                     if (areaData) {
                         areaData.name = detail.name;
                     }
-                    
+
                     // Обновляем список
                     this._updateSelectedList();
-                    
+
                     alert(this.translationCustomAreaUpdatedValue);
-                    
+
                 } else {
                     // Создание новой зоны напрямую в БД
                     response = await this.apiService.createCustomArea({
@@ -1107,7 +1108,7 @@ export default class extends Controller {
                         countryISO3: detail.countryISO3,
                         isCustomArea: true,
                     };
-                    
+
                     this.geoAreaService.addArea(realId, areaData);
 
                     // Отображаем на карте
@@ -1130,7 +1131,7 @@ export default class extends Controller {
 
                     // Обновляем список
                     this._updateSelectedList();
-                    
+
                     // Обновляем скрытое поле
                     this._updateHiddenInput();
 
@@ -1203,7 +1204,7 @@ export default class extends Controller {
         if (!countryISO3Set) {
             countryISO3Set = this.geoAreaService.getUniqueCountryISO3();
         }
-        
+
         console.log('[GeoAreaMap] Auto-select country check:', {
             countriesInSet: countryISO3Set.size,
             countries: Array.from(countryISO3Set),
@@ -1212,7 +1213,7 @@ export default class extends Controller {
                 countryISO3: a.countryISO3
             }))
         });
-        
+
         if (countryISO3Set.size === 0) {
             console.log('[GeoAreaMap] No countries to auto-select');
             return;
@@ -1226,7 +1227,7 @@ export default class extends Controller {
 
         // Все города из одной страны - выбираем её
         const targetISO3 = Array.from(countryISO3Set)[0];
-        
+
         console.log('[GeoAreaMap] Auto-selecting country:', targetISO3);
 
         // Ждем загрузки списка стран если еще не загружен
@@ -1254,7 +1255,7 @@ export default class extends Controller {
         }
 
         const countryId = countryOption.value;
-        
+
         // Устанавливаем значение в селекте
         this.countrySelectTarget.value = countryId;
         this.currentCountryISO3 = targetISO3;
@@ -1270,7 +1271,7 @@ export default class extends Controller {
         // Загружаем города и кастомные зоны выбранной страны
         await this._loadCities(targetISO3);
         await this._loadCustomAreas(targetISO3);
-        
+
         // ВАЖНО: Активируем кнопку создания кастомной зоны после автовыбора
         if (this.hasCreateCustomAreaButtonTarget) {
             this.createCustomAreaButtonTarget.disabled = false;
@@ -1303,6 +1304,6 @@ export default class extends Controller {
             window.jQuery(selectElement).trigger('change.select2');
         }
     }
-    
+
     // Метод _fixLeafletIcons() удалён - теперь в MapService
 }
