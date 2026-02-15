@@ -286,8 +286,6 @@ geo_area_selection:
         instruction_or: OR enable hexagonal grid and click on hexagons to select
         instruction_edit: use polygon editing tools OR enable grid to add new hexagons
         instruction_edit_title: When editing
-    message:
-        no_selected: No selected areas
     error:
         load_countries:     Failed to load countries list
         load_cities:        Failed to load cities list
