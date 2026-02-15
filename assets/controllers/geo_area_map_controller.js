@@ -57,6 +57,7 @@ export default class extends Controller {
         translationCustomBadge: String,
         translationEditButton: String,
         translationCreateCustomButton: String,
+        translationNoSelectedAreas: String,
     }
 
     static targets = [
@@ -899,7 +900,7 @@ export default class extends Controller {
         const areas = this.geoAreaService.getAreasReversed();
 
         if (areas.length === 0) {
-            this.selectedListTarget.innerHTML = '<div class="text-muted small">Нет выбранных зон</div>';
+            this.selectedListTarget.innerHTML = `<div class="text-muted small">${this.translationNoSelectedAreasValue || 'Нет выбранных зон'}</div>`;
             return;
         }
 

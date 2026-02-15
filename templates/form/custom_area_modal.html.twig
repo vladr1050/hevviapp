@@ -20,6 +20,9 @@
      data-custom-area-modal-translation-draw-error-value="{{ 'custom_area.message.draw_library_not_loaded'|trans({}, 'AppBundle') }}"
      data-custom-area-modal-translation-invalid-geometry-value="{{ 'custom_area.message.invalid_geometry'|trans({}, 'AppBundle') }}"
      data-custom-area-modal-translation-load-error-value="{{ 'custom_area.message.geometry_load_error'|trans({}, 'AppBundle') }}"
+     data-custom-area-modal-translation-hexagon-selected-label-value="{{ 'geo_area_selection.hexagon.selected_label'|trans({}, 'AppBundle') }}"
+     data-custom-area-modal-translation-hexagon-clear-button-value="{{ 'geo_area_selection.hexagon.clear_button'|trans({}, 'AppBundle') }}"
+     data-custom-area-modal-translation-hexagon-click-hint-value="{{ 'geo_area_selection.hexagon.click_hint'|trans({}, 'AppBundle') }}"
      tabindex="-1"
      aria-labelledby="customAreaModalLabel"
      aria-hidden="true">
@@ -69,19 +72,19 @@
                              style="display: none;">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <div>
-                                    <strong><i class="fas fa-check-circle"></i> Выбрано:</strong>
+                                    <strong><i class="fas fa-check-circle"></i> <span data-custom-area-modal-target="selectedLabel">{{ 'geo_area_selection.hexagon.selected_label'|trans({}, 'AppBundle') }}</span>:</strong>
                                     <span data-custom-area-modal-target="hexagonCount" class="badge bg-primary fs-6">0</span>
                                 </div>
                                 <button type="button" 
                                         class="btn btn-sm btn-outline-danger"
                                         data-action="custom-area-modal#clearSelectedHexagons"
                                         data-custom-area-modal-target="clearHexagonsButton">
-                                    <i class="fas fa-trash"></i> Очистить
+                                    <i class="fas fa-trash"></i> {{ 'geo_area_selection.hexagon.clear_button'|trans({}, 'AppBundle') }}
                                 </button>
                             </div>
                             <small class="text-muted d-block">
                                 <i class="fas fa-mouse-pointer"></i> 
-                                Клик = выбрать/отменить гексагон
+                                {{ 'geo_area_selection.hexagon.click_hint'|trans({}, 'AppBundle') }}
                             </small>
                         </div>
 
@@ -91,26 +94,26 @@
                             <ul class="mb-0 mt-2 small">
                                 <li>{{ 'custom_area.instruction.step1'|trans({}, 'AppBundle') }}</li>
                                 <li>{{ 'custom_area.instruction.step2'|trans({}, 'AppBundle') }}</li>
-                                <li><strong>ИЛИ</strong> включите гексагональную сетку и кликайте на гексагоны для выбора</li>
+                                <li>{{ 'geo_area_selection.hexagon.instruction_or'|trans({}, 'AppBundle') }}</li>
                                 <li>{{ 'custom_area.instruction.step3'|trans({}, 'AppBundle') }}</li>
                                 <li>{{ 'custom_area.instruction.step4'|trans({}, 'AppBundle') }}</li>
                             </ul>
                             <hr class="my-2">
                             <small class="text-muted">
                                 <i class="fas fa-lightbulb"></i>
-                                <strong>При редактировании:</strong> используйте инструменты редактирования полигона ИЛИ включите сетку чтобы добавить новые гексагоны
+                                <strong>{{ 'geo_area_selection.hexagon.instruction_edit_title'|trans({}, 'AppBundle') }}:</strong> {{ 'geo_area_selection.hexagon.instruction_edit'|trans({}, 'AppBundle') }}
                             </small>
                         </div>
                     </div>
 
                     <div class="col-md-8">
                         {# Панель управления гексагональной сеткой #}
-                        <div class="hexagon-controls mb-3 p-2 border rounded bg-light">
+                        <div class="form-group hexagon-controls mb-3 p-2 border rounded bg-light" style="padding: 15px;">
                             <div class="row align-items-center">
                                 <div class="col-md-4">
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" 
-                                               type="checkbox" 
+                                        <input class="form-check-input"
+                                               type="checkbox"
                                                id="modalHexagonGridToggle"
                                                data-custom-area-modal-target="hexagonToggle">
                                         <label class="form-check-label" for="modalHexagonGridToggle">
@@ -125,11 +128,11 @@
                                         <strong data-custom-area-modal-target="resolutionLabel">6</strong>
                                         <small class="text-muted" data-custom-area-modal-target="resolutionInfo">(~36.13 км²)</small>
                                     </label>
-                                    <input type="range" 
-                                           class="form-range" 
-                                           min="5" 
-                                           max="6" 
-                                           value="6" 
+                                    <input type="range"
+                                           class="form-range"
+                                           min="5"
+                                           max="6"
+                                           value="6"
                                            step="1"
                                            data-custom-area-modal-target="hexagonResolution"
                                            data-action="custom-area-modal#onHexagonResolutionChange">
@@ -140,7 +143,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         {# Карта для рисования #}
                         <div class="mb-3">
                             <label class="form-label">

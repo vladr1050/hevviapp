@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment=".idea added to gitignore">
+    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="custom area updated">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/controllers/geo_area_map_controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/controllers/geo_area_map_controller.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/OrderStatus/OrderStatusService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/OrderStatus/OrderStatusService.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/form/custom_area_modal.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/form/custom_area_modal.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/form/geo_area_selection_widget.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/form/geo_area_selection_widget.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -281,7 +282,7 @@
       <workItem from="1771084673870" duration="18000" />
       <workItem from="1771084714723" duration="40000" />
       <workItem from="1771084771098" duration="7099000" />
-      <workItem from="1771182517365" duration="633000" />
+      <workItem from="1771182517365" duration="7851000" />
     </task>
     <task id="LOCAL-00001" summary="custom areas added to service areas">
       <option name="closed" value="true" />
@@ -299,7 +300,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771161022833</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="custom area updated">
+      <option name="closed" value="true" />
+      <created>1771183624316</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1771183624316</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -308,6 +317,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="custom areas added to service areas" />
     <MESSAGE value=".idea added to gitignore" />
-    <option name="LAST_COMMIT_MESSAGE" value=".idea added to gitignore" />
+    <MESSAGE value="custom area updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="custom area updated" />
   </component>
 </project>

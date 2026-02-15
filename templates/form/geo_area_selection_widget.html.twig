@@ -11,11 +11,11 @@
     {# Устанавливаем значения по умолчанию если не переданы #}
     {% set enable_map = enable_map|default(true) %}
     {% set show_country_filter = show_country_filter|default(true) %}
-    
+
     {# DEBUG: Проверка условий #}
     {# enable_map = {{ enable_map }}, show_country_filter = {{ show_country_filter }} #}
     {# map_config.default_latitude = {{ map_config.default_latitude }} #}
-    
+
     {% if enable_map and show_country_filter %}
         <div class="geo-area-selection-wrapper"
              data-controller="geo-area-map"
@@ -47,7 +47,8 @@
              data-geo-area-map-translation-custom-area-edit-error-value="{{ 'custom_area.message.edit_load_error'|trans({}, 'AppBundle') }}"
              data-geo-area-map-translation-custom-badge-value="{{ 'custom_area.badge.custom'|trans({}, 'AppBundle') }}"
              data-geo-area-map-translation-edit-button-value="{{ 'custom_area.button.edit'|trans({}, 'AppBundle') }}"
-             data-geo-area-map-translation-create-custom-button-value="{{ 'geo_area_selection.button.create_custom_area'|trans({}, 'AppBundle') }}">
+             data-geo-area-map-translation-create-custom-button-value="{{ 'geo_area_selection.button.create_custom_area'|trans({}, 'AppBundle') }}"
+             data-geo-area-map-translation-no-selected-areas-value="{{ 'geo_area_selection.message.no_selected_areas'|trans({}, 'AppBundle') }}">
 
             <div class="row">
                 {# Левая колонка: Фильтры и список #}
@@ -148,12 +149,12 @@
                 {# Правая колонка: Карта #}
                 <div class="col-md-8">
                     {# Панель управления гексагональной сеткой #}
-                    <div class="hexagon-controls mb-3 p-3 border rounded bg-light">
+                    <div class="form-group hexagon-controls mb-3 p-3 border rounded bg-light" style="padding: 15px;">
                         <div class="row align-items-center">
                             <div class="col-md-4">
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input" 
-                                           type="checkbox" 
+                                    <input class="form-check-input"
+                                           type="checkbox"
                                            id="hexagonGridToggle"
                                            data-geo-area-map-target="hexagonToggle">
                                     <label class="form-check-label" for="hexagonGridToggle">
@@ -168,11 +169,11 @@
                                     <strong data-geo-area-map-target="resolutionLabel">6</strong>
                                     <small class="text-muted" data-geo-area-map-target="resolutionInfo">(~36.13 км²)</small>
                                 </label>
-                                <input type="range" 
-                                       class="form-range" 
-                                       min="5" 
-                                       max="6" 
-                                       value="6" 
+                                <input type="range"
+                                       class="form-range"
+                                       min="5"
+                                       max="6"
+                                       value="6"
                                        step="1"
                                        data-geo-area-map-target="hexagonResolution"
                                        data-action="geo-area-map#onHexagonResolutionChange">

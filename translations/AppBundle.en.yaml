@@ -273,11 +273,19 @@ geo_area_selection:
         select_city:          Select a country, then a city and click "+" to add to the map
         select_custom_area:   Select an existing custom area or create a new one
         map_info:             Selected geo areas are displayed on the map as polygons
+    message:
+        no_selected_areas: No selected areas
     hexagon:
         toggle_grid: Show hexagonal grid
         resolution:  Grid resolution
         coarse:      Coarse
         fine:        Fine
+        selected_label: Selected
+        clear_button: Clear
+        click_hint: Click = select/deselect hexagon
+        instruction_or: OR enable hexagonal grid and click on hexagons to select
+        instruction_edit: use polygon editing tools OR enable grid to add new hexagons
+        instruction_edit_title: When editing
     message:
         no_selected: No selected areas
     error:

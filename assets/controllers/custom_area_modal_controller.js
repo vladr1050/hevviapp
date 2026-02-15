@@ -37,6 +37,9 @@ export default class extends Controller {
         translationDrawError: String,
         translationInvalidGeometry: String,
         translationLoadError: String,
+        translationHexagonSelectedLabel: String,
+        translationHexagonClearButton: String,
+        translationHexagonClickHint: String,
     }
 
     static targets = [

@@ -17,7 +17,13 @@
 
 namespace App\Service\OrderStatus;
 
+use App\Entity\Order;
+
 class OrderStatusService
 {
 
+    public function sendEmailToSender(Order $order): void
+    {
+
+    }
 }
