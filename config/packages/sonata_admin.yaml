@@ -168,7 +168,7 @@ services:
             -   name:                      sonata.admin
                 code:                      ~
                 model_class:               App\Entity\ServiceArea
-                controller:                ~
+                controller:                App\Controller\Admin\ServiceAreaAdminController
                 manager_type:              orm
                 label:                     menu.service_areas
                 label_translator_strategy: sonata.admin.label.strategy.underscore

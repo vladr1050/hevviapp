@@ -14,6 +14,8 @@
              data-geo-area-map-api-countries-url-value="{{ path('api_geo_area_countries') }}"
              data-geo-area-map-api-cities-url-value="{{ path('api_geo_area_cities') }}"
              data-geo-area-map-api-geometry-url-value="{{ path('api_geo_area_geometry', {'id': '__ID__'}) }}"
+             data-geo-area-map-api-custom-areas-url-value="{{ path('api_geo_area_custom_areas') }}"
+             data-geo-area-map-api-custom-area-create-url-value="{{ path('api_geo_area_custom_area_create') }}"
              data-geo-area-map-default-lat-value="{{ map_config.default_latitude }}"
              data-geo-area-map-default-lng-value="{{ map_config.default_longitude }}"
              data-geo-area-map-default-zoom-value="{{ map_config.default_zoom }}"
@@ -72,6 +74,45 @@
                         </small>
                     </div>
 
+                    {# Селект кастомных зон с кнопкой добавления #}
+                    <div class="form-group" data-geo-area-map-target="customAreaSelectWrapper">
+                        <label>{{ 'geo_area_selection.label.custom_area'|trans({}, 'AppBundle') }}</label>
+                        <div class="input-group">
+                            <select class="form-select"
+                                    data-geo-area-map-target="customAreaSelect"
+                                    data-placeholder="{{ 'geo_area_selection.select.no_custom_area'|trans({}, 'AppBundle') }}"
+                                    disabled>
+                                <option value="">{{ 'geo_area_selection.select.no_custom_area'|trans({}, 'AppBundle') }}</option>
+                            </select>
+                            <span class="input-group-btn">
+                                <button type="button"
+                                        class="btn btn-success"
+                                        data-geo-area-map-target="addCustomAreaButton"
+                                        data-action="geo-area-map#addCustomArea"
+                                        disabled
+                                        title="{{ 'geo_area_selection.button.add'|trans({}, 'AppBundle') }}">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </span>
+                        </div>
+                        <small class="form-text text-muted">
+                            {{ 'geo_area_selection.help.select_custom_area'|trans({}, 'AppBundle') }}
+                        </small>
+                    </div>
+
+                    {# Кнопка создания новой кастомной зоны #}
+                    <div class="form-group">
+                        <button type="button"
+                                class="btn btn-primary w-100"
+                                data-geo-area-map-target="createCustomAreaButton"
+                                data-action="geo-area-map#openCreateCustomAreaModal"
+                                disabled
+                                title="{{ 'geo_area_selection.button.create_custom_area'|trans({}, 'AppBundle') }}">
+                            <i class="fas fa-plus-circle"></i>
+                            {{ 'geo_area_selection.button.create_custom_area'|trans({}, 'AppBundle') }}
+                        </button>
+                    </div>
+
                     {# Список выбранных зон #}
                     <div class="form-group">
                         <label>{{ 'geo_area_selection.label.selected_areas'|trans({}, 'AppBundle') }}</label>
@@ -102,6 +143,9 @@
             <div style="display: none;" data-geo-area-map-target="hiddenInput">
                 {{ block('choice_widget') }}
             </div>
+
+            {# Модальное окно для создания/редактирования кастомных зон #}
+            {% include 'form/custom_area_modal.html.twig' %}
         </div>
     {% else %}
         {# Фолбек: обычный селект без карты #}

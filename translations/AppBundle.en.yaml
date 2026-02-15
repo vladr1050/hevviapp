@@ -257,16 +257,21 @@ geo_area_selection:
     label:
         country:        Country
         city:           City
+        custom_area:    Custom Area
         selected_areas: Selected Areas
     select:
-        no_country: -- Select Country --
-        no_city:    -- Select City --
+        no_country:     -- Select Country --
+        no_city:        -- Select City --
+        no_custom_area: -- Select Custom Area --
     button:
-        add:    Add
-        remove: Remove
+        add:                Add
+        remove:             Remove
+        create_custom_area: Create Custom Area
+        edit_custom_area:   Edit Custom Area
     help:
         select_country_first: First select a country to load the list of cities
         select_city:          Select a country, then a city and click "+" to add to the map
+        select_custom_area:   Select an existing custom area or create a new one
         map_info:             Selected geo areas are displayed on the map as polygons
     message:
         no_selected: No selected areas
@@ -277,6 +282,28 @@ geo_area_selection:
         area_already_added: This area has already been added
     status:
         loading_cities: Loading cities...
+
+# Custom Area Modal
+custom_area:
+    modal:
+        title: Create/Edit Custom Area
+    label:
+        name:      Custom Area Name
+        draw_area: Map Area
+    placeholder:
+        name: Enter area name
+    help:
+        name:      Specify a clear name for this area
+        draw_area: Use drawing tools to create a polygon on the map
+    button:
+        save:   Save
+        cancel: Cancel
+    instruction:
+        title: Instructions
+        step1: Click the polygon icon button in the upper right corner of the map
+        step2: Click on the map to create polygon points
+        step3: Complete the polygon by clicking on the first point or double-clicking
+        step4: Use editing tools to adjust or delete the polygon
 
 # OrderOffer statuses
 DRAFT:     Draft

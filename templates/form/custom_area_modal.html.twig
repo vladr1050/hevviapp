@@ -1,0 +1,104 @@
+{#
+/**
+ * Custom Area Modal Template
+ *
+ * Модальное окно для создания/редактирования кастомных гео-зон.
+ * Используется в GeoAreaSelectionType для рисования полигонов на карте.
+ */
+#}
+
+<div class="modal fade" 
+     id="customAreaModal"
+     data-controller="custom-area-modal"
+     data-custom-area-modal-target="modal"
+     data-custom-area-modal-default-lat-value="{{ map_config.default_latitude }}"
+     data-custom-area-modal-default-lng-value="{{ map_config.default_longitude }}"
+     data-custom-area-modal-default-zoom-value="{{ map_config.default_zoom }}"
+     tabindex="-1" 
+     aria-labelledby="customAreaModalLabel" 
+     aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="customAreaModalLabel">
+                    <i class="fas fa-draw-polygon"></i>
+                    {{ 'custom_area.modal.title'|trans({}, 'AppBundle') }}
+                </h5>
+                <button type="button" 
+                        class="close" 
+                        data-dismiss="modal" 
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                {# Сообщение об ошибке #}
+                <div class="alert alert-danger d-none" 
+                     data-custom-area-modal-target="errorMessage" 
+                     role="alert">
+                </div>
+
+                {# Поле для названия #}
+                <div class="mb-3">
+                    <label for="customAreaName" class="form-label">
+                        {{ 'custom_area.label.name'|trans({}, 'AppBundle') }}
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" 
+                           class="form-control" 
+                           id="customAreaName"
+                           data-custom-area-modal-target="nameInput"
+                           placeholder="{{ 'custom_area.placeholder.name'|trans({}, 'AppBundle') }}"
+                           required>
+                    <small class="form-text text-muted">
+                        {{ 'custom_area.help.name'|trans({}, 'AppBundle') }}
+                    </small>
+                </div>
+
+                {# Карта для рисования #}
+                <div class="mb-3">
+                    <label class="form-label">
+                        {{ 'custom_area.label.draw_area'|trans({}, 'AppBundle') }}
+                        <span class="text-danger">*</span>
+                    </label>
+                    <div class="map-container border rounded"
+                         data-custom-area-modal-target="map"
+                         style="height: 500px; width: 100%;"></div>
+                    <small class="form-text text-muted mt-2 d-block">
+                        <i class="fas fa-info-circle"></i>
+                        {{ 'custom_area.help.draw_area'|trans({}, 'AppBundle') }}
+                    </small>
+                </div>
+
+                {# Инструкция по использованию #}
+                <div class="alert alert-info" role="alert">
+                    <strong>{{ 'custom_area.instruction.title'|trans({}, 'AppBundle') }}</strong>
+                    <ul class="mb-0 mt-2">
+                        <li>{{ 'custom_area.instruction.step1'|trans({}, 'AppBundle') }}</li>
+                        <li>{{ 'custom_area.instruction.step2'|trans({}, 'AppBundle') }}</li>
+                        <li>{{ 'custom_area.instruction.step3'|trans({}, 'AppBundle') }}</li>
+                        <li>{{ 'custom_area.instruction.step4'|trans({}, 'AppBundle') }}</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" 
+                        class="btn btn-secondary" 
+                        data-custom-area-modal-target="cancelButton"
+                        data-action="custom-area-modal#cancel">
+                    <i class="fas fa-times"></i>
+                    {{ 'custom_area.button.cancel'|trans({}, 'AppBundle') }}
+                </button>
+                <button type="button" 
+                        class="btn btn-primary" 
+                        data-custom-area-modal-target="saveButton"
+                        data-action="custom-area-modal#save">
+                    <i class="fas fa-check"></i>
+                    {{ 'custom_area.button.save'|trans({}, 'AppBundle') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

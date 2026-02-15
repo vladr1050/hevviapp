@@ -4,7 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="" />
+    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/controllers/geo_area_map_controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/controllers/geo_area_map_controller.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/services/ApiService.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/services/ApiService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/sonata_admin.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/sonata_admin.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Api/GeoAreaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/GeoAreaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/GeoAreaRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/GeoAreaRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/form/geo_area_selection_widget.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/form/geo_area_selection_widget.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/translations/AppBundle.en.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/translations/AppBundle.en.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/translations/AppBundle.ru.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/translations/AppBundle.ru.yaml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,7 +27,7 @@
     <execution />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="545" />
+    <option name="cachedIndexableFilesCount" value="510" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="FileTemplateManagerImpl">
@@ -25,6 +37,9 @@
         <option value="Twig Template" />
       </list>
     </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="McpProjectServerCommands">
     <commands />
@@ -188,7 +203,9 @@
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Users/pavel.ustimenko/Projects/Hevii/php-backoffice-service/templates/admin/fields/show/security&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -267,7 +284,11 @@
       <workItem from="1770503904255" duration="25000" />
       <workItem from="1770503941632" duration="34000" />
       <workItem from="1770504012596" duration="7000" />
-      <workItem from="1770558153523" duration="13403000" />
+      <workItem from="1770558153523" duration="27771000" />
+      <workItem from="1771084629098" duration="31000" />
+      <workItem from="1771084673870" duration="18000" />
+      <workItem from="1771084714723" duration="40000" />
+      <workItem from="1771084771098" duration="3254000" />
     </task>
     <servers />
   </component>

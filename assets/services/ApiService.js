@@ -14,11 +14,15 @@ export class ApiService {
      * @param {string} config.countriesUrl - URL для получения стран
      * @param {string} config.citiesUrl - URL для получения городов
      * @param {string} config.geometryUrl - URL для получения геометрии (с плейсхолдером __ID__)
+     * @param {string} config.customAreasUrl - URL для получения кастомных зон
+     * @param {string} config.customAreaCreateUrl - URL для создания/редактирования кастомных зон
      */
     constructor(config) {
         this.countriesUrl = config.countriesUrl;
         this.citiesUrl = config.citiesUrl;
         this.geometryUrl = config.geometryUrl;
+        this.customAreasUrl = config.customAreasUrl || '';
+        this.customAreaCreateUrl = config.customAreaCreateUrl || '';
     }
 
     /**
@@ -118,4 +122,113 @@ export class ApiService {
             throw error;
         }
     }
+
+    /**
+     * Получить список кастомных зон по ISO3 коду страны
+     * @param {string} countryISO3 - ISO3 код страны
+     * @returns {Promise<Array>}
+     */
+    async getCustomAreas(countryISO3) {
+        try {
+            const url = `${this.customAreasUrl}?countryISO3=${countryISO3}`;
+            const response = await fetch(url);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            console.log('[ApiService] Loaded custom areas:', data.length, 'for', countryISO3);
+            return data;
+        } catch (error) {
+            console.error('[ApiService] Error loading custom areas:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Создать кастомную зону напрямую в БД
+     * @param {Object} areaData - Данные зоны {name, geometry, countryISO3}
+     * @returns {Promise<Object>}
+     */
+    async createCustomArea(areaData) {
+        try {
+            const response = await fetch(this.customAreaCreateUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(areaData),
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || `HTTP ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log('[ApiService] Custom area created:', data.id);
+            return data;
+        } catch (error) {
+            console.error('[ApiService] Error creating custom area:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Обновить кастомную зону
+     * @param {string} areaId - ID зоны
+     * @param {Object} areaData - Данные зоны {name, geometry}
+     * @returns {Promise<Object>}
+     */
+    async updateCustomArea(areaId, areaData) {
+        try {
+            const url = `${this.customAreaCreateUrl}/${areaId}`;
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(areaData),
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || `HTTP ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log('[ApiService] Custom area updated:', data.id);
+            return data;
+        } catch (error) {
+            console.error('[ApiService] Error updating custom area:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Удалить кастомную зону
+     * @param {string} areaId - ID зоны
+     * @returns {Promise<Object>}
+     */
+    async deleteCustomArea(areaId) {
+        try {
+            const url = `${this.customAreaCreateUrl}/${areaId}`;
+            const response = await fetch(url, {
+                method: 'DELETE',
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            console.log('[ApiService] Custom area deleted:', areaId);
+            return data;
+        } catch (error) {
+            console.error('[ApiService] Error deleting custom area:', error);
+            throw error;
+        }
+    }
+
 }

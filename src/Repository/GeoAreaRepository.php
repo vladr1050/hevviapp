@@ -63,4 +63,22 @@ class GeoAreaRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * Получить все кастомные зоны по ISO3 коду страны
+     * 
+     * @param string $countryISO3
+     * @return GeoArea[]
+     */
+    public function findCustomAreasByCountryISO3(string $countryISO3): array
+    {
+        return $this->createQueryBuilder('g')
+            ->where('g.scope = :scope')
+            ->andWhere('g.countryISO3 = :countryISO3')
+            ->setParameter('scope', GeoArea::SCOPE['CUSTOM_AREA'])
+            ->setParameter('countryISO3', $countryISO3)
+            ->orderBy('g.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

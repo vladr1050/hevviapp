@@ -27,6 +27,8 @@ export default class extends Controller {
         apiCountriesUrl: String,
         apiCitiesUrl: String,
         apiGeometryUrl: String,
+        apiCustomAreasUrl: String,
+        apiCustomAreaCreateUrl: String,
         defaultLat: Number,
         defaultLng: Number,
         defaultZoom: Number,
@@ -49,6 +51,10 @@ export default class extends Controller {
         'citySelect',
         'citySelectWrapper',
         'addButton',
+        'customAreaSelect',
+        'customAreaSelectWrapper',
+        'addCustomAreaButton',
+        'createCustomAreaButton',
         'selectedList',
         'hiddenInput'
     ]
@@ -69,7 +75,9 @@ export default class extends Controller {
         this.apiService = new ApiService({
             countriesUrl: this.apiCountriesUrlValue,
             citiesUrl: this.apiCitiesUrlValue,
-            geometryUrl: this.apiGeometryUrlValue
+            geometryUrl: this.apiGeometryUrlValue,
+            customAreasUrl: this.apiCustomAreasUrlValue,
+            customAreaCreateUrl: this.apiCustomAreaCreateUrlValue
         });
 
         this.geoAreaService = new GeoAreaService();
@@ -81,6 +89,7 @@ export default class extends Controller {
         this.mapService.initialize();
         this._loadCountries();
         this._setupSelect2Listeners();
+        this._setupCustomAreaModalListener();
         this._loadExistingAreas();
     }
 
@@ -191,6 +200,12 @@ export default class extends Controller {
         });
 
         await this._loadCities(this.currentCountryISO3);
+        await this._loadCustomAreas(this.currentCountryISO3);
+        
+        // Активируем кнопку создания кастомной зоны
+        if (this.hasCreateCustomAreaButtonTarget) {
+            this.createCustomAreaButtonTarget.disabled = false;
+        }
     }
 
     /**
@@ -215,6 +230,7 @@ export default class extends Controller {
         
         if (!countryId) {
             this._resetCitySelect();
+            this._resetCustomAreaSelect();
             return;
         }
 
@@ -222,6 +238,7 @@ export default class extends Controller {
         this.currentCountryISO3 = selectedOption.dataset.iso3;
 
         await this._loadCities(this.currentCountryISO3);
+        await this._loadCustomAreas(this.currentCountryISO3);
     }
 
     /**
@@ -284,8 +301,9 @@ export default class extends Controller {
      */
     removeGeoArea(event) {
         const areaId = event.currentTarget.dataset.areaId;
+        const isCustomArea = event.currentTarget.dataset.isCustomArea === 'true';
         
-        console.log('[GeoAreaMap] Removing area:', areaId);
+        console.log('[GeoAreaMap] Removing area:', areaId, 'isCustomArea:', isCustomArea);
         
         // Удаляем с карты через MapService
         this.mapService.removeLayer(areaId);
@@ -294,7 +312,11 @@ export default class extends Controller {
         this.geoAreaService.removeArea(areaId);
         
         // Включаем эту опцию обратно в селекте
-        this._enableCityOption(areaId);
+        if (isCustomArea) {
+            this._enableCustomAreaOption(areaId);
+        } else {
+            this._enableCityOption(areaId);
+        }
         
         // Обновляем отображение
         this._updateSelectedList();
@@ -306,6 +328,142 @@ export default class extends Controller {
             maxZoom: 12,
             animate: true
         });
+    }
+
+    /**
+     * Добавление выбранной кастомной зоны на карту
+     */
+    async addCustomArea(event) {
+        event.preventDefault();
+        
+        const customAreaId = this.customAreaSelectTarget.value;
+        if (!customAreaId) return;
+
+        // Проверка дубликата через GeoAreaService
+        if (this.geoAreaService.hasArea(customAreaId)) {
+            console.warn('[GeoAreaMap] Custom area already added:', customAreaId);
+            alert(this.translationErrorAreaAlreadyAddedValue || 'Эта зона уже добавлена');
+            return;
+        }
+
+        const customAreaName = this.customAreaSelectTarget.options[this.customAreaSelectTarget.selectedIndex].text;
+
+        console.log('[GeoAreaMap] Adding custom area:', {id: customAreaId, name: customAreaName});
+
+        // Добавляем в GeoAreaService
+        const areaData = {
+            id: customAreaId,
+            name: customAreaName,
+            countryISO3: this.currentCountryISO3,
+            isCustomArea: true,
+        };
+        
+        this.geoAreaService.addArea(customAreaId, areaData);
+        
+        // Загружаем геометрию и отображаем на карте
+        await this._loadAndDisplayGeometry(customAreaId);
+        
+        // Обновляем список
+        this._updateSelectedList();
+        
+        // Обновляем скрытое поле
+        this._updateHiddenInput();
+        
+        // Отключаем эту опцию в селекте
+        this._disableCustomAreaOption(customAreaId);
+        
+        // Сбрасываем выбор кастомной зоны
+        this._resetCustomAreaSelection();
+    }
+
+    /**
+     * Открыть модальное окно для создания новой кастомной зоны
+     */
+    openCreateCustomAreaModal(event) {
+        event.preventDefault();
+
+        if (!this.currentCountryISO3) {
+            alert('Пожалуйста, выберите страну');
+            return;
+        }
+
+        console.log('[GeoAreaMap] Opening create custom area modal');
+
+        // Получаем контроллер модального окна
+        const modalElement = document.getElementById('customAreaModal');
+        if (!modalElement) {
+            console.error('[GeoAreaMap] Modal element not found');
+            alert('Ошибка: модальное окно не найдено');
+            return;
+        }
+
+        const modalController = this.application.getControllerForElementAndIdentifier(
+            modalElement,
+            'custom-area-modal'
+        );
+
+        if (!modalController) {
+            console.error('[GeoAreaMap] Modal controller not found');
+            alert('Ошибка: контроллер модального окна не найден');
+            return;
+        }
+
+        // Открываем модальное окно
+        modalController.open({
+            mode: 'create',
+            countryIso3: this.currentCountryISO3,
+        });
+    }
+
+    /**
+     * Открыть модальное окно для редактирования кастомной зоны
+     */
+    async openEditCustomAreaModal(event) {
+        event.preventDefault();
+        
+        const areaId = event.currentTarget.dataset.areaId;
+        const area = this.geoAreaService.getArea(areaId);
+
+        if (!area) {
+            console.error('[GeoAreaMap] Area not found:', areaId);
+            return;
+        }
+
+        console.log('[GeoAreaMap] Opening edit custom area modal for:', areaId);
+
+        // Загружаем геометрию из API
+        try {
+            const data = await this.apiService.getGeometry(areaId);
+
+            // Получаем контроллер модального окна
+            const modalElement = document.getElementById('customAreaModal');
+            if (!modalElement) {
+                console.error('[GeoAreaMap] Modal element not found');
+                return;
+            }
+
+            const modalController = this.application.getControllerForElementAndIdentifier(
+                modalElement,
+                'custom-area-modal'
+            );
+
+            if (!modalController) {
+                console.error('[GeoAreaMap] Modal controller not found');
+                return;
+            }
+
+            // Открываем модальное окно в режиме редактирования
+            modalController.open({
+                mode: 'edit',
+                countryIso3: area.countryISO3,
+                existingGeometry: JSON.stringify(data.geometry),
+                existingName: area.name,
+                existingId: areaId,
+            });
+        } catch (error) {
+            console.error('[GeoAreaMap] Error loading geometry for edit:', error);
+            alert('Ошибка загрузки геометрии для редактирования');
+        }
     }
 
     /**
@@ -397,6 +555,53 @@ export default class extends Controller {
     }
 
     /**
+     * Загрузка списка кастомных зон через ApiService
+     * @private
+     */
+    async _loadCustomAreas(countryISO3) {
+        console.log('[GeoAreaMap] Loading custom areas for country:', countryISO3);
+        
+        if (!this.hasCustomAreaSelectTarget) {
+            return;
+        }
+
+        // Показываем индикатор загрузки
+        this.customAreaSelectTarget.innerHTML = `<option value="">Загрузка...</option>`;
+        this.customAreaSelectTarget.disabled = true;
+        if (this.hasAddCustomAreaButtonTarget) {
+            this.addCustomAreaButtonTarget.disabled = true;
+        }
+        this._updateSelect2(this.customAreaSelectTarget);
+
+        try {
+            const customAreas = await this.apiService.getCustomAreas(countryISO3);
+            
+            // Очищаем селект
+            this.customAreaSelectTarget.innerHTML = `<option value="">Выберите кастомную зону</option>`;
+            
+            // Добавляем кастомные зоны
+            customAreas.forEach(area => {
+                const option = document.createElement('option');
+                option.value = area.id;
+                option.textContent = area.name;
+                this.customAreaSelectTarget.appendChild(option);
+            });
+            
+            this.customAreaSelectTarget.disabled = false;
+            
+            // Отключаем уже добавленные кастомные зоны
+            this._updateCustomAreaOptionsState();
+            
+            // Обновляем Select2
+            this._updateSelect2(this.customAreaSelectTarget);
+            
+        } catch (error) {
+            console.error('[GeoAreaMap] Error loading custom areas:', error);
+            this._resetCustomAreaSelect();
+        }
+    }
+
+    /**
      * Загрузка и отображение геометрии через сервисы
      * @private
      * @param {string} areaId - UUID зоны
@@ -461,10 +666,22 @@ export default class extends Controller {
             try {
                 const data = await this.apiService.getGeometry(areaId);
                 
+                // Определяем является ли зона кастомной (scope = 3)
+                const isCustomArea = data.scope === 3;
+                
+                console.log('[GeoAreaMap] Loading area:', {
+                    id: areaId,
+                    name: areaName,
+                    isCustom: isCustomArea,
+                    countryISO3: data.countryISO3,
+                    scope: data.scope
+                });
+                
                 const areaData = {
                     id: areaId,
                     name: areaName,
                     countryISO3: data.countryISO3 || '',
+                    isCustomArea: isCustomArea,
                 };
                 
                 // Добавляем через GeoAreaService
@@ -533,18 +750,38 @@ export default class extends Controller {
             return;
         }
 
-        this.selectedListTarget.innerHTML = areas.map(area => `
-            <div class="selected-area-item d-flex justify-content-between align-items-center mb-2 p-2 border rounded bg-light">
-                <span class="selected-area-name">${this._escapeHtml(area.name)}</span>
+        this.selectedListTarget.innerHTML = areas.map(area => {
+            const isCustomArea = area.isCustomArea || false;
+            const badge = isCustomArea ? '<span class="badge bg-info text-white ms-2">custom</span>' : '';
+            
+            // Кнопка редактирования только для кастомных зон
+            const editButton = isCustomArea ? `
                 <button type="button" 
-                        class="btn btn-sm btn-danger" 
+                        class="btn btn-sm btn-warning me-1" 
                         data-area-id="${area.id}"
-                        data-action="geo-area-map#removeGeoArea"
-                        title="${this.translationRemoveButtonValue}">
-                    <i class="fas fa-times"></i>
+                        data-action="geo-area-map#openEditCustomAreaModal"
+                        title="Редактировать">
+                    <i class="fas fa-edit"></i>
                 </button>
-            </div>
-        `).join('');
+            ` : '';
+
+            return `
+                <div class="selected-area-item d-flex justify-content-between align-items-center mb-2 p-2 border rounded bg-light">
+                    <span class="selected-area-name">${this._escapeHtml(area.name)}${badge}</span>
+                    <div>
+                        ${editButton}
+                        <button type="button" 
+                                class="btn btn-sm btn-danger" 
+                                data-area-id="${area.id}"
+                                data-is-custom-area="${isCustomArea}"
+                                data-action="geo-area-map#removeGeoArea"
+                                title="${this.translationRemoveButtonValue}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
     }
 
     /**
@@ -669,6 +906,227 @@ export default class extends Controller {
         });
     }
 
+    /**
+     * Сброс селекта кастомных зон
+     * @private
+     */
+    _resetCustomAreaSelect() {
+        if (!this.hasCustomAreaSelectTarget) {
+            return;
+        }
+
+        this.customAreaSelectTarget.innerHTML = `<option value="">Выберите кастомную зону</option>`;
+        this.customAreaSelectTarget.disabled = true;
+        
+        if (this.hasAddCustomAreaButtonTarget) {
+            this.addCustomAreaButtonTarget.disabled = true;
+        }
+        
+        // Обновляем Select2 после сброса
+        if (window.jQuery && window.jQuery(this.customAreaSelectTarget).hasClass('select2-hidden-accessible')) {
+            window.jQuery(this.customAreaSelectTarget).trigger('change.select2');
+        }
+    }
+
+    /**
+     * Сброс выбора кастомной зоны (очистка селекта с обновлением Select2)
+     * @private
+     */
+    _resetCustomAreaSelection() {
+        if (!this.hasCustomAreaSelectTarget) {
+            return;
+        }
+
+        this.customAreaSelectTarget.value = '';
+        
+        if (this.hasAddCustomAreaButtonTarget) {
+            this.addCustomAreaButtonTarget.disabled = true;
+        }
+        
+        // Обновляем Select2 чтобы показать placeholder
+        if (window.jQuery && window.jQuery(this.customAreaSelectTarget).hasClass('select2-hidden-accessible')) {
+            window.jQuery(this.customAreaSelectTarget).val('').trigger('change.select2');
+        }
+    }
+
+    /**
+     * Отключить опцию кастомной зоны в селекте (уже добавлена)
+     * @private
+     * @param {string} customAreaId - ID кастомной зоны
+     */
+    _disableCustomAreaOption(customAreaId) {
+        if (!this.hasCustomAreaSelectTarget) {
+            return;
+        }
+
+        const option = this.customAreaSelectTarget.querySelector(`option[value="${customAreaId}"]`);
+        if (option) {
+            option.disabled = true;
+            
+            // Обновляем Select2
+            if (window.jQuery && window.jQuery(this.customAreaSelectTarget).hasClass('select2-hidden-accessible')) {
+                window.jQuery(this.customAreaSelectTarget).trigger('change.select2');
+            }
+        }
+    }
+
+    /**
+     * Включить опцию кастомной зоны в селекте (удалена из списка)
+     * @private
+     * @param {string} customAreaId - ID кастомной зоны
+     */
+    _enableCustomAreaOption(customAreaId) {
+        if (!this.hasCustomAreaSelectTarget) {
+            return;
+        }
+
+        const option = this.customAreaSelectTarget.querySelector(`option[value="${customAreaId}"]`);
+        if (option) {
+            option.disabled = false;
+            
+            // Обновляем Select2
+            if (window.jQuery && window.jQuery(this.customAreaSelectTarget).hasClass('select2-hidden-accessible')) {
+                window.jQuery(this.customAreaSelectTarget).trigger('change.select2');
+            }
+        }
+    }
+
+    /**
+     * Обновить состояние всех опций кастомных зон через GeoAreaService
+     * @private
+     */
+    _updateCustomAreaOptionsState() {
+        if (!this.hasCustomAreaSelectTarget) {
+            return;
+        }
+
+        const options = this.customAreaSelectTarget.querySelectorAll('option:not([value=""])');
+        options.forEach(option => {
+            const areaId = option.value;
+            // Проверяем через GeoAreaService
+            option.disabled = areaId && this.geoAreaService.hasArea(areaId);
+        });
+    }
+
+    /**
+     * Настройка слушателя событий модального окна кастомных зон
+     * @private
+     */
+    _setupCustomAreaModalListener() {
+        // Слушаем событие сохранения из модального окна
+        document.addEventListener('custom-area-modal:save', async (event) => {
+            const detail = event.detail;
+            
+            console.log('[GeoAreaMap] Custom area modal save event:', detail);
+
+            try {
+                let response;
+                
+                // Если есть ID - обновляем существующую зону, иначе создаем новую
+                if (detail.mode === 'edit' && detail.id) {
+                    // Обновление существующей зоны
+                    response = await this.apiService.updateCustomArea(detail.id, {
+                        name: detail.name,
+                        geometry: detail.geometry,
+                    });
+                    
+                    console.log('[GeoAreaMap] Custom area updated:', response.id);
+                    
+                    // Перезагружаем геометрию на карте
+                    this.mapService.removeLayer(detail.id);
+                    await this._loadAndDisplayGeometry(detail.id);
+                    
+                    // Обновляем данные в GeoAreaService
+                    const areaData = this.geoAreaService.getArea(detail.id);
+                    if (areaData) {
+                        areaData.name = detail.name;
+                    }
+                    
+                    // Обновляем список
+                    this._updateSelectedList();
+                    
+                    alert('Кастомная зона обновлена');
+                    
+                } else {
+                    // Создание новой зоны напрямую в БД
+                    response = await this.apiService.createCustomArea({
+                        name: detail.name,
+                        geometry: detail.geometry,
+                        countryISO3: detail.countryISO3,
+                    });
+
+                    const realId = response.id;
+
+                    console.log('[GeoAreaMap] Custom area created with real ID:', realId);
+
+                    // Добавляем в GeoAreaService с реальным ID
+                    const areaData = {
+                        id: realId,
+                        name: detail.name,
+                        countryISO3: detail.countryISO3,
+                        isCustomArea: true,
+                    };
+                    
+                    this.geoAreaService.addArea(realId, areaData);
+
+                    // Отображаем на карте
+                    this.mapService.addGeoJsonLayer(realId, detail.geometry, {
+                        color: '#ff8800',
+                        weight: 2,
+                        opacity: 0.8,
+                        fillOpacity: 0.3,
+                        popupContent: detail.name
+                    });
+
+                    // Зумим на геометрию
+                    setTimeout(() => {
+                        this.mapService.fitToAllLayers({
+                            padding: [50, 50],
+                            maxZoom: 12,
+                            animate: true
+                        });
+                    }, 50);
+
+                    // Обновляем список
+                    this._updateSelectedList();
+                    
+                    // Обновляем скрытое поле
+                    this._updateHiddenInput();
+
+                    // Перезагружаем список кастомных зон (чтобы новая появилась в селекте)
+                    await this._loadCustomAreas(detail.countryISO3);
+
+                    alert('Кастомная зона создана');
+                }
+
+            } catch (error) {
+                console.error('[GeoAreaMap] Error saving custom area:', error);
+                alert('Ошибка сохранения кастомной зоны: ' + error.message);
+            }
+        });
+
+        // Настройка слушателей Select2 для кастомных зон
+        if (this.hasCustomAreaSelectTarget && typeof window.jQuery !== 'undefined') {
+            const $ = window.jQuery;
+
+            $(this.customAreaSelectTarget)
+                .on('select2:select.geoAreaMap', (e) => {
+                    const customAreaId = e.params.data.id;
+                    if (this.hasAddCustomAreaButtonTarget) {
+                        this.addCustomAreaButtonTarget.disabled = !customAreaId;
+                    }
+                })
+                .on('change.geoAreaMap', (e) => {
+                    if (!$(e.target).hasClass('select2-hidden-accessible')) {
+                        const customAreaId = e.target.value;
+                        if (this.hasAddCustomAreaButtonTarget) {
+                            this.addCustomAreaButtonTarget.disabled = !customAreaId;
+                        }
+                    }
+                });
+        }
+    }
+
     // Метод _fitMapToAllLayers() удалён - теперь через MapService.fitToAllLayers()
 
     /**
@@ -681,6 +1139,15 @@ export default class extends Controller {
         if (!countryISO3Set) {
             countryISO3Set = this.geoAreaService.getUniqueCountryISO3();
         }
+        
+        console.log('[GeoAreaMap] Auto-select country check:', {
+            countriesInSet: countryISO3Set.size,
+            countries: Array.from(countryISO3Set),
+            allAreas: this.geoAreaService.getAllAreas().map(a => ({
+                name: a.name,
+                countryISO3: a.countryISO3
+            }))
+        });
         
         if (countryISO3Set.size === 0) {
             console.log('[GeoAreaMap] No countries to auto-select');
@@ -698,13 +1165,27 @@ export default class extends Controller {
         
         console.log('[GeoAreaMap] Auto-selecting country:', targetISO3);
 
+        // Ждем загрузки списка стран если еще не загружен
+        const countryOptions = Array.from(this.countrySelectTarget.options);
+        if (countryOptions.length <= 1) {
+            console.log('[GeoAreaMap] Countries not loaded yet, waiting...');
+            // Небольшая задержка и повторная попытка
+            setTimeout(() => this._autoSelectCountry(countryISO3Set), 500);
+            return;
+        }
+
         // Ищем опцию страны по ISO3
-        const countryOption = Array.from(this.countrySelectTarget.options).find(
+        const countryOption = countryOptions.find(
             option => option.dataset.iso3 === targetISO3 || option.getAttribute('data-iso3') === targetISO3
         );
 
         if (!countryOption) {
             console.warn('[GeoAreaMap] Country option not found for ISO3:', targetISO3);
+            console.warn('[GeoAreaMap] Available options:', countryOptions.map(o => ({
+                value: o.value,
+                text: o.textContent,
+                iso3: o.dataset.iso3 || o.getAttribute('data-iso3')
+            })));
             return;
         }
 
@@ -722,8 +1203,9 @@ export default class extends Controller {
             console.log('[GeoAreaMap] Country auto-selected:', countryOption.textContent);
         }
 
-        // Загружаем города выбранной страны
+        // Загружаем города и кастомные зоны выбранной страны
         await this._loadCities(targetISO3);
+        await this._loadCustomAreas(targetISO3);
     }
 
     /**
