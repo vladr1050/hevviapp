@@ -2,6 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 import { MapService } from '../services/MapService.js';
 import { ApiService } from '../services/ApiService.js';
 import { GeoAreaService } from '../services/GeoAreaService.js';
+import { HexagonService } from '../services/HexagonService.js';
 
 /**
  * GeoArea Map Controller
@@ -69,13 +70,27 @@ export default class extends Controller {
         'addCustomAreaButton',
         'createCustomAreaButton',
         'selectedList',
-        'hiddenInput'
+        'hiddenInput',
+        'hexagonToggle',
+        'hexagonResolution',
+        'hexagonResolutionWrapper',
+        'resolutionLabel',
+        'resolutionInfo'
     ]
 
     /**
      * Инициализация контроллера
      */
     connect() {
+        console.log('[GeoAreaMap] Controller connecting...');
+        console.log('[GeoAreaMap] Available targets:', {
+            hasHexagonToggle: this.hasHexagonToggleTarget,
+            hasHexagonResolution: this.hasHexagonResolutionTarget,
+            hasHexagonResolutionWrapper: this.hasHexagonResolutionWrapperTarget,
+            hasResolutionLabel: this.hasResolutionLabelTarget,
+            hasResolutionInfo: this.hasResolutionInfoTarget
+        });
+        
         // Инициализация сервисов (Dependency Inversion Principle)
         this.mapService = new MapService({
             container: this.mapTarget,
@@ -94,16 +109,35 @@ export default class extends Controller {
         });
 
         this.geoAreaService = new GeoAreaService();
+        
+        // Инициализация HexagonService с разрешением по умолчанию
+        this.hexagonService = new HexagonService({
+            resolution: 6 // По умолчанию районы города (~36 км²)
+        });
 
         // Состояние UI
         this.currentCountryISO3 = null;
+        
+        // Состояние гексагональной сетки
+        this.hexagonGridEnabled = false;
+        this.hexagonLayerId = 'hexagon-grid';
 
         // Инициализация
         this.mapService.initialize();
+        
+        // Настройка слушателей событий карты после инициализации
+        // Используем небольшую задержку чтобы карта успела полностью инициализироваться
+        setTimeout(() => {
+            this._setupMapEventListeners();
+        }, 100);
+        
         this._loadCountries();
         this._setupSelect2Listeners();
         this._setupCustomAreaModalListener();
+        this._setupHexagonToggleListener();
         this._loadExistingAreas();
+        
+        console.log('[GeoAreaMap] Controller connected successfully');
     }
 
     /**
@@ -126,8 +160,94 @@ export default class extends Controller {
             this.geoAreaService.clear();
             this.geoAreaService = null;
         }
+        
+        if (this.hexagonService) {
+            this.hexagonService = null;
+        }
 
         this.apiService = null;
+    }
+
+    /**
+     * Настройка слушателя для переключателя гексагональной сетки
+     * iCheck использует свои собственные события через jQuery
+     * @private
+     */
+    _setupHexagonToggleListener() {
+        if (!this.hasHexagonToggleTarget) {
+            console.warn('[GeoAreaMap] Hexagon toggle target not found');
+            return;
+        }
+        
+        // Проверяем наличие jQuery (используется Sonata Admin и iCheck)
+        if (typeof window.jQuery === 'undefined') {
+            console.error('[GeoAreaMap] jQuery not found. iCheck events will not work.');
+            return;
+        }
+        
+        const $ = window.jQuery;
+        const $toggle = $(this.hexagonToggleTarget);
+        
+        console.log('[GeoAreaMap] Setting up hexagon toggle listener');
+        console.log('[GeoAreaMap] Toggle element:', this.hexagonToggleTarget);
+        console.log('[GeoAreaMap] Toggle is iCheck?', $toggle.hasClass('icheckbox_square-blue') || $toggle.parent().hasClass('icheckbox_square-blue'));
+        
+        // Даем время iCheck инициализироваться (если используется)
+        setTimeout(() => {
+            // Слушаем события iCheck (если iCheck используется)
+            $toggle.on('ifChecked.geoAreaMap', () => {
+                console.log('[GeoAreaMap] iCheck ifChecked event fired');
+                this.hexagonGridEnabled = true;
+                this._handleHexagonToggle(true);
+            });
+            
+            $toggle.on('ifUnchecked.geoAreaMap', () => {
+                console.log('[GeoAreaMap] iCheck ifUnchecked event fired');
+                this.hexagonGridEnabled = false;
+                this._handleHexagonToggle(false);
+            });
+            
+            // Также слушаем стандартное событие change как fallback
+            $toggle.on('change.geoAreaMap', (e) => {
+                console.log('[GeoAreaMap] Standard change event fired (fallback)');
+                const isChecked = e.target.checked;
+                this.hexagonGridEnabled = isChecked;
+                this._handleHexagonToggle(isChecked);
+            });
+            
+            console.log('[GeoAreaMap] Hexagon toggle listeners configured');
+        }, 500); // Задержка для инициализации iCheck
+    }
+    
+    /**
+     * Обработка переключения гексагональной сетки
+     * @private
+     * @param {boolean} enabled
+     */
+    _handleHexagonToggle(enabled) {
+        console.log('[GeoAreaMap] Hexagon grid toggled:', enabled);
+        console.log('[GeoAreaMap] HexagonService:', this.hexagonService);
+        console.log('[GeoAreaMap] MapService:', this.mapService);
+        console.log('[GeoAreaMap] Map instance:', this.mapService ? this.mapService.getMap() : null);
+        
+        if (enabled) {
+            // Показываем контролы разрешения
+            if (this.hasHexagonResolutionWrapperTarget) {
+                this.hexagonResolutionWrapperTarget.style.display = 'block';
+            }
+            
+            // Генерируем и отображаем сетку
+            console.log('[GeoAreaMap] Calling _updateHexagonGrid...');
+            this._updateHexagonGrid();
+        } else {
+            // Скрываем контролы разрешения
+            if (this.hasHexagonResolutionWrapperTarget) {
+                this.hexagonResolutionWrapperTarget.style.display = 'none';
+            }
+            
+            // Удаляем сетку с карты
+            this.mapService.removeHexagonLayer(this.hexagonLayerId);
+        }
     }
 
     /**
@@ -1302,6 +1422,144 @@ export default class extends Controller {
     _updateSelect2(selectElement) {
         if (window.jQuery && window.jQuery(selectElement).hasClass('select2-hidden-accessible')) {
             window.jQuery(selectElement).trigger('change.select2');
+        }
+    }
+
+    /**
+     * Настройка слушателей событий карты
+     * @private
+     */
+    _setupMapEventListeners() {
+        const map = this.mapService.getMap();
+        
+        if (!map) {
+            console.error('[GeoAreaMap] Map not initialized, retrying...');
+            // Повторная попытка через 200ms
+            setTimeout(() => {
+                this._setupMapEventListeners();
+            }, 200);
+            return;
+        }
+        
+        // Обновляем гексагональную сетку при изменении видимой области
+        map.on('moveend', () => {
+            if (this.hexagonGridEnabled) {
+                this._updateHexagonGrid();
+            }
+        });
+        
+        map.on('zoomend', () => {
+            if (this.hexagonGridEnabled) {
+                this._updateHexagonGrid();
+            }
+        });
+        
+        console.log('[GeoAreaMap] Map event listeners configured successfully');
+    }
+
+    /**
+     * Переключение отображения гексагональной сетки
+     * DEPRECATED: Этот метод больше не используется, так как мы слушаем события iCheck напрямую
+     * Оставлено для обратной совместимости
+     */
+    toggleHexagonGrid(event) {
+        console.log('[GeoAreaMap] toggleHexagonGrid called (deprecated, should use iCheck events)');
+        const isChecked = event.target.checked;
+        this._handleHexagonToggle(isChecked);
+    }
+
+    /**
+     * Обработчик изменения разрешения гексагональной сетки
+     */
+    onHexagonResolutionChange(event) {
+        const resolution = parseInt(event.target.value, 10);
+        
+        // Обновляем HexagonService
+        this.hexagonService.setResolution(resolution);
+        
+        // Обновляем label и info
+        if (this.hasResolutionLabelTarget) {
+            this.resolutionLabelTarget.textContent = resolution;
+        }
+        
+        if (this.hasResolutionInfoTarget) {
+            const info = HexagonService.getResolutionInfo(resolution);
+            this.resolutionInfoTarget.textContent = `(~${info.area})`;
+        }
+        
+        console.log('[GeoAreaMap] Hexagon resolution changed to:', resolution);
+        
+        // Перегенерируем сетку если она включена
+        if (this.hexagonGridEnabled) {
+            this._updateHexagonGrid();
+        }
+    }
+
+    /**
+     * Обновить гексагональную сетку на карте
+     * @private
+     */
+    _updateHexagonGrid() {
+        console.log('[GeoAreaMap] _updateHexagonGrid called');
+        
+        const map = this.mapService.getMap();
+        
+        if (!map) {
+            console.error('[GeoAreaMap] Map not initialized in _updateHexagonGrid');
+            return;
+        }
+        
+        try {
+            // Получаем границы видимой области карты
+            const bounds = map.getBounds();
+            const mapBounds = {
+                north: bounds.getNorth(),
+                south: bounds.getSouth(),
+                east: bounds.getEast(),
+                west: bounds.getWest()
+            };
+            
+            console.log('[GeoAreaMap] Generating hexagon grid for bounds:', mapBounds);
+            
+            // Генерируем гексагоны для видимой области
+            const h3Indexes = this.hexagonService.getHexagonsForMapBounds(mapBounds);
+            
+            console.log('[GeoAreaMap] Generated hexagons count:', h3Indexes.length);
+            
+            // Ограничиваем количество гексагонов для производительности
+            const maxHexagons = 2000;
+            let hexagonsToDisplay = h3Indexes;
+            
+            if (h3Indexes.length > maxHexagons) {
+                console.warn('[GeoAreaMap] Too many hexagons:', h3Indexes.length, 'limiting to:', maxHexagons);
+                hexagonsToDisplay = h3Indexes.slice(0, maxHexagons);
+            }
+            
+            // Конвертируем в GeoJSON
+            const geoJson = this.hexagonService.hexagonsToGeoJson(hexagonsToDisplay);
+            console.log('[GeoAreaMap] GeoJSON created:', geoJson);
+            
+            // Удаляем старый слой если есть
+            this.mapService.removeHexagonLayer(this.hexagonLayerId);
+            
+            // Добавляем новый слой
+            const layer = this.mapService.addHexagonLayer(this.hexagonLayerId, geoJson, {
+                color: '#ff6600',
+                weight: 1,
+                opacity: 0.4,
+                fillOpacity: 0.05,
+                fillColor: '#ff6600',
+                enableHover: true,
+                hoverFillOpacity: 0.15,
+                hoverWeight: 2,
+                showH3Index: false // Отключаем tooltip с H3 индексом для производительности
+            });
+            
+            console.log('[GeoAreaMap] Hexagon grid updated successfully, displayed:', hexagonsToDisplay.length);
+            console.log('[GeoAreaMap] Layer added:', layer);
+        } catch (error) {
+            console.error('[GeoAreaMap] Error updating hexagon grid:', error);
+            console.error('[GeoAreaMap] Error stack:', error.stack);
         }
     }
 

@@ -31,6 +31,7 @@ export class MapService {
         
         this.map = null;
         this.layers = new Map(); // Map<layerId, Layer>
+        this.hexagonLayers = new Map(); // Map<hexagonLayerId, Layer> - отдельно для гексагональных слоев
         
         this._fixLeafletIcons();
     }
@@ -210,6 +211,9 @@ export class MapService {
         });
         this.layers.clear();
 
+        // Также очищаем гексагональные слои
+        this.removeAllHexagonLayers();
+
         console.log('[MapService] All layers cleared');
     }
 
@@ -270,6 +274,134 @@ export class MapService {
      */
     hasLayer(layerId) {
         return this.layers.has(layerId);
+    }
+
+    /**
+     * Добавить гексагональный слой на карту
+     * @param {string} layerId - Уникальный ID слоя
+     * @param {Object} geoJson - GeoJSON FeatureCollection с гексагонами
+     * @param {Object} options - Опции стиля
+     * @returns {L.Layer}
+     */
+    addHexagonLayer(layerId, geoJson, options = {}) {
+        if (this.hexagonLayers.has(layerId)) {
+            console.warn('[MapService] Hexagon layer already exists:', layerId);
+            return this.hexagonLayers.get(layerId);
+        }
+
+        const defaultStyle = {
+            color: options.color || '#ff6600',
+            weight: options.weight || 1,
+            opacity: options.opacity || 0.5,
+            fillOpacity: options.fillOpacity || 0.1,
+            fillColor: options.fillColor || '#ff6600'
+        };
+
+        const layer = L.geoJSON(geoJson, {
+            style: defaultStyle,
+            onEachFeature: (feature, layer) => {
+                if (options.onEachFeature) {
+                    options.onEachFeature(feature, layer);
+                }
+                
+                // Добавляем hover эффект если включен
+                if (options.enableHover !== false) {
+                    layer.on('mouseover', function () {
+                        this.setStyle({
+                            fillOpacity: options.hoverFillOpacity || 0.3,
+                            weight: options.hoverWeight || 2
+                        });
+                    });
+                    
+                    layer.on('mouseout', function () {
+                        this.setStyle({
+                            fillOpacity: defaultStyle.fillOpacity,
+                            weight: defaultStyle.weight
+                        });
+                    });
+                }
+
+                // Добавляем popup с H3 индексом если включен
+                if (options.showH3Index !== false && feature.properties.h3Index) {
+                    layer.bindTooltip(feature.properties.h3Index, {
+                        permanent: false,
+                        direction: 'center',
+                        className: 'hexagon-tooltip'
+                    });
+                }
+            }
+        }).addTo(this.map);
+
+        this.hexagonLayers.set(layerId, layer);
+
+        console.log('[MapService] Hexagon layer added:', layerId, 'features:', geoJson.features?.length || 0);
+
+        return layer;
+    }
+
+    /**
+     * Удалить гексагональный слой с карты
+     * @param {string} layerId - ID слоя
+     * @returns {boolean} - true если удалён
+     */
+    removeHexagonLayer(layerId) {
+        if (!this.hexagonLayers.has(layerId)) {
+            return false;
+        }
+
+        const layer = this.hexagonLayers.get(layerId);
+        this.map.removeLayer(layer);
+        this.hexagonLayers.delete(layerId);
+
+        console.log('[MapService] Hexagon layer removed:', layerId);
+
+        return true;
+    }
+
+    /**
+     * Удалить все гексагональные слои
+     */
+    removeAllHexagonLayers() {
+        this.hexagonLayers.forEach((layer, layerId) => {
+            this.map.removeLayer(layer);
+        });
+        this.hexagonLayers.clear();
+
+        console.log('[MapService] All hexagon layers removed');
+    }
+
+    /**
+     * Проверить наличие гексагонального слоя
+     * @param {string} layerId
+     * @returns {boolean}
+     */
+    hasHexagonLayer(layerId) {
+        return this.hexagonLayers.has(layerId);
+    }
+
+    /**
+     * Получить количество гексагональных слоёв
+     * @returns {number}
+     */
+    getHexagonLayersCount() {
+        return this.hexagonLayers.size;
+    }
+
+    /**
+     * Обновить стиль гексагонального слоя
+     * @param {string} layerId - ID слоя
+     * @param {Object} style - Новый стиль
+     */
+    updateHexagonLayerStyle(layerId, style) {
+        if (!this.hexagonLayers.has(layerId)) {
+            console.warn('[MapService] Hexagon layer not found:', layerId);
+            return;
+        }
+
+        const layer = this.hexagonLayers.get(layerId);
+        layer.setStyle(style);
+
+        console.log('[MapService] Hexagon layer style updated:', layerId);
     }
 
     /**

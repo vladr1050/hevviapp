@@ -8,6 +8,14 @@
 #}
 
 {% block geo_area_selection_widget %}
+    {# Устанавливаем значения по умолчанию если не переданы #}
+    {% set enable_map = enable_map|default(true) %}
+    {% set show_country_filter = show_country_filter|default(true) %}
+    
+    {# DEBUG: Проверка условий #}
+    {# enable_map = {{ enable_map }}, show_country_filter = {{ show_country_filter }} #}
+    {# map_config.default_latitude = {{ map_config.default_latitude }} #}
+    
     {% if enable_map and show_country_filter %}
         <div class="geo-area-selection-wrapper"
              data-controller="geo-area-map"
@@ -139,6 +147,43 @@
 
                 {# Правая колонка: Карта #}
                 <div class="col-md-8">
+                    {# Панель управления гексагональной сеткой #}
+                    <div class="hexagon-controls mb-3 p-3 border rounded bg-light">
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" 
+                                           type="checkbox" 
+                                           id="hexagonGridToggle"
+                                           data-geo-area-map-target="hexagonToggle">
+                                    <label class="form-check-label" for="hexagonGridToggle">
+                                        <i class="fas fa-th"></i>
+                                        {{ 'geo_area_selection.hexagon.toggle_grid'|trans({}, 'AppBundle') }}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-8" data-geo-area-map-target="hexagonResolutionWrapper" style="display: none;">
+                                <label class="form-label mb-1">
+                                    {{ 'geo_area_selection.hexagon.resolution'|trans({}, 'AppBundle') }}:
+                                    <strong data-geo-area-map-target="resolutionLabel">6</strong>
+                                    <small class="text-muted" data-geo-area-map-target="resolutionInfo">(~36.13 км²)</small>
+                                </label>
+                                <input type="range" 
+                                       class="form-range" 
+                                       min="5" 
+                                       max="6" 
+                                       value="6" 
+                                       step="1"
+                                       data-geo-area-map-target="hexagonResolution"
+                                       data-action="geo-area-map#onHexagonResolutionChange">
+                                <div class="d-flex justify-content-between">
+                                    <small class="text-muted">5 (252 км²)</small>
+                                    <small class="text-muted">6 (36 км²)</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="map-container border rounded"
                          data-geo-area-map-target="map"
                          style="height: 500px; width: 100%;"></div>

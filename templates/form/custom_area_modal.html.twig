@@ -63,19 +63,84 @@
                             </small>
                         </div>
 
+                        {# Статистика выбранных гексагонов #}
+                        <div class="alert alert-success" 
+                             data-custom-area-modal-target="hexagonStats" 
+                             style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <strong><i class="fas fa-check-circle"></i> Выбрано:</strong>
+                                    <span data-custom-area-modal-target="hexagonCount" class="badge bg-primary fs-6">0</span>
+                                </div>
+                                <button type="button" 
+                                        class="btn btn-sm btn-outline-danger"
+                                        data-action="custom-area-modal#clearSelectedHexagons"
+                                        data-custom-area-modal-target="clearHexagonsButton">
+                                    <i class="fas fa-trash"></i> Очистить
+                                </button>
+                            </div>
+                            <small class="text-muted d-block">
+                                <i class="fas fa-mouse-pointer"></i> 
+                                Клик = выбрать/отменить гексагон
+                            </small>
+                        </div>
+
                         {# Инструкция по использованию #}
                         <div class="alert alert-info" role="alert">
                             <strong>{{ 'custom_area.instruction.title'|trans({}, 'AppBundle') }}</strong>
-                            <ul class="mb-0 mt-2">
+                            <ul class="mb-0 mt-2 small">
                                 <li>{{ 'custom_area.instruction.step1'|trans({}, 'AppBundle') }}</li>
                                 <li>{{ 'custom_area.instruction.step2'|trans({}, 'AppBundle') }}</li>
+                                <li><strong>ИЛИ</strong> включите гексагональную сетку и кликайте на гексагоны для выбора</li>
                                 <li>{{ 'custom_area.instruction.step3'|trans({}, 'AppBundle') }}</li>
                                 <li>{{ 'custom_area.instruction.step4'|trans({}, 'AppBundle') }}</li>
                             </ul>
+                            <hr class="my-2">
+                            <small class="text-muted">
+                                <i class="fas fa-lightbulb"></i>
+                                <strong>При редактировании:</strong> используйте инструменты редактирования полигона ИЛИ включите сетку чтобы добавить новые гексагоны
+                            </small>
                         </div>
                     </div>
 
                     <div class="col-md-8">
+                        {# Панель управления гексагональной сеткой #}
+                        <div class="hexagon-controls mb-3 p-2 border rounded bg-light">
+                            <div class="row align-items-center">
+                                <div class="col-md-4">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" 
+                                               type="checkbox" 
+                                               id="modalHexagonGridToggle"
+                                               data-custom-area-modal-target="hexagonToggle">
+                                        <label class="form-check-label" for="modalHexagonGridToggle">
+                                            <i class="fas fa-th"></i>
+                                            {{ 'geo_area_selection.hexagon.toggle_grid'|trans({}, 'AppBundle') }}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-8" data-custom-area-modal-target="hexagonResolutionWrapper" style="display: none;">
+                                    <label class="form-label mb-1 small">
+                                        {{ 'geo_area_selection.hexagon.resolution'|trans({}, 'AppBundle') }}:
+                                        <strong data-custom-area-modal-target="resolutionLabel">6</strong>
+                                        <small class="text-muted" data-custom-area-modal-target="resolutionInfo">(~36.13 км²)</small>
+                                    </label>
+                                    <input type="range" 
+                                           class="form-range" 
+                                           min="5" 
+                                           max="6" 
+                                           value="6" 
+                                           step="1"
+                                           data-custom-area-modal-target="hexagonResolution"
+                                           data-action="custom-area-modal#onHexagonResolutionChange">
+                                    <div class="d-flex justify-content-between">
+                                        <small class="text-muted">5 (252 км²)</small>
+                                        <small class="text-muted">6 (36 км²)</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
                         {# Карта для рисования #}
                         <div class="mb-3">
                             <label class="form-label">
