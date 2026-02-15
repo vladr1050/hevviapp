@@ -27,6 +27,13 @@ export default class extends Controller {
         existingGeometry: String, // GeoJSON для редактирования
         existingName: String,
         existingId: String,
+        // Translations
+        translationNameRequired: String,
+        translationGeometryRequired: String,
+        translationJqueryError: String,
+        translationDrawError: String,
+        translationInvalidGeometry: String,
+        translationLoadError: String,
     }
 
     static targets = [
@@ -90,7 +97,7 @@ export default class extends Controller {
         if (this.hasModalTarget) {
             if (typeof window.jQuery === 'undefined') {
                 console.error('[CustomAreaModal] jQuery not found');
-                alert('Ошибка: jQuery не загружен');
+                alert(this.translationJqueryErrorValue);
                 return;
             }
 
@@ -140,12 +147,12 @@ export default class extends Controller {
         const name = this.nameInputTarget.value.trim();
 
         if (!name) {
-            this._showError('Пожалуйста, укажите название кастомной зоны');
+            this._showError(this.translationNameRequiredValue);
             return;
         }
 
         if (!this.currentGeometry) {
-            this._showError('Пожалуйста, нарисуйте область на карте');
+            this._showError(this.translationGeometryRequiredValue);
             return;
         }
 
@@ -214,7 +221,7 @@ export default class extends Controller {
         // Проверяем наличие Leaflet.draw
         if (typeof L.Control.Draw === 'undefined') {
             console.error('[CustomAreaModal] Leaflet.draw not found');
-            this._showError('Ошибка: библиотека для рисования не загружена');
+            this._showError(this.translationDrawErrorValue);
             return;
         }
 
@@ -314,7 +321,7 @@ export default class extends Controller {
 
             if (latLngs.length === 0) {
                 console.error('[CustomAreaModal] No coordinates found in geometry');
-                this._showError('Ошибка: геометрия не содержит координат');
+                this._showError(this.translationInvalidGeometryValue);
                 return;
             }
 
@@ -342,7 +349,7 @@ export default class extends Controller {
 
         } catch (error) {
             console.error('[CustomAreaModal] Error loading existing geometry:', error);
-            this._showError('Ошибка загрузки геометрии: ' + error.message);
+            this._showError(this.translationLoadErrorValue + ': ' + error.message);
         }
     }
 

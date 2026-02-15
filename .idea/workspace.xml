@@ -6,13 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/controllers/custom_area_modal_controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/controllers/custom_area_modal_controller.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/controllers/geo_area_map_controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/controllers/geo_area_map_controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/services/ApiService.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/services/ApiService.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/sonata_admin.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/sonata_admin.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Api/GeoAreaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/GeoAreaController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/GeoAreaRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/GeoAreaRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/form/custom_area_modal.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/form/custom_area_modal.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/form/geo_area_selection_widget.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/form/geo_area_selection_widget.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/translations/AppBundle.en.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/translations/AppBundle.en.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/translations/AppBundle.ru.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/translations/AppBundle.ru.yaml" afterDir="false" />
@@ -288,7 +284,7 @@
       <workItem from="1771084629098" duration="31000" />
       <workItem from="1771084673870" duration="18000" />
       <workItem from="1771084714723" duration="40000" />
-      <workItem from="1771084771098" duration="3254000" />
+      <workItem from="1771084771098" duration="5248000" />
     </task>
     <servers />
   </component>

@@ -274,6 +274,26 @@ custom_area:
     button:
         save: Сохранить
         cancel: Отмена
+        edit: Редактировать
+    badge:
+        custom: custom
+    message:
+        name_required: Пожалуйста, укажите название кастомной зоны
+        geometry_required: Пожалуйста, нарисуйте область на карте
+        jquery_not_loaded: 'Ошибка: jQuery не загружен'
+        draw_library_not_loaded: 'Ошибка: библиотека для рисования не загружена'
+        invalid_geometry: 'Ошибка: геометрия не содержит координат'
+        geometry_load_error: Ошибка загрузки геометрии
+        created: Кастомная зона создана
+        updated: Кастомная зона обновлена
+        save_error: Ошибка сохранения кастомной зоны
+        select_country_first: Пожалуйста, выберите страну
+        modal_not_found: 'Ошибка: модальное окно не найдено'
+        controller_not_found: 'Ошибка: контроллер модального окна не найден'
+        edit_load_error: Ошибка загрузки геометрии для редактирования
+    select:
+        loading: Загрузка...
+        placeholder: Выберите кастомную зону
     instruction:
         title: Инструкция
         step1: Нажмите на кнопку с иконкой полигона в правом верхнем углу карты

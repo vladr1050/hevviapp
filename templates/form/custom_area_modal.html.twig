@@ -14,6 +14,12 @@
      data-custom-area-modal-default-lat-value="{{ map_config.default_latitude }}"
      data-custom-area-modal-default-lng-value="{{ map_config.default_longitude }}"
      data-custom-area-modal-default-zoom-value="{{ map_config.default_zoom }}"
+     data-custom-area-modal-translation-name-required-value="{{ 'custom_area.message.name_required'|trans({}, 'AppBundle') }}"
+     data-custom-area-modal-translation-geometry-required-value="{{ 'custom_area.message.geometry_required'|trans({}, 'AppBundle') }}"
+     data-custom-area-modal-translation-jquery-error-value="{{ 'custom_area.message.jquery_not_loaded'|trans({}, 'AppBundle') }}"
+     data-custom-area-modal-translation-draw-error-value="{{ 'custom_area.message.draw_library_not_loaded'|trans({}, 'AppBundle') }}"
+     data-custom-area-modal-translation-invalid-geometry-value="{{ 'custom_area.message.invalid_geometry'|trans({}, 'AppBundle') }}"
+     data-custom-area-modal-translation-load-error-value="{{ 'custom_area.message.geometry_load_error'|trans({}, 'AppBundle') }}"
      tabindex="-1" 
      aria-labelledby="customAreaModalLabel" 
      aria-hidden="true">
@@ -43,14 +49,12 @@
                 <div class="mb-3">
                     <label for="customAreaName" class="form-label">
                         {{ 'custom_area.label.name'|trans({}, 'AppBundle') }}
-                        <span class="text-danger">*</span>
                     </label>
                     <input type="text" 
                            class="form-control" 
                            id="customAreaName"
                            data-custom-area-modal-target="nameInput"
-                           placeholder="{{ 'custom_area.placeholder.name'|trans({}, 'AppBundle') }}"
-                           required>
+                           placeholder="{{ 'custom_area.placeholder.name'|trans({}, 'AppBundle') }}">
                     <small class="form-text text-muted">
                         {{ 'custom_area.help.name'|trans({}, 'AppBundle') }}
                     </small>
@@ -60,7 +64,6 @@
                 <div class="mb-3">
                     <label class="form-label">
                         {{ 'custom_area.label.draw_area'|trans({}, 'AppBundle') }}
-                        <span class="text-danger">*</span>
                     </label>
                     <div class="map-container border rounded"
                          data-custom-area-modal-target="map"

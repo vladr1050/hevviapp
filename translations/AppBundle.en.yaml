@@ -298,6 +298,26 @@ custom_area:
     button:
         save:   Save
         cancel: Cancel
+        edit:   Edit
+    badge:
+        custom: custom
+    message:
+        name_required: Please enter a name for the custom area
+        geometry_required: Please draw an area on the map
+        jquery_not_loaded: 'Error: jQuery is not loaded'
+        draw_library_not_loaded: 'Error: drawing library is not loaded'
+        invalid_geometry: 'Error: geometry contains no coordinates'
+        geometry_load_error: Error loading geometry
+        created: Custom area created
+        updated: Custom area updated
+        save_error: Error saving custom area
+        select_country_first: Please select a country first
+        modal_not_found: 'Error: modal window not found'
+        controller_not_found: 'Error: modal controller not found'
+        edit_load_error: Error loading geometry for editing
+    select:
+        loading: Loading...
+        placeholder: Select custom area
     instruction:
         title: Instructions
         step1: Click the polygon icon button in the upper right corner of the map
