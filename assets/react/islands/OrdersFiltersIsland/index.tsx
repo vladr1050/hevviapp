@@ -36,7 +36,7 @@ import { Tabs } from '@ui/Tabs/Tabs'
 import styles from './test.module.css'
 
 // import { Header } from '@/islands/components/Header/Header'
-import { Info } from '@/islands/components/Info/Info'
+// import { Info } from '@/islands/components/Info/Info'
 
 interface OrdersFiltersIslandProps {}
 
@@ -58,14 +58,6 @@ export const OrdersFiltersIsland: FC<OrdersFiltersIslandProps> = (props) => {
 				</button>
 			</div>
 			<br />
-			<Info
-				orders={[
-					{ name: 'Order 1', status: 'In Transit', hours: 1 },
-					{ name: 'Order 2', status: 'Delivered', hours: 2 },
-					{ name: 'Order 3', status: 'In Transit', hours: 3 },
-					{ name: 'Order 4', status: 'Delivered', hours: 4 },
-				]}
-			/>
 			<br />
 			<button onClick={() => setIsOpen(true)}>Open</button>
 			<Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>

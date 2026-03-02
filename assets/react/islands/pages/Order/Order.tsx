@@ -1,7 +1,7 @@
 import { type FC, Suspense, useState } from 'react'
 import { MapContainer, Marker, Polyline, TileLayer } from 'react-leaflet'
 
-import { FormActions, Routes } from '@config/constants'
+import { FormActions, OrderStatusId, OrderType, Routes } from '@config/constants'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
 import { Modal } from '@ui/Modal/Modal'
@@ -19,58 +19,7 @@ import { ConfirmRate } from './components/ConfirmRate/ConfirmRate'
 import { RateModal } from './components/RateModal/RateModal'
 
 interface OrderPageProps {
-	order?: {
-		id: string
-		name: string
-		type: string
-		size: string
-		weight: string
-		additionals: { stackability: boolean; lift: boolean }
-		routes: {
-			from: {
-				address: string
-				loadingReady: string
-				loadingWindow: string
-				deliveryDate: string
-				position: { lat: number; lng: number }
-			}
-			to: {
-				address: string
-				loadingReady: string
-				deliveryWindow: string
-				deliveryDate: string
-				position: { lat: number; lng: number }
-			}
-			polyline: [number, number][]
-		}
-		comments: string
-		//
-		price: string
-		vat: string
-		total: string
-		platform: string
-		//
-		deliveryTime: string
-		//
-		status:
-			| 'awaitingConfirmation'
-			| 'awaitingPayment'
-			| 'carrierMatched'
-			| 'awaitingPickup'
-			| 'inTransit'
-			| 'delivery'
-			| 'delivered'
-	}
-}
-
-const _statusId = {
-	awaitingConfirmation: 0,
-	awaitingPayment: 1,
-	carrierMatched: 2,
-	awaitingPickup: 3,
-	inTransit: 4,
-	delivery: 5,
-	delivered: 6,
+	order?: OrderType
 }
 
 const DEFAULT_LAT = 56.946845
@@ -82,7 +31,7 @@ export const OrderPage: FC<OrderPageProps> = ({ order }) => {
 	const [openRateDelivery, setOpenRateDelivery] = useState(false)
 
 	// @ts-ignore
-	const statusId = _statusId[order?.status]
+	const statusId = OrderStatusId[order?.status]
 
 	const myIcon: L.Icon = new L.Icon({
 		iconUrl: CustomIcon,

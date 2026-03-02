@@ -88,10 +88,9 @@
 					}
 				}
 
-				& .button {
-					border-style: solid;
-
-					@apply px-3 py-2 rounded-full bg-primary text-black font-normal text-xs;
+				& .link {
+					text-decoration: none;
+					@apply px-3 py-2 rounded-full bg-primary !text-black font-normal text-xs;
 					&:hover {
 						@apply bg-primary/90;
 					}

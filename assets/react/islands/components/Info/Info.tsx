@@ -1,6 +1,6 @@
 import { type FC, useState } from 'react'
 
-import { EMAIL, PHONE } from '@config/constants'
+import { EMAIL, PHONE, Routes } from '@config/constants'
 import { Popover } from '@radix-ui/themes'
 import { Icon } from '@ui/Icon/Icon'
 import { cn } from '@utils/cn'
@@ -9,6 +9,7 @@ import styles from './Info.module.css'
 
 interface InfoProps {
 	orders?: {
+		id: string
 		name: string
 		status: 'In Transit' | 'Delivered'
 		hours: number
@@ -90,9 +91,9 @@ export const Info: FC<InfoProps> = ({ orders }) => {
 											<span className={styles.subtitle}>{orders[currentOrder].status}</span>
 										</div>
 
-										<button type="button" className={styles.button}>
+										<a href={`${Routes.ORDERS}/${orders[currentOrder].id}`} className={styles.link}>
 											View details
-										</button>
+										</a>
 									</div>
 								</div>
 							)}

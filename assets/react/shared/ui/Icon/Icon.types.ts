@@ -42,6 +42,7 @@ export enum UIIconNames {
 	SWAP = 'Swap',
 	SEARCH = 'Search',
 	CHECK = 'Check',
+	PALLET = 'Pallet',
 	X_MARK = 'XMark',
 }
 

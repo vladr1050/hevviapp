@@ -1,5 +1,3 @@
-export { OrdersFiltersIsland } from './OrdersFiltersIsland'
-
 // COMPONENTS
 export { Header } from './components/Header/Header'
 export { Info } from './components/Info/Info'
