@@ -1,18 +1,19 @@
 import { type FC } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 
 import { FormActions } from '@config/constants'
-import { RadioGroup } from '@radix-ui/themes'
+import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
+import { RadioButtons } from '@ui/RadioButtons/RadioButtons'
 import { Textarea } from '@ui/Textarea/Textarea'
-import { cn } from '@utils/cn'
 
-import styles from './CancelRate.module.css'
+import styles from './CancelModal.module.css'
 
-interface CancelRateProps {
-	id: string | number | undefined
+interface CancelModalProps {
+	id: string
 	from: string
 	to: string
+	accountType: 'sender' | 'carrier'
 }
 
 type FormValues = {
@@ -20,7 +21,7 @@ type FormValues = {
 	text?: string
 }
 
-export const CancelRate: FC<CancelRateProps> = ({ id, from, to }) => {
+export const CancelModal: FC<CancelModalProps> = ({ id, from, to, accountType }) => {
 	const { control, register, watch } = useForm<FormValues>({
 		defaultValues: { radio: '1' },
 	})
@@ -28,7 +29,7 @@ export const CancelRate: FC<CancelRateProps> = ({ id, from, to }) => {
 	return (
 		<form className={styles.modal} method="POST" action={FormActions.CANCEL_ORDER}>
 			<div className={styles.icon}>
-				<Icon type="vehicle_check" size={60} />
+				<Icon type="sad_box" size={60} />
 			</div>
 
 			<div className={styles.textWrapper}>
@@ -42,22 +43,23 @@ export const CancelRate: FC<CancelRateProps> = ({ id, from, to }) => {
 			<div className={styles.subtitle}>If you decide to cancel, please mention the reason</div>
 
 			<div className={styles.wrapper}>
-				<Controller
+				<RadioButtons
 					control={control}
 					name="radio"
-					render={({ field: { value, onChange } }) => (
-						<RadioGroup.Root defaultValue="1" size="3" value={value} onValueChange={onChange}>
-							<RadioGroup.Item value="1" className={styles.radio}>
-								Didn’t like the price
-							</RadioGroup.Item>
-							<RadioGroup.Item value="2" className={styles.radio}>
-								Didn’t like the delivery time
-							</RadioGroup.Item>
-							<RadioGroup.Item value="3" className={styles.radio}>
-								Other
-							</RadioGroup.Item>
-						</RadioGroup.Root>
-					)}
+					defaultValue="1"
+					items={
+						accountType === 'sender'
+							? [
+									{ label: 'Didn’t like the price', value: '1' },
+									{ label: 'Didn’t like the delivery time', value: '2' },
+									{ label: 'Other', value: '3' },
+								]
+							: [
+									{ label: 'Reason 1', value: '1' },
+									{ label: 'Reason 2', value: '2' },
+									{ label: 'Other', value: '3' },
+								]
+					}
 				/>
 			</div>
 
@@ -70,9 +72,9 @@ export const CancelRate: FC<CancelRateProps> = ({ id, from, to }) => {
 				/>
 			)}
 
-			<button className={styles.button} type="submit" value="CANCEL_ORDER">
+			<Button type="submit" value="CANCEL_ORDER" className="!w-full" variant="transparent">
 				Cancel order
-			</button>
+			</Button>
 		</form>
 	)
 }

@@ -4,16 +4,16 @@
 {% block content %}
     <div>
         <!-- HEADER -->
-        <!-- <div 
+        <div 
             data-react-island="Header"
             data-props='{{ {
                 user: {
-                    image: "https://this-person-does-not-exist.com/img/avatar-gen6f2f32373cd507c06d51ea27c8e50ff1.jpg",
+                    image: "https://this-person-does-not-exist.com/img/avatar-gen9210579a4a447d3c07e3a5a03a5b51a3.jpg",
                     name: "Jeff Willson",
                     company: "Amazon",
                 },
             }|json_encode|e("html_attr") }}'
-        ></div> -->
+        ></div>
 
         <!--  -->
         <!--  -->
@@ -23,7 +23,7 @@
         <!-- PAGES -->
 
         <!-- LOGIN PAGE -->
-        <div data-react-island="LoginPage"></div>
+        <!-- <div data-react-island="LoginPage"></div> -->
 
         <!-- REGISTRATION PAGE -->
         <!-- <div data-react-island="RegistrationPage"></div> -->
@@ -67,7 +67,21 @@
                         total: " € 302.50",
                         platform: "Included",
                         deliveryTime: "~ 48 hours",
-                        status: "carrierMatched",
+                        sender: {
+                            image: "https://this-person-does-not-exist.com/img/avatar-gen9210579a4a447d3c07e3a5a03a5b51a3.jpg",
+                            name: "Jeff Willson",
+                            company: "Amazon",
+                        },
+
+                        status0: "awaitingConfirmation",
+                        status1: "awaitingPayment",
+                        status2: "carrierMatched",
+                        status3: "awaitingPickup",
+                        status4: "inTransit",
+                        status5: "delivery",
+                        status6: "delivered",
+
+                        status: "awaitingPayment",
                     },
                 ],
 
@@ -137,9 +151,12 @@
         ></div> -->
 
         <!-- ORDER PAGE -->
-        <!-- <div 
+        <div 
             data-react-island="OrderPage"
             data-props='{{ {
+                accountType1: "sender",
+                accountType: "carrier",
+
                 order: {
                     id: "123456",
                     name: "Benu Pharma stock refill, fragile",
@@ -174,6 +191,11 @@
                     total: " € 302.50",
                     platform: "Included",
                     deliveryTime: "~ 48 hours",
+                    sender: {
+                        image: "https://this-person-does-not-exist.com/img/avatar-gen9210579a4a447d3c07e3a5a03a5b51a3.jpg",
+                        name: "Jeff Willson",
+                        company: "Amazon",
+                    },
 
                     status0: "awaitingConfirmation",
                     status1: "awaitingPayment",
@@ -183,17 +205,17 @@
                     status5: "delivery",
                     status6: "delivered",
 
-                    status: "carrierMatched",
+                    status: "awaitingConfirmation",
                 },
             }|json_encode|e("html_attr") }}'
-        ></div> -->
+        ></div>
 
         <!-- PROFILE PAGE -->
         <!-- <div 
             data-react-island="ProfilePage"
             data-props='{{ {
                 user: {
-                    image: "https://this-person-does-not-exist.com/img/avatar-gen6f2f32373cd507c06d51ea27c8e50ff1.jpg",
+                    image: "https://this-person-does-not-exist.com/img/avatar-gen9210579a4a447d3c07e3a5a03a5b51a3.jpg",
                     name: "Jeff Willson",
                     company: "Amazon",
                     requisites: "Amazon Retail, SIA",
@@ -202,8 +224,8 @@
                     contacts: "+3712233445",
                     email: "jeff.willson@amazonretail.lv",
 
-                    accountType1: "Sender",
-                    accountType: "Carrier",
+                    accountType1: "sender",
+                    accountType: "carrier",
                 },
                 orders: {
                     total1: 10,

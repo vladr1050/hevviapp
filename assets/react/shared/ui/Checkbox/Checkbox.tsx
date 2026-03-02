@@ -12,6 +12,7 @@ interface CheckboxProps extends PropsWithChildren {
 	onChange?: (value: any) => void
 	required?: boolean
 	disabled?: boolean
+	disabledWithoutCss?: boolean
 	className?: string
 	alignTop?: boolean
 	color?: 'default' | 'green' | 'gray'
@@ -23,6 +24,7 @@ export const Checkbox: FC<CheckboxProps> = ({
 	onChange,
 	required,
 	disabled,
+	disabledWithoutCss,
 	className,
 	alignTop,
 	color = 'default',
@@ -41,6 +43,7 @@ export const Checkbox: FC<CheckboxProps> = ({
 				styles.checkbox,
 				{
 					[styles.disabled]: disabled,
+					[styles.disabledWithoutCss]: disabledWithoutCss,
 					[styles.green]: color === 'green',
 					[styles.gray]: color === 'gray',
 					[styles.default]: color === 'default',
@@ -53,7 +56,7 @@ export const Checkbox: FC<CheckboxProps> = ({
 					type="checkbox"
 					checked={isChecked}
 					required={required}
-					disabled={disabled}
+					disabled={disabled || disabledWithoutCss}
 					onChange={(e) => {
 						setIsChecked(e.target.checked)
 						onChange?.(e.target.checked)

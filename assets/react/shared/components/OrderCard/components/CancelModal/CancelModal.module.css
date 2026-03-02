@@ -26,21 +26,6 @@
 	}
 
 	& .subtitle {
-		@apply text-black/50 font-medium text-base text-center;
-	}
-
-	& .button {
-		@apply font-normal text-base text-black/50 bg-transparent transition-colors
-		p-3 rounded-xl
-		hover-hover:hover:text-black hover-none:active:text-black;
-		border: none;
-	}
-}
-
-.radio {
-	& > button {
-		&[data-state='checked']:before {
-			@apply bg-black;
-		}
+		@apply text-black/50 text-base text-center text-balance;
 	}
 }

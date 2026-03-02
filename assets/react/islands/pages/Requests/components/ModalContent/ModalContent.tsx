@@ -450,6 +450,7 @@ export const ModalContent: FC<ModalContentProps> = ({
 					>
 						<div className={styles.buttons}>
 							<button
+								type="button"
 								className={cn(styles.button, {
 									[styles.active]: watch('scheduleType') === 'pickup_ready',
 								})}
@@ -458,6 +459,7 @@ export const ModalContent: FC<ModalContentProps> = ({
 								Pickup ready
 							</button>
 							<button
+								type="button"
 								className={cn(styles.button, {
 									[styles.active]: watch('scheduleType') === 'pickup_later',
 								})}
@@ -466,6 +468,7 @@ export const ModalContent: FC<ModalContentProps> = ({
 								Pickup later
 							</button>
 							<button
+								type="button"
 								className={cn(styles.button, {
 									[styles.active]: watch('scheduleType') === 'deliver_at',
 								})}

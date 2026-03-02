@@ -1,0 +1,7 @@
+.radio {
+	& > button {
+		&[data-state='checked']:before {
+			@apply bg-black;
+		}
+	}
+}

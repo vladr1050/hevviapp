@@ -4,9 +4,9 @@ import { FormActions } from '@config/constants'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
 
-import styles from './ConfirmRate.module.css'
+import styles from './ConfirmModal.module.css'
 
-interface ConfirmRateProps {
+interface ConfirmModalProps {
 	id: string | number | undefined
 	from: string
 	to: string
@@ -20,7 +20,7 @@ type FormValues = {
 	id: string
 }
 
-export const ConfirmRate: FC<ConfirmRateProps> = ({ id, from, to, onClose, email }) => {
+export const ConfirmModal: FC<ConfirmModalProps> = ({ id, from, to, onClose, email }) => {
 	return (
 		<form className={styles.modal} method="POST" action={FormActions.RATE_ORDER}>
 			<div className={styles.icon}>

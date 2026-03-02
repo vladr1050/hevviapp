@@ -9,7 +9,7 @@
 
 			& .main {
 				@apply flex flex-col justify-end gap-20 
-			w-full h-[415px] px-16 py-14 rounded-[30px];
+				w-full h-[415px] px-16 py-14 rounded-[30px];
 
 				background: #ebeaea;
 				background:
@@ -27,7 +27,7 @@
 
 				& .inputButtons {
 					@apply bg-white rounded-full p-[6px] overflow-hidden 
-				grid grid-cols-[1fr,1fr,1fr,auto] gap-1;
+					grid grid-cols-[1fr,1fr,1fr,auto] gap-1;
 
 					& .inputButton {
 						&:not(:first-child) {
@@ -97,8 +97,8 @@
 
 				& .order {
 					@apply w-full bg-white rounded-full py-4 px-7 
-				font-normal text-xs text-black/80
-				grid grid-cols-[1fr,1fr,1fr,auto] gap-2 items-center overflow-hidden;
+					font-normal text-xs text-black/80
+					grid grid-cols-[1fr,1fr,1fr,auto] gap-2 items-center overflow-hidden;
 
 					& .name {
 						white-space: nowrap;
@@ -107,8 +107,8 @@
 					}
 
 					& .button {
-						@apply rounded-full py-2 px-6 bg-[#F9F9F9] text-[10px] font-medium text-[#404040] transition-colors
-					hover-hover:hover:bg-gray-200 hover-none:active:bg-slate-200;
+						@apply rounded-full py-2 px-6 bg-[#F9F9F9] text-[10px] font-medium text-[#404040] transition-colors 
+						hover-hover:hover:bg-gray-200 hover-none:active:bg-slate-200;
 						border: none;
 						outline: none;
 					}
@@ -118,185 +118,55 @@
 	}
 
 	&.carrier {
-		@apply gap-[30px];
+		@apply gap-[78px];
 
-		& .title {
-			@apply font-semibold text-3xl text-black m-0;
+		& .main {
+			@apply flex flex-col gap-[30px];
 
-			& span {
-				@apply font-normal;
-			}
-		}
+			& .title {
+				@apply font-semibold text-3xl text-black m-0;
 
-		& .empty {
-			@apply flex flex-col items-center justify-center gap-14;
-
-			& .icon {
-				@apply text-black translate-y-10;
-			}
-
-			& .text {
-				@apply flex flex-col items-center gap-6;
-
-				& .title {
-					@apply font-medium text-2xl text-black m-0;
-				}
-
-				& .subtitle {
-					@apply text-base text-[#616161] m-0;
+				& span {
+					@apply font-normal;
 				}
 			}
 
-			& .link {
-				text-decoration: none;
+			& .empty {
+				@apply flex flex-col items-center justify-center gap-14;
 
-				@apply px-[30px] py-4 rounded-full bg-black 
+				& .icon {
+					@apply text-black translate-y-10;
+				}
+
+				& .text {
+					@apply flex flex-col items-center gap-6;
+
+					& .title {
+						@apply font-medium text-2xl text-black m-0;
+					}
+
+					& .subtitle {
+						@apply text-base text-[#616161] m-0;
+					}
+				}
+
+				& .link {
+					text-decoration: none;
+
+					@apply px-[30px] py-4 rounded-full bg-black 
 				!text-white font-medium text-base transition-colors;
-				&:hover {
-					@apply bg-primary !text-black;
+					&:hover {
+						@apply bg-primary !text-black;
+					}
 				}
 			}
 		}
 
-		& .card {
-			@apply h-[570px] rounded-[30px] shadow-md bg-white overflow-hidden
-			grid grid-cols-2 gap-14 p-7 pl-9;
+		& .footer {
+			@apply flex items-center justify-center gap-16;
 
-			& .left {
-				@apply flex flex-col gap-3;
-
-				& .items {
-					@apply flex flex-col gap-3;
-				}
-
-				& .row {
-					@apply grid grid-cols-3 gap-4 items-center;
-				}
-
-				& .routeItem {
-					@apply grid grid-cols-[20px,1fr] gap-5 w-full;
-
-					& .routeWrapper {
-						@apply flex mt-7;
-
-						& .route {
-							@apply h-[134px] w-[3px] bg-black relative;
-
-							&:before,
-							&:after {
-								content: '';
-								@apply absolute h-4 w-4 bg-white rounded-full
-									left-0 -translate-x-[6.5px];
-								border: 3px solid black;
-							}
-
-							&:before {
-								@apply -top-1;
-							}
-
-							&:after {
-								@apply -bottom-1;
-							}
-						}
-					}
-				}
-
-				& .hr {
-					@apply w-full h-[1px] bg-[#CCCCCC];
-				}
-
-				& .item {
-					@apply flex flex-col gap-1;
-
-					& .label {
-						@apply text-black/40 text-xs;
-					}
-
-					& .value {
-						@apply text-black text-base font-medium;
-						white-space: nowrap;
-						overflow: hidden;
-						text-overflow: ellipsis;
-					}
-
-					& .comments {
-						@apply max-h-[100px] overflow-y-auto;
-					}
-
-					& .additionals {
-						@apply flex items-center gap-11;
-
-						& .additional {
-							@apply flex items-center gap-2 text-base font-medium text-black;
-
-							& .icon {
-								@apply w-10 h-10 bg-primary rounded-full flex items-center justify-center text-black;
-							}
-						}
-					}
-				}
-			}
-
-			& .right {
-				@apply h-[510px] rounded-[14px] relative overflow-hidden bg-black/10;
-
-				& .id {
-					@apply absolute top-3 right-3 bg-white rounded-2xl shadow-md
-					flex flex-col px-8 py-3;
-
-					& .label {
-						@apply font-medium text-black/40 text-xs;
-					}
-
-					& .value {
-						@apply text-black text-base font-medium;
-					}
-				}
-
-				& .info {
-					@apply absolute bottom-5 left-5 right-5 p-8 bg-white rounded-[30px] shadow-md z-10
-					flex flex-col gap-5;
-
-					& .top {
-						@apply grid grid-cols-4 gap-4;
-
-						& .item {
-							@apply flex flex-col gap-1;
-
-							& .label {
-								@apply text-black/40 text-xs;
-							}
-
-							& .value {
-								@apply text-black text-base font-medium;
-							}
-						}
-					}
-
-					& .hr {
-						@apply w-full h-[1px] bg-[#CCCCCC];
-					}
-
-					& .bottom {
-						@apply flex items-center justify-between gap-5;
-
-						& .deliveryWrapper {
-							@apply flex items-center gap-3;
-
-							& .icon {
-								@apply w-12 h-12 bg-primary rounded-full flex items-center justify-center text-black;
-							}
-
-							& .text {
-								@apply flex flex-col gap-0 text-black/40 text-xs;
-
-								& span {
-									@apply text-black text-base font-medium;
-								}
-							}
-						}
-					}
-				}
+			& .item {
+				@apply flex items-center gap-3 text-black/40 text-sm font-medium;
 			}
 		}
 	}
