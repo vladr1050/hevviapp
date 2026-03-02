@@ -1,0 +1,11 @@
+.content {
+	@apply overflow-visible;
+
+	& .close {
+		border-style: solid;
+
+		@apply absolute top-4 right-4 flex items-center justify-center h-8 w-8 rounded-full border-transparent transition-[background]
+		bg-gray-200
+		hover-hover:hover:bg-gray-300 hover-none:active:bg-gray-300;
+	}
+}

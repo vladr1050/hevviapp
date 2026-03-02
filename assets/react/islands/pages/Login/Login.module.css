@@ -1,0 +1,32 @@
+.page {
+	@apply flex items-center justify-center min-h-screen h-full py-16;
+
+	& .content {
+		@apply grid grid-cols-[auto,400px] max-w-[1010px] w-full min-h-[620px] rounded-[30px];
+
+		background: #ebeaea;
+		background: linear-gradient(180deg, rgba(235, 234, 234, 1) 0%, rgba(214, 214, 214, 1) 100%);
+
+		& .left {
+		}
+
+		& .right {
+			@apply flex flex-col items-center justify-between gap-10 p-16 bg-white rounded-[30px] shadow-2xl;
+
+			& .title {
+				@apply font-semibold text-3xl text-black text-center m-0;
+			}
+
+			& .inputs {
+				@apply flex flex-col gap-6 w-full;
+
+				& .resetPassword {
+					@apply font-medium text-xs text-gray-500 cursor-pointer underline ml-5 !important;
+					background: transparent;
+					border: none;
+					text-decoration: none;
+				}
+			}
+		}
+	}
+}

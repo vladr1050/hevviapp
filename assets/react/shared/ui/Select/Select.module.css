@@ -1,0 +1,43 @@
+.trigger {
+	@apply py-6 px-5 w-full transition-colors;
+	box-shadow: none !important;
+	outline: none !important;
+	border: 1px solid rgba(0, 0, 0, 0.2) !important;
+
+	&:focus,
+	&:hover {
+		border: 1px solid rgba(0, 0, 0, 1) !important;
+	}
+}
+
+.content {
+	@apply !rounded-3xl !overflow-hidden translate-x-1;
+}
+
+.item {
+	@apply text-black font-medium text-base px-5 py-3 min-h-10 rounded-full transition-colors cursor-pointer;
+
+	&[data-highlighted],
+	&[data-state='checked'] {
+		&.black {
+			@apply bg-black text-white;
+		}
+
+		&.gray {
+			@apply bg-black/10;
+		}
+
+		&.green {
+			@apply bg-primary;
+		}
+	}
+
+	&[data-disabled] {
+		@apply opacity-50 cursor-not-allowed pointer-events-none;
+	}
+
+	& span[aria-hidden='true'] {
+		/* @apply bg-red-500; */
+		@apply hidden;
+	}
+}

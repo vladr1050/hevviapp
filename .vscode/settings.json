@@ -1,0 +1,14 @@
+{
+    "cSpell.words": [
+        "Additionals",
+        "backoffice",
+        "heroui",
+        "Hevvi",
+        "hotwired",
+        "Pielietot",
+        "stackability",
+        "symfony"
+    ],
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+}

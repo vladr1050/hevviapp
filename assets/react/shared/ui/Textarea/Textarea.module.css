@@ -1,0 +1,30 @@
+.wrapper {
+	@apply flex flex-col gap-2;
+
+	& .label {
+		@apply text-xs font-medium text-black ml-5;
+	}
+
+	& .input {
+		border-style: solid;
+		@apply outline-none w-full px-5 py-[11px] rounded-3xl border border-gray-300 text-base text-black transition-colors
+		hover-hover:hover:border-black hover-none:active:border-black;
+		font-weight: 400 !important;
+
+		&.disableResize {
+			resize: none !important;
+		}
+
+		&[disabled] {
+			@apply bg-gray-200 text-gray-500 border-gray-200 cursor-not-allowed;
+		}
+
+		&.error {
+			@apply border-red-600;
+		}
+
+		&:focus {
+			@apply border-black;
+		}
+	}
+}

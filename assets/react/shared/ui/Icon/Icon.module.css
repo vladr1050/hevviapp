@@ -1,0 +1,22 @@
+.wrapper {
+	@apply flex items-center justify-center shrink-0;
+
+	& .icon {
+		@apply inline-block w-auto;
+
+		& svg {
+			height: 100%;
+			width: auto;
+			aspect-ratio: 1;
+		}
+
+		&.currentColor {
+			& svg *[fill] {
+				fill: currentColor;
+			}
+			& svg *[stroke] {
+				stroke: currentColor;
+			}
+		}
+	}
+}

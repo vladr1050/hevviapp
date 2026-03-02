@@ -94,7 +94,11 @@ Encore
 		// '@shared': path.resolve(__dirname, 'assets/react/shared'),
 		// "@islands": path.resolve(__dirname, "assets/react/islands"),
 		'@ui': path.resolve(__dirname, 'assets/react/shared/ui'),
-		'@components': path.resolve(__dirname, 'assets/react/shared/ui'),
+		'@hooks': path.resolve(__dirname, 'assets/react/shared/hooks'),
+		'@utils': path.resolve(__dirname, 'assets/react/shared/utils'),
+		'@config': path.resolve(__dirname, 'assets/react/shared/config'),
+		'@pages': path.resolve(__dirname, 'assets/react/shared/pages'),
+		'@components': path.resolve(__dirname, 'assets/react/shared/components'),
 	})
 
 // uncomment to get integrity="..." attributes on your script & link tags

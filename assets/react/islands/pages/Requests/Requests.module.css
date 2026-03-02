@@ -1,0 +1,115 @@
+.page {
+	@apply flex flex-col gap-[88px] min-h-screen h-full py-16;
+
+	& .mainWrapper {
+		@apply flex flex-col gap-11 justify-center;
+
+		& .main {
+			@apply flex flex-col justify-end gap-20 
+			w-full h-[415px] px-16 py-14 rounded-[30px];
+
+			background: #ebeaea;
+			background:
+				url('./bg.png') no-repeat calc(100% + 25px) -150px / contain,
+				linear-gradient(180deg, rgba(235, 234, 234, 1) 0%, rgba(214, 214, 214, 1) 100%);
+
+			& .title {
+				& span {
+					@apply block font-semibold text-3xl text-black m-0;
+					&.light {
+						@apply text-black/50;
+					}
+				}
+			}
+
+			& .inputButtons {
+				@apply bg-white rounded-full p-[6px] overflow-hidden 
+				grid grid-cols-[1fr,1fr,1fr,auto] gap-1;
+
+				& .inputButton {
+					&:not(:first-child) {
+						&:before {
+							content: '';
+							@apply bg-black/50 h-[75%] w-[1px] absolute -left-0.5 top-[50%] -translate-y-[50%];
+						}
+					}
+				}
+			}
+		}
+
+		& .description {
+			@apply flex items-center justify-center gap-16;
+
+			& .item {
+				@apply flex items-center gap-3 text-sm text-gray-400 font-medium;
+
+				& .icon {
+					@apply w-5 h-5 flex items-center justify-center;
+				}
+			}
+		}
+	}
+
+	& .ordersWrapper {
+		@apply flex flex-col gap-9 px-16;
+
+		& .title {
+			@apply font-semibold text-3xl text-black m-0;
+		}
+
+		& .description {
+			@apply flex items-center justify-between gap-4;
+
+			& .item {
+				@apply flex items-center gap-6;
+
+				& .icon {
+					@apply h-[60px] w-[60px] bg-primary rounded-full flex items-center justify-center text-black;
+				}
+
+				& .text {
+					@apply font-medium text-base text-black/50 m-0 leading-4;
+
+					& span {
+						@apply block;
+					}
+				}
+			}
+		}
+
+		& .header {
+			@apply grid grid-cols-2 gap-5;
+
+			& .item {
+				@apply flex items-center gap-3 font-medium text-base text-black;
+
+				& .icon {
+					@apply w-10 h-10 flex items-center justify-center bg-black rounded-full text-white;
+				}
+			}
+		}
+
+		& .orders {
+			@apply grid grid-cols-2 gap-x-5 gap-y-1;
+
+			& .order {
+				@apply w-full bg-white rounded-full py-4 px-7 
+				font-normal text-xs text-black/80
+				grid grid-cols-[1fr,1fr,1fr,auto] gap-2 items-center overflow-hidden;
+
+				& .name {
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
+				}
+
+				& .button {
+					@apply rounded-full py-2 px-6 bg-[#F9F9F9] text-[10px] font-medium text-[#404040] transition-colors
+					hover-hover:hover:bg-gray-200 hover-none:active:bg-slate-200;
+					border: none;
+					outline: none;
+				}
+			}
+		}
+	}
+}

@@ -27,19 +27,25 @@
 		"webpack-cli": "^5.1.0"
 	},
 	"dependencies": {
+		"@hookform/resolvers": "^5.2.2",
 		"@radix-ui/themes": "^3.3.0",
 		"@turf/dissolve": "^7.3.4",
 		"@turf/helpers": "^7.3.4",
 		"@turf/union": "^7.3.4",
+		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"date-fns": "^4.1.0",
 		"h3-js": "^4.4.0",
 		"leaflet": "^1.9.4",
 		"leaflet-draw": "^1.0.4",
 		"react": "^19.2.4",
+		"react-day-picker": "^9.14.0",
 		"react-dom": "^19.2.4",
+		"react-hook-form": "^7.71.2",
+		"react-leaflet": "^5.0.0-rc.2",
 		"tailwind-merge": "^2.6.0",
-		"tailwindcss-touch": "^1.0.1"
+		"tailwindcss-touch": "^1.0.1",
+		"zod": "^4.3.6"
 	},
 	"license": "UNLICENSED",
 	"private": true,

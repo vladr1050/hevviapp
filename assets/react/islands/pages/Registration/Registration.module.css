@@ -1,0 +1,78 @@
+.page {
+	@apply flex items-center justify-center min-h-screen h-full py-16;
+
+	& .content {
+		@apply grid grid-cols-[auto,400px] max-w-[1010px] w-full min-h-[620px];
+		@apply rounded-[30px];
+
+		background: #ebeaea;
+		background: linear-gradient(180deg, rgba(235, 234, 234, 1) 0%, rgba(214, 214, 214, 1) 100%);
+
+		& .left {
+			@apply flex items-end p-[60px];
+			@apply rounded-l-[30px] w-[calc(100%+32px)] !important;
+
+			&.sender {
+				background: url('./bg-sender.jpg') no-repeat left top / cover;
+			}
+			&.carrier {
+				background: url('./bg-carrier.png') no-repeat 70px 20px;
+			}
+
+			& .info {
+				@apply flex flex-col gap-9;
+
+				& h2 {
+					@apply m-0 font-semibold text-[40px] text-black leading-9;
+					font-family: 'Instrument_Sans', sans-serif;
+				}
+
+				& .infoWrapper {
+					@apply flex items-center gap-12;
+
+					& .item {
+						@apply flex items-center gap-4;
+
+						& .iconWrapper {
+							@apply w-14 h-14 rounded-full flex items-center justify-center bg-primary text-black;
+						}
+
+						& > span {
+							@apply font-semibold text-base text-black;
+						}
+					}
+				}
+			}
+		}
+
+		& .right {
+			@apply flex flex-col items-center justify-between gap-10 p-16 bg-white rounded-[30px] shadow-2xl;
+
+			& .titleWrapper {
+				@apply flex flex-col gap-4;
+
+				& .title {
+					@apply font-semibold text-3xl text-black text-center m-0;
+				}
+
+				& .tabs {
+					& .item {
+						@apply flex items-center justify-center gap-3;
+
+						& .iconWrapper {
+							@apply w-10 h-10 rounded-full flex items-center justify-center bg-primary animate-fade;
+						}
+					}
+				}
+			}
+
+			& .inputs {
+				@apply flex flex-col gap-3 w-full min-h-[232px];
+
+				& .info {
+					@apply text-xs text-balance text-center ml-5;
+				}
+			}
+		}
+	}
+}

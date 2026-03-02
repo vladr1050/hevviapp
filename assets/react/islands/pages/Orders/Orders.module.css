@@ -1,0 +1,68 @@
+.page {
+	@apply flex flex-col gap-[54px] min-h-screen h-full py-16;
+
+	& .title {
+		@apply font-bold text-3xl text-black m-0;
+
+		& span {
+			@apply font-normal;
+		}
+	}
+
+	& .tableWrapper {
+		@apply flex flex-col gap-5;
+
+		& .header {
+			@apply grid grid-cols-[100px,1fr,100px,150px,120px,80px,100px,220px] gap-8 px-8;
+
+			& span {
+				@apply font-normal text-base text-black/50;
+			}
+		}
+
+		& .items {
+			@apply flex flex-col gap-6;
+
+			& .item {
+				@apply grid grid-cols-[100px,1fr,100px,150px,120px,80px,100px,220px] gap-8 px-8 py-7;
+				@apply bg-white rounded-full items-center;
+
+				& span {
+					@apply font-medium text-base text-black;
+				}
+
+				& .comment {
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
+				}
+
+				& .status {
+					@apply p-[6px] pl-4 rounded-full bg-[#C9C9C9] text-white font-medium 
+					flex items-center justify-between gap-3;
+
+					&.inTransit {
+						@apply bg-primary text-black;
+					}
+
+					& .text {
+						@apply flex items-center gap-2 text-base;
+
+						& .dot {
+							@apply w-3 h-3 rounded-full bg-black/20;
+						}
+					}
+
+					& .link {
+						text-decoration: none;
+						@apply bg-white !text-black font-medium text-base 
+						rounded-full shadow-md py-[6px] px-7 transition-colors
+						hover-hover:hover:bg-slate-100 hover-none:active:bg-slate-100;
+
+						/* @apply font-medium text-base text-black !important; */
+					}
+				}
+			}
+		}
+	}
+}

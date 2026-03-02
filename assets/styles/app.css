@@ -62,9 +62,16 @@
 
 
 body {
-    background-color: lightgray;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-family: 'Instrument_Sans', sans-serif;
-    font-weight: 400;
+  background-color: lightgray;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Instrument_Sans', sans-serif;
+  font-weight: 400;
+  background: #f9f9f9;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: 'Instrument_Sans', sans-serif;
+  font-weight: 400;
 }

@@ -1,0 +1,35 @@
+.modal {
+	@apply flex flex-col items-center justify-center gap-8 w-[210px] mx-auto;
+
+	& .icon {
+		@apply w-[120px] h-[120px] rounded-full bg-primary flex items-center justify-center text-black;
+	}
+
+	& .textWrapper {
+		@apply flex flex-col gap-2 items-center justify-center;
+
+		& span {
+			@apply text-center;
+
+			&:first-child {
+				@apply text-black/50 font-medium text-base;
+			}
+
+			&:nth-child(2) {
+				@apply text-black font-medium text-2xl;
+			}
+
+			&:last-child {
+				@apply text-black font-medium text-base;
+			}
+		}
+	}
+
+	& .title {
+		@apply text-black text-base text-center;
+	}
+
+	& .subtitle {
+		@apply text-black/50 font-medium text-base text-center;
+	}
+}

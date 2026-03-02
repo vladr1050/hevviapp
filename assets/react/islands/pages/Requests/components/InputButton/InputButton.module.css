@@ -1,0 +1,12 @@
+.button {
+	@apply flex flex-col items-start justify-center pl-7 bg-transparent relative rounded-full;
+	border: none;
+
+	& [data-name='label'] {
+		@apply font-medium text-xs m-0;
+	}
+
+	& [data-name='placeholder'] {
+		@apply font-normal text-base text-black/50;
+	}
+}

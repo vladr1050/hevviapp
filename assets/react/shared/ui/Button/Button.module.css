@@ -1,0 +1,33 @@
+.button {
+	border-style: solid;
+
+	@apply px-[26px] py-[10px] rounded-full border-2 transition-colors font-medium;
+
+	&:not(:disabled) {
+		@apply text-white bg-black border-black 
+		hover-hover:hover:text-black hover-none:active:text-black
+		hover-hover:hover:bg-primary hover-none:active:bg-primary
+		hover-hover:hover:border-primary hover-none:active:border-primary;
+	}
+
+	&.outline {
+		&:not(:disabled) {
+			@apply text-black bg-white 
+			hover-hover:hover:text-black hover-none:active:text-black
+			hover-hover:hover:bg-white hover-none:active:bg-white
+			hover-hover:hover:border-primary hover-none:active:border-primary;
+		}
+	}
+
+	&.outline {
+		@apply bg-white;
+	}
+
+	&[disabled] {
+		@apply cursor-not-allowed bg-black/20 text-white border-transparent;
+
+		&.outline {
+			@apply bg-white text-black/20 border-black/20;
+		}
+	}
+}

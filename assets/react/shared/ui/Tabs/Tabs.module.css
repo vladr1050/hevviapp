@@ -1,0 +1,31 @@
+.wrapper {
+	box-sizing: content-box;
+	border: 6px solid #f2f2f2 !important;
+	@apply min-h-12;
+
+	& > div :before {
+		@apply shadow-sm;
+	}
+
+	& .tab {
+		@apply cursor-pointer rounded-full w-[200px];
+
+		& span {
+			@apply !font-medium;
+
+			&:first-child {
+				@apply transition-opacity;
+			}
+		}
+
+		&[data-state='off'] {
+			& span {
+				@apply text-gray-500;
+
+				&:first-child {
+					@apply opacity-0;
+				}
+			}
+		}
+	}
+}

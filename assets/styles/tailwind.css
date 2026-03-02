@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.tw-container {
+	padding-left: 1rem;
+	padding-right: 1rem;
+	width: 100%;
+	max-width: calc(1320px + 1rem + 1rem);
+	margin-left: auto;
+	margin-right: auto;
+	transition: all .2s ease-in-out;
+
+	@media (min-width: 768px) and (max-width: 1024px) {
+		padding-left: 2rem;
+		padding-right: 2rem;
+		max-width: calc(1320px + 2rem + 2rem);
+	}
+
+	@media (min-width: 1024px) {
+		padding-left: 3rem;
+		padding-right: 3rem;
+		max-width: calc(1320px + 3rem + 3rem);
+	}
+}
+
+
+.radix-themes:where([data-is-root-theme='true']) {
+  min-height: auto !important; /* или unset */
+}
+@supports (min-height: 100dvh) {
+  .radix-themes:where([data-is-root-theme='true']) {
+    min-height: auto !important;
+  }
+}
+
+.radix-themes:where([data-has-background='true']) {
+	background-color: #F3F3F3 !important;
+}
+
+body {
+	background-color: #F3F3F3 !important;
+}
+
+
+input {
+	&::-webkit-outer-spin-button,
+	&::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	/* Firefox */
+	&[type='number'] {
+		-moz-appearance: textfield;
+		appearance: textfield;
+	}
+}

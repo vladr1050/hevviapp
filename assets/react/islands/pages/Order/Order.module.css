@@ -1,0 +1,254 @@
+.page {
+	@apply flex flex-col gap-[54px] min-h-screen h-full py-16;
+
+	& .content {
+		@apply grid grid-cols-[52px,1fr] items-start gap-8 w-full h-full;
+
+		& .back {
+			text-decoration: none;
+			@apply bg-white w-[52px] h-[52px] rounded-full 
+			flex items-center justify-center cursor-pointer 
+			!text-black shadow-md mt-6 transition-colors
+			hover-hover:hover:bg-gray-100 hover-none:active:bg-gray-100;
+		}
+
+		& .card {
+			/* @apply flex flex-col gap-[54px] min-h-screen h-full py-16; */
+			@apply w-full h-full bg-white shadow-md p-8 rounded-[32px]
+			grid grid-cols-2 gap-9 relative;
+
+			& .left {
+				@apply flex flex-col gap-4;
+
+				& .titleWrapper {
+					@apply flex items-center gap-10;
+
+					& .title {
+						@apply font-semibold text-3xl text-black m-0;
+					}
+
+					& .id {
+						@apply flex flex-col gap-0 text-black/50 font-medium text-xs;
+
+						& span {
+							@apply text-black text-base;
+						}
+					}
+				}
+
+				& .items {
+					@apply flex flex-col gap-3;
+
+					& .row {
+						@apply grid grid-cols-3 gap-4 items-center;
+					}
+
+					& .routeItem {
+						@apply grid grid-cols-[20px,1fr] gap-5 w-full;
+
+						& .routeWrapper {
+							@apply flex mt-7;
+
+							& .route {
+								@apply h-[144px] w-[3px] bg-black relative;
+
+								&:before,
+								&:after {
+									content: '';
+									@apply absolute h-4 w-4 bg-white rounded-full
+									left-0 -translate-x-[6.5px];
+									border: 3px solid black;
+								}
+
+								&:before {
+									@apply -top-1;
+								}
+
+								&:after {
+									@apply -bottom-1;
+								}
+							}
+						}
+					}
+
+					& .hr {
+						@apply w-full h-[1px] bg-[#CCCCCC];
+					}
+
+					& .item {
+						@apply flex flex-col gap-1;
+
+						& .label {
+							@apply text-black/40 text-xs;
+						}
+
+						& .value {
+							@apply text-black text-base font-medium;
+							white-space: nowrap;
+							overflow: hidden;
+							text-overflow: ellipsis;
+						}
+
+						& .comments {
+							@apply max-h-[100px] overflow-y-auto;
+						}
+
+						& .additionals {
+							@apply flex items-center gap-11;
+
+							& .additional {
+								@apply flex items-center gap-2 text-base font-medium text-black;
+
+								& .icon {
+									@apply w-10 h-10 bg-primary rounded-full flex items-center justify-center text-black;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			& .right {
+				@apply h-[630px] rounded-[14px] relative overflow-hidden bg-black/10;
+
+				& .info {
+					@apply absolute bottom-5 left-5 right-5 p-8 bg-white rounded-[30px] shadow-md z-10
+					flex flex-col gap-5;
+
+					& .top {
+						@apply grid grid-cols-4 gap-4;
+
+						& .item {
+							@apply flex flex-col gap-1;
+
+							& .label {
+								@apply text-black/40 text-xs;
+							}
+
+							& .value {
+								@apply text-black text-base font-medium;
+							}
+						}
+					}
+
+					& .hr {
+						@apply w-full h-[1px] bg-[#CCCCCC];
+					}
+
+					& .bottom {
+						@apply flex items-center justify-between gap-5;
+
+						& .deliveryWrapper {
+							@apply flex items-center gap-3;
+
+							& .icon {
+								@apply w-12 h-12 bg-primary rounded-full flex items-center justify-center text-black;
+							}
+
+							& .text {
+								@apply flex flex-col gap-0 text-black/40 text-xs;
+
+								& span {
+									@apply text-black text-base font-medium;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			& .statusInfo {
+				@apply absolute top-0 bottom-0 right-0 p-12 bg-white rounded-[32px] shadow-md z-10
+				flex flex-col items-center justify-between gap-4;
+
+				& .title {
+					@apply font-bold text-xl text-center;
+				}
+
+				& .statusWrapper {
+					@apply w-[180px] flex flex-col items-end;
+
+					& .status {
+						@apply h-10 my-2 flex items-center justify-between gap-5 px-4
+						w-full text-base text-[#A9A9A9] font-medium relative;
+
+						& .dot {
+							border: 2px solid #a9a9a9;
+							@apply w-5 h-5 bg-transparent rounded-full shrink-0;
+						}
+
+						& .statusTitleWrapper {
+							@apply flex flex-col gap-0;
+
+							& span {
+								@apply text-xs font-medium leading-[12px];
+							}
+						}
+
+						& .active {
+							@apply absolute left-0 -top-4 z-[2] w-[188px] h-[72px] 
+							bg-white shadow-md rounded-2xl py-4 pl-5 pr-[10px]
+							text-black font-medium text-base
+							flex items-center justify-between gap-4;
+
+							& .icon {
+								@apply w-12 h-12 shrink-0 flex items-center justify-center text-black;
+
+								&.activeIcon {
+									@apply rounded-full bg-primary;
+								}
+							}
+						}
+					}
+
+					& .line {
+						@apply w-[3px] h-10 bg-[#A9A9A9] mr-6;
+					}
+				}
+
+				& .button {
+					/* @apply w-full; */
+					@apply underline font-medium text-base text-black px-8 py-4 rounded-lg bg-transparent transition-colors
+					hover-hover:hover:bg-slate-100 hover-none:active:bg-slate-100;
+					border: none;
+				}
+			}
+		}
+	}
+}
+
+.modal {
+	@apply flex flex-col items-center justify-center gap-8 w-[210px] mx-auto;
+
+	& .icon {
+		@apply w-[120px] h-[120px] rounded-full bg-primary flex items-center justify-center text-black;
+	}
+
+	& .textWrapper {
+		@apply flex flex-col gap-2 items-center justify-center;
+
+		& span {
+			@apply text-center;
+
+			&:first-child {
+				@apply text-black/50 font-medium text-base;
+			}
+
+			&:nth-child(2) {
+				@apply text-black font-medium text-2xl;
+			}
+
+			&:last-child {
+				@apply text-black font-medium text-base;
+			}
+		}
+	}
+
+	& .title {
+		@apply text-black text-base text-center;
+	}
+
+	& .subtitle {
+		@apply text-black/50 font-medium text-base text-center;
+	}
+}

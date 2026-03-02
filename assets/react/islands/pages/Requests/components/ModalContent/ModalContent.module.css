@@ -1,0 +1,375 @@
+.modal {
+	@apply flex flex-col gap-14;
+
+	& .header {
+		@apply flex flex-col gap-4;
+
+		& .title {
+			@apply font-bold text-xl;
+
+			& span {
+				@apply font-normal;
+			}
+		}
+
+		& .inputButtons {
+			@apply bg-[#F2F2F2] rounded-full p-[6px] overflow-hidden
+			grid grid-cols-[auto,auto,auto,142px] gap-0;
+
+			& .inputButton {
+				@apply h-[56px] px-6 shrink-0 !important;
+				@apply transition-all;
+
+				& [data-name='label'],
+				& [data-name='placeholder'],
+				&:before {
+					animation: fade1 0.5s ease-in-out;
+				}
+
+				&.active {
+					@apply items-center justify-start flex-row gap-2 !important;
+
+					& [data-name='label'] {
+						@apply font-medium text-base flex items-center gap-2;
+
+						& .icon {
+							@apply w-10 h-10 rounded-full flex items-center justify-center bg-primary text-black;
+						}
+					}
+					& [data-name='placeholder'] {
+						@apply font-normal text-base;
+					}
+				}
+			}
+
+			&.whatActive {
+				@apply grid-cols-[1fr,auto,auto,142px] !important;
+
+				& .inputButton {
+					&:first-child {
+						@apply bg-white shadow-sm;
+					}
+
+					&:nth-child(3):before {
+						content: '';
+						@apply bg-black/50 h-[75%] w-[1px] absolute left-0 top-[50%] -translate-y-[50%];
+						animation: fade1 0.5s ease-in-out;
+					}
+				}
+			}
+
+			&.whereActive {
+				@apply grid-cols-[auto,1fr,auto,142px] !important;
+
+				& .inputButton {
+					&:nth-child(2) {
+						@apply bg-white shadow-sm;
+					}
+				}
+			}
+
+			&.whenActive {
+				@apply grid-cols-[auto,auto,1fr,142px] !important;
+
+				& .inputButton {
+					&:nth-child(3) {
+						@apply bg-white shadow-sm;
+					}
+
+					&:nth-child(2):before {
+						content: '';
+						@apply bg-black/50 h-[75%] w-[1px] absolute left-0 top-[50%] -translate-y-[50%];
+						animation: fade1 0.5s ease-in-out;
+					}
+				}
+			}
+		}
+	}
+
+	& .body {
+		@apply grid grid-cols-2 gap-12 min-h-[360px];
+		animation: fade1 0.5s ease-in-out;
+
+		&.whatActive {
+			& .left {
+				@apply flex flex-col gap-8;
+
+				& .top {
+					@apply grid grid-cols-[1fr,200px] gap-6 w-full;
+
+					& .amount {
+						@apply flex items-center justify-center gap-4;
+						& > span {
+							@apply font-medium text-xs;
+						}
+
+						& .wrapper {
+							@apply flex items-center justify-center gap-3;
+
+							& > span {
+								@apply min-w-5 text-center font-medium text-base;
+								font-variant-numeric: tabular-nums;
+							}
+
+							& .button {
+								@apply bg-white rounded-full w-12 h-12 flex items-center justify-center text-black shrink-0 transition-colors;
+								border: 1px solid #000;
+
+								&:disabled,
+								&[disabled] {
+									@apply text-[#D4D4D4];
+									border: 1px solid #d4d4d4;
+								}
+							}
+						}
+					}
+				}
+
+				& .items {
+					@apply flex flex-col gap-6;
+
+					& .customSlider {
+						@apply grid grid-cols-[1fr,130px] w-full gap-6;
+
+						& .description {
+							@apply absolute top-0 right-0 font-medium text-xs text-black/50;
+						}
+
+						& .inputWrapper {
+							@apply h-12 text-center rounded-full flex items-center justify-center gap-0;
+							border: 1px solid #000;
+
+							&.disabled {
+								@apply text-black/50 border-black/50 !important;
+							}
+
+							& .input {
+								@apply text-center;
+								border: none;
+								outline: none;
+							}
+						}
+					}
+				}
+			}
+
+			& .right {
+				@apply grid grid-rows-[auto,1fr,auto] gap-8;
+
+				& .switches {
+					@apply grid grid-cols-2 gap-8;
+				}
+			}
+		}
+
+		&.whereActive {
+			@apply grid-cols-[2fr,3fr];
+
+			& .left {
+				/* @apply flex flex-col gap-8; */
+				@apply grid grid-rows-[120px,1px,1fr] gap-8 max-h-[360px];
+
+				&.noRoutes {
+					@apply grid-rows-[120px,1fr];
+				}
+
+				& .top {
+					@apply grid grid-cols-[20px,1fr,20px] gap-5 w-full;
+
+					& .routeWrapper {
+						@apply flex items-center;
+
+						& .route {
+							@apply h-[64%] w-[3px] bg-black relative;
+
+							&:before,
+							&:after {
+								content: '';
+								@apply absolute h-4 w-4 bg-white rounded-full
+							left-0 -translate-x-[6.5px];
+								border: 3px solid black;
+							}
+
+							&:before {
+								@apply -top-1;
+							}
+
+							&:after {
+								@apply -bottom-1;
+							}
+						}
+					}
+
+					& .inputs {
+						@apply flex flex-col justify-between gap-5 w-full;
+
+						& .input {
+							@apply flex items-center gap-1 w-full;
+
+							& span {
+								@apply font-medium text-xs w-12;
+							}
+						}
+					}
+
+					& .buttonWrapper {
+						@apply flex items-center justify-center;
+
+						& .button {
+							@apply bg-white text-black p-1 rounded-full transition-[opacity]
+							hover-hover:hover:opacity-50 hover-none:active:opacity-50;
+							border: none;
+							outline: none;
+						}
+					}
+				}
+
+				& .hr {
+					@apply h-[1px] w-full bg-black/30;
+				}
+
+				& .history {
+					@apply h-full flex flex-col gap-4 overflow-y-scroll;
+
+					& .empty {
+						@apply h-full w-full flex items-center justify-center text-xs text-black/50;
+					}
+
+					& .item {
+						@apply flex items-center justify-between gap-4 h-7;
+
+						& > span {
+							@apply text-xs font-medium text-black/80;
+						}
+
+						& > button {
+							@apply text-[10px] font-medium text-[#404040] bg-[#F2F2F2] rounded-full px-6 py-2;
+							border: none;
+							outline: none;
+						}
+					}
+				}
+			}
+
+			& .right {
+				@apply rounded-3xl overflow-hidden;
+				@apply bg-black/10;
+			}
+		}
+
+		&.whenActive {
+			@apply grid-cols-[2fr,4fr,3fr] gap-20;
+
+			& .left {
+				@apply flex items-center justify-center;
+
+				& .buttons {
+					@apply p-[6px] bg-[#F2F2F2] rounded-[32px] flex flex-col gap-1;
+
+					& .button {
+						border: none;
+						@apply bg-transparent rounded-full px-7 py-4 text-base font-medium transition-all
+						hover-hover:hover:bg-gray-200 hover-none:active:bg-gray-200;
+
+						&.active {
+							@apply bg-white shadow-md;
+						}
+					}
+				}
+			}
+
+			& .center {
+				@apply flex items-center justify-center;
+
+				&.pickupReady {
+					& .centerContent {
+						animation: fade1 0.5s ease-in-out;
+						@apply relative;
+
+						& .icon {
+							@apply absolute top-0 right-0 bg-primary text-black flex items-center justify-center w-[60px] h-[60px] rounded-full;
+						}
+					}
+				}
+
+				&.notPickupReady {
+					& .centerContent {
+						animation: fade1 0.5s ease-in-out;
+						@apply flex flex-col gap-5 w-full;
+
+						& .top {
+							@apply grid grid-cols-2 gap-5 w-full;
+						}
+
+						& .calendar {
+							@apply flex items-center justify-center h-[240px];
+						}
+					}
+				}
+			}
+
+			& .right {
+				@apply flex flex-col items-center gap-12;
+
+				& .title {
+					@apply font-medium text-base text-black;
+				}
+
+				& .timeWrapper {
+					@apply grid grid-cols-2 gap-6;
+
+					& .time {
+						@apply flex flex-col items-center justify-center gap-3 h-full;
+
+						& .title {
+							@apply text-xs;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+.isCalculating {
+	@apply flex items-center justify-center flex-col gap-12 h-[528px] w-full;
+	animation: fade1 0.5s ease-in-out;
+
+	& .icon {
+		@apply w-[212px] h-[212px] rounded-full bg-primary flex items-center justify-center text-black;
+	}
+
+	& .wrapper {
+		@apply flex flex-col gap-6 items-center;
+
+		& .title {
+			@apply font-medium text-2xl text-black;
+		}
+		& .subtitle {
+			@apply font-normal text-base text-[#616161];
+		}
+	}
+}
+
+@keyframes fade1 {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+.customTimeInput {
+	@apply w-[140px] h-[48px] rounded-full text-xl text-black
+	overflow-hidden grid grid-cols-[1fr,6px,1fr] items-center gap-0;
+	border: 1px solid #888888;
+
+	& input {
+		@apply w-full bg-transparent;
+		border: none;
+		outline: none;
+		text-align: center;
+		font-variant-numeric: tabular-nums;
+	}
+}

@@ -1,0 +1,23 @@
+.modal {
+	@apply flex flex-col items-center justify-center gap-8;
+
+	& .icon {
+		@apply w-[120px] h-[120px] rounded-full bg-primary flex items-center justify-center text-black;
+	}
+
+	& .title {
+		@apply font-medium text-2xl;
+	}
+
+	& .stars {
+		@apply flex items-center justify-center gap-1;
+
+		& .star {
+			@apply text-black/20 transition-colors cursor-pointer;
+
+			&.active {
+				@apply text-black;
+			}
+		}
+	}
+}

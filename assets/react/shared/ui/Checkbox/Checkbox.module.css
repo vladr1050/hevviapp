@@ -1,0 +1,78 @@
+.checkbox {
+	@apply flex;
+	transition: all 0.2s ease-in-out;
+
+	&.disabled {
+		& label {
+			@apply cursor-not-allowed !text-black/20;
+		}
+	}
+
+	&.default {
+		/* @apply bg-black; */
+	}
+
+	&:not(.disabled) {
+		&.gray input[type='checkbox'] {
+			@apply hover-hover:hover:bg-gray-200 hover-none:active:bg-gray-200;
+		}
+
+		&.green input[type='checkbox'] {
+			@apply hover-hover:hover:bg-primary hover-none:active:bg-primary;
+		}
+	}
+
+	& label {
+		@apply flex items-center font-medium text-sm gap-3 cursor-pointer !mb-0 transition-colors select-none;
+
+		&.alignTop {
+			@apply !items-start;
+		}
+	}
+
+	& input[type='checkbox'] {
+		@apply !outline-none !mt-0;
+		border: 1px solid black !important;
+
+		@apply relative border border-black rounded-md h-5 w-5 cursor-pointer shrink-0;
+		-webkit-appearance: none;
+		appearance: none;
+		transition: all 0.2s ease-in-out;
+
+		&:focus,
+		&:focus-visible {
+			@apply border-black;
+			outline: none;
+			box-shadow: none;
+		}
+
+		&::before {
+			content: '';
+			background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M14.6875 1.3125C15.0938 1.6875 15.0938 2.34375 14.6875 2.71875L6.6875 10.7188C6.3125 11.125 5.65625 11.125 5.28125 10.7188L1.28125 6.71875C0.875 6.34375 0.875 5.6875 1.28125 5.3125C1.65625 4.90625 2.3125 4.90625 2.6875 5.3125L5.96875 8.59375L13.2812 1.3125C13.6562 0.90625 14.3125 0.90625 14.6875 1.3125Z' fill='%23000000'/%3E%3C/svg%3E%0A");
+			background-repeat: no-repeat;
+			font-size: 1.5em;
+			height: 16px;
+			width: 16px;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transition: all 0.2s ease-in-out;
+			transform: translate(-50%, -50%) scale(0.6);
+			opacity: 0;
+		}
+
+		&:checked {
+			&::before {
+				transform: translate(-50%, -50%) scale(0.8);
+				opacity: 1;
+			}
+		}
+
+		&:disabled {
+			@apply cursor-not-allowed !border-black/20;
+			&::before {
+				background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M14.6875 1.3125C15.0938 1.6875 15.0938 2.34375 14.6875 2.71875L6.6875 10.7188C6.3125 11.125 5.65625 11.125 5.28125 10.7188L1.28125 6.71875C0.875 6.34375 0.875 5.6875 1.28125 5.3125C1.65625 4.90625 2.3125 4.90625 2.6875 5.3125L5.96875 8.59375L13.2812 1.3125C13.6562 0.90625 14.3125 0.90625 14.6875 1.3125Z' fill='%232f305929'/%3E%3C/svg%3E%0A");
+			}
+		}
+	}
+}

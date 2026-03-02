@@ -1,0 +1,39 @@
+{
+	"compilerOptions": {
+		"target": "ES2020",
+		"lib": ["DOM", "DOM.Iterable", "ES2020"],
+
+		"module": "ESNext",
+		"moduleResolution": "Node",
+
+		"jsx": "react-jsx",
+
+		"strict": true,
+		"skipLibCheck": true,
+
+		// "noEmit": true,
+		"isolatedModules": true,
+
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"resolveJsonModule": true,
+
+		//
+		"allowJs": true,
+		"incremental": true,
+
+		"baseUrl": "./assets/react/",
+		"paths": {
+			// "@islands/*": ["./islands/*"],
+			"@ui/*": ["./shared/ui/*"],
+			"@hooks/*": ["./shared/hooks/*"],
+			"@utils/*": ["./shared/utils/*"],
+			"@config/*": ["./shared/config/*"],
+			"@pages/*": ["./shared/pages/*"],
+			"@components/*": ["./shared/components/*"],
+			"@/*": ["*"]
+		}
+	},
+	"include": ["assets/react/**/*"],
+	"exclude": ["node_modules", "var", "vendor", "public/build", "templates", "src"]
+}

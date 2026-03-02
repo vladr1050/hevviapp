@@ -1,0 +1,145 @@
+.page {
+	@apply flex flex-col gap-[54px] min-h-screen h-full py-16;
+
+	& .title {
+		@apply font-bold text-3xl text-black m-0;
+	}
+
+	& .content {
+		@apply grid grid-cols-[1fr,2fr] h-[603px] gap-6 w-full;
+
+		& .left,
+		& .center,
+		& .right {
+			@apply h-full w-full p-6 flex flex-col gap-10 bg-white shadow-md rounded-[24px];
+
+			& .title {
+				@apply font-medium text-base text-black;
+			}
+		}
+
+		& .left {
+			@apply px-8;
+
+			& .top {
+				@apply flex items-center gap-7;
+
+				& .avatar {
+					@apply w-20 h-20 rounded-full bg-primary
+					flex items-center justify-center text-3xl uppercase;
+				}
+
+				& .nameWrapper {
+					@apply flex flex-col;
+
+					& .name {
+						@apply font-medium text-base text-black;
+					}
+
+					/* & .company {} */
+				}
+			}
+
+			& .bottom {
+				@apply flex flex-col gap-4;
+
+				& .hr {
+					@apply w-full h-[1px] bg-[#CCCCCC];
+				}
+
+				& .item {
+					@apply flex flex-col;
+
+					& .label {
+						@apply text-black/40 text-xs;
+					}
+
+					& .value {
+						@apply text-black text-base font-medium;
+					}
+				}
+			}
+		}
+
+		& .centerWrapper {
+			@apply flex flex-col w-full gap-6;
+
+			& .center {
+				@apply flex flex-col gap-6;
+
+				& .title {
+					@apply font-medium text-base text-black;
+				}
+
+				& .statsWrapper {
+					@apply grid grid-cols-2 gap-6;
+
+					& .stats {
+						border: 8px solid #e4e4e7;
+						@apply w-full aspect-square !border-primary bg-white rounded-full 
+						flex items-center justify-center flex-col
+						font-medium text-xl;
+
+						& .label {
+							@apply text-black/40 text-xs font-medium;
+						}
+
+						& .value {
+							@apply text-black text-xl font-medium;
+						}
+					}
+				}
+
+				& .orders {
+					@apply grid grid-cols-2 gap-6;
+
+					& .order {
+						@apply flex flex-col;
+
+						& .value {
+							@apply text-black text-base font-medium;
+						}
+
+						& .label {
+							@apply text-black/40 text-xs;
+						}
+					}
+				}
+			}
+		}
+
+		& .right {
+			&.sender {
+				background: white url('./pickup_ready.jpg') no-repeat right top;
+
+				& .card {
+					@apply flex flex-col gap-6 bg-white shadow-md rounded-[24px] px-8 py-6 w-[320px];
+
+					& .title {
+						@apply font-medium text-base text-black;
+					}
+
+					& .row {
+						@apply grid grid-cols-2 gap-3;
+
+						& .item {
+							@apply flex flex-col;
+
+							& .value {
+								@apply text-black text-base font-medium;
+							}
+
+							& .label {
+								@apply text-black/40 text-xs;
+							}
+						}
+					}
+				}
+			}
+
+			&.carrier {
+				/* @apply */
+			}
+		}
+	}
+}
