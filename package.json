@@ -1,32 +1,52 @@
 {
-    "devDependencies": {
-        "@babel/core": "^7.17.0",
-        "@babel/preset-env": "^7.16.0",
-        "@hotwired/stimulus": "^3.0.0",
-        "@symfony/stimulus-bridge": "^3.2.0 || ^4.0.0",
-        "@symfony/webpack-encore": "^5.1.0",
-        "core-js": "^3.38.0",
-        "file-loader": "^6.0.0",
-        "regenerator-runtime": "^0.13.9",
-        "sass": "^1.93.3",
-        "sass-loader": "^16.0.1",
-        "webpack": "^5.74.0",
-        "webpack-cli": "^5.1.0"
-    },
-    "dependencies": {
-        "@turf/dissolve": "^7.3.4",
-        "@turf/helpers": "^7.3.4",
-        "@turf/union": "^7.3.4",
-        "h3-js": "^4.4.0",
-        "leaflet": "^1.9.4",
-        "leaflet-draw": "^1.0.4"
-    },
-    "license": "UNLICENSED",
-    "private": true,
-    "scripts": {
-        "dev-server": "encore dev-server",
-        "dev": "encore dev",
-        "watch": "encore dev --watch",
-        "build": "encore production --progress"
-    }
+	"name": "php-backoffice-service",
+	"devDependencies": {
+		"@babel/core": "^7.17.0",
+		"@babel/preset-env": "^7.16.0",
+		"@babel/preset-react": "^7.28.5",
+		"@hotwired/stimulus": "^3.0.0",
+		"@symfony/stimulus-bridge": "^3.2.0 || ^4.0.0",
+		"@symfony/webpack-encore": "^5.1.0",
+		"@tailwindcss/postcss": "^4.1.18",
+		"@trivago/prettier-plugin-sort-imports": "^6.0.2",
+		"@types/react": "^19.2.14",
+		"@types/react-dom": "^19.2.3",
+		"autoprefixer": "^10.4.24",
+		"core-js": "^3.38.0",
+		"file-loader": "^6.0.0",
+		"postcss": "^8.5.6",
+		"postcss-loader": "^8.2.1",
+		"prettier": "^3.8.1",
+		"regenerator-runtime": "^0.13.9",
+		"sass": "^1.93.3",
+		"sass-loader": "^16.0.1",
+		"tailwindcss": "^3.4.19",
+		"ts-loader": "^9.5.4",
+		"typescript": "^5.9.3",
+		"webpack": "^5.74.0",
+		"webpack-cli": "^5.1.0"
+	},
+	"dependencies": {
+		"@radix-ui/themes": "^3.3.0",
+		"@turf/dissolve": "^7.3.4",
+		"@turf/helpers": "^7.3.4",
+		"@turf/union": "^7.3.4",
+		"clsx": "^2.1.1",
+		"date-fns": "^4.1.0",
+		"h3-js": "^4.4.0",
+		"leaflet": "^1.9.4",
+		"leaflet-draw": "^1.0.4",
+		"react": "^19.2.4",
+		"react-dom": "^19.2.4",
+		"tailwind-merge": "^2.6.0",
+		"tailwindcss-touch": "^1.0.1"
+	},
+	"license": "UNLICENSED",
+	"private": true,
+	"scripts": {
+		"dev-server": "encore dev-server",
+		"dev": "encore dev",
+		"watch": "encore dev --watch",
+		"build": "encore production --progress"
+	}
 }

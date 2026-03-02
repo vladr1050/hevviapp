@@ -54,12 +54,12 @@ docker compose ps
 
 ### Основные функции
 
-| Модуль | Описание |
-|--------|----------|
-| **GeoArea** | Парсинг и управление геоданными (страны/города) через GADM |
-| **ServiceArea** | Зоны обслуживания с матрицей цен по километражу |
-| **Orders** | Управление заказами с историей изменений статусов |
-| **Map** | Интеграция карт Leaflet с поддержкой полигонов |
+| Модуль          | Описание                                                   |
+| --------------- | ---------------------------------------------------------- |
+| **GeoArea**     | Парсинг и управление геоданными (страны/города) через GADM |
+| **ServiceArea** | Зоны обслуживания с матрицей цен по километражу            |
+| **Orders**      | Управление заказами с историей изменений статусов          |
+| **Map**         | Интеграция карт Leaflet с поддержкой полигонов             |
 
 ### Технологии
 
@@ -177,6 +177,9 @@ docker compose exec php ls -la node_modules/
 # Установите зависимости вручную
 docker compose exec php npm install
 docker compose exec php npm run dev
+
+# npm error code ENOTEMPTY npm error syscall rename
+docker compose exec php sh -lc "rm -rf node_modules package-lock.json && npm install --no-audit --no-fund --legacy-peer-deps"
 ```
 
 ### Подробнее

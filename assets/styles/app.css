@@ -1,3 +1,70 @@
+/* Instrument Sans */
+/* Regular */
+@font-face {
+  font-family: 'Instrument_Sans';
+  src: url('./fonts/Instrument_Sans/InstrumentSans-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument_Sans';
+  src: url('./fonts/Instrument_Sans/InstrumentSans-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+/* Medium */
+@font-face {
+  font-family: 'Instrument_Sans';
+  src: url('./fonts/Instrument_Sans/InstrumentSans-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument_Sans';
+  src: url('./fonts/Instrument_Sans/InstrumentSans-MediumItalic.ttf') format('truetype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+/* SemiBold */
+@font-face {
+  font-family: 'Instrument_Sans';
+  src: url('./fonts/Instrument_Sans/InstrumentSans-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument_Sans';
+  src: url('./fonts/Instrument_Sans/InstrumentSans-SemiBoldItalic.ttf') format('truetype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+/* Bold */
+@font-face {
+  font-family: 'Instrument_Sans';
+  src: url('./fonts/Instrument_Sans/InstrumentSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument_Sans';
+  src: url('./fonts/Instrument_Sans/InstrumentSans-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+
 body {
     background-color: lightgray;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: 'Instrument_Sans', sans-serif;
+    font-weight: 400;
 }

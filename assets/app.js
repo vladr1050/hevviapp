@@ -9,8 +9,18 @@
 import './styles/app.css';
 import './styles/admin.scss';
 
+import './styles/tailwind.css'
+
+import "@radix-ui/themes/styles.css";
+
 // Start Stimulus application
 import './stimulus_bootstrap.js';
 
 // Load OrderOffer handler
 import './order_offer_handler.js';
+
+import { mountIslands } from "./react/mountIslands";
+
+document.addEventListener("DOMContentLoaded", () => {
+  mountIslands(document);
+});

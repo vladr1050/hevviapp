@@ -43,6 +43,7 @@ sonata_admin:
                         label: menu.service_areas
     templates:
         layout: 'admin/main_layout.html.twig'
+        dashboard: 'admin/pages/dashboard.html.twig'
 
 sonata_block:
     blocks:

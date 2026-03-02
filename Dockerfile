@@ -129,6 +129,9 @@ RUN npm install --frozen-lockfile
 # Копируем webpack конфиг
 COPY webpack.config.js ./
 
+# Копируем tsconfig для сборки frontend
+COPY tsconfig.json ./
+
 # Копируем assets для сборки frontend
 COPY assets ./assets
 
