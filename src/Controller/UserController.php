@@ -19,7 +19,7 @@ class UserController extends AbstractController
     {
     }
 
-    #[Route('/dashboard', name: 'public_user_dashboard')]
+    #[Route('/dashboard', name: 'public_dashboard')]
     public function dashboard(): Response
     {
         return $this->render('public/user/pages/dashboard.html.twig', [
@@ -27,7 +27,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/profile', name: 'public_user_profile')]
+    #[Route('/profile', name: 'public_profile')]
     public function profile(): Response
     {
         return $this->render('public/user/pages/profile.html.twig', [
@@ -36,7 +36,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/requests', name: 'public_user_requests')]
+    #[Route('/requests', name: 'public_requests')]
     public function requests(): Response
     {
         return $this->render('public/user/pages/requests.html.twig', [
@@ -44,7 +44,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/orders', name: 'public_user_orders', methods: ['GET'])]
+    #[Route('/orders', name: 'public_orders', methods: ['GET'])]
     public function orders(): Response
     {
         $orders = $this->em->getRepository(Order::class)->findBy([
@@ -56,13 +56,12 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/orders/{id}', name: 'public_user_order', methods: ['GET'])]
+    #[Route('/orders/{id}', name: 'public_order', methods: ['GET'])]
     public function order(string $id): Response
     {
         $order = $this->em->getRepository(Order::class)->find($id);
-        // TODO: Implement order retrieval and validation
         if (!$order) {
-            return $this->json(['error' => 'Order not found'], 404);
+            return $this->redirectToRoute('user_public_orders');
         }
 
         return $this->render('public/user/pages/order.html.twig', [
