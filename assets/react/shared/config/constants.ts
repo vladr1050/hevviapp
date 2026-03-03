@@ -8,6 +8,7 @@ export enum Routes {
 	ORDERS = '/user/orders',
 	PROFILE = '/user/profile',
 	LOGIN = '/login',
+	LOGOUT = '/logout',
 	REGISTRATION = '/registration',
 } 
 

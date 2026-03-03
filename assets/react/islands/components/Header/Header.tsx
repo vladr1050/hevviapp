@@ -106,7 +106,7 @@ export const Header: FC<HeaderProps> = ({ user }) => {
 									Profile
 								</a>
 
-								<a className={styles.link} href={Routes.LOGIN}>
+								<a className={styles.link} href={Routes.LOGOUT}>
 									<div className={styles.iconWrapper}>
 										<Icon type="logout" className={styles.icon} />
 									</div>
