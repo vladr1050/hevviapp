@@ -32,6 +32,7 @@ class UserController extends AbstractController
     {
         return $this->render('public/user/pages/profile.html.twig', [
             'title' => 'Profile',
+            'user' => $this->getUser(),
         ]);
     }
 
@@ -43,11 +44,15 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/orders', name: 'public_user_orders')]
+    #[Route('/orders', name: 'public_user_orders', methods: ['GET'])]
     public function orders(): Response
     {
+        $orders = $this->em->getRepository(Order::class)->findBy([
+            'sender' => $this->getUser(),
+        ], ['createdAt' => 'DESC'], 10, 0);
         return $this->render('public/user/pages/orders.html.twig', [
             'title' => 'Orders',
+            'orders' => $orders,
         ]);
     }
 

@@ -4,17 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="authorization updated">
-      <change afterPath="$PROJECT_DIR$/templates/public/user/main_layout.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/public/user/pages/order.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/public/user/pages/orders.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/public/user/pages/profile.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/public/user/pages/requests.html.twig" afterDir="false" />
+    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="user pages added">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Api/GeoAreaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/GeoAreaController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/public/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/public/base.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/public/user/dashboard.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/public/user/pages/dashboard.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/public/user/pages/orders.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/public/user/pages/orders.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/public/user/pages/profile.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/public/user/pages/profile.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -317,7 +311,7 @@
       <workItem from="1771600331850" duration="604000" />
       <workItem from="1772118321554" duration="3416000" />
       <workItem from="1772464642567" duration="5520000" />
-      <workItem from="1772544134370" duration="5370000" />
+      <workItem from="1772544134370" duration="5778000" />
     </task>
     <task id="LOCAL-00001" summary="custom areas added to service areas">
       <option name="closed" value="true" />
@@ -359,7 +353,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772547632094</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="user pages added">
+      <option name="closed" value="true" />
+      <created>1772549794742</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1772549794742</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -370,6 +372,7 @@
     <MESSAGE value=".idea added to gitignore" />
     <MESSAGE value="custom area updated" />
     <MESSAGE value="authorization updated" />
-    <option name="LAST_COMMIT_MESSAGE" value="authorization updated" />
+    <MESSAGE value="user pages added" />
+    <option name="LAST_COMMIT_MESSAGE" value="user pages added" />
   </component>
 </project>
