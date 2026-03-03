@@ -6,10 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="order controller page updated">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/islands/pages/Login/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/islands/pages/Login/Login.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/PublicController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PublicController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/public/user/pages/login.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/public/user/pages/login.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Security/UserAuthenticationEntryPoint.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Security/UserAuthenticationEntryPoint.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -313,7 +310,7 @@
       <workItem from="1772118321554" duration="3416000" />
       <workItem from="1772464642567" duration="5520000" />
       <workItem from="1772544134370" duration="6399000" />
-      <workItem from="1772551510983" duration="2238000" />
+      <workItem from="1772551510983" duration="3698000" />
     </task>
     <task id="LOCAL-00001" summary="custom areas added to service areas">
       <option name="closed" value="true" />
@@ -379,7 +376,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772551895756</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="order controller page updated">
+      <option name="closed" value="true" />
+      <created>1772559632093</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1772559632093</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
