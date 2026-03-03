@@ -27,9 +27,9 @@ use Symfony\Component\Routing\Attribute\Route;
 
 /**
  * GeoAreaController
- * 
+ *
  * API контроллер для работы с гео-зонами.
- * 
+ *
  * Следует принципам SOLID:
  * - Single Responsibility: отвечает только за API эндпоинты гео-зон
  * - Open/Closed: легко расширяемый новыми эндпоинтами
@@ -57,7 +57,7 @@ class GeoAreaController extends AbstractController
 
         return $this->json(
             array_map(
-                fn(GeoArea $country) => [
+                static fn(GeoArea $country) => [
                     'id' => (string) $country->getId(),
                     'name' => $country->getName(),
                     'countryISO3' => $country->getCountryISO3(),
@@ -89,7 +89,7 @@ class GeoAreaController extends AbstractController
 
         return $this->json(
             array_map(
-                fn(GeoArea $city) => [
+                static fn(GeoArea $city) => [
                     'id' => (string) $city->getId(),
                     'name' => $city->getName(),
                     'countryISO3' => $city->getCountryISO3(),
@@ -153,7 +153,7 @@ class GeoAreaController extends AbstractController
 
         return $this->json(
             array_map(
-                fn(GeoArea $area) => [
+                static fn(GeoArea $area) => [
                     'id' => (string) $area->getId(),
                     'name' => $area->getName(),
                     'countryISO3' => $area->getCountryISO3(),
@@ -249,7 +249,7 @@ class GeoAreaController extends AbstractController
 
         try {
             $oldName = $geoArea->getName();
-            
+
             // Обновляем данные
             $geoArea->setName($data['name']);
 
@@ -278,7 +278,7 @@ class GeoAreaController extends AbstractController
 
     /**
      * Конвертировать GeoJSON в WKT (Well-Known Text) для PostGIS
-     * 
+     *
      * @param array $geoJson
      * @return string WKT представление геометрии
      */

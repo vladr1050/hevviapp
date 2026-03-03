@@ -4,14 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="custom area updated">
-      <change afterPath="$PROJECT_DIR$/templates/public/user/dashboard.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="authorization updated">
+      <change afterPath="$PROJECT_DIR$/templates/public/user/main_layout.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/public/user/pages/order.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/public/user/pages/orders.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/public/user/pages/profile.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/public/user/pages/requests.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/islands/pages/Login/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/islands/pages/Login/Login.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/shared/hooks/useAuth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/hooks/useAuth.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/lexik_jwt_authentication.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/lexik_jwt_authentication.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Api/GeoAreaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/GeoAreaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/public/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/public/base.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/public/user/dashboard.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/public/user/pages/dashboard.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -236,6 +239,9 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/templates/admin/fields/show/security" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/templates/public/user/pages" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
@@ -311,7 +317,7 @@
       <workItem from="1771600331850" duration="604000" />
       <workItem from="1772118321554" duration="3416000" />
       <workItem from="1772464642567" duration="5520000" />
-      <workItem from="1772544134370" duration="2992000" />
+      <workItem from="1772544134370" duration="5370000" />
     </task>
     <task id="LOCAL-00001" summary="custom areas added to service areas">
       <option name="closed" value="true" />
@@ -345,7 +351,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772544237899</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="authorization updated">
+      <option name="closed" value="true" />
+      <created>1772547632094</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1772547632094</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -355,6 +369,7 @@
     <MESSAGE value="custom areas added to service areas" />
     <MESSAGE value=".idea added to gitignore" />
     <MESSAGE value="custom area updated" />
-    <option name="LAST_COMMIT_MESSAGE" value="custom area updated" />
+    <MESSAGE value="authorization updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="authorization updated" />
   </component>
 </project>
