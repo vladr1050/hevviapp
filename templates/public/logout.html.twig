@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Logging out...</title>
+</head>
+<body>
+<script>
+    (function () {
+        var keys = ['auth_access_token', 'auth_refresh_token', 'auth_expires_at', 'auth_user'];
+        keys.forEach(function (k) { localStorage.removeItem(k); });
+        document.cookie = 'BEARER=; path=/; max-age=0; SameSite=Lax';
+        window.location.replace('/login');
+    })();
+</script>
+</body>
+</html>

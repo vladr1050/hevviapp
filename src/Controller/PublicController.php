@@ -18,7 +18,10 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Repository\RefreshTokenRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -30,10 +33,15 @@ use Symfony\Component\Routing\Attribute\Route;
  */
 class PublicController extends AbstractController
 {
+    public function __construct(
+        private readonly RefreshTokenRepository $refreshTokenRepository,
+    ) {
+    }
+
     #[Route('/', name: 'public_index')]
     public function index(): Response
     {
-        return $this->render('public/user/pages/requests.html.twig');
+        return $this->render('public/user/pages/login.html.twig');
     }
 
      #[Route('/login', name: 'public_login')]
@@ -50,5 +58,27 @@ class PublicController extends AbstractController
         return $this->render('public/user/pages/registration.html.twig', [
             'title' => 'Dashboard',
         ]);
+    }
+
+    #[Route('/logout', name: 'public_logout', methods: ['GET'])]
+    public function logout(): Response
+    {
+        $user = $this->getUser();
+
+        if ($user instanceof User) {
+            $this->refreshTokenRepository->deleteAllForUser((string) $user->getId());
+        }
+
+        $response = $this->render('public/logout.html.twig');
+
+        $response->headers->setCookie(
+            Cookie::create('BEARER')
+                ->withValue('')
+                ->withExpires(1)
+                ->withPath('/')
+                ->withSameSite('lax')
+        );
+
+        return $response;
     }
 }
