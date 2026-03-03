@@ -3,13 +3,12 @@ export const PHONE = '+37122334455'
 
 
 export enum Routes {
-	HOME = '/admin',
-	DASHBOARD = '/admin/dashboard',
-	REQUESTS = '/admin/requests',
-	ORDERS = '/admin/orders',
-	PROFILE = '/admin/profile',
-	LOGIN = '/admin/login',
-	REGISTRATION = '/admin/registration',
+	HOME = '/',
+	REQUESTS = '/user/requests',
+	ORDERS = '/user/orders',
+	PROFILE = '/user/profile',
+	LOGIN = '/login',
+	REGISTRATION = '/registration',
 } 
 
 export enum FormActions {

@@ -33,6 +33,22 @@ class PublicController extends AbstractController
     #[Route('/', name: 'public_index')]
     public function index(): Response
     {
-        return $this->render('public/index.html.twig');
+        return $this->render('public/user/pages/requests.html.twig');
+    }
+
+     #[Route('/login', name: 'public_login')]
+    public function login(): Response
+    {
+        return $this->render('public/user/pages/login.html.twig', [
+            'title' => 'Dashboard',
+        ]);
+    }
+
+     #[Route('/registration', name: 'public_registration')]
+    public function registration(): Response
+    {
+        return $this->render('public/user/pages/registration.html.twig', [
+            'title' => 'Dashboard',
+        ]);
     }
 }

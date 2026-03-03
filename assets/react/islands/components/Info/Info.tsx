@@ -91,7 +91,11 @@ export const Info: FC<InfoProps> = ({ orders }) => {
 											<span className={styles.subtitle}>{orders[currentOrder].status}</span>
 										</div>
 
-										<a href={`${Routes.ORDERS}/${orders[currentOrder].id}`} className={styles.link}>
+										<a
+											//
+											href={`${Routes.ORDERS}/${orders[currentOrder].id}`}
+											className={styles.link}
+										>
 											View details
 										</a>
 									</div>

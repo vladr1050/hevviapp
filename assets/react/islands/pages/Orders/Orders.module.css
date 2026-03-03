@@ -1,5 +1,5 @@
 .page {
-	@apply flex flex-col gap-[54px] min-h-screen h-full py-16;
+	@apply flex flex-col gap-[54px] min-h-[calc(100vh-90px)] h-full py-16;
 
 	& .title {
 		@apply font-bold text-3xl text-black m-0;

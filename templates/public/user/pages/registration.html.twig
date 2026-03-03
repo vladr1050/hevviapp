@@ -16,10 +16,10 @@
 # @author Pavel Ustimenko steve.jsfolio@gmail.com
 #}
 
-{% extends 'public/base.html.twig' %}
+{% extends 'public/main_layout.html.twig' %}
 
-{% block header %}
-    {% if title is not null %}
-        <h1>{{ title }}</h1>
-    {% endif %}
+{% block info %}{% endblock %}
+
+{% block body %}
+    <div data-react-island="RegistrationPage"></div> 
 {% endblock %}

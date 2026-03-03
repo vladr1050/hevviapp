@@ -68,6 +68,8 @@ body {
   font-family: 'Instrument_Sans', sans-serif;
   font-weight: 400;
   background: #f9f9f9;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 * {

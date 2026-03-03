@@ -16,8 +16,44 @@
 # @author Pavel Ustimenko steve.jsfolio@gmail.com
 #}
 
-{% extends 'public/user/main_layout.html.twig' %}
+{% extends 'public/main_layout.html.twig' %}
 
 {% block body %}
-    {{ orders|length }}
+    <div 
+        data-react-island="OrdersPage"
+        data-props='{{ {
+        orders: [
+            {
+                id: "00001",
+                comment: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, eaque.",
+                item: "2 pc",
+                address: { from: "Riga", to: "Ventspils" },
+                pickupDate: "04 Sep 2025",
+                type: "DSV",
+                price: "€200.00",
+                status: "awaiting",
+            },
+            {
+                id: "00002",
+                comment: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, eaque.",
+                item: "2 pc",
+                address: { from: "Ventspils", to: "Riga" },
+                pickupDate: "04 Sep 2025",
+                type: "DSV",
+                price: "€200.00",
+                status: "inTransit",
+            },
+            {
+                id: "00003",
+                comment: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, eaque.",
+                item: "2 pc",
+                address: { from: "Ventspils", to: "Riga" },
+                pickupDate: "04 Sep 2025",
+                type: "DSV",
+                price: "€1200.00",
+                status: "delivered",
+            },
+        ],
+        }|json_encode|e("html_attr") }}'
+    ></div>
 {% endblock %}

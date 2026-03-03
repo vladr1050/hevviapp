@@ -16,35 +16,32 @@
 # @author Pavel Ustimenko steve.jsfolio@gmail.com
 #}
 
-{% extends 'public/main_layout.html.twig' %}
+{% extends 'public/base.html.twig' %}
 
-{% block body %}
-     <div 
-        data-react-island="ProfilePage"
+{% block header %}
+    <div 
+        data-react-island="Header"
         data-props='{{ {
             user: {
                 image: "https://this-person-does-not-exist.com/img/avatar-gen6f2f32373cd507c06d51ea27c8e50ff1.jpg",
                 name: "Jeff Willson",
                 company: "Amazon",
-                requisites: "Amazon Retail, SIA",
-                reg: "LV40103550355",
-                address: "Mūkusalas 3, Rīga, Latvija, LV-1050", 
-                contacts: "+3712233445",
-                email: "jeff.willson@amazonretail.lv",
-
-                accountType: "sender",
-                accountType1: "carrier",
             },
-            orders: {
-                total1: 10,
-                completed1: 8,
-                cancelled1: 0,
-                inProgress1: 2,
+        }|json_encode|e("html_attr") }}'
+    ></div>
+{% endblock %}
 
-                successfulDeliveries: 97,
-                applyRate: 73,
-                cancelledBySender: 12,
-            },
+{% block info %}
+    <div 
+        data-react-island="Info"
+        style="z-index: 100;"
+        data-props='{{ {
+            orders: [
+                { id: "00001", name: "Order 1", status: "In Transit", hours: 1 },
+                { id: "00002", name: "Order 2", status: "Delivered", hours: 2 },
+                { id: "00003", name: "Order 3", status: "In Transit", hours: 3 },
+                { id: "00004", name: "Order 4", status: "Delivered", hours: 4 },
+            ],
         }|json_encode|e("html_attr") }}'
     ></div>
 {% endblock %}

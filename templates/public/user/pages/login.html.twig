@@ -18,13 +18,8 @@
 
 {% extends 'public/main_layout.html.twig' %}
 
-{% block header %}
-    {{ parent() }}
-    <h2>Something else</h2>
-{% endblock %}
+{% block info %}{% endblock %}
 
 {% block body %}
-    <div>
-        <p>Welcome to your dashboard.</p>
-    </div>
+    <div data-react-island="LoginPage"></div>
 {% endblock %}

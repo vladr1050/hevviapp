@@ -21,7 +21,10 @@
 </head>
 <body>
     {% block header %}{% endblock %}
+    
     {% block body %}{% endblock %}
+
+    {% block info %}{% endblock %}
 
     {% block javascripts %}
         {{ encore_entry_script_tags('app') }}

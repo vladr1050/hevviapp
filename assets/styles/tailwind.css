@@ -26,14 +26,11 @@
 }
 
 
+
 .radix-themes:where([data-is-root-theme='true']) {
-  min-height: auto !important; /* или unset */
+  min-height: auto !important; 
 }
-@supports (min-height: 100dvh) {
-  .radix-themes:where([data-is-root-theme='true']) {
-    min-height: auto !important;
-  }
-}
+
 
 .radix-themes:where([data-has-background='true']) {
 	background-color: #F3F3F3 !important;

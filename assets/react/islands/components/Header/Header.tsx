@@ -35,14 +35,17 @@ export const Header: FC<HeaderProps> = ({ user }) => {
 					{isAuthedUrl && (
 						<Tabs
 							items={[
-								{ label: 'Requests', value: 'requests' },
-								{ label: 'Orders', value: 'orders' },
+								{ label: 'Requests', value: Routes.REQUESTS },
+								{ label: 'Orders', value: Routes.ORDERS },
 							]}
-							defaultValue="requests"
-							onChange={(v) => {
-								if (v === 'orders') push(Routes.ORDERS)
-								if (v === 'requests') push(Routes.REQUESTS)
-							}}
+							defaultValue={
+								pathname.includes(Routes.REQUESTS) || pathname === Routes.HOME
+									? Routes.REQUESTS
+									: pathname.includes(Routes.ORDERS)
+										? Routes.ORDERS
+										: 'undefined'
+							}
+							onChange={(v) => push(v)}
 						/>
 					)}
 				</div>
@@ -60,28 +63,34 @@ export const Header: FC<HeaderProps> = ({ user }) => {
 					) : (
 						<Popover.Root>
 							<Popover.Trigger>
-								<div className={styles.profile}>
-									<div
-										className={styles.avatar}
-										style={
-											!user?.image?.length
-												? {}
-												: {
-														background: `url(${user.image}) no-repeat center center/cover `,
-													}
-										}
-									>
-										{!user?.image?.length && (
-											<>
-												{user?.name.split(' ')[0].charAt(0)}
-												{user?.name.split(' ')[1].charAt(0)}
-											</>
-										)}
-									</div>
+								<div
+									className={cn(styles.profileWrapper, {
+										[styles.active]: pathname.includes(Routes.PROFILE),
+									})}
+								>
+									<div className={styles.profile}>
+										<div
+											className={styles.avatar}
+											style={
+												!user?.image?.length
+													? {}
+													: {
+															background: `url(${user.image}) no-repeat center center/cover `,
+														}
+											}
+										>
+											{!user?.image?.length && (
+												<>
+													{user?.name.split(' ')[0].charAt(0)}
+													{user?.name.split(' ')[1].charAt(0)}
+												</>
+											)}
+										</div>
 
-									<div>
-										<div className={styles.name}>{user.name}</div>
-										<div className={styles.company}>{user.company}</div>
+										<div>
+											<div className={styles.name}>{user.name}</div>
+											<div className={styles.company}>{user.company}</div>
+										</div>
 									</div>
 								</div>
 							</Popover.Trigger>
