@@ -1,6 +1,8 @@
 export const EMAIL = 'support@hevvi.app'
 export const PHONE = '+37122334455'
 
+export const EMPTY_STRING = '—'
+
 
 export enum Routes {
 	HOME = '/',

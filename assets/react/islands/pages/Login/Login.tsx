@@ -1,34 +1,14 @@
-import { type FC, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { type FC, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
 
+import { apiLogin } from '@api/authApi'
+import { saveTokens } from '@hooks/useAuth'
+import { Button } from '@ui/Button/Button'
+import { Icon } from '@ui/Icon/Icon'
+import { Input } from '@ui/Input/Input'
+import { cn } from '@utils/cn'
 
-
-import { apiLogin } from '@api/authApi';
-import { saveTokens } from '@hooks/useAuth';
-import { Button } from '@ui/Button/Button';
-import { Icon } from '@ui/Icon/Icon';
-import { Input } from '@ui/Input/Input';
-import { cn } from '@utils/cn';
-
-
-
-import styles from './Login.module.css';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+import styles from './Login.module.css'
 
 interface LoginProps {}
 
@@ -114,9 +94,7 @@ export const LoginPage: FC<LoginProps> = () => {
 								</button>
 							</div>
 
-							{error && (
-								<p className="text-red-500 text-sm text-center">{error}</p>
-							)}
+							{error && <p className="text-red-500 text-sm text-center">{error}</p>}
 						</div>
 					)}
 

@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 
-import { Routes } from '@config/constants'
+import { EMPTY_STRING, Routes } from '@config/constants'
 import { Icon } from '@ui/Icon/Icon'
 import { cn } from '@utils/cn'
 
@@ -8,18 +8,22 @@ import styles from './Orders.module.css'
 
 interface OrdersPageProps {
 	orders?: {
-		id: string
+		address: {
+			from: string
+			to: string
+		}
 		comment: string
-		item: string
-		address: { from: string; to: string }
-		pickupDate: string
-		type: string
+		id: string
+		item: number
 		price: string
-		status: 'awaiting' | 'delivered' | 'inTransit'
+		status: number
 	}[]
 }
 
 export const OrdersPage: FC<OrdersPageProps> = ({ orders }) => {
+	// FIXME
+	const _status = 'awaiting' as 'awaiting' | 'delivered' | 'inTransit'
+
 	return (
 		<div className={cn('tw-container', styles.page)}>
 			<h1 className={styles.title}>
@@ -41,35 +45,38 @@ export const OrdersPage: FC<OrdersPageProps> = ({ orders }) => {
 				<div className={styles.items}>
 					{orders?.map((order, index) => (
 						<div className={styles.item} key={index}>
-							<span>{order.id}</span>
+							<span>{order.id.split('-')[0]}</span>
 							<span className={styles.comment} title={order.comment}>
 								{order.comment}
 							</span>
-							<span>{order.item}</span>
-							<span>
-								{order.address.from} → {order.address.to}
+							<span>{`${order.item} ${order.item > 1 ? 'pcs' : 'pc'}`}</span>
+							<span className="!leading-[14px]">
+								{order.address.from}
+								<br />
+								→
+								<br />
+								{order.address.to}
+								{/* {EMPTY_STRING} */}
 							</span>
-							<span>{order.pickupDate}</span>
-							<span>{order.type}</span>
+							<span>{EMPTY_STRING}</span>
+							<span>{EMPTY_STRING}</span>
 							<span>{order.price}</span>
 
-							<span
-								className={cn(styles.status, { [styles.inTransit]: order.status === 'inTransit' })}
-							>
+							<span className={cn(styles.status, { [styles.inTransit]: _status === 'inTransit' })}>
 								<div className={styles.text}>
-									{order.status === 'inTransit' ? (
+									{_status === 'inTransit' ? (
 										<div className={styles.dot} />
 									) : (
 										<Icon
-											type={order.status === 'awaiting' ? 'clock_1' : 'check'}
+											type={_status === 'awaiting' ? 'clock_1' : 'check'}
 											size={16}
 											className="text-white"
 										/>
 									)}
 
-									{order.status === 'inTransit'
+									{_status === 'inTransit'
 										? 'In Transit'
-										: order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+										: _status.charAt(0).toUpperCase() + _status.slice(1)}
 								</div>
 
 								<a href={`${Routes.ORDERS}/${order.id}`} className={styles.link}>
