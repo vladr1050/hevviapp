@@ -73,8 +73,8 @@ export const Header: FC<HeaderProps> = ({ user }) => {
 									>
 										{!user?.image?.length && (
 											<>
-												{user.name.charAt(0)}
-												{user.name.charAt(1)}
+												{user?.name.split(' ')[0].charAt(0)}
+												{user?.name.split(' ')[1].charAt(0)}
 											</>
 										)}
 									</div>

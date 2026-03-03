@@ -11,6 +11,8 @@
 	}
 
 	&.outline {
+		@apply bg-white;
+
 		&:not(:disabled) {
 			@apply text-black bg-white 
 			hover-hover:hover:text-black hover-none:active:text-black
@@ -19,8 +21,15 @@
 		}
 	}
 
-	&.outline {
-		@apply bg-white;
+	&.transparent {
+		@apply bg-transparent !border-transparent;
+
+		&:not(:disabled) {
+			@apply text-black/50 bg-transparent
+			hover-hover:hover:text-black hover-none:active:text-black
+			hover-hover:hover:bg-slate-100 hover-none:active:bg-slate-100
+			hover-hover:hover:border-slate-100 hover-none:active:border-slate-100;
+		}
 	}
 
 	&[disabled] {

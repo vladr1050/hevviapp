@@ -19,6 +19,7 @@ export enum FormActions {
 	CONFIRM_ORDER = '/confirmOrder',
 	CANCEL_ORDER = '/cancelOrder',
 	RATE_ORDER = '/rateOrder',
+	UPDATE_STATUS = '/updateStatus',
 } 
 
 export const months = [
@@ -55,6 +56,13 @@ export enum OrderStatusId {
 	inTransit = 4,
 	delivery = 5,
 	delivered = 6,
+}
+
+export enum StatusCarrierId {
+	awaitingPickup = 0,
+	inTransit = 1,
+	pendingApproval = 2,
+	approvedBySender = 3,
 }
 
 

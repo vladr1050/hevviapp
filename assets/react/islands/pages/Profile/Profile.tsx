@@ -1,5 +1,6 @@
 import type { FC } from 'react'
 
+import { CircleChart } from '@ui/CircleChart/CircleChart'
 import { cn } from '@utils/cn'
 
 import styles from './Profile.module.css'
@@ -9,7 +10,7 @@ interface ProfilePageProps {
 		image: string
 		name: string
 		company: string
-		accountType: 'Sender' | 'Carrier'
+		accountType: 'sender' | 'carrier'
 		requisites: string
 		reg: string
 		address: string
@@ -34,7 +35,7 @@ export const ProfilePage: FC<ProfilePageProps> = ({ user, orders }) => {
 		<div className={cn('tw-container', styles.page)}>
 			<h1 className={styles.title}>Profile</h1>
 
-			<div className={cn(styles.content, { ['!grid-cols-3']: user.accountType === 'Carrier' })}>
+			<div className={cn(styles.content, { ['!grid-cols-3']: user.accountType === 'carrier' })}>
 				<div className={styles.left}>
 					<div className={styles.top}>
 						<div
@@ -49,8 +50,8 @@ export const ProfilePage: FC<ProfilePageProps> = ({ user, orders }) => {
 						>
 							{!user?.image?.length && (
 								<>
-									{user.name.charAt(0)}
-									{user.name.charAt(1)}
+									{user?.name.split(' ')[0].charAt(0)}
+									{user?.name.split(' ')[1].charAt(0)}
 								</>
 							)}
 						</div>
@@ -64,7 +65,9 @@ export const ProfilePage: FC<ProfilePageProps> = ({ user, orders }) => {
 					<div className={styles.bottom}>
 						<div className={styles.item}>
 							<div className={styles.label}>Account type</div>
-							<div className={styles.value}>{user.accountType}</div>
+							<div className={styles.value}>
+								{`${user.accountType.charAt(0).toUpperCase()}${user.accountType.slice(1)}`}
+							</div>
 						</div>
 
 						<div className={styles.hr} />
@@ -98,7 +101,7 @@ export const ProfilePage: FC<ProfilePageProps> = ({ user, orders }) => {
 					</div>
 				</div>
 
-				{user.accountType === 'Sender' && (
+				{user.accountType === 'sender' && (
 					<div className={cn(styles.right, styles.sender)}>
 						<div className={styles.card}>
 							<div className={styles.title}>My orders</div>
@@ -127,20 +130,29 @@ export const ProfilePage: FC<ProfilePageProps> = ({ user, orders }) => {
 					</div>
 				)}
 
-				{user.accountType === 'Carrier' && (
+				{user.accountType === 'carrier' && (
 					<>
 						<div className={styles.centerWrapper}>
 							<div className={cn(styles.center, styles.top)}>
 								<div className={styles.title}>My stats</div>
 
 								<div className={styles.statsWrapper}>
-									<div className={styles.stats}>
-										<div className={styles.value}>{orders.successfulDeliveries}%</div>
-										<div className={styles.label}>Successful deliveries</div>
+									<div>
+										<CircleChart
+											size={120}
+											percent={orders?.successfulDeliveries || 0}
+											title={`${orders?.successfulDeliveries}%`}
+											subtitle="Successful deliveries"
+										/>
 									</div>
-									<div className={styles.stats}>
-										<div className={styles.value}>{orders.applyRate}%</div>
-										<div className={styles.label}>Apply rate</div>
+
+									<div>
+										<CircleChart
+											size={150}
+											percent={orders?.applyRate || 0}
+											title={`${orders?.applyRate}%`}
+											subtitle="Apply rate"
+										/>
 									</div>
 								</div>
 							</div>

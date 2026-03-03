@@ -1,6 +1,6 @@
-import { type FC, Suspense, useState } from 'react'
-import { MapContainer, Marker, Polyline, TileLayer } from 'react-leaflet'
+import { type FC, useState } from 'react'
 
+import { OrderCard } from '@components/OrderCard/OrderCard'
 import { OrderType, Routes } from '@config/constants'
 import { useLocation } from '@hooks/useLocation'
 import { Button } from '@ui/Button/Button'
@@ -28,9 +28,6 @@ interface RequestsPageProps {
 	ordersCarrier?: OrderType[]
 }
 
-const DEFAULT_LAT = 56.946845
-const DEFAULT_LNG = 24.106075
-
 export type CalculateModalType = 'what' | 'where' | 'when' | 'calculate' | undefined
 
 export const RequestsPage: FC<RequestsPageProps> = ({
@@ -46,212 +43,52 @@ export const RequestsPage: FC<RequestsPageProps> = ({
 	const _currentOrderId = '00001'
 	const [curOrderId, setCurOrderId] = useState(_currentOrderId)
 
-	console.log({ curOrderId, order: ordersCarrier?.filter((order) => order.id === curOrderId) })
-
 	if (typeof ordersCarrier !== 'undefined')
 		return (
 			<div className={cn('tw-container', styles.page, styles.carrier)}>
-				<div className={styles.title}>
-					Requests {!!ordersCarrier?.length && <span>({ordersCarrier.length})</span>}
+				<div className={styles.main}>
+					<div className={styles.title}>
+						Requests {!!ordersCarrier?.length && <span>({ordersCarrier.length})</span>}
+					</div>
+
+					{!ordersCarrier?.length && (
+						<div className={styles.empty}>
+							<Icon type="pallet" size={220} className={styles.icon} />
+
+							<div className={styles.text}>
+								<div className={styles.title}>No new requests yet</div>
+								<div className={styles.subtitle}>
+									We will notify you when there will be a new request
+								</div>
+							</div>
+
+							<a href={Routes.ORDERS} className={styles.link}>
+								View orders
+							</a>
+						</div>
+					)}
+
+					{ordersCarrier
+						.filter((order) => order.id === curOrderId)
+						.map((order) => (
+							<OrderCard order={order} accountType="carrier" isRequest />
+						))}
 				</div>
 
-				{!ordersCarrier?.length && (
-					<div className={styles.empty}>
-						<Icon type="pallet" size={220} className={styles.icon} />
-
-						<div className={styles.text}>
-							<div className={styles.title}>No new requests yet</div>
-							<div className={styles.subtitle}>
-								We will notify you when there will be a new request
-							</div>
-						</div>
-
-						<a href={Routes.ORDERS} className={styles.link}>
-							View orders
-						</a>
+				<div className={styles.footer}>
+					<div className={styles.item}>
+						<Icon type="route_map" size={20} />
+						Fewer Empty Miles
 					</div>
-				)}
-
-				{!!ordersCarrier?.length && (
-					<div className={styles.card}>
-						{ordersCarrier
-							.filter((order) => order.id === curOrderId)
-							.map((order) => (
-								<>
-									<div className={styles.left}>
-										<div className={styles.item}>
-											<div className={styles.label}>Name</div>
-											<div className={styles.value}>{order?.name}</div>
-										</div>
-
-										<div className={styles.row}>
-											<div className={styles.item}>
-												<div className={styles.label}>Type</div>
-												<div className={styles.value}>{order?.type}</div>
-											</div>
-
-											<div className={styles.item}>
-												<div className={styles.label}>Size</div>
-												<div className={styles.value}>{order?.size}</div>
-											</div>
-
-											<div className={styles.item}>
-												<div className={styles.label}>Weight</div>
-												<div className={styles.value}>{order?.weight}</div>
-											</div>
-										</div>
-
-										<div className={styles.item}>
-											<div className={styles.label}>Additionals</div>
-											<div className={styles.additionals}>
-												{order?.additionals.stackability && (
-													<div className={styles.additional}>
-														<div className={styles.icon}>
-															<Icon type="check_circle_1" size={20} />
-														</div>
-														Stackability
-													</div>
-												)}
-												{order?.additionals.lift && (
-													<div className={styles.additional}>
-														<div className={styles.icon}>
-															<Icon type="check_circle_1" size={20} />
-														</div>
-														Truck with lift
-													</div>
-												)}
-											</div>
-										</div>
-
-										<div className={styles.hr} />
-
-										<div className={styles.routeItem}>
-											<div className={styles.routeWrapper}>
-												<div className={styles.route} />
-											</div>
-
-											<div className={styles.items}>
-												<div className={styles.item}>
-													<div className={styles.label}>Pickup</div>
-													<div className={cn(styles.value, '!font-bold')}>
-														{order?.routes.from.address}
-													</div>
-												</div>
-
-												<div className={styles.row}>
-													<div className={styles.item}>
-														<div className={styles.label}>Loading ready</div>
-														<div className={styles.value}>{order?.routes.from.loadingReady}</div>
-													</div>
-
-													<div className={styles.item}>
-														<div className={styles.label}>Loading window</div>
-														<div className={styles.value}>{order?.routes.from.loadingWindow}</div>
-													</div>
-
-													<div className={styles.item}>
-														<div className={styles.label}>Delivery date</div>
-														<div className={styles.value}>{order?.routes.from.deliveryDate}</div>
-													</div>
-												</div>
-
-												<div className={styles.hr} />
-
-												<div className={styles.item}>
-													<div className={styles.label}>Delivery</div>
-													<div className={cn(styles.value, '!font-bold')}>
-														{order?.routes.to.address}
-													</div>
-												</div>
-
-												<div className={styles.row}>
-													<div className={styles.item}>
-														<div className={styles.label}>Loading ready</div>
-														<div className={styles.value}>{order?.routes.to.loadingReady}</div>
-													</div>
-
-													<div className={styles.item}>
-														<div className={styles.label}>Delivery window</div>
-														<div className={styles.value}>{order?.routes.to.deliveryWindow}</div>
-													</div>
-
-													<div className={styles.item}>
-														<div className={styles.label}>Delivery date</div>
-														<div className={styles.value}>{order?.routes.to.deliveryDate}</div>
-													</div>
-												</div>
-											</div>
-										</div>
-
-										<div className={styles.hr} />
-
-										<div className={styles.item}>
-											<div className={styles.label}>Comments</div>
-											<div className={styles.comments}>{order?.comments}</div>
-										</div>
-									</div>
-
-									<div className={styles.right}>
-										{/* <Suspense
-											fallback={
-												<div className="flex items-center justify-center h-full w-full">
-													Loading...
-												</div>
-											}
-										>
-											<MapContainer
-												// @ts-ignore
-												center={[DEFAULT_LAT, DEFAULT_LNG]}
-												zoom={10}
-												// scrollWheelZoom={false}
-												style={{ width: '100%', height: 'calc(100% + 20px)', zIndex: 1 }}
-											>
-												<TileLayer
-													// @ts-ignore
-													attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-													url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-												/>
-
-												{order?.routes.from.position.lat && order?.routes.from.position.lng && (
-													<Marker
-														// @ts-ignore
-														icon={myIcon}
-														position={{
-															lat: order?.routes.from.position.lat,
-															lng: order?.routes.from.position.lng,
-														}}
-													/>
-												)}
-
-												{order?.routes.to.position.lat && order?.routes.to.position.lng && (
-													<Marker
-														// @ts-ignore
-														icon={myIcon}
-														position={{
-															lat: order?.routes.to.position.lat,
-															lng: order?.routes.to.position.lng,
-														}}
-													/>
-												)}
-
-												{!!order?.routes.polyline.length && (
-													<Polyline
-														pathOptions={{ color: 'black' }}
-														positions={order?.routes.polyline}
-													/>
-												)}
-											</MapContainer>
-										</Suspense> */}
-
-										<div className={styles.id}>
-											<div className={styles.label}>Reference ID</div>
-											<div className={styles.value}>{order?.id}</div>
-										</div>
-									</div>
-								</>
-							))}
+					<div className={styles.item}>
+						<Icon type="right_box" size={20} />
+						Less Manual Dispatch
 					</div>
-				)}
+					<div className={styles.item}>
+						<Icon type="confirm_order" size={20} />
+						Predictable Payments
+					</div>
+				</div>
 			</div>
 		)
 
@@ -372,7 +209,9 @@ export const RequestsPage: FC<RequestsPageProps> = ({
 										<div className="">
 											{order.route.from} → {order.route.to}
 										</div>
-										<button className={styles.button}>Pielietot</button>
+										<button type="button" className={styles.button}>
+											Pielietot
+										</button>
 									</div>
 								))}
 							</div>

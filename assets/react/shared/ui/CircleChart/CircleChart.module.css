@@ -1,0 +1,24 @@
+.wrapper {
+	@apply relative flex flex-col items-center justify-center aspect-square;
+
+	& .svg {
+		@apply absolute top-0 left-0 w-full h-full;
+
+		& circle {
+			transition: stroke-dashoffset 400ms ease;
+		}
+	}
+
+	& .content {
+		@apply flex flex-col items-center justify-center 
+		w-[74%] h-[74%] rounded-full overflow-hidden z-[1];
+
+		& .title {
+			@apply font-medium text-xl text-black text-center;
+		}
+
+		& .subtitle {
+			@apply font-medium text-xs text-black/50 text-center;
+		}
+	}
+}

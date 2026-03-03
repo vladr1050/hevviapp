@@ -43,6 +43,8 @@ export enum UIIconNames {
 	SEARCH = 'Search',
 	CHECK = 'Check',
 	PALLET = 'Pallet',
+	RIGHT_BOX = 'RightBox',
+	ROUTE_MAP = 'RouteMap',
 	X_MARK = 'XMark',
 }
 

@@ -7,7 +7,7 @@ import styles from './Button.module.css'
 interface ButtonProps extends PropsWithChildren {
 	onClick?: () => void
 	type?: 'button' | 'submit'
-	variant?: 'solid' | 'outline'
+	variant?: 'solid' | 'outline' | 'transparent'
 	className?: string
 	disabled?: boolean
 	name?: string
@@ -29,7 +29,14 @@ export const Button: FC<ButtonProps> = ({
 			onClick={onClick}
 			//
 			disabled={disabled}
-			className={cn(styles.button, { [styles.outline]: variant === 'outline' }, className)}
+			className={cn(
+				styles.button,
+				{
+					[styles.outline]: variant === 'outline',
+					[styles.transparent]: variant === 'transparent',
+				},
+				className
+			)}
 			{...props}
 		>
 			{children}

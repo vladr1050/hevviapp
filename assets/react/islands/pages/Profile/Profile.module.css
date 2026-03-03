@@ -72,20 +72,13 @@
 				}
 
 				& .statsWrapper {
-					@apply grid grid-cols-2 gap-6;
+					@apply grid grid-cols-[4fr,5fr] gap-6 w-full h-[220px];
 
-					& .stats {
-						border: 8px solid #e4e4e7;
-						@apply w-full aspect-square !border-primary bg-white rounded-full 
-						flex items-center justify-center flex-col
-						font-medium text-xl;
-
-						& .label {
-							@apply text-black/40 text-xs font-medium;
+					& > div {
+						&:nth-child(1) {
 						}
-
-						& .value {
-							@apply text-black text-xl font-medium;
+						&:nth-child(2) {
+							@apply mt-auto;
 						}
 					}
 				}
