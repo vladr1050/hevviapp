@@ -34,6 +34,14 @@ export interface AuthState {
 	isLoggedIn:   boolean
 }
 
+function setBearerCookie(token: string, maxAgeSeconds: number): void {
+	document.cookie = `BEARER=${encodeURIComponent(token)}; path=/; max-age=${maxAgeSeconds}; SameSite=Lax`
+}
+
+function clearBearerCookie(): void {
+	document.cookie = 'BEARER=; path=/; max-age=0; SameSite=Lax'
+}
+
 export function saveTokens(
 	accessToken: string,
 	refreshToken: string,
@@ -44,10 +52,12 @@ export function saveTokens(
 	localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken)
 	localStorage.setItem(STORAGE_KEYS.EXPIRES_AT,    String(Date.now() + expiresIn * 1000))
 	localStorage.setItem(STORAGE_KEYS.USER,          JSON.stringify(user))
+	setBearerCookie(accessToken, expiresIn)
 }
 
 export function clearTokens(): void {
 	Object.values(STORAGE_KEYS).forEach((key) => localStorage.removeItem(key))
+	clearBearerCookie()
 }
 
 function loadFromStorage(): AuthState {
@@ -105,6 +115,7 @@ export function useAuth() {
 			localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN,  result.access_token)
 			localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, result.refresh_token)
 			localStorage.setItem(STORAGE_KEYS.EXPIRES_AT,    String(Date.now() + result.expires_in * 1000))
+			setBearerCookie(result.access_token, result.expires_in)
 
 			setState((prev) => ({
 				...prev,

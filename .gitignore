@@ -16,6 +16,7 @@ npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 .idea
+.vscode
 
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem

@@ -40,7 +40,7 @@ export const LoginPage: FC<LoginProps> = () => {
 
 			saveTokens(result.access_token, result.refresh_token, result.expires_in, result.user)
 
-			window.location.href = '/'
+			window.location.href = '/user/dashboard'
 		} catch (err: unknown) {
 			const message = err instanceof Error ? err.message : 'Login failed'
 			setError(message)

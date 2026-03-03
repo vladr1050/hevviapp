@@ -47,9 +47,12 @@ security:
             provider:  app_users
             jwt: ~
         main:
-            pattern:   ^/
-            lazy:      true
-            stateless: true
+            pattern:      ^/
+            lazy:         true
+            stateless:    true
+            provider:     app_users
+            jwt:          ~
+            entry_point:  App\Security\UserAuthenticationEntryPoint
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
@@ -62,6 +65,7 @@ security:
         - { path: ^/api/auth/refresh$, role: PUBLIC_ACCESS }
         - { path: ^/api/auth/logout$, role: PUBLIC_ACCESS }
         - { path: ^/api/auth/me$, role: IS_AUTHENTICATED_FULLY }
+        - { path: ^/user/, role: ROLE_USER }
         - { path: ^/.*, role: PUBLIC_ACCESS }
 
     role_hierarchy:
