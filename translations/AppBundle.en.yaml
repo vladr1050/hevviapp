@@ -276,15 +276,15 @@ geo_area_selection:
     message:
         no_selected_areas: No selected areas
     hexagon:
-        toggle_grid: Show hexagonal grid
-        resolution:  Grid resolution
-        coarse:      Coarse
-        fine:        Fine
-        selected_label: Selected
-        clear_button: Clear
-        click_hint: Click = select/deselect hexagon
-        instruction_or: OR enable hexagonal grid and click on hexagons to select
-        instruction_edit: use polygon editing tools OR enable grid to add new hexagons
+        toggle_grid:            Show hexagonal grid
+        resolution:             Grid resolution
+        coarse:                 Coarse
+        fine:                   Fine
+        selected_label:         Selected
+        clear_button:           Clear
+        click_hint:             Click = select/deselect hexagon
+        instruction_or:         OR enable hexagonal grid and click on hexagons to select
+        instruction_edit:       use polygon editing tools OR enable grid to add new hexagons
         instruction_edit_title: When editing
     error:
         load_countries:     Failed to load countries list
@@ -313,21 +313,21 @@ custom_area:
     badge:
         custom: custom
     message:
-        name_required: Please enter a name for the custom area
-        geometry_required: Please draw an area on the map
-        jquery_not_loaded: 'Error: jQuery is not loaded'
+        name_required:           Please enter a name for the custom area
+        geometry_required:       Please draw an area on the map
+        jquery_not_loaded:       'Error: jQuery is not loaded'
         draw_library_not_loaded: 'Error: drawing library is not loaded'
-        invalid_geometry: 'Error: geometry contains no coordinates'
-        geometry_load_error: Error loading geometry
-        created: Custom area created
-        updated: Custom area updated
-        save_error: Error saving custom area
-        select_country_first: Please select a country first
-        modal_not_found: 'Error: modal window not found'
-        controller_not_found: 'Error: modal controller not found'
-        edit_load_error: Error loading geometry for editing
+        invalid_geometry:        'Error: geometry contains no coordinates'
+        geometry_load_error:     Error loading geometry
+        created:                 Custom area created
+        updated:                 Custom area updated
+        save_error:              Error saving custom area
+        select_country_first:    Please select a country first
+        modal_not_found:         'Error: modal window not found'
+        controller_not_found:    'Error: modal controller not found'
+        edit_load_error:         Error loading geometry for editing
     select:
-        loading: Loading...
+        loading:     Loading...
         placeholder: Select custom area
     instruction:
         title: Instructions
@@ -370,3 +370,44 @@ order_offer:
         netto_info:       Price excluding VAT
         vat_info:         Value Added Tax percentage
         auto_calculation: Offer will be created automatically when saving the order
+
+# Email notifications
+email:
+    order_status:
+        header:          Order Status Update
+        greeting:        Hello, %name%!
+        order_details:   Order details
+        order_id:        Order ID
+        pickup_address:  Pickup Address
+        dropout_address: Dropout Address
+        notes:           Notes
+        footer:          This is an automated notification. Please do not reply to this email.
+
+        accepted:
+            title:   Order Accepted
+            status:  ACCEPTED
+            message: Your order has been accepted and is being processed.
+            details: We have received your order and begun processing it. We will notify you of further updates.
+
+        assigned:
+            title:         Carrier Assigned
+            status:        ASSIGNED
+            message:       A carrier has been assigned to your order.
+            carrier_info:  Carrier Information
+            carrier_name:  Name
+            carrier_phone: Phone
+            details:       Your order has been assigned to a carrier. They will contact you shortly to coordinate pickup.
+
+        pickup_done:
+            title:           Pickup Completed
+            status:          PICKUP DONE
+            message:         Your order has been picked up by the carrier.
+            details:         The carrier has picked up your cargo and it is now in transit to the destination.
+            in_transit_note: Your order is currently in transit to the delivery address.
+
+        delivered:
+            title:     Order Delivered
+            status:    DELIVERED
+            message:   Your order has been successfully delivered!
+            details:   Your cargo has been delivered to the destination address. We hope you are satisfied with our service.
+            thank_you: Thank you for using our service!

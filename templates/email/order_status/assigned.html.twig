@@ -1,0 +1,40 @@
+{% extends 'email/order_status/base.html.twig' %}
+
+{% block status_badge_style %}
+    .status-badge {
+        background-color: #17a2b8;
+        color: white;
+    }
+{% endblock %}
+
+{% block header_title %}
+    {{ 'email.order_status.assigned.title'|trans({}, 'AppBundle', locale) }}
+{% endblock %}
+
+{% block content %}
+    <h2>{{ 'email.order_status.greeting'|trans({'%name%': sender.firstName}, 'AppBundle', locale) }}</h2>
+
+    <div class="status-badge">
+        {{ 'email.order_status.assigned.status'|trans({}, 'AppBundle', locale) }}
+    </div>
+
+    <p>{{ 'email.order_status.assigned.message'|trans({}, 'AppBundle', locale) }}</p>
+
+    {% if order.carrier %}
+    <div style="margin: 20px 0; padding: 15px; background-color: white; border-radius: 5px;">
+        <h4>{{ 'email.order_status.assigned.carrier_info'|trans({}, 'AppBundle', locale) }}</h4>
+        <p>
+            <strong>{{ 'email.order_status.assigned.carrier_name'|trans({}, 'AppBundle', locale) }}:</strong>
+            {{ order.carrier.legalName }}<br>
+            {{ order.carrier.firstName }} {{ order.carrier.lastName }}<br>
+            <strong>{{ 'email.order_status.assigned.carrier_phone'|trans({}, 'AppBundle', locale) }}:</strong>
+            {{ order.carrier.phone }}
+        </p>
+    </div>
+    {% endif %}
+
+    {# Место для дополнительного контента #}
+    <div style="margin: 20px 0; padding: 15px; background-color: white; border-radius: 5px;">
+        {{ 'email.order_status.assigned.details'|trans({}, 'AppBundle', locale)|raw }}
+    </div>
+{% endblock %}

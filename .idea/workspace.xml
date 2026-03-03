@@ -5,10 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="custom area updated">
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/islands/pages/Login/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/islands/pages/Login/Login.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/shared/ui/Icon/data/ui.data.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/ui/Icon/data/ui.data.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/bundles.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/reference.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/reference.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/services.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/services.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/EventSubscriber/OrderHistorySubscriber.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/EventSubscriber/OrderHistorySubscriber.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Service/OrderStatus/OrderStatusService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/OrderStatus/OrderStatusService.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/form/custom_area_modal.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/form/custom_area_modal.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/form/geo_area_selection_widget.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/form/geo_area_selection_widget.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/admin/pages/dashboard.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/pages/dashboard.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/translations/AppBundle.en.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/translations/AppBundle.en.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webpack.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/webpack.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,7 +37,7 @@
     <execution />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="514" />
+    <option name="cachedIndexableFilesCount" value="532" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="FileTemplateManagerImpl">
@@ -181,6 +198,16 @@
       <path value="$PROJECT_DIR$/vendor/sonata-project/doctrine-orm-admin-bundle" />
       <path value="$PROJECT_DIR$/vendor/jsor/doctrine-postgis" />
       <path value="$PROJECT_DIR$/vendor/moneyphp/money" />
+      <path value="$PROJECT_DIR$/vendor/mailjet/mailjet-apiv3-php" />
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/promises" />
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/guzzle" />
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/psr7" />
+      <path value="$PROJECT_DIR$/vendor/ralouphie/getallheaders" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-client" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-factory" />
+      <path value="$PROJECT_DIR$/vendor/lexik/jwt-authentication-bundle" />
+      <path value="$PROJECT_DIR$/vendor/lcobucci/jwt" />
     </include_path>
   </component>
   <component name="ProjectColorInfo">{
@@ -282,7 +309,20 @@
       <workItem from="1771084673870" duration="18000" />
       <workItem from="1771084714723" duration="40000" />
       <workItem from="1771084771098" duration="7099000" />
-      <workItem from="1771182517365" duration="7851000" />
+      <workItem from="1771182517365" duration="13643000" />
+      <workItem from="1771348896991" duration="5263000" />
+      <workItem from="1771407700144" duration="4111000" />
+      <workItem from="1771416312759" duration="17000" />
+      <workItem from="1771420685610" duration="5000" />
+      <workItem from="1771499135082" duration="14000" />
+      <workItem from="1771588955942" duration="5000" />
+      <workItem from="1771589002357" duration="1000" />
+      <workItem from="1771589517385" duration="10000" />
+      <workItem from="1771589566902" duration="4000" />
+      <workItem from="1771600242251" duration="8000" />
+      <workItem from="1771600331850" duration="604000" />
+      <workItem from="1772118321554" duration="3416000" />
+      <workItem from="1772464642567" duration="5520000" />
     </task>
     <task id="LOCAL-00001" summary="custom areas added to service areas">
       <option name="closed" value="true" />

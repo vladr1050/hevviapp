@@ -1,0 +1,29 @@
+{#
+# SIA SLYFOX Confidential
+#
+# Copyright (C) 2026 SIA SLYFOX.
+# All Rights Reserved.
+#
+# Базовый layout публичной части приложения.
+# Не содержит Sonata Admin / AdminLTE разметки.
+# Webpack Encore подключает единый бандл 'app' (React + Stimulus + Tailwind).
+#}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ 'Hevii' }}{% endblock %}</title>
+
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+</head>
+<body>
+    {% block body %}{% endblock %}
+
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+</body>
+</html>

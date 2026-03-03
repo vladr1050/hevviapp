@@ -22,6 +22,7 @@ use App\Entity\Manager;
 use App\Entity\Order;
 use App\Entity\OrderHistory;
 use App\Entity\User;
+use App\Service\OrderStatus\OrderStatusService;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
@@ -35,10 +36,12 @@ use Symfony\Bundle\SecurityBundle\Security;
 class OrderHistorySubscriber implements EventSubscriber
 {
     private array $pendingHistories = [];
+    private array $ordersForEmailNotification = [];
 
     public function __construct(
         private readonly Security $security,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly OrderStatusService $orderStatusService
     ) {
     }
 
@@ -87,6 +90,9 @@ class OrderHistorySubscriber implements EventSubscriber
 
         // Сохраняем для postFlush
         $this->pendingHistories[] = $history;
+        
+        // Добавляем заказ в список для отправки email уведомления
+        $this->ordersForEmailNotification[] = $entity;
     }
 
     public function postFlush(PostFlushEventArgs $event): void
@@ -108,6 +114,35 @@ class OrderHistorySubscriber implements EventSubscriber
         }
 
         $em->flush();
+
+        // Отправляем email уведомления после успешного сохранения истории
+        $this->sendEmailNotifications();
+    }
+
+    /**
+     * Отправка email уведомлений для заказов со статусными изменениями
+     */
+    private function sendEmailNotifications(): void
+    {
+        if (empty($this->ordersForEmailNotification)) {
+            return;
+        }
+
+        $orders = $this->ordersForEmailNotification;
+        $this->ordersForEmailNotification = [];
+
+        foreach ($orders as $order) {
+            try {
+                $this->orderStatusService->sendEmailToSender($order);
+            } catch (\Exception $e) {
+                // Логируем ошибку, но не прерываем процесс
+                // (чтобы проблемы с отправкой email не влияли на основную логику)
+                $this->logger->error('Failed to send email notification in postFlush', [
+                    'order_id' => $order->getId()?->toRfc4122(),
+                    'exception' => $e->getMessage(),
+                ]);
+            }
+        }
     }
 
     /**

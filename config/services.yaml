@@ -7,6 +7,11 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    mailjet_api_key:      '%env(MAILJET_API_KEY)%'
+    mailjet_api_secret:   '%env(MAILJET_API_SECRET)%'
+    mailjet_sender_email: '%env(MAILJET_SENDER_EMAIL)%'
+    mailjet_sender_name:  '%env(MAILJET_SENDER_NAME)%'
+    mailjet_enabled:      '%env(bool:MAILJET_ENABLED)%'
 
 services:
     # default configuration for services in *this* file
@@ -76,7 +81,7 @@ services:
 
     App\Service\GeoArea\Contract\GeoAreaDataDumperInterface:
         class: App\Service\GeoArea\DataDumper\GeoAreaSqlDumper
-    
+
     App\Service\GeoArea\Contract\GadmDataProviderInterface:
         class: App\Service\GeoArea\GadmDataProvider\GadmJsonProvider
         arguments:
@@ -91,11 +96,21 @@ services:
     App\Command\ParseGeoAreasCommand:
         arguments:
             $projectDir: '%kernel.project_dir%'
-    
+
     App\Command\ImportFromGeoFabrikCommand:
         arguments:
             $projectDir: '%kernel.project_dir%'
-    
+
     App\Command\ParseGeoAreasGadmCommand:
         arguments:
             $projectDir: '%kernel.project_dir%'
+
+    # Email Services
+    App\Service\Email\Contract\EmailServiceInterface:
+        class: App\Service\Email\MailjetEmailService
+        arguments:
+            $mailjetApiKey:    '%mailjet_api_key%'
+            $mailjetApiSecret: '%mailjet_api_secret%'
+            $senderEmail:      '%mailjet_sender_email%'
+            $senderName:       '%mailjet_sender_name%'
+            $enabled:          '%mailjet_enabled%'

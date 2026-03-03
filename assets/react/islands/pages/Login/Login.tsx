@@ -1,6 +1,8 @@
 import { type FC, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
+import { apiLogin } from '@api/authApi'
+import { saveTokens } from '@hooks/useAuth'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
 import { Input } from '@ui/Input/Input'
@@ -17,15 +19,34 @@ type FormValues = {
 
 export const LoginPage: FC<LoginProps> = () => {
 	const [isReset, setIsReset] = useState(false)
+	const [isLoading, setIsLoading] = useState(false)
+	const [error, setError] = useState<string | null>(null)
 
-	const { control, register, handleSubmit, watch } = useForm<FormValues>()
+	const { control, handleSubmit, watch } = useForm<FormValues>()
 
 	const onSubmit: SubmitHandler<FormValues> = async (values, event) => {
 		const submitter = (event?.nativeEvent as SubmitEvent)?.submitter as HTMLButtonElement | null
 
-		if (submitter?.name === 'reset') setIsReset(true)
+		if (submitter?.name === 'reset') {
+			setIsReset(true)
+			return
+		}
 
-		console.log(values)
+		setError(null)
+		setIsLoading(true)
+
+		try {
+			const result = await apiLogin(values.login, values.password)
+
+			saveTokens(result.access_token, result.refresh_token, result.expires_in, result.user)
+
+			window.location.href = '/'
+		} catch (err: unknown) {
+			const message = err instanceof Error ? err.message : 'Login failed'
+			setError(message)
+		} finally {
+			setIsLoading(false)
+		}
 	}
 
 	return (
@@ -72,6 +93,10 @@ export const LoginPage: FC<LoginProps> = () => {
 									Reset password
 								</button>
 							</div>
+
+							{error && (
+								<p className="text-red-500 text-sm text-center">{error}</p>
+							)}
 						</div>
 					)}
 
@@ -79,9 +104,10 @@ export const LoginPage: FC<LoginProps> = () => {
 						type={isReset ? 'button' : 'submit'}
 						name="login"
 						className="w-full"
+						disabled={isLoading}
 						onClick={!isReset ? undefined : () => setIsReset(false)}
 					>
-						{isReset ? 'Back to login' : 'Login'}
+						{isLoading ? 'Loading...' : isReset ? 'Back to login' : 'Login'}
 					</Button>
 				</form>
 			</div>

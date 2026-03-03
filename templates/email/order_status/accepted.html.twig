@@ -1,0 +1,27 @@
+{% extends 'email/order_status/base.html.twig' %}
+
+{% block status_badge_style %}
+    .status-badge {
+        background-color: #28a745;
+        color: white;
+    }
+{% endblock %}
+
+{% block header_title %}
+    {{ 'email.order_status.accepted.title'|trans({}, 'AppBundle', locale) }}
+{% endblock %}
+
+{% block content %}
+    <h2>{{ 'email.order_status.greeting'|trans({'%name%': sender.firstName}, 'AppBundle', locale) }}</h2>
+    
+    <div class="status-badge">
+        {{ 'email.order_status.accepted.status'|trans({}, 'AppBundle', locale) }}
+    </div>
+    
+    <p>{{ 'email.order_status.accepted.message'|trans({}, 'AppBundle', locale) }}</p>
+    
+    {# Место для дополнительного контента #}
+    <div style="margin: 20px 0; padding: 15px; background-color: white; border-radius: 5px;">
+        {{ 'email.order_status.accepted.details'|trans({}, 'AppBundle', locale)|raw }}
+    </div>
+{% endblock %}

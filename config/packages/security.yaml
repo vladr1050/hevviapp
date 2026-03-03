@@ -7,13 +7,17 @@ security:
     providers:
         manager:
             id: sonata_authorization.security.user.manager_user_provider
+        app_users:
+            entity:
+                class:    App\Entity\User
+                property: email
     firewalls:
         dev:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        main:
+        admin:
             lazy:      true
-            pattern:   .*
+            pattern:   ^/admin
             provider:  manager
             logout:
                 path:   _user_admin_security_logout
@@ -37,6 +41,15 @@ security:
                 signature_properties: [ 'password' ]
                 token_provider:
                     doctrine: true
+        api:
+            pattern:   ^/api
+            stateless: true
+            provider:  app_users
+            jwt: ~
+        main:
+            pattern:   ^/
+            lazy:      true
+            stateless: true
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
@@ -45,7 +58,11 @@ security:
         - { path: ^/admin/logout$, role: PUBLIC_ACCESS }
         - { path: ^/admin/login_check$, role: PUBLIC_ACCESS }
         - { path: ^/admin,  role: ROLE_ADMIN }
-        - { path: ^/.*, role: ROLE_ADMIN }
+        - { path: ^/api/auth/login$, role: PUBLIC_ACCESS }
+        - { path: ^/api/auth/refresh$, role: PUBLIC_ACCESS }
+        - { path: ^/api/auth/logout$, role: PUBLIC_ACCESS }
+        - { path: ^/api/auth/me$, role: IS_AUTHENTICATED_FULLY }
+        - { path: ^/.*, role: PUBLIC_ACCESS }
 
     role_hierarchy:
         ROLE_USER:
@@ -53,8 +70,3 @@ security:
         ROLE_MANAGER:
             - ROLE_USER
 
-when@dev:
-    security:
-        firewalls:
-            main:
-                security: false

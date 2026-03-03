@@ -1,0 +1,31 @@
+{% extends 'email/order_status/base.html.twig' %}
+
+{% block status_badge_style %}
+    .status-badge {
+        background-color: #ffc107;
+        color: #333;
+    }
+{% endblock %}
+
+{% block header_title %}
+    {{ 'email.order_status.pickup_done.title'|trans({}, 'AppBundle', locale) }}
+{% endblock %}
+
+{% block content %}
+    <h2>{{ 'email.order_status.greeting'|trans({'%name%': sender.firstName}, 'AppBundle', locale) }}</h2>
+    
+    <div class="status-badge">
+        {{ 'email.order_status.pickup_done.status'|trans({}, 'AppBundle', locale) }}
+    </div>
+    
+    <p>{{ 'email.order_status.pickup_done.message'|trans({}, 'AppBundle', locale) }}</p>
+    
+    {# Место для дополнительного контента #}
+    <div style="margin: 20px 0; padding: 15px; background-color: white; border-radius: 5px;">
+        {{ 'email.order_status.pickup_done.details'|trans({}, 'AppBundle', locale)|raw }}
+    </div>
+    
+    <div style="margin: 20px 0; padding: 15px; background-color: #fff3cd; border-radius: 5px; border-left: 4px solid #ffc107;">
+        <strong>{{ 'email.order_status.pickup_done.in_transit_note'|trans({}, 'AppBundle', locale) }}</strong>
+    </div>
+{% endblock %}

@@ -1,242 +1,70 @@
 {% extends 'admin/main_layout.html.twig' %}
 
+{% block title %}{{ 'title_dashboard'|trans({}, 'SonataAdminBundle') }}{% endblock %}
+{% block breadcrumb %}{% endblock %}
 
 {% block content %}
-    <div>
-        <!-- HEADER -->
-        <!-- <div 
-            data-react-island="Header"
-            data-props='{{ {
-                user: {
-                    image: "https://this-person-does-not-exist.com/img/avatar-gen6f2f32373cd507c06d51ea27c8e50ff1.jpg",
-                    name: "Jeff Willson",
-                    company: "Amazon",
-                },
-            }|json_encode|e("html_attr") }}'
-        ></div> -->
 
-        <!--  -->
-        <!--  -->
-        <!--  -->
+    {% set has_left = false %}
+    {% for block in blocks.left %}
+        {% if not has_left and (block.roles|length == 0 or is_granted_affirmative(block.roles)) %}
+            {% set has_left = true %}
+        {% endif %}
+    {% endfor %}
 
+    {% set has_center = false %}
+    {% for block in blocks.center %}
+        {% if not has_center and (block.roles|length == 0 or is_granted_affirmative(block.roles)) %}
+            {% set has_center = true %}
+        {% endif %}
+    {% endfor %}
 
-        <!-- PAGES -->
+    {% set has_right = false %}
+    {% for block in blocks.right %}
+        {% if not has_right and (block.roles|length == 0 or is_granted_affirmative(block.roles)) %}
+            {% set has_right = true %}
+        {% endif %}
+    {% endfor %}
 
-        <!-- LOGIN PAGE -->
-        <div data-react-island="LoginPage"></div>
+    {{ sonata_block_render_event('sonata.admin.dashboard.top') }}
 
-        <!-- REGISTRATION PAGE -->
-        <!-- <div data-react-island="RegistrationPage"></div> -->
+    <div class="row">
+        {% set width_left = has_center ? 4 : 6 %}
+        {% set width_right = has_center ? 4 : 6 %}
+        {% set width_center = (not has_left and not has_right) ? 12 : 4 %}
 
-        <!-- REQUESTS PAGE -->
-        <!-- <div 
-            data-react-island="RequestsPage"
-            data-props='{{ {
-                ordersCarrier: [
-                    {
-                        id: "00001",
-                        name: "Benu Pharma stock refill, fragile",
-                        type: "Palletes, 5 items",
-                        size: "120x80x180 cm",
-                        weight: "500kg",
-                        additionals: { stackability: true, lift: true },
-                        routes: {
-                            from: {
-                                address: "Mūkusalas 3, Rīga",
-                                loadingReady: "27.01.2026",
-                                loadingWindow: "9:00 - 18:00",
-                                deliveryDate: "27.01.2026",
-                                position: { lat: "56.946845", lng: "24.106075" },
-                            },
-                            to: {
-                                address: "IKEA bāze, Rīga",
-                                loadingReady: "27.01.2026",
-                                deliveryWindow: "15:00 - 18:00",
-                                deliveryDate: "27.01.2026",
-                                position: { lat: "56.846845", lng: "24.006075" },
-                            },
-                            polyline:[
-                                [56.946845, 24.106075],
-                                [56.796845, 24.206075],
-                                [56.846845, 24.006075],
-                            ],
-                        },
-                        comments: "Call me 20 min before arrival",
-                        price: "€ 250.00",
-                        vat: "€ 52.50",
-                        total: " € 302.50",
-                        platform: "Included",
-                        deliveryTime: "~ 48 hours",
-                        status: "carrierMatched",
-                    },
-                ],
+        {% if has_left or has_right %}
+            <div class="col-md-{{ width_left }}">
+                {% for block in blocks.left %}
+                    {% if block.roles|length == 0 or is_granted_affirmative(block.roles) %}
+                        {{ sonata_block_render({ 'type': block.type, 'settings': block.settings }) }}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
 
-                ordersSender1: [
-                    {
-                        id: "00001",
-                        name: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, eaque.", 
-                        count: 1, 
-                        route: { from: "Piņķi",  to: "Rīga" }
-                    },
-                    { id: "00002", name: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, eaque.", count: 2, route: { from: "Rīga", to: "Piņķi" } },
-                    { id: "00003", name: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, eaque.", count: 3, route: { from:"Piņķi", to: "Rīga" } },
-                    { id: "00004", name: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, eaque.", count: 4, route: { from:"Piņķi", to: "Rīga" } },
-                    { id: "00005", name: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, eaque.", count: 10, route: { from:"Piņķi", to: "Rīga" } },
-                ],
-                latestRoutes: [
-                    { from: "Piņķi, Nometnes 2", to: "Rīga Ropā" },
-                    { from: "Piņķi, Nometnes 2", to: "Rīga Ropā" },
-                    { from: "Piņķi, Nometnes 2", to: "Rīga Ropā" },
-                    { from: "Piņķi, Nometnes 2", to: "Rīga Ropā" },
-                    { from: "Piņķi, Nometnes 2", to: "Rīga Ropā" },
-                    { from: "Piņķi, Nometnes 2", to: "Rīga Ropā" },
-                    { from: "Piņķi, Nometnes 2", to: "Rīga Ropā" },
-                    { from: "Piņķi, Nometnes 2", to: "Rīga Ropā" },
-                    { from: "Piņķi, Nometnes 2", to: "Rīga Ropā" },
-                ]
-            }|json_encode|e("html_attr") }}'
-        ></div> -->
+        {% if has_center %}
+            <div class="col-md-{{ width_center }}">
+                {% for block in blocks.center %}
+                    {% if block.roles|length == 0 or is_granted_affirmative(block.roles) %}
+                        {{ sonata_block_render({ 'type': block.type, 'settings': block.settings }) }}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
 
-        <!-- ORDERS PAGE -->
-        <!-- <div 
-            data-react-island="OrdersPage"
-            data-props='{{ {
-                orders: [
-                    {
-                        id: "00001",
-                        comment: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, eaque.",
-                        item: "2 pc",
-                        address: { from: "Riga", to: "Ventspils" },
-                        pickupDate: "04 Sep 2025",
-                        type: "DSV",
-                        price: "€200.00",
-                        status: "awaiting",
-                    },
-                    {
-                        id: "00002",
-                        comment: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, eaque.",
-                        item: "2 pc",
-                        address: { from: "Ventspils", to: "Riga" },
-                        pickupDate: "04 Sep 2025",
-                        type: "DSV",
-                        price: "€200.00",
-                        status: "inTransit",
-                    },
-                    {
-                        id: "00003",
-                        comment: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, eaque.",
-                        item: "2 pc",
-                        address: { from: "Ventspils", to: "Riga" },
-                        pickupDate: "04 Sep 2025",
-                        type: "DSV",
-                        price: "€1200.00",
-                        status: "delivered",
-                    },
-                ],
-            }|json_encode|e("html_attr") }}'
-        ></div> -->
-
-        <!-- ORDER PAGE -->
-        <!-- <div 
-            data-react-island="OrderPage"
-            data-props='{{ {
-                order: {
-                    id: "123456",
-                    name: "Benu Pharma stock refill, fragile",
-                    type: "Palletes, 5 items",
-                    size: "120x80x180 cm",
-                    weight: "500kg",
-                    additionals: { stackability: true, lift: true },
-                    routes: {
-                        from: {
-                            address: "Mūkusalas 3, Rīga",
-                            loadingReady: "27.01.2026",
-                            loadingWindow: "9:00 - 18:00",
-                            deliveryDate: "27.01.2026",
-                            position: { lat: "56.946845", lng: "24.106075" },
-                        },
-                        to: {
-                            address: "IKEA bāze, Rīga",
-                            loadingReady: "27.01.2026",
-                            deliveryWindow: "15:00 - 18:00",
-                            deliveryDate: "27.01.2026",
-                            position: { lat: "56.846845", lng: "24.006075" },
-                        },
-                        polyline:[
-                            [56.946845, 24.106075],
-                            [56.796845, 24.206075],
-                            [56.846845, 24.006075],
-                        ],
-                    },
-                    comments: "Call me 20 min before arrival",
-                    price: "€ 250.00",
-                    vat: "€ 52.50",
-                    total: " € 302.50",
-                    platform: "Included",
-                    deliveryTime: "~ 48 hours",
-
-                    status0: "awaitingConfirmation",
-                    status1: "awaitingPayment",
-                    status2: "carrierMatched",
-                    status3: "awaitingPickup",
-                    status4: "inTransit",
-                    status5: "delivery",
-                    status6: "delivered",
-
-                    status: "carrierMatched",
-                },
-            }|json_encode|e("html_attr") }}'
-        ></div> -->
-
-        <!-- PROFILE PAGE -->
-        <!-- <div 
-            data-react-island="ProfilePage"
-            data-props='{{ {
-                user: {
-                    image: "https://this-person-does-not-exist.com/img/avatar-gen6f2f32373cd507c06d51ea27c8e50ff1.jpg",
-                    name: "Jeff Willson",
-                    company: "Amazon",
-                    requisites: "Amazon Retail, SIA",
-                    reg: "LV40103550355",
-                    address: "Mūkusalas 3, Rīga, Latvija, LV-1050", 
-                    contacts: "+3712233445",
-                    email: "jeff.willson@amazonretail.lv",
-
-                    accountType1: "Sender",
-                    accountType: "Carrier",
-                },
-                orders: {
-                    total1: 10,
-                    completed1: 8,
-                    cancelled1: 0,
-                    inProgress1: 2,
-
-                    successfulDeliveries: 97,
-                    applyRate: 73,
-                    cancelledBySender: 12,
-                },
-            }|json_encode|e("html_attr") }}'
-        ></div> -->
-
-
-        <!--  -->
-        <!--  -->
-        <!--  -->
-
-
-        <!-- INFO -->
-        <!-- <div 
-            data-react-island="Info"
-            style="z-index: 100;"
-            data-props='{{ {
-                orders: [
-					{ id: "00001", name: "Order 1", status: "In Transit", hours: 1 },
-					{ id: "00002", name: "Order 2", status: "Delivered", hours: 2 },
-					{ id: "00003", name: "Order 3", status: "In Transit", hours: 3 },
-					{ id: "00004", name: "Order 4", status: "Delivered", hours: 4 },
-				],
-            }|json_encode|e("html_attr") }}'
-        ></div> -->
+        {% if has_left or has_right %}
+            <div class="col-md-{{ width_right }}">
+                {% for block in blocks.right %}
+                    {% if block.roles|length == 0 or is_granted_affirmative(block.roles) %}
+                        {{ sonata_block_render({ 'type': block.type, 'settings': block.settings }) }}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
+
+    {{ sonata_block_render_event('sonata.admin.dashboard.bottom') }}
+
 {% endblock %}
 

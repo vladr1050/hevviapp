@@ -11,6 +11,8 @@
         "doctrine/doctrine-migrations-bundle": "^4.0",
         "doctrine/orm": "^3.6.2",
         "jsor/doctrine-postgis": "^2.4",
+        "lexik/jwt-authentication-bundle": "^3.2",
+        "mailjet/mailjet-apiv3-php": "^1.6.1",
         "moneyphp/money": "^4.8",
         "sonata-project/admin-bundle": ">=4.42",
         "sonata-project/doctrine-orm-admin-bundle": "^4.21",
@@ -78,6 +80,6 @@
         }
     },
     "require-dev": {
-        "symfony/maker-bundle": "^1.65"
+        "symfony/maker-bundle": "^1.66"
     }
 }

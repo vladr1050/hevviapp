@@ -99,6 +99,7 @@ Encore
 		'@config': path.resolve(__dirname, 'assets/react/shared/config'),
 		'@pages': path.resolve(__dirname, 'assets/react/shared/pages'),
 		'@components': path.resolve(__dirname, 'assets/react/shared/components'),
+		'@api': path.resolve(__dirname, 'assets/react/shared/api'),
 	})
 
 // uncomment to get integrity="..." attributes on your script & link tags
