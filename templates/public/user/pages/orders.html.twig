@@ -19,7 +19,8 @@
 {% extends 'public/main_layout.html.twig' %}
 
 {% block body %}
-    <div 
+    {{ dump(orders) }}
+    <div
         data-react-island="OrdersPage"
         data-props='{{ {
         orders: [

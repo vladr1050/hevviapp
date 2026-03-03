@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Order;
+use App\Twig\Extension\Filter\MoneyExtension;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +15,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class UserController extends AbstractController
 {
     public function __construct(
-        private readonly EntityManagerInterface $em
+        private readonly EntityManagerInterface $em,
+        private readonly MoneyExtension         $moneyExtension,
     )
     {
     }
@@ -50,9 +52,25 @@ class UserController extends AbstractController
         $orders = $this->em->getRepository(Order::class)->findBy([
             'sender' => $this->getUser(),
         ], ['createdAt' => 'DESC'], 10, 0);
+
+        $listOfOrders = [];
+        foreach ($orders as $order) {
+            $listOfOrders[] = [
+                'id' => $order->getId()?->toRfc4122(),
+                'status' => $order->getStatus(),
+                'price' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
+                'address' => [
+                    'from' => $order->getPickupAddress(),
+                    'to' => $order->getDropoutAddress(),
+                ],
+                'item' => $order->getCargo()->count(),
+                'comment' => $order->getNotes(),
+            ];
+        }
+
         return $this->render('public/user/pages/orders.html.twig', [
             'title' => 'Orders',
-            'orders' => $orders,
+            'orders' => $listOfOrders,
         ]);
     }
 
