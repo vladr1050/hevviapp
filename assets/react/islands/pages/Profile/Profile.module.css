@@ -35,8 +35,6 @@
 					& .name {
 						@apply font-medium text-base text-black;
 					}
-
-					/* & .company {} */
 				}
 			}
 

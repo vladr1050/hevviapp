@@ -23,7 +23,7 @@ import { StatusOrder } from './components/StatusOrder/StatusOrder'
 
 interface OrderCardProps {
 	order: OrderType
-	accountType?: 'sender' | 'carrier'
+	accountType: 'sender' | 'carrier'
 	isRequest?: boolean
 }
 
@@ -52,7 +52,7 @@ const getDefaultPosition = ({
 	return [(Number(from.lat) + Number(to.lat)) / 2, (Number(from.lng) + Number(to.lng)) / 2]
 }
 
-export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', isRequest }) => {
+export const OrderCard: FC<OrderCardProps> = ({ order, accountType, isRequest }) => {
 	const [modalId, setModalId] = useState<ModalIdType>()
 
 	const defaultPosition = getDefaultPosition({
@@ -209,7 +209,11 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', i
 					</div>
 				</div>
 
-				<div className={styles.right}>
+				<div
+					className={cn(styles.right, {
+						[styles.withStatus]: showStatus,
+					})}
+				>
 					<Suspense
 						fallback={
 							<div className="flex items-center justify-center h-full w-full">Loading...</div>
@@ -220,7 +224,13 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', i
 							center={defaultPosition}
 							zoom={10}
 							// scrollWheelZoom={false}
-							style={{ width: '100%', height: 'calc(100% + 20px)', zIndex: 1 }}
+							style={{
+								width: '100%',
+								// width: !showStatus ? '100%' : 'calc(100% - 276px)',
+								//
+								height: 'calc(100% + 20px)',
+								zIndex: 1,
+							}}
 						>
 							<TileLayer
 								// @ts-ignore

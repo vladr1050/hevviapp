@@ -7,6 +7,7 @@ import { cn } from '@utils/cn'
 import styles from './Profile.module.css'
 
 interface ProfilePageProps {
+	accountType: 'sender' | 'carrier'
 	user: {
 		company_address?: string
 		company_name?: string
@@ -24,9 +25,7 @@ interface ProfilePageProps {
 	}
 }
 
-export const ProfilePage: FC<ProfilePageProps> = ({ user, orders }) => {
-	const accountType = 'sender' as 'sender' | 'carrier'
-
+export const ProfilePage: FC<ProfilePageProps> = ({ accountType, user, orders }) => {
 	return (
 		<div className={cn('tw-container', styles.page)}>
 			<h1 className={styles.title}>Profile</h1>
@@ -43,8 +42,6 @@ export const ProfilePage: FC<ProfilePageProps> = ({ user, orders }) => {
 							<div className={styles.name}>
 								{user?.first_name} {user?.last_name}
 							</div>
-
-							{user?.company_name && <div className={styles.company}>{user.company_name}</div>}
 						</div>
 					</div>
 
@@ -52,31 +49,40 @@ export const ProfilePage: FC<ProfilePageProps> = ({ user, orders }) => {
 						<div className={styles.item}>
 							<div className={styles.label}>Account type</div>
 							<div className={styles.value}>
-								AC_TYPE {EMPTY_STRING}
-								{/* {`${user.accountType.charAt(0).toUpperCase()}${user.accountType.slice(1)}`} */}
+								{`${accountType.charAt(0).toUpperCase()}${accountType.slice(1)}`}
 							</div>
 						</div>
 
 						<div className={styles.hr} />
 
-						<div className={styles.item}>
-							<div className={styles.label}>Requisites</div>
-							<div className={styles.value}>REQ {EMPTY_STRING}</div>
-						</div>
+						{!!user?.company_name ||
+							!!user?.company_registration_number ||
+							(!!user?.company_address && (
+								<>
+									{!!user?.company_name && (
+										<div className={styles.item}>
+											<div className={styles.label}>Requisites</div>
+											<div className={styles.value}>{user.company_name}</div>
+										</div>
+									)}
 
-						<div className={styles.item}>
-							<div className={styles.label}>Reg</div>
-							<div className={styles.value}>
-								{user?.company_registration_number || EMPTY_STRING}
-							</div>
-						</div>
+									{!!user?.company_registration_number && (
+										<div className={styles.item}>
+											<div className={styles.label}>Reg</div>
+											<div className={styles.value}>{user.company_registration_number}</div>
+										</div>
+									)}
 
-						<div className={styles.item}>
-							<div className={styles.label}>Address</div>
-							<div className={styles.value}>{user?.company_address || EMPTY_STRING}</div>
-						</div>
+									{!!user?.company_address && (
+										<div className={styles.item}>
+											<div className={styles.label}>Address</div>
+											<div className={styles.value}>{user.company_address}</div>
+										</div>
+									)}
 
-						<div className={styles.hr} />
+									<div className={styles.hr} />
+								</>
+							))}
 
 						<div className={styles.item}>
 							<div className={styles.label}>Contacts</div>
