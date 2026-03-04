@@ -154,6 +154,7 @@ class UserController extends AbstractController
             ],
             'name' => $cargo?->getName(),
             'item' => $cargo?->getQuantity(),
+            'type' => $cargo?->getType(),
             'cargoDimensions' => $cargo?->getDimensionsCm(),
             'cargoWeight' => $cargo?->getWeightKg(),
             'comment' => $order->getNotes(),
