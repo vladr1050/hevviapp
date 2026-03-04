@@ -445,3 +445,7 @@ order:
     status_9:  "In transit"
     status_10: "Delivered"
     status_-1: "Cancelled"
+    type_1:    "Pallet"
+    type_2:    "Oversized"
+
+

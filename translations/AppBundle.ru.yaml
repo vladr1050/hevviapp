@@ -1,25 +1,25 @@
 menu:
-    users: Пользователи
-    carriers: Перевозчики
-    orders: Заказы
-    cargo: Грузы
-    offers: Коммерческие предложения
-    order_history: История заказов
+    users:             Пользователи
+    carriers:          Перевозчики
+    orders:            Заказы
+    cargo:             Грузы
+    offers:            Коммерческие предложения
+    order_history:     История заказов
     order_assignments: Назначения заказов
-    service_areas: Зоны обслуживания
-    matrix_items: Элементы матрицы
+    service_areas:     Зоны обслуживания
+    matrix_items:      Элементы матрицы
 
 breadcrumb:
-    link_user_list:   Список пользователей
-    link_user_create: Создать
-    link_order_list:   Список заказов
-    link_order_create: Создать заказ
-    link_cargo_list:   Список грузов
-    link_cargo_create: Создать груз
+    link_user_list:          Список пользователей
+    link_user_create:        Создать
+    link_order_list:         Список заказов
+    link_order_create:       Создать заказ
+    link_cargo_list:         Список грузов
+    link_cargo_create:       Создать груз
     link_servicearea_list:   Список зон обслуживания
     link_servicearea_create: Создать зону обслуживания
-    link_matrixitem_list:   Список элементов матрицы
-    link_matrixitem_create: Создать элемент матрицы
+    link_matrixitem_list:    Список элементов матрицы
+    link_matrixitem_create:  Создать элемент матрицы
 
 filter:
     label_status:                 Статус
@@ -35,90 +35,90 @@ filter:
     label_price:                  Цена
 
 list:
-    label_fullname:       Имя
-    label_email:          Email
-    label_created_at:     Создан
-    label_updated_at:     Обновлен
-    label__action:        Действия
-    label_id:             ID
-    label_status:         Статус
-    label_sender:         Отправитель
-    label_carrier:        Перевозчик
-    label_addresses:      Адреса
-    label_pickup_address: Адрес забора
-    label_dropout_address: Адрес доставки
-    label_cargo_count:    Количество грузов
+    label_fullname:             Имя
+    label_email:                Email
+    label_created_at:           Создан
+    label_updated_at:           Обновлен
+    label__action:              Действия
+    label_id:                   ID
+    label_status:               Статус
+    label_sender:               Отправитель
+    label_carrier:              Перевозчик
+    label_addresses:            Адреса
+    label_pickup_address:       Адрес забора
+    label_dropout_address:      Адрес доставки
+    label_cargo_count:          Количество грузов
     label_delivery_gross_price: Цена доставки (Брутто)
-    label_order_assignments: Назначения
-    label_no_assignments: Нет назначений
-    label_assigned_by:    Назначено
-    label_name:           Название
-    label_type:           Тип
-    label_quantity:       Количество
-    label_weight_kg:      Вес (кг)
-    label_stackable:      Штабелируемый
-    label_manipulator_needed: Требуется манипулятор
-    label_order:          Заказ
-    label_changed_by:     Изменено
-    label_changed_at:     Дата изменения
-    label_geo_areas_count: Количество гео-зон
-    label_matrix_items_count: Количество элементов матрицы
-    label_mileage_from:   Километраж от
-    label_mileage_to:     Километраж до
-    label_price:          Цена
-    label_service_area:   Зона обслуживания
+    label_order_assignments:    Назначения
+    label_no_assignments:       Нет назначений
+    label_assigned_by:          Назначено
+    label_name:                 Название
+    label_type:                 Тип
+    label_quantity:             Количество
+    label_weight_kg:            Вес (кг)
+    label_stackable:            Штабелируемый
+    label_manipulator_needed:   Требуется манипулятор
+    label_order:                Заказ
+    label_changed_by:           Изменено
+    label_changed_at:           Дата изменения
+    label_geo_areas_count:      Количество гео-зон
+    label_matrix_items_count:   Количество элементов матрицы
+    label_mileage_from:         Километраж от
+    label_mileage_to:           Километраж до
+    label_price:                Цена
+    label_service_area:         Зона обслуживания
 
 show:
-    group_menu_users:     Пользователь
-    group_menu_orders:    Заказ
-    group_menu_cargo:     Груз
+    group_menu_users:         Пользователь
+    group_menu_orders:        Заказ
+    group_menu_cargo:         Груз
     group_menu_service_areas: Зона обслуживания
-    label_first_name:     Имя
-    label_last_name:      Фамилия
-    label_phone:          Телефон
-    label_email:          Email
-    label_locale:         Язык
-    label_created_at:     Создан
-    label_updated_at:     Обновлен
-    label_id:             ID
-    label_status:         Статус
-    label_sender:         Отправитель
-    label_carrier:        Перевозчик
-    label_pickup_address: Адрес забора
-    label_dropout_address: Адрес доставки
-    label_notes:          Заметки
-    label_pickup_date:         Дата забора
-    label_pickup_time_from:    Время забора с
-    label_pickup_time_to:      Время забора до
-    label_delivery_date:       Дата доставки
-    label_delivery_time_from:  Время доставки с
-    label_delivery_time_to:    Время доставки до
-    label_cargo:          Грузы
-    label_offers:         Коммерческие предложения
-    label_order_assignments: Назначения заказа
-    label_assigned_by:    Назначено
-    label_brutto:         Брутто цена
-    label_netto:          Нетто цена
-    label_vat:            НДС (%)
-    label_offer_status:   Статус предложения
-    label_name:           Название
-    label_type:           Тип
-    label_quantity:       Количество
-    label_weight_kg:      Вес (кг)
-    label_dimensions_cm:  Размеры (см)
-    label_comment:        Комментарий
-    label_stackable:      Штабелируемый
+    label_first_name:         Имя
+    label_last_name:          Фамилия
+    label_phone:              Телефон
+    label_email:              Email
+    label_locale:             Язык
+    label_created_at:         Создан
+    label_updated_at:         Обновлен
+    label_id:                 ID
+    label_status:             Статус
+    label_sender:             Отправитель
+    label_carrier:            Перевозчик
+    label_pickup_address:     Адрес забора
+    label_dropout_address:    Адрес доставки
+    label_notes:              Заметки
+    label_pickup_date:        Дата забора
+    label_pickup_time_from:   Время забора с
+    label_pickup_time_to:     Время забора до
+    label_delivery_date:      Дата доставки
+    label_delivery_time_from: Время доставки с
+    label_delivery_time_to:   Время доставки до
+    label_cargo:              Грузы
+    label_offers:             Коммерческие предложения
+    label_order_assignments:  Назначения заказа
+    label_assigned_by:        Назначено
+    label_brutto:             Брутто цена
+    label_netto:              Нетто цена
+    label_vat:                НДС (%)
+    label_offer_status:       Статус предложения
+    label_name:               Название
+    label_type:               Тип
+    label_quantity:           Количество
+    label_weight_kg:          Вес (кг)
+    label_dimensions_cm:      Размеры (см)
+    label_comment:            Комментарий
+    label_stackable:          Штабелируемый
     label_manipulator_needed: Требуется манипулятор
-    label_related_order:  Связанный заказ
-    label_order:          Заказ
-    label_changed_by:     Изменено
-    label_meta:           Метаданные
-    label_status_history: История изменений статуса
-    label_matrix_items:   Элементы матрицы
-    label_mileage_from:   Километраж от
-    label_mileage_to:     Километраж до
-    label_price:          Цена
-    label_service_area:   Зона обслуживания
+    label_related_order:      Связанный заказ
+    label_order:              Заказ
+    label_changed_by:         Изменено
+    label_meta:               Метаданные
+    label_status_history:     История изменений статуса
+    label_matrix_items:       Элементы матрицы
+    label_mileage_from:       Километраж от
+    label_mileage_to:         Километраж до
+    label_price:              Цена
+    label_service_area:       Зона обслуживания
 
 form:
     group_tabs_general:        Общее
@@ -186,38 +186,38 @@ form:
     label_add_offer:           Добавить предложение
 
 # Cargo Type choices
-PALLET: Паллет
+PALLET:    Паллет
 OVERSIZED: Негабаритный
 
 # Address Map Component
 address_map:
     modal:
-        title: Выбор адреса на карте
+        title:              Выбор адреса на карте
         search_placeholder: Введите адрес для поиска...
-        search_button: Найти
-        search_help: Введите адрес и нажмите "Найти" или выберите точку на карте
-        button_cancel: Отмена
-        button_confirm: Подтвердить
-        instruction: 'Кликните на карту для выбора точки или используйте поиск. После выбора нажмите "Подтвердить" для применения адреса.'
+        search_button:      Найти
+        search_help:        Введите адрес и нажмите "Найти" или выберите точку на карте
+        button_cancel:      Отмена
+        button_confirm:     Подтвердить
+        instruction:        'Кликните на карту для выбора точки или используйте поиск. После выбора нажмите "Подтвердить" для применения адреса.'
     button:
         select_on_map: Выбрать на карте
     error:
-        no_selection: Пожалуйста, выберите адрес на карте или введите его в поле поиска
+        no_selection:      Пожалуйста, выберите адрес на карте или введите его в поле поиска
         address_not_found: Адрес не найден. Попробуйте уточнить запрос.
-        geocoding_failed: Не удалось получить адрес для выбранной точки
-        search_failed: Ошибка при поиске адреса. Попробуйте позже.
-        empty_search: Введите адрес для поиска
+        geocoding_failed:  Не удалось получить адрес для выбранной точки
+        search_failed:     Ошибка при поиске адреса. Попробуйте позже.
+        empty_search:      Введите адрес для поиска
     status:
         searching: Поиск...
 
 # Address View Component (для просмотра в list view)
 address_view:
     modal:
-        title: Просмотр адреса на карте
-        title_pickup: Адрес забора
-        title_dropout: Адрес доставки
+        title:           Просмотр адреса на карте
+        title_pickup:    Адрес забора
+        title_dropout:   Адрес доставки
         current_address: Текущий адрес
-        button_close: Закрыть
+        button_close:    Закрыть
     button:
         view_on_map: Посмотреть на карте
     error:
@@ -229,10 +229,10 @@ address_view:
 geo_area_view:
     label:
         selected_areas: Выбранные гео-зоны
-        map: Карта зон
+        map:            Карта зон
     scope:
         country: Страна
-        city: Город
+        city:    Город
     help:
         map_info: Отображаются границы всех выбранных гео-зон
     message:
@@ -244,41 +244,41 @@ geo_area_view:
 geo_area_selection:
     title: Выбор гео-зон на карте
     label:
-        country: Страна
-        city: Город
-        custom_area: Кастомная зона
+        country:        Страна
+        city:           Город
+        custom_area:    Кастомная зона
         selected_areas: Выбранные зоны
     select:
-        no_country: -- Выберите страну --
-        no_city: -- Выберите город --
+        no_country:     -- Выберите страну --
+        no_city:        -- Выберите город --
         no_custom_area: -- Выберите кастомную зону --
     button:
-        add: Добавить
-        remove: Удалить
+        add:                Добавить
+        remove:             Удалить
         create_custom_area: Создать кастомную зону
-        edit_custom_area: Редактировать кастомную зону
+        edit_custom_area:   Редактировать кастомную зону
     help:
         select_country_first: Сначала выберите страну для загрузки списка городов
-        select_city: Выберите страну, затем город и нажмите "+" для добавления на карту
-        select_custom_area: Выберите существующую кастомную зону или создайте новую
-        map_info: Выбранные гео-зоны отображаются на карте в виде полигонов
+        select_city:          Выберите страну, затем город и нажмите "+" для добавления на карту
+        select_custom_area:   Выберите существующую кастомную зону или создайте новую
+        map_info:             Выбранные гео-зоны отображаются на карте в виде полигонов
     message:
         no_selected_areas: Нет выбранных зон
     hexagon:
-        toggle_grid: Показать гексагональную сетку
-        resolution: Детализация сетки
-        coarse: Крупно
-        fine: Мелко
-        selected_label: Выбрано
-        clear_button: Очистить
-        click_hint: Клик = выбрать/отменить гексагон
-        instruction_or: ИЛИ включите гексагональную сетку и кликайте на гексагоны для выбора
-        instruction_edit: используйте инструменты редактирования полигона ИЛИ включите сетку чтобы добавить новые гексагоны
+        toggle_grid:            Показать гексагональную сетку
+        resolution:             Детализация сетки
+        coarse:                 Крупно
+        fine:                   Мелко
+        selected_label:         Выбрано
+        clear_button:           Очистить
+        click_hint:             Клик = выбрать/отменить гексагон
+        instruction_or:         ИЛИ включите гексагональную сетку и кликайте на гексагоны для выбора
+        instruction_edit:       используйте инструменты редактирования полигона ИЛИ включите сетку чтобы добавить новые гексагоны
         instruction_edit_title: При редактировании
     error:
-        load_countries: Не удалось загрузить список стран
-        load_cities: Не удалось загрузить список городов
-        load_geometry: Не удалось загрузить геометрию зоны
+        load_countries:     Не удалось загрузить список стран
+        load_cities:        Не удалось загрузить список городов
+        load_geometry:      Не удалось загрузить геометрию зоны
         area_already_added: Эта зона уже добавлена
     status:
         loading_cities: Загрузка городов...
@@ -288,35 +288,35 @@ custom_area:
     modal:
         title: Создание/редактирование кастомной зоны
     label:
-        name: Название кастомной зоны
+        name:      Название кастомной зоны
         draw_area: Область на карте
     placeholder:
         name: Введите название зоны
     help:
-        name: Укажите понятное название для этой зоны
+        name:      Укажите понятное название для этой зоны
         draw_area: Используйте инструменты рисования для создания полигона на карте
     button:
-        save: Сохранить
+        save:   Сохранить
         cancel: Отмена
-        edit: Редактировать
+        edit:   Редактировать
     badge:
         custom: custom
     message:
-        name_required: Пожалуйста, укажите название кастомной зоны
-        geometry_required: Пожалуйста, нарисуйте область на карте
-        jquery_not_loaded: 'Ошибка: jQuery не загружен'
+        name_required:           Пожалуйста, укажите название кастомной зоны
+        geometry_required:       Пожалуйста, нарисуйте область на карте
+        jquery_not_loaded:       'Ошибка: jQuery не загружен'
         draw_library_not_loaded: 'Ошибка: библиотека для рисования не загружена'
-        invalid_geometry: 'Ошибка: геометрия не содержит координат'
-        geometry_load_error: Ошибка загрузки геометрии
-        created: Кастомная зона создана
-        updated: Кастомная зона обновлена
-        save_error: Ошибка сохранения кастомной зоны
-        select_country_first: Пожалуйста, выберите страну
-        modal_not_found: 'Ошибка: модальное окно не найдено'
-        controller_not_found: 'Ошибка: контроллер модального окна не найден'
-        edit_load_error: Ошибка загрузки геометрии для редактирования
+        invalid_geometry:        'Ошибка: геометрия не содержит координат'
+        geometry_load_error:     Ошибка загрузки геометрии
+        created:                 Кастомная зона создана
+        updated:                 Кастомная зона обновлена
+        save_error:              Ошибка сохранения кастомной зоны
+        select_country_first:    Пожалуйста, выберите страну
+        modal_not_found:         'Ошибка: модальное окно не найдено'
+        controller_not_found:    'Ошибка: контроллер модального окна не найден'
+        edit_load_error:         Ошибка загрузки геометрии для редактирования
     select:
-        loading: Загрузка...
+        loading:     Загрузка...
         placeholder: Выберите кастомную зону
     instruction:
         title: Инструкция
@@ -326,50 +326,52 @@ custom_area:
         step4: Используйте инструменты редактирования для корректировки или удаления полигона
 
 # OrderOffer статусы
-DRAFT: Черновик
-ACCEPTED: Принято
-REJECTED: Отклонено
+DRAFT:     Черновик
+ACCEPTED:  Принято
+REJECTED:  Отклонено
 
 # OrderAssignment статусы
-ASSIGNED: Назначено
+ASSIGNED:  Назначено
 # ACCEPTED для OrderAssignment также будет "Принято"
 # REJECTED для OrderAssignment также будет "Отклонено"
 
 # OrderOffer компонент
 order_offer:
     button:
-        calculate: Рассчитать предложение
+        calculate:  Рассчитать предложение
         add_manual: Добавить вручную
     success:
-        calculated: Коммерческое предложение успешно рассчитано
-        auto_created: Коммерческое предложение автоматически создано
+        calculated:    Коммерческое предложение успешно рассчитано
+        auto_created:  Коммерческое предложение автоматически создано
         can_calculate: Возможно рассчитать стоимость для данного заказа
     warning:
-        auto_create_failed: 'Не удалось автоматически создать коммерческое предложение. Причина: %reason%'
-        service_area_not_found: Не найдена зона обслуживания для указанного адреса доставки
+        auto_create_failed:                  'Не удалось автоматически создать коммерческое предложение. Причина: %reason%'
+        service_area_not_found:              Не найдена зона обслуживания для указанного адреса доставки
         missing_coordinates_for_calculation: Для автоматического расчета стоимости выберите адрес доставки на карте
     error:
-        missing_coordinates: Отсутствуют координаты адреса доставки
+        missing_coordinates:    Отсутствуют координаты адреса доставки
         service_area_not_found: Не найдена зона обслуживания для указанного адреса
-        no_cargo_weight: В заказе отсутствуют грузы или их вес равен нулю
-        matrix_item_not_found: Не найден тарифный план для указанного веса груза
-        calculation_failed: Ошибка при расчете стоимости доставки
-        unknown: Неизвестная ошибка
+        no_cargo_weight:        В заказе отсутствуют грузы или их вес равен нулю
+        matrix_item_not_found:  Не найден тарифный план для указанного веса груза
+        calculation_failed:     Ошибка при расчете стоимости доставки
+        unknown:                Неизвестная ошибка
     help:
-        brutto_info: Цена с учетом НДС
-        netto_info: Цена без учета НДС
-        vat_info: Процент налога на добавленную стоимость
+        brutto_info:      Цена с учетом НДС
+        netto_info:       Цена без учета НДС
+        vat_info:         Процент налога на добавленную стоимость
         auto_calculation: При сохранении заказа коммерческое предложение будет создано автоматически
 
 order:
-    status_1: "Черновик"
-    status_2: "Предложен"
-    status_3: "Принят"
-    status_4: "Выставлен счёт"
-    status_5: "Оплачен"
-    status_6: "Назначен"
-    status_7: "Ожидает забора"
-    status_8: "Забор выполнен"
-    status_9: "В пути"
+    status_1:  "Черновик"
+    status_2:  "Предложен"
+    status_3:  "Принят"
+    status_4:  "Выставлен счёт"
+    status_5:  "Оплачен"
+    status_6:  "Назначен"
+    status_7:  "Ожидает забора"
+    status_8:  "Забор выполнен"
+    status_9:  "В пути"
     status_10: "Доставлен"
     status_-1: "Отменён"
+    type_1:    "Палет"
+    type_2:    "Негабаритный"

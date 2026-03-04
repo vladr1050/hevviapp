@@ -154,7 +154,7 @@ class UserController extends AbstractController
             ],
             'name' => $cargo?->getName(),
             'item' => $cargo?->getQuantity(),
-            'type' => $cargo?->getType(),
+            'type' => $translator->trans('order.type_' . $cargo?->getType(), domain: 'AppBundle', locale: $user?->getLocale()),
             'cargoDimensions' => $cargo?->getDimensionsCm(),
             'cargoWeight' => $cargo?->getWeightKg(),
             'comment' => $order->getNotes(),
