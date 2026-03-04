@@ -59,6 +59,8 @@ class UserController extends AbstractController
 
         $listOfOrders = [];
         foreach ($orders as $order) {
+            $history = $order->getHistories()->filter(fn($history) => $history->getStatus() === Order::STATUS['PICKUP_DONE'])->first();
+
             $listOfOrders[] = [
                 'id' => $order->getId()?->toRfc4122(),
                 'status' => $order->getStatus(),
@@ -70,8 +72,8 @@ class UserController extends AbstractController
                 ],
                 'item' => $order->getCargo()->count(),
                 'comment' => $order->getNotes(),
-                'pickup_date' => '',
-                'carrier' => '',
+                'pickup_date' => $history?->getCreatedAt()->format('d.m.Y'),
+                'carrier' => $order->getCarrier()?->getLegalName(),
             ];
         }
 
@@ -82,16 +84,52 @@ class UserController extends AbstractController
     }
 
     #[Route('/orders/{id}', name: 'public_order', methods: ['GET'])]
-    public function order(string $id): Response
+    public function order(string $id, TranslatorInterface $translator): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
         $order = $this->em->getRepository(Order::class)->find($id);
         if (!$order) {
             return $this->redirectToRoute('user_public_orders');
         }
 
+        $history = $order->getHistories()->filter(fn($history) => $history->getStatus() === Order::STATUS['PICKUP_DONE'])->first();
+        $cargo = $order->getCargo()->first();
+
+        $item = [
+            'id' => $order->getId()?->toRfc4122(),
+            'status' => $order->getStatus(),
+            'status_text' => $translator->trans('order.status_' . $order->getStatus(), domain: 'AppBundle', locale: $user?->getLocale()),
+            'price' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
+            'address' => [
+                'from' => $order->getPickupAddress(),
+                'to' => $order->getDropoutAddress(),
+            ],
+            'name' => $cargo?->getName(),
+            'item' => $cargo?->getQuantity(),
+            'cargoDimensions' => $cargo?->getDimensionsCm(),
+            'cargoWeight' => $cargo?->getWeightKg(),
+            'comment' => $order->getNotes(),
+            'pickup_date' => $history?->getCreatedAt()->format('d.m.Y'),
+            'carrier' => $order->getCarrier()?->getLegalName(),
+            'pickup_latitude' => $order->getPickupLatitude(),
+            'pickup_longitude' => $order->getPickupLongitude(),
+            'dropout_latitude' => $order->getDropoutLatitude(),
+            'dropout_longitude' => $order->getDropoutLongitude(),
+            'stackable' => $cargo->isStackable(),
+            'manipulator_needed' => $cargo?->isManipulatorNeeded(),
+            'pickup_time_from' => $order->getPickupTimeFrom()?->format('H:i'),
+            'pickup_time_to' => $order->getPickupTimeTo()?->format('H:i'),
+            'delivery_time_from' => $order->getDeliveryTimeFrom()?->format('H:i'),
+            'delivery_time_to' => $order->getDeliveryTimeTo()?->format('H:i'),
+            'pickup_request_date' => $order->getPickupDate()?->format('d.m.Y'),
+            'delivery_date' => $order->getDeliveryDate()?->format('d.m.Y'),
+        ];
+
         return $this->render('public/user/pages/order.html.twig', [
             'title' => 'Order',
-            'order' => $order,
+            'order' => $item,
         ]);
     }
 }

@@ -37,9 +37,11 @@ use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
 use Sonata\AdminBundle\Filter\Model\FilterData;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 use Doctrine\ORM\Query\Expr\Join;
 
@@ -48,12 +50,12 @@ class OrderAdmin extends BaseAdmin
     protected function configureQuery(ProxyQueryInterface $query): ProxyQueryInterface
     {
         $query = parent::configureQuery($query);
-        
+
         $rootAlias = current($query->getRootAliases());
         $query
             ->leftJoin(sprintf('%s.offers', $rootAlias), 'offers')
             ->addSelect('offers');
-        
+
         return $query;
     }
 
@@ -137,7 +139,7 @@ class OrderAdmin extends BaseAdmin
                     }
 
                     $statusValue = $data->getValue();
-                    
+
                     // JOIN с offers для фильтрации
                     $queryBuilder
                         ->innerJoin($alias . '.offers', 'latest_offer_filter')
@@ -166,7 +168,7 @@ class OrderAdmin extends BaseAdmin
                     }
 
                     $statusValue = $data->getValue();
-                    
+
                     // JOIN с orderAssignments для фильтрации
                     $queryBuilder
                         ->innerJoin($alias . '.orderAssignments', 'latest_assignment_filter')
@@ -249,6 +251,24 @@ class OrderAdmin extends BaseAdmin
                 'template' => 'admin/CRUD/show_address_with_map.html.twig',
             ])
             ->add('notes')
+            ->add('pickupDate', null, [
+                'format' => 'M d, Y',
+            ])
+            ->add('pickupTimeFrom', null, [
+                'format' => 'H:m',
+            ])
+            ->add('pickupTimeTo', null, [
+                'format' => 'H:m',
+            ])
+            ->add('deliveryDate', null, [
+                'format' => 'M d, Y'
+            ])
+            ->add('deliveryTimeFrom', null, [
+                'format' => 'H:m',
+            ])
+            ->add('deliveryTimeTo', null, [
+                'format' => 'H:m',
+            ])
             ->add('cargo')
             ->add('offers', null, [
                 'label' => 'show.label_offers',
@@ -347,8 +367,48 @@ class OrderAdmin extends BaseAdmin
             ->add('dropoutLongitude', HiddenType::class, [
                 'required' => false,
             ])
+            ->add('pickupLatitude', HiddenType::class, [
+                'required' => false,
+            ])
+            ->add('pickupLongitude', HiddenType::class, [
+                'required' => false,
+            ])
             ->add('notes', TextareaType::class, [
                 'required' => false,
+            ])
+            ->end()
+            ->with('schedule', [
+                'class' => 'col-md-12',
+            ])
+            ->add('pickupDate', DateType::class, [
+                'required' => false,
+                'widget' => 'single_text',
+                'html5' => true,
+            ])
+            ->add('pickupTimeFrom', TimeType::class, [
+                'required' => false,
+                'widget' => 'single_text',
+                'html5' => true,
+            ])
+            ->add('pickupTimeTo', TimeType::class, [
+                'required' => false,
+                'widget' => 'single_text',
+                'html5' => true,
+            ])
+            ->add('deliveryDate', DateType::class, [
+                'required' => false,
+                'widget' => 'single_text',
+                'html5' => true,
+            ])
+            ->add('deliveryTimeFrom', TimeType::class, [
+                'required' => false,
+                'widget' => 'single_text',
+                'html5' => true,
+            ])
+            ->add('deliveryTimeTo', TimeType::class, [
+                'required' => false,
+                'widget' => 'single_text',
+                'html5' => true,
             ])
             ->end()
             ->end()

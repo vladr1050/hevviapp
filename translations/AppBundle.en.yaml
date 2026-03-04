@@ -99,6 +99,12 @@ show:
     label_pickup_address:      Pickup Address
     label_dropout_address:     Dropout Address
     label_notes:               Notes
+    label_pickup_date:         Pickup Date
+    label_pickup_time_from:    Pickup Time From
+    label_pickup_time_to:      Pickup Time To
+    label_delivery_date:       Delivery Date
+    label_delivery_time_from:  Delivery Time From
+    label_delivery_time_to:    Delivery Time To
     label_cargo:               Cargo
     label_offers:              Offers
     label_order_assignments:   Order Assignments
@@ -145,6 +151,7 @@ form:
     group_general:             General
     group_order_info:          Order Information
     group_addresses:           Addresses
+    group_schedule:            Schedule
     group_cargo_list:          Cargo Items
     group_offers_list:         Offers List
     group_assigment_list:      Assignments List
@@ -169,6 +176,12 @@ form:
     label_pickup_address:      Pickup Address
     label_dropout_address:     Dropout Address
     label_notes:               Notes
+    label_pickup_date:         Pickup Date
+    label_pickup_time_from:    Pickup Time From
+    label_pickup_time_to:      Pickup Time To
+    label_delivery_date:       Delivery Date
+    label_delivery_time_from:  Delivery Time From
+    label_delivery_time_to:    Delivery Time To
     label_cargo:               Cargo
     label_name:                Name
     label_type:                Type

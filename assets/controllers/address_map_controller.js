@@ -184,10 +184,11 @@ export default class extends Controller {
             this.defaultZoomValue
         );
 
-        // Добавление тайлов OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            maxZoom: 19
+        // Добавление тайлов CartoDB Voyager (английские подписи)
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 20
         }).addTo(this.map);
 
         // Обработка клика по карте
@@ -233,7 +234,8 @@ export default class extends Controller {
             q: address,
             format: 'json',
             addressdetails: '1',
-            limit: '5'
+            limit: '5',
+            'accept-language': 'en'
         });
 
         const response = await fetch(url, {
@@ -263,7 +265,8 @@ export default class extends Controller {
                 lat: lat.toString(),
                 lon: lng.toString(),
                 format: 'json',
-                addressdetails: '1'
+                addressdetails: '1',
+                'accept-language': 'en'
             });
 
             const response = await fetch(url, {

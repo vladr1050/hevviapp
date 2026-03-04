@@ -87,6 +87,12 @@ show:
     label_pickup_address: Адрес забора
     label_dropout_address: Адрес доставки
     label_notes:          Заметки
+    label_pickup_date:         Дата забора
+    label_pickup_time_from:    Время забора с
+    label_pickup_time_to:      Время забора до
+    label_delivery_date:       Дата доставки
+    label_delivery_time_from:  Время доставки с
+    label_delivery_time_to:    Время доставки до
     label_cargo:          Грузы
     label_offers:         Коммерческие предложения
     label_order_assignments: Назначения заказа
@@ -126,6 +132,7 @@ form:
     group_general:             Основное
     group_order_info:          Информация о заказе
     group_addresses:           Адреса
+    group_schedule:            Расписание
     group_cargo_list:          Список грузов
     group_offers_list:         Список коммерческих предложений
     group_assigment_list:      Список назначений
@@ -150,6 +157,12 @@ form:
     label_pickup_address:      Адрес забора
     label_dropout_address:     Адрес доставки
     label_notes:               Заметки
+    label_pickup_date:         Дата забора
+    label_pickup_time_from:    Время забора с
+    label_pickup_time_to:      Время забора до
+    label_delivery_date:       Дата доставки
+    label_delivery_time_from:  Время доставки с
+    label_delivery_time_to:    Время доставки до
     label_cargo:               Грузы
     label_name:                Название
     label_type:                Тип

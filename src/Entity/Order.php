@@ -82,6 +82,30 @@ class Order extends BaseUUID
     #[ORM\OneToMany(targetEntity: OrderAssignment::class, mappedBy: 'relatedOrder', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $orderAssignments;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 7, nullable: true)]
+    private ?string $pickupLatitude = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 7, nullable: true)]
+    private ?string $pickupLongitude = null;
+
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    private ?\DateTime $pickupTimeFrom = null;
+
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    private ?\DateTime $pickupTimeTo = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTime $pickupDate = null;
+
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    private ?\DateTime $deliveryTimeFrom = null;
+
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    private ?\DateTime $deliveryTimeTo = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTime $deliveryDate = null;
+
     public function __construct()
     {
         $this->cargo = new ArrayCollection();
@@ -304,11 +328,11 @@ class Order extends BaseUUID
         }
 
         $offersArray = $this->offers->toArray();
-        
+
         usort($offersArray, function (OrderOffer $a, OrderOffer $b) {
             $dateA = $a->getCreatedAt();
             $dateB = $b->getCreatedAt();
-            
+
             if ($dateA === null && $dateB === null) {
                 return 0;
             }
@@ -318,7 +342,7 @@ class Order extends BaseUUID
             if ($dateB === null) {
                 return -1;
             }
-            
+
             return $dateB <=> $dateA;
         });
 
@@ -351,6 +375,95 @@ class Order extends BaseUUID
                 $orderAssignment->setRelatedOrder(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPickupLatitude(): ?string
+    {
+        return $this->pickupLatitude;
+    }
+
+    public function setPickupLatitude(?string $pickupLatitude): static
+    {
+        $this->pickupLatitude = $pickupLatitude;
+
+        return $this;
+    }
+
+    public function getPickupLongitude(): ?string
+    {
+        return $this->pickupLongitude;
+    }
+
+    public function getPickupTimeFrom(): ?\DateTime
+    {
+        return $this->pickupTimeFrom;
+    }
+
+    public function setPickupTimeFrom(?\DateTime $pickupTimeFrom): static
+    {
+        $this->pickupTimeFrom = $pickupTimeFrom;
+
+        return $this;
+    }
+
+    public function getPickupTimeTo(): ?\DateTime
+    {
+        return $this->pickupTimeTo;
+    }
+
+    public function setPickupTimeTo(?\DateTime $pickupTimeTo): static
+    {
+        $this->pickupTimeTo = $pickupTimeTo;
+
+        return $this;
+    }
+
+    public function getPickupDate(): ?\DateTime
+    {
+        return $this->pickupDate;
+    }
+
+    public function setPickupDate(?\DateTime $pickupDate): static
+    {
+        $this->pickupDate = $pickupDate;
+
+        return $this;
+    }
+
+    public function getDeliveryTimeFrom(): ?\DateTime
+    {
+        return $this->deliveryTimeFrom;
+    }
+
+    public function setDeliveryTimeFrom(?\DateTime $deliveryTimeFrom): static
+    {
+        $this->deliveryTimeFrom = $deliveryTimeFrom;
+
+        return $this;
+    }
+
+    public function getDeliveryTimeTo(): ?\DateTime
+    {
+        return $this->deliveryTimeTo;
+    }
+
+    public function setDeliveryTimeTo(?\DateTime $deliveryTimeTo): static
+    {
+        $this->deliveryTimeTo = $deliveryTimeTo;
+
+        return $this;
+    }
+
+    public function getDeliveryDate(): ?\DateTime
+    {
+        return $this->deliveryDate;
+    }
+
+    public function setDeliveryDate(?\DateTime $deliveryDate): static
+    {
+        $this->deliveryDate = $deliveryDate;
 
         return $this;
     }
