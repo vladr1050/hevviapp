@@ -7,8 +7,10 @@
         "Hevvi",
         "hotwired",
         "javascripts",
+        "nowrap",
         "Pielietot",
         "stackability",
+        "stackable",
         "symfony"
     ],
     "editor.defaultFormatter": "esbenp.prettier-vscode",

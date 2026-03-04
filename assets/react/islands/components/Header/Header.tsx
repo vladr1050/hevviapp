@@ -11,9 +11,9 @@ import styles from './Header.module.css'
 
 interface HeaderProps {
 	user: {
-		image: string
-		name: string
-		company: string
+		first_name?: string
+		last_name?: string
+		company_name?: string
 	}
 }
 
@@ -69,27 +69,19 @@ export const Header: FC<HeaderProps> = ({ user }) => {
 									})}
 								>
 									<div className={styles.profile}>
-										<div
-											className={styles.avatar}
-											style={
-												!user?.image?.length
-													? {}
-													: {
-															background: `url(${user.image}) no-repeat center center/cover `,
-														}
-											}
-										>
-											{!user?.image?.length && (
-												<>
-													{user?.name.split(' ')[0].charAt(0)}
-													{user?.name.split(' ')[1].charAt(0)}
-												</>
-											)}
+										<div className={styles.avatar}>
+											{user?.first_name?.charAt(0)}
+											{user?.last_name?.charAt(0)}
 										</div>
 
 										<div>
-											<div className={styles.name}>{user.name}</div>
-											<div className={styles.company}>{user.company}</div>
+											<div className={styles.name}>
+												{user.first_name} {user.last_name}
+											</div>
+
+											{!!user?.company_name?.length && (
+												<div className={styles.company}>{user.company_name}</div>
+											)}
 										</div>
 									</div>
 								</div>

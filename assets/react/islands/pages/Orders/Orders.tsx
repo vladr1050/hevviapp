@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 
-import { EMPTY_STRING, Routes } from '@config/constants'
+import { EMPTY_STRING, OrderStatusEnum, Routes } from '@config/constants'
 import { Icon } from '@ui/Icon/Icon'
 import { cn } from '@utils/cn'
 
@@ -17,13 +17,14 @@ interface OrdersPageProps {
 		item: number
 		price: string
 		status: number
+		status_text: string
+
+		carrier?: string
+		pickup_date?: string
 	}[]
 }
 
 export const OrdersPage: FC<OrdersPageProps> = ({ orders }) => {
-	// FIXME
-	const _status = 'awaiting' as 'awaiting' | 'delivered' | 'inTransit'
-
 	return (
 		<div className={cn('tw-container', styles.page)}>
 			<h1 className={styles.title}>
@@ -50,33 +51,34 @@ export const OrdersPage: FC<OrdersPageProps> = ({ orders }) => {
 								{order.comment}
 							</span>
 							<span>{`${order.item} ${order.item > 1 ? 'pcs' : 'pc'}`}</span>
-							<span className="!leading-[14px]">
+							<span className="!text-xs !leading-[12px]">
 								{order.address.from}
 								<br />
 								→
 								<br />
 								{order.address.to}
-								{/* {EMPTY_STRING} */}
 							</span>
-							<span>{EMPTY_STRING}</span>
+							<span>{order?.pickup_date || EMPTY_STRING}</span>
 							<span>{EMPTY_STRING}</span>
 							<span>{order.price}</span>
 
-							<span className={cn(styles.status, { [styles.inTransit]: _status === 'inTransit' })}>
+							<span
+								className={cn(styles.status, {
+									[styles.inTransit]: OrderStatusEnum.IN_TRANSIT === order.status,
+								})}
+							>
 								<div className={styles.text}>
-									{_status === 'inTransit' ? (
+									{OrderStatusEnum.IN_TRANSIT === order.status ? (
 										<div className={styles.dot} />
 									) : (
 										<Icon
-											type={_status === 'awaiting' ? 'clock_1' : 'check'}
+											type={OrderStatusEnum.DELIVERED === order.status ? 'check' : 'clock_1'}
 											size={16}
 											className="text-white"
 										/>
 									)}
 
-									{_status === 'inTransit'
-										? 'In Transit'
-										: _status.charAt(0).toUpperCase() + _status.slice(1)}
+									<span>{order.status_text}</span>
 								</div>
 
 								<a href={`${Routes.ORDERS}/${order.id}`} className={styles.link}>

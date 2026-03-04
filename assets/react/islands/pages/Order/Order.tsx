@@ -12,7 +12,9 @@ interface OrderPageProps {
 	accountType: 'sender' | 'carrier'
 }
 
-export const OrderPage: FC<OrderPageProps> = ({ order, accountType }) => {
+export const OrderPage: FC<OrderPageProps> = (props) => {
+	const { order, accountType } = props
+
 	return (
 		<div className={cn('tw-container', styles.page)}>
 			<div className={styles.content}>

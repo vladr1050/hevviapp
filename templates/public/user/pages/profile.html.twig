@@ -21,30 +21,6 @@
 {% block body %}
      <div 
         data-react-island="ProfilePage"
-        data-props='{{ {
-            user: {
-                image: "https://this-person-does-not-exist.com/img/avatar-gen6f2f32373cd507c06d51ea27c8e50ff1.jpg",
-                name: "Jeff Willson",
-                company: "Amazon",
-                requisites: "Amazon Retail, SIA",
-                reg: "LV40103550355",
-                address: "Mūkusalas 3, Rīga, Latvija, LV-1050", 
-                contacts: "+3712233445",
-                email: "jeff.willson@amazonretail.lv",
-
-                accountType: "sender",
-                accountType1: "carrier",
-            },
-            orders: {
-                total1: 10,
-                completed1: 8,
-                cancelled1: 0,
-                inProgress1: 2,
-
-                successfulDeliveries: 97,
-                applyRate: 73,
-                cancelledBySender: 12,
-            },
-        }|json_encode|e("html_attr") }}'
+        data-props='{{ { user, orders }|json_encode|e("html_attr") }}'
     ></div>
 {% endblock %}

@@ -21,13 +21,7 @@
 {% block header %}
     <div 
         data-react-island="Header"
-        data-props='{{ {
-            user: {
-                image: "https://this-person-does-not-exist.com/img/avatar-gen6f2f32373cd507c06d51ea27c8e50ff1.jpg",
-                name: "Jeff Willson",
-                company: "Amazon",
-            },
-        }|json_encode|e("html_attr") }}'
+        data-props='{{ { user }|json_encode|e("html_attr") }}'
     ></div>
 {% endblock %}
 

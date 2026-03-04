@@ -1,13 +1,14 @@
 import { type FC, Suspense, useState } from 'react'
-import { MapContainer, Marker, Polyline, TileLayer } from 'react-leaflet'
+import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 
-import { FormActions, OrderStatusId, OrderType } from '@config/constants'
+import { EMPTY_STRING, FormActions, OrderStatusEnum, OrderType } from '@config/constants'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
 import { Modal } from '@ui/Modal/Modal'
 import { cn } from '@utils/cn'
 // @ts-ignore
 import L from 'leaflet'
+import { fromJSONSchema } from 'zod'
 
 // @ts-ignore
 import CustomIcon from './CustomMarker.svg'
@@ -26,15 +27,44 @@ interface OrderCardProps {
 	isRequest?: boolean
 }
 
-const DEFAULT_LAT = 56.946845
-const DEFAULT_LNG = 24.106075
-
 type ModalIdType = 'confirmSender' | 'cancel' | 'rate' | 'declineCarrier'
+
+const getDefaultPosition = ({
+	from,
+	to,
+}: {
+	from: { lat?: string; lng?: string }
+	to: { lat?: string; lng?: string }
+}) => {
+	if (
+		typeof from.lat !== 'string' ||
+		typeof from.lng !== 'string' ||
+		typeof to.lat !== 'string' ||
+		typeof to.lng !== 'string'
+	) {
+		if (typeof from.lat === 'string' && typeof from.lng === 'string') return [from.lat, from.lng]
+
+		if (typeof to.lat === 'string' && typeof to.lng === 'string') return [to.lat, to.lng]
+
+		return [0, 0]
+	}
+
+	return [(Number(from.lat) + Number(to.lat)) / 2, (Number(from.lng) + Number(to.lng)) / 2]
+}
 
 export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', isRequest }) => {
 	const [modalId, setModalId] = useState<ModalIdType>()
 
-	const statusId = OrderStatusId[order?.status]
+	const defaultPosition = getDefaultPosition({
+		from: {
+			lat: order?.pickup_latitude,
+			lng: order?.pickup_longitude,
+		},
+		to: {
+			lat: order?.dropout_latitude,
+			lng: order?.dropout_longitude,
+		},
+	})
 
 	const myIcon: L.Icon = new L.Icon({
 		iconUrl: CustomIcon,
@@ -42,13 +72,17 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', i
 		iconAnchor: [20, 30],
 	})
 
+	const orderId = order.id.split('-')[0]
+
 	const showId = isRequest
 
 	const showInfo =
-		(accountType === 'sender' && statusId === 0) || (accountType === 'carrier' && isRequest)
+		(accountType === 'sender' && order.status === OrderStatusEnum.DRAFT) ||
+		(accountType === 'carrier' && isRequest)
 
 	const showStatus =
-		(accountType === 'sender' && statusId > 0) || (accountType === 'carrier' && !isRequest)
+		(accountType === 'sender' && order.status > OrderStatusEnum.DRAFT) ||
+		(accountType === 'carrier' && !isRequest)
 
 	return (
 		<>
@@ -61,7 +95,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', i
 
 								<div className={styles.id}>
 									Reference ID
-									<span>{order?.id}</span>
+									<span>{orderId}</span>
 								</div>
 							</div>
 						</>
@@ -70,30 +104,30 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', i
 					<div className={styles.items}>
 						<div className={styles.item}>
 							<div className={styles.label}>Name</div>
-							<div className={styles.value}>{order?.name}</div>
+							<div className={styles.value}>{order?.name || EMPTY_STRING}</div>
 						</div>
 
 						<div className={styles.row}>
 							<div className={styles.item}>
 								<div className={styles.label}>Type</div>
-								<div className={styles.value}>{order?.type}</div>
+								<div className={styles.value}>TYPE {EMPTY_STRING}</div>
 							</div>
 
 							<div className={styles.item}>
 								<div className={styles.label}>Size</div>
-								<div className={styles.value}>{order?.size}</div>
+								<div className={styles.value}>{order?.cargoDimensions || EMPTY_STRING}</div>
 							</div>
 
 							<div className={styles.item}>
 								<div className={styles.label}>Weight</div>
-								<div className={styles.value}>{order?.weight}</div>
+								<div className={styles.value}>{order?.cargoWeight || EMPTY_STRING}</div>
 							</div>
 						</div>
 
 						<div className={styles.item}>
 							<div className={styles.label}>Additionals</div>
 							<div className={styles.additionals}>
-								{order?.additionals.stackability && (
+								{order?.stackable && (
 									<div className={styles.additional}>
 										<div className={styles.icon}>
 											<Icon type="check_circle_1" size={20} />
@@ -101,7 +135,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', i
 										Stackability
 									</div>
 								)}
-								{order?.additionals.lift && (
+								{order?.manipulator_needed && (
 									<div className={styles.additional}>
 										<div className={styles.icon}>
 											<Icon type="check_circle_1" size={20} />
@@ -122,23 +156,22 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', i
 							<div className={styles.items}>
 								<div className={styles.item}>
 									<div className={styles.label}>Pickup</div>
-									<div className={styles.value}>{order?.routes.from.address}</div>
+									<div className={styles.value}>{order?.address.from || EMPTY_STRING}</div>
 								</div>
 
 								<div className={styles.row}>
 									<div className={styles.item}>
 										<div className={styles.label}>Loading ready</div>
-										<div className={styles.value}>{order?.routes.from.loadingReady}</div>
+										<div className={styles.value}>{order?.pickup_request_date || EMPTY_STRING}</div>
 									</div>
 
 									<div className={styles.item}>
 										<div className={styles.label}>Loading window</div>
-										<div className={styles.value}>{order?.routes.from.loadingWindow}</div>
-									</div>
-
-									<div className={styles.item}>
-										<div className={styles.label}>Delivery date</div>
-										<div className={styles.value}>{order?.routes.from.deliveryDate}</div>
+										<div className={styles.value}>
+											{!order.pickup_time_from && !order.pickup_time_to
+												? EMPTY_STRING
+												: `${order?.pickup_time_from} - ${order?.pickup_time_to}`}
+										</div>
 									</div>
 								</div>
 
@@ -146,23 +179,22 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', i
 
 								<div className={styles.item}>
 									<div className={styles.label}>Delivery</div>
-									<div className={styles.value}>{order?.routes.to.address}</div>
+									<div className={styles.value}>{order?.address.to || EMPTY_STRING}</div>
 								</div>
 
 								<div className={styles.row}>
 									<div className={styles.item}>
-										<div className={styles.label}>Loading ready</div>
-										<div className={styles.value}>{order?.routes.to.loadingReady}</div>
+										<div className={styles.label}>Delivery date</div>
+										<div className={styles.value}>{order?.delivery_date || EMPTY_STRING}</div>
 									</div>
 
 									<div className={styles.item}>
 										<div className={styles.label}>Delivery window</div>
-										<div className={styles.value}>{order?.routes.to.deliveryWindow}</div>
-									</div>
-
-									<div className={styles.item}>
-										<div className={styles.label}>Delivery date</div>
-										<div className={styles.value}>{order?.routes.to.deliveryDate}</div>
+										<div className={styles.value}>
+											{!order?.delivery_time_from && !order.delivery_time_to
+												? EMPTY_STRING
+												: `${order?.delivery_time_from} - ${order?.delivery_time_to}`}
+										</div>
 									</div>
 								</div>
 							</div>
@@ -172,7 +204,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', i
 
 						<div className={styles.item}>
 							<div className={styles.label}>Comments</div>
-							<div className={styles.comments}>{order?.comments}</div>
+							<div className={styles.comments}>{order?.comment || EMPTY_STRING}</div>
 						</div>
 					</div>
 				</div>
@@ -185,7 +217,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', i
 					>
 						<MapContainer
 							// @ts-ignore
-							center={[DEFAULT_LAT, DEFAULT_LNG]}
+							center={defaultPosition}
 							zoom={10}
 							// scrollWheelZoom={false}
 							style={{ width: '100%', height: 'calc(100% + 20px)', zIndex: 1 }}
@@ -196,38 +228,38 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', i
 								url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 							/>
 
-							{order?.routes.from.position.lat && order?.routes.from.position.lng && (
+							{order?.pickup_latitude && order?.pickup_longitude && (
 								<Marker
 									// @ts-ignore
 									icon={myIcon}
 									position={{
-										lat: order?.routes.from.position.lat,
-										lng: order?.routes.from.position.lng,
+										lat: order?.pickup_latitude,
+										lng: order?.pickup_longitude,
 									}}
 								/>
 							)}
 
-							{order?.routes.to.position.lat && order?.routes.to.position.lng && (
+							{order?.dropout_latitude && order?.dropout_longitude && (
 								<Marker
 									// @ts-ignore
 									icon={myIcon}
 									position={{
-										lat: order?.routes.to.position.lat,
-										lng: order?.routes.to.position.lng,
+										lat: order?.dropout_latitude,
+										lng: order?.dropout_longitude,
 									}}
 								/>
 							)}
 
-							{!!order?.routes.polyline.length && (
+							{/* {!!order?.routes.polyline.length && (
 								<Polyline pathOptions={{ color: 'black' }} positions={order?.routes.polyline} />
-							)}
+							)} */}
 						</MapContainer>
 					</Suspense>
 
 					{showId && (
 						<div className={styles.id}>
 							<div className={styles.label}>Reference ID</div>
-							<div className={styles.value}>{order?.id}</div>
+							<div className={styles.value}>{orderId}</div>
 						</div>
 					)}
 
@@ -239,7 +271,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', i
 										Price <br />
 										TOTAL
 									</div>
-									<div className={styles.value}>{order?.price}</div>
+									<div className={styles.value}>{order?.price || EMPTY_STRING}</div>
 								</div>
 
 								<div className={styles.item}>
@@ -248,7 +280,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', i
 										<br />
 										21%
 									</div>
-									<div className={styles.value}>{order?.vat}</div>
+									<div className={styles.value}>VAT {EMPTY_STRING}</div>
 								</div>
 								<div className={styles.item}>
 									<div className={styles.label}>
@@ -256,7 +288,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', i
 										<br />
 										VAT 21$
 									</div>
-									<div className={styles.value}>{order?.total}</div>
+									<div className={styles.value}>TOTAL {EMPTY_STRING}</div>
 								</div>
 								<div className={styles.item}>
 									<div className={styles.label}>
@@ -264,7 +296,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', i
 										<br />
 										commission 10%
 									</div>
-									<div className={styles.value}>{order?.platform}</div>
+									<div className={styles.value}>PL {EMPTY_STRING}</div>
 								</div>
 							</div>
 
@@ -277,15 +309,15 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', i
 											[styles.icon]: accountType === 'sender',
 											[styles.avatar]: accountType === 'carrier',
 										})}
-										style={
-											accountType === 'carrier' && !!order?.sender?.image?.length
-												? {
-														background: `url(${order?.sender?.image}) no-repeat center center/cover `,
-													}
-												: {}
-										}
+										// style={
+										// 	accountType === 'carrier' && !!order?.sender?.image?.length
+										// 		? {
+										// 				background: `url(${order?.sender?.image}) no-repeat center center/cover `,
+										// 			}
+										// 		: {}
+										// }
 									>
-										{accountType === 'sender' ? (
+										{/* {accountType === 'sender' ? (
 											<Icon type="clock_1" size={30} />
 										) : (
 											!order?.sender?.image?.length && (
@@ -294,22 +326,23 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', i
 													{order?.sender?.name.split(' ')[1].charAt(0)}
 												</>
 											)
-										)}
+										)} */}
+										NS {EMPTY_STRING}
 									</div>
 
 									<div className={styles.text}>
 										{accountType === 'sender' && (
 											<>
 												<span className={styles.subtitle}>Delivery time</span>
-												<span className={styles.title}>{order?.deliveryTime}</span>
+												<span className={styles.title}>DT {EMPTY_STRING}</span>
 											</>
 										)}
-										{accountType === 'carrier' && (
+										{/* {accountType === 'carrier' && (
 											<>
 												<span className={styles.title}>{order?.sender?.name}</span>
 												<span className={styles.subtitle}>{order?.sender?.company}</span>
 											</>
-										)}
+										)} */}
 									</div>
 								</div>
 
@@ -351,7 +384,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', i
 					maxWidth="400px"
 				>
 					<ConfirmModal
-						id={order?.id}
+						id={order.id}
 						from="Riga"
 						to="Ventspils"
 						onClose={() => setModalId(undefined)}
@@ -362,12 +395,12 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', i
 
 			{/* CANCEL */}
 			<Modal isOpen={modalId === 'cancel'} onClose={() => setModalId(undefined)} maxWidth="400px">
-				<CancelModal id={order?.id} from="Riga" to="Ventspils" accountType={accountType} />
+				<CancelModal id={order.id} from="Riga" to="Ventspils" accountType={accountType} />
 			</Modal>
 
 			{/* RATE */}
 			<Modal isOpen={modalId === 'rate'} onClose={() => setModalId(undefined)} maxWidth="400px">
-				<RateModal id={order?.id} />
+				<RateModal id={order.id} />
 			</Modal>
 
 			{/* DECLINE CARRIER */}
@@ -377,7 +410,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType = 'sender', i
 					onClose={() => setModalId(undefined)}
 					maxWidth="400px"
 				>
-					<DeclineModal id={order?.id} from="Riga" to="Ventspils" />
+					<DeclineModal id={order.id} from="Riga" to="Ventspils" />
 				</Modal>
 			)}
 		</>

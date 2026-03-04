@@ -15,8 +15,12 @@ interface InfoProps {
 		hours: number
 	}[]
 }
-export const Info: FC<InfoProps> = ({ orders }) => {
+export const Info: FC<InfoProps> = (props) => {
 	const [currentOrder, setCurrentOrder] = useState(0)
+
+	const { orders } = props
+
+	console.log(props)
 
 	return (
 		<>
@@ -44,7 +48,7 @@ export const Info: FC<InfoProps> = ({ orders }) => {
 				</Popover.Content>
 			</Popover.Root>
 
-			{!!orders?.length && (
+			{/* {!!orders?.length && (
 				<Popover.Root>
 					<Popover.Trigger>
 						<div className={styles.orders}>
@@ -114,7 +118,7 @@ export const Info: FC<InfoProps> = ({ orders }) => {
 						</div>
 					</Popover.Content>
 				</Popover.Root>
-			)}
+			)} */}
 		</>
 	)
 }

@@ -49,71 +49,50 @@ export const years = [
 
 export type YearsType = typeof years[number]
 
-
-export enum OrderStatusId {
-	awaitingConfirmation = 0,
-	awaitingPayment = 1,
-	carrierMatched = 2,
-	awaitingPickup = 3,
-	inTransit = 4,
-	delivery = 5,
-	delivered = 6,
+export enum OrderStatusEnum {
+	'DRAFT' = 1,
+	'OFFERED' = 2,
+	'ACCEPTED' = 3,
+	'INVOICED' = 4,
+	'PAID' = 5,
+	'ASSIGNED' = 6,
+	'AWAITING_PICKUP' = 7,
+	'PICKUP_DONE' = 8,
+	'IN_TRANSIT' = 9,
+	'DELIVERED' = 10,
+	'CANCELLED' = -1
 }
 
-export enum StatusCarrierId {
-	awaitingPickup = 0,
-	inTransit = 1,
-	pendingApproval = 2,
-	approvedBySender = 3,
-}
+
 
 
 export type OrderType = {
 	id: string
-	name: string
-	type: string
-	size: string
-	weight: number
-	additionals: { stackability: boolean; lift: boolean }
-	routes: {
-		from: {
-			address: string
-			loadingReady: string
-			loadingWindow: string
-			deliveryDate: string
-			position: { lat: number; lng: number }
-		}
-		to: {
-			address: string
-			loadingReady: string
-			deliveryWindow: string
-			deliveryDate: string
-			position: { lat: number; lng: number }
-		}
-		polyline: [number, number][]
+	status: OrderStatusEnum
+	status_text: string
+	price?: string
+	address: {
+		from?: string
+		to?: string
 	}
-	comments: string
-	//
-	price: string
-	vat: string
-	total: string
-	platform: string
-
-	deliveryTime?: string
-
-	sender?: {
-		image: string
-		name: string
-		company: string
-	}
-
-	status:
-		| 'awaitingConfirmation'
-		| 'awaitingPayment'
-		| 'carrierMatched'
-		| 'awaitingPickup'
-		| 'inTransit'
-		| 'delivery'
-		| 'delivered'
+	name?: string
+	item?: number
+	cargoDimensions?: string
+	cargoWeight?: number
+	comment?: string
+	pickup_date?: string
+	carrier?: string
+	pickup_latitude?: string
+	pickup_longitude?: string
+	dropout_latitude?: string
+	dropout_longitude?: string
+	stackable?: boolean
+	manipulator_needed?: boolean
+	pickup_time_from?: string
+	pickup_time_to?: string
+	delivery_time_from?: string
+	delivery_time_to?: string
+	pickup_request_date?: string
+	delivery_date?: string
 }
 
