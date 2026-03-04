@@ -21,6 +21,6 @@
 {% block body %}
      <div 
         data-react-island="ProfilePage"
-        data-props='{{ { user, orders }|json_encode|e("html_attr") }}'
+        data-props='{{ { user, orders, accountType: "sender" }|json_encode|e("html_attr") }}'
     ></div>
 {% endblock %}

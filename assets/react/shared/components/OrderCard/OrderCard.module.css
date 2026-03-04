@@ -98,6 +98,10 @@
 	& .right {
 		@apply h-full rounded-[14px] relative overflow-hidden bg-black/10;
 
+		&.withStatus {
+			@apply mr-[230px] !important;
+		}
+
 		& .id {
 			@apply absolute top-3 right-3 bg-white rounded-2xl shadow-md
 			flex flex-col px-8 py-3 z-10;
