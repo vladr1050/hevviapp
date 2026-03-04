@@ -3,12 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Order;
+use App\Entity\User;
 use App\Twig\Extension\Filter\MoneyExtension;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/user', name: 'user_')]
 #[IsGranted('ROLE_USER')]
@@ -47,10 +49,12 @@ class UserController extends AbstractController
     }
 
     #[Route('/orders', name: 'public_orders', methods: ['GET'])]
-    public function orders(): Response
+    public function orders(TranslatorInterface $translator): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
         $orders = $this->em->getRepository(Order::class)->findBy([
-            'sender' => $this->getUser(),
+            'sender' => $user,
         ], ['createdAt' => 'DESC'], 10, 0);
 
         $listOfOrders = [];
@@ -58,6 +62,7 @@ class UserController extends AbstractController
             $listOfOrders[] = [
                 'id' => $order->getId()?->toRfc4122(),
                 'status' => $order->getStatus(),
+                'status_text' => $translator->trans('order.status_' . $order->getStatus(), domain: 'AppBundle', locale: $user?->getLocale()),
                 'price' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
                 'address' => [
                     'from' => $order->getPickupAddress(),
@@ -65,6 +70,8 @@ class UserController extends AbstractController
                 ],
                 'item' => $order->getCargo()->count(),
                 'comment' => $order->getNotes(),
+                'pickup_date' => '',
+                'carrier' => '',
             ];
         }
 

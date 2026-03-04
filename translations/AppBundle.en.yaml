@@ -411,3 +411,16 @@ email:
             message:   Your order has been successfully delivered!
             details:   Your cargo has been delivered to the destination address. We hope you are satisfied with our service.
             thank_you: Thank you for using our service!
+
+order:
+    status_1: "Draft"
+    status_2: "Offered"
+    status_3: "Accepted"
+    status_4: "Invoiced"
+    status_5: "Paid"
+    status_6: "Assigned"
+    status_7: "Awaiting pickup"
+    status_8: "Pickup completed"
+    status_9: "In transit"
+    status_10: "Delivered"
+    status_-1: "Cancelled"
