@@ -117,7 +117,7 @@ class UserController extends AbstractController
             'pickup_longitude' => $order->getPickupLongitude(),
             'dropout_latitude' => $order->getDropoutLatitude(),
             'dropout_longitude' => $order->getDropoutLongitude(),
-            'stackable' => $cargo->isStackable(),
+            'stackable' => $cargo?->isStackable(),
             'manipulator_needed' => $cargo?->isManipulatorNeeded(),
             'pickup_time_from' => $order->getPickupTimeFrom()?->format('H:i'),
             'pickup_time_to' => $order->getPickupTimeTo()?->format('H:i'),
