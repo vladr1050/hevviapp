@@ -19,7 +19,8 @@
 {% extends 'public/main_layout.html.twig' %}
 
 {% block body %}
-     <div 
+    {{ ('show.label_sender')|trans({}, "AppBundle") }}
+     <div
         data-react-island="ProfilePage"
         data-props='{{ { user, orders }|json_encode|e("html_attr") }}'
     ></div>
