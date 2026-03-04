@@ -113,7 +113,7 @@ class UserController extends AbstractController
                 ],
                 'item' => $order->getCargo()->count(),
                 'comment' => $order->getNotes(),
-                'pickup_date' => $history?->getCreatedAt()->format('d.m.Y'),
+                'pickup_date' => false !== $history ? $history->getCreatedAt()->format('d.m.Y') : null,
                 'carrier' => $order->getCarrier()?->getLegalName(),
             ];
         }
@@ -157,7 +157,7 @@ class UserController extends AbstractController
             'cargoDimensions' => $cargo?->getDimensionsCm(),
             'cargoWeight' => $cargo?->getWeightKg(),
             'comment' => $order->getNotes(),
-            'pickup_date' => $history?->getCreatedAt()->format('d.m.Y'),
+            'pickup_date' => false !== $history ? $history->getCreatedAt()->format('d.m.Y') : null,
             'carrier' => $order->getCarrier()?->getLegalName(),
             'pickup_latitude' => $order->getPickupLatitude(),
             'pickup_longitude' => $order->getPickupLongitude(),
