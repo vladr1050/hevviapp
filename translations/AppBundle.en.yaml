@@ -80,133 +80,141 @@ list:
     label_offers:               Offers
 
 show:
-    group_menu_users:          User
-    group_menu_orders:         Order
-    group_menu_cargo:          Cargo
-    group_menu_carriers:       Carrier
-    group_menu_service_areas:  Service Area
-    label_first_name:          First Name
-    label_last_name:           Last Name
-    label_phone:               Phone Number
-    label_email:               Email
-    label_locale:              Locale
-    label_created_at:          Created At
-    label_updated_at:          Updated At
-    label_id:                  ID
-    label_status:              Status
-    label_sender:              Sender
-    label_carrier:             Carrier
-    label_pickup_address:      Pickup Address
-    label_dropout_address:     Dropout Address
-    label_notes:               Notes
-    label_pickup_date:         Pickup Date
-    label_pickup_time_from:    Pickup Time From
-    label_pickup_time_to:      Pickup Time To
-    label_delivery_date:       Delivery Date
-    label_delivery_time_from:  Delivery Time From
-    label_delivery_time_to:    Delivery Time To
-    label_cargo:               Cargo
-    label_offers:              Offers
-    label_order_assignments:   Order Assignments
-    label_assigned_by:         Assigned By
-    label_brutto:              Gross Price
-    label_netto:               Net Price
-    label_vat:                 VAT (%)
-    label_offer_status:        Offer Status
-    label_name:                Name
-    label_type:                Type
-    label_quantity:            Quantity
-    label_weight_kg:           Weight (kg)
-    label_dimensions_cm:       Dimensions (cm)
-    label_comment:             Comment
-    label_stackable:           Stackable
-    label_manipulator_needed:  Manipulator Needed
-    label_related_order:       Related Order
-    label_order:               Order
-    label_changed_by:          Changed By
-    label_meta:                Metadata
-    label_status_history:      Status History
-    label_address:             Address
-    label_registration_number: Registration Number
-    label_legal_name:          Legal Name
-    label_state:               State
-    label_matrix_items:        Matrix Items
-    label_weight_from:         Weight From
-    label_weight_to:           Weight To
-    label_price:               Price
-    label_service_area:        Service Area
-    label_geo_areas:           Geo Areas
-    label_currency:            Currency
+    group_menu_users:                  User
+    group_menu_orders:                 Order
+    group_menu_cargo:                  Cargo
+    group_menu_carriers:               Carrier
+    group_menu_service_areas:          Service Area
+    label_first_name:                  First Name
+    label_last_name:                   Last Name
+    label_phone:                       Phone Number
+    label_email:                       Email
+    label_locale:                      Locale
+    label_created_at:                  Created At
+    label_updated_at:                  Updated At
+    label_id:                          ID
+    label_status:                      Status
+    label_sender:                      Sender
+    label_carrier:                     Carrier
+    label_pickup_address:              Pickup Address
+    label_dropout_address:             Dropout Address
+    label_notes:                       Notes
+    label_pickup_date:                 Pickup Date
+    label_pickup_time_from:            Pickup Time From
+    label_pickup_time_to:              Pickup Time To
+    label_delivery_date:               Delivery Date
+    label_delivery_time_from:          Delivery Time From
+    label_delivery_time_to:            Delivery Time To
+    label_cargo:                       Cargo
+    label_offers:                      Offers
+    label_order_assignments:           Order Assignments
+    label_assigned_by:                 Assigned By
+    label_brutto:                      Gross Price
+    label_netto:                       Net Price
+    label_vat:                         VAT (%)
+    label_offer_status:                Offer Status
+    label_name:                        Name
+    label_type:                        Type
+    label_quantity:                    Quantity
+    label_weight_kg:                   Weight (kg)
+    label_dimensions_cm:               Dimensions (cm)
+    label_comment:                     Comment
+    label_stackable:                   Stackable
+    label_manipulator_needed:          Manipulator Needed
+    label_related_order:               Related Order
+    label_order:                       Order
+    label_changed_by:                  Changed By
+    label_meta:                        Metadata
+    label_status_history:              Status History
+    label_address:                     Address
+    label_registration_number:         Registration Number
+    label_legal_name:                  Legal Name
+    label_state:                       State
+    label_matrix_items:                Matrix Items
+    label_weight_from:                 Weight From
+    label_weight_to:                   Weight To
+    label_price:                       Price
+    label_service_area:                Service Area
+    label_geo_areas:                   Geo Areas
+    label_currency:                    Currency
+    group_legal:                       Legal information
+    label_company_name:                Company Name
+    label_company_registration_number: Company Registration Number
+    label_company_address:             Company Address
 
 
 form:
-    group_tabs_general:        General
-    group_tabs_cargo:          Cargo
-    group_tabs_offers:         Offers
-    group_tabs_assigment:      Assignments
-    group_tabs_geo_areas:      Geo Areas
-    group_tabs_matrix_items:   Matrix Items
-    group_profile:             Profile
-    group_contacts:            Contact
-    group_general:             General
-    group_order_info:          Order Information
-    group_addresses:           Addresses
-    group_schedule:            Schedule
-    group_cargo_list:          Cargo Items
-    group_offers_list:         Offers List
-    group_assigment_list:      Assignments List
-    group_cargo_info:          Cargo Information
-    group_cargo_properties:    Cargo Properties
-    group_service_area_info:   Service Area Information
-    group_geo_areas_selection: Geo Areas Selection
-    group_matrix_items_list:   Matrix Items List
-    label_first_name:          First Name
-    label_last_name:           Last Name
-    label_phone:               Phone Number
-    label_email:               Email
-    label_locale:              Locale
-    label_state:               State
-    label_plain_password:      Password
-    label_help_plain_password: Leave the field blank if you don't want to change member password
-    label_status:              Status
-    label_sender:              Sender
-    label_carrier:             Carrier
-    label_assigned_by:         Assigned By Manager
-    label_help_assigned_by:    Automatically filled with current manager. Can be changed manually if needed.
-    label_pickup_address:      Pickup Address
-    label_dropout_address:     Dropout Address
-    label_notes:               Notes
-    label_pickup_date:         Pickup Date
-    label_pickup_time_from:    Pickup Time From
-    label_pickup_time_to:      Pickup Time To
-    label_delivery_date:       Delivery Date
-    label_delivery_time_from:  Delivery Time From
-    label_delivery_time_to:    Delivery Time To
-    label_cargo:               Cargo
-    label_name:                Name
-    label_type:                Type
-    label_quantity:            Quantity
-    label_weight_kg:           Weight (kg)
-    label_dimensions_cm:       Dimensions (cm)
-    label_comment:             Comment
-    label_stackable:           Stackable
-    label_manipulator_needed:  Manipulator Needed
-    help_dimensions_cm:        "Format: Length,Width,Height (e.g., 120,80,100)"
-    label_address:             Address
-    label_registration_number: Registration Number
-    label_legal_name:          Legal Name
-    label_matrix_items:        Matrix Items
-    label_price:               Price
-    label_service_area:        Service Area
-    label_currency:            Currency
-    label_weight_from:         Weight From
-    label_weight_to:           Weight To
-    label_offers:              Offers
-    label_brutto:              Gross Price
-    label_netto:               Net Price
-    label_vat:                 VAT (%)
-    label_offer_status:        Offer Status
-    label_help_order_currency: Leave this field empty, and it will be filled automatically after the successful calculation of the order’s shipping cost.
+    group_tabs_general:                General
+    group_tabs_cargo:                  Cargo
+    group_tabs_offers:                 Offers
+    group_tabs_assigment:              Assignments
+    group_tabs_geo_areas:              Geo Areas
+    group_tabs_matrix_items:           Matrix Items
+    group_profile:                     Profile
+    group_contacts:                    Contact
+    group_general:                     General
+    group_order_info:                  Order Information
+    group_addresses:                   Addresses
+    group_schedule:                    Schedule
+    group_cargo_list:                  Cargo Items
+    group_offers_list:                 Offers List
+    group_assigment_list:              Assignments List
+    group_cargo_info:                  Cargo Information
+    group_cargo_properties:            Cargo Properties
+    group_service_area_info:           Service Area Information
+    group_geo_areas_selection:         Geo Areas Selection
+    group_matrix_items_list:           Matrix Items List
+    label_first_name:                  First Name
+    label_last_name:                   Last Name
+    label_phone:                       Phone Number
+    label_email:                       Email
+    label_locale:                      Locale
+    label_state:                       State
+    label_plain_password:              Password
+    label_help_plain_password:         Leave the field blank if you don't want to change member password
+    label_status:                      Status
+    label_sender:                      Sender
+    label_carrier:                     Carrier
+    label_assigned_by:                 Assigned By Manager
+    label_help_assigned_by:            Automatically filled with current manager. Can be changed manually if needed.
+    label_pickup_address:              Pickup Address
+    label_dropout_address:             Dropout Address
+    label_notes:                       Notes
+    label_pickup_date:                 Pickup Date
+    label_pickup_time_from:            Pickup Time From
+    label_pickup_time_to:              Pickup Time To
+    label_delivery_date:               Delivery Date
+    label_delivery_time_from:          Delivery Time From
+    label_delivery_time_to:            Delivery Time To
+    label_cargo:                       Cargo
+    label_name:                        Name
+    label_type:                        Type
+    label_quantity:                    Quantity
+    label_weight_kg:                   Weight (kg)
+    label_dimensions_cm:               Dimensions (cm)
+    label_comment:                     Comment
+    label_stackable:                   Stackable
+    label_manipulator_needed:          Manipulator Needed
+    help_dimensions_cm:                "Format: Length,Width,Height (e.g., 120,80,100)"
+    label_address:                     Address
+    label_registration_number:         Registration Number
+    label_legal_name:                  Legal Name
+    label_matrix_items:                Matrix Items
+    label_price:                       Price
+    label_service_area:                Service Area
+    label_currency:                    Currency
+    label_weight_from:                 Weight From
+    label_weight_to:                   Weight To
+    label_offers:                      Offers
+    label_brutto:                      Gross Price
+    label_netto:                       Net Price
+    label_vat:                         VAT (%)
+    label_offer_status:                Offer Status
+    label_help_order_currency:         Leave this field empty, and it will be filled automatically after the successful calculation of the order’s shipping cost.
+    group_legal:                       Legal information
+    label_company_name:                Company Name
+    label_company_registration_number: Company Registration Number
+    label_company_address:             Company Address
 
 
 # Cargo Type choices
@@ -426,14 +434,14 @@ email:
             thank_you: Thank you for using our service!
 
 order:
-    status_1: "Draft"
-    status_2: "Offered"
-    status_3: "Accepted"
-    status_4: "Invoiced"
-    status_5: "Paid"
-    status_6: "Assigned"
-    status_7: "Awaiting pickup"
-    status_8: "Pickup completed"
-    status_9: "In transit"
+    status_1:  "Draft"
+    status_2:  "Offered"
+    status_3:  "Accepted"
+    status_4:  "Invoiced"
+    status_5:  "Paid"
+    status_6:  "Assigned"
+    status_7:  "Awaiting pickup"
+    status_8:  "Pickup completed"
+    status_9:  "In transit"
     status_10: "Delivered"
     status_-1: "Cancelled"

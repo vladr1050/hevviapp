@@ -34,17 +34,58 @@ class UserController extends AbstractController
     #[Route('/profile', name: 'public_profile')]
     public function profile(): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+        $orders = [
+            'total' => $user->getOrders()->count(),
+            'cancelled' => 0,
+            'delivered' => 0,
+            'in_progress' => 0,
+        ];
+
+        foreach ($user->getOrders() as $order) {
+            switch ($order->getStatus()) {
+                case Order::STATUS['CANCELLED']:
+                    $orders['cancelled']++;
+                    break;
+                case Order::STATUS['DELIVERED']:
+                    $orders['delivered']++;
+                    break;
+                default:
+                    $orders['in_progress']++;
+                    break;
+            }
+        }
+
+        $profile = [
+            'first_name' => $user?->getFirstName(),
+            'last_name' => $user?->getLastName(),
+            'company_name' => $user?->getCompanyName(),
+            'company_registration_number' => $user?->getCompanyRegistrationNumber(),
+            'company_address' => $user?->getCompanyAddress(),
+            'email' => $user?->getEmail(),
+            'phone' => $user?->getPhone(),
+        ];
+
         return $this->render('public/user/pages/profile.html.twig', [
             'title' => 'Profile',
-            'user' => $this->getUser(),
+            'user' => $profile,
+            'orders' => $orders,
         ]);
     }
 
     #[Route('/requests', name: 'public_requests')]
     public function requests(): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
         return $this->render('public/user/pages/requests.html.twig', [
             'title' => 'Requests',
+            'user' => [
+                'first_name' => $user?->getFirstName(),
+                'last_name' => $user?->getLastName(),
+                'company_name' => $user?->getCompanyName(),
+            ]
         ]);
     }
 
@@ -80,6 +121,11 @@ class UserController extends AbstractController
         return $this->render('public/user/pages/orders.html.twig', [
             'title' => 'Orders',
             'orders' => $listOfOrders,
+            'user' => [
+                'first_name' => $user?->getFirstName(),
+                'last_name' => $user?->getLastName(),
+                'company_name' => $user?->getCompanyName(),
+            ]
         ]);
     }
 
@@ -130,6 +176,11 @@ class UserController extends AbstractController
         return $this->render('public/user/pages/order.html.twig', [
             'title' => 'Order',
             'order' => $item,
+            'user' => [
+                'first_name' => $user?->getFirstName(),
+                'last_name' => $user?->getLastName(),
+                'company_name' => $user?->getCompanyName(),
+            ]
         ]);
     }
 }

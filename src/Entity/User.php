@@ -39,6 +39,15 @@ class User extends BaseSecurityDBO
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'sender')]
     private Collection $orders;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $companyName = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $companyRegistrationNumber = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $companyAddress = null;
+
     public function __construct()
     {
         $this->orders = new ArrayCollection();
@@ -156,5 +165,41 @@ class User extends BaseSecurityDBO
         }
 
         return implode(', ', $labels);
+    }
+
+    public function getCompanyName(): ?string
+    {
+        return $this->companyName;
+    }
+
+    public function setCompanyName(?string $companyName): static
+    {
+        $this->companyName = $companyName;
+
+        return $this;
+    }
+
+    public function getCompanyRegistrationNumber(): ?string
+    {
+        return $this->companyRegistrationNumber;
+    }
+
+    public function setCompanyRegistrationNumber(?string $companyRegistrationNumber): static
+    {
+        $this->companyRegistrationNumber = $companyRegistrationNumber;
+
+        return $this;
+    }
+
+    public function getCompanyAddress(): ?string
+    {
+        return $this->companyAddress;
+    }
+
+    public function setCompanyAddress(?string $companyAddress): static
+    {
+        $this->companyAddress = $companyAddress;
+
+        return $this;
     }
 }

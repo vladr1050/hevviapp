@@ -61,6 +61,9 @@ class UserAdmin extends BaseAdmin
             ->add('lastName')
             ->add('email')
             ->add('phone')
+            ->add('companyName')
+            ->add('companyRegistrationNumber')
+            ->add('companyAddress')
             ->add('locale')
             ->add('state', TextType::class, [
                 'sortable' => false,
@@ -87,6 +90,13 @@ class UserAdmin extends BaseAdmin
             ])
             ->add('phone')
             ->add('email')
+            ->end()
+            ->with('legal', [
+                'class' => 'col-md-12',
+            ])
+            ->add('companyName')
+            ->add('companyRegistrationNumber')
+            ->add('companyAddress')
             ->end()
             ->with('general', [
                 'class' => 'col-md-12',
