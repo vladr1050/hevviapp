@@ -28,6 +28,7 @@ import { StatusOrder } from './components/StatusOrder/StatusOrder'
 import { getDefaultMapData } from './utils'
 
 interface OrderCardProps {
+	title: string
 	order: OrderType
 	accountType: AccountType
 	isRequest?: boolean
@@ -35,7 +36,7 @@ interface OrderCardProps {
 
 type ModalIdType = 'confirmSender' | 'cancel' | 'rate' | 'declineCarrier'
 
-export const OrderCard: FC<OrderCardProps> = ({ order, accountType, isRequest }) => {
+export const OrderCard: FC<OrderCardProps> = ({ title, order, accountType, isRequest }) => {
 	const [modalId, setModalId] = useState<ModalIdType>()
 
 	const { defaultPosition, defaultBounds } = getDefaultMapData({
@@ -78,7 +79,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType, isRequest })
 					{!isRequest && (
 						<>
 							<div className={styles.titleWrapper}>
-								<div className={styles.title}>Offer</div>
+								<div className={styles.title}>{title}</div>
 
 								<div className={styles.id}>
 									Reference ID

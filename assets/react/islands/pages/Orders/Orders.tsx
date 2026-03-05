@@ -7,6 +7,7 @@ import { cn } from '@utils/cn'
 import styles from './Orders.module.css'
 
 interface OrdersPageProps {
+	title: string
 	orders?: {
 		address: {
 			from: string
@@ -25,13 +26,13 @@ interface OrdersPageProps {
 }
 
 export const OrdersPage: FC<OrdersPageProps> = (props) => {
-	const { orders } = props
+	const { title, orders } = props
 	console.log(props)
 
 	return (
 		<div className={cn('tw-container', styles.page)}>
 			<h1 className={styles.title}>
-				My Orders {!!orders?.length && <span>({orders?.length})</span>}
+				{title} {!!orders?.length && <span>({orders?.length})</span>}
 			</h1>
 
 			<div className={styles.tableWrapper}>

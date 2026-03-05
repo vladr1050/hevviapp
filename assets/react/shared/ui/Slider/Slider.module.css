@@ -1,4 +1,6 @@
 .wrapper {
+	@apply flex flex-col gap-2;
+
 	/** Chrome*/
 	@media screen and (-webkit-min-device-pixel-ratio: 0) {
 		input[type='range'] {

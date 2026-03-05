@@ -7,6 +7,7 @@ import { cn } from '@utils/cn'
 import styles from './Profile.module.css'
 
 interface ProfilePageProps {
+	title: string
 	accountType: AccountType
 	user: {
 		company_address?: string
@@ -26,12 +27,12 @@ interface ProfilePageProps {
 }
 
 export const ProfilePage: FC<ProfilePageProps> = (props) => {
-	const { accountType, user, orders } = props
+	const { title, accountType, user, orders } = props
 	console.log(props)
 
 	return (
 		<div className={cn('tw-container', styles.page)}>
-			<h1 className={styles.title}>Profile</h1>
+			<h1 className={styles.title}>{title}</h1>
 
 			<div className={cn(styles.content, { ['!grid-cols-3']: accountType === 'Carrier' })}>
 				<div className={styles.left}>

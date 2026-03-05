@@ -8,12 +8,13 @@ import { cn } from '@utils/cn'
 import styles from './Order.module.css'
 
 interface OrderPageProps {
+	title: string
 	order: OrderType
 	accountType: AccountType
 }
 
 export const OrderPage: FC<OrderPageProps> = (props) => {
-	const { accountType, order } = props
+	const { title, order, accountType } = props
 
 	console.log(props)
 
@@ -24,7 +25,7 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 					<Icon type="arrow_right" className="rotate-180" size={18} />
 				</a>
 
-				<OrderCard order={order} accountType={accountType} />
+				<OrderCard title={title} order={order} accountType={accountType} />
 			</div>
 		</div>
 	)

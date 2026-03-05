@@ -14,6 +14,7 @@ import { InputButton } from './components/InputButton/InputButton'
 import { ModalContent } from './components/ModalContent/ModalContent'
 
 interface RequestsPageProps {
+	title: string
 	// SENDER
 	ordersSender?: {
 		//
@@ -31,7 +32,7 @@ interface RequestsPageProps {
 export type CalculateModalType = 'what' | 'where' | 'when' | 'calculate' | undefined
 
 export const RequestsPage: FC<RequestsPageProps> = (props) => {
-	const { ordersSender, ordersCarrier, latestRoutes } = props
+	const { title, ordersSender, ordersCarrier, latestRoutes } = props
 	console.log(props)
 
 	const [activeButton, setActiveButton] = useState<CalculateModalType>()
@@ -70,7 +71,7 @@ export const RequestsPage: FC<RequestsPageProps> = (props) => {
 					{ordersCarrier
 						.filter((order) => order.id === curOrderId)
 						.map((order) => (
-							<OrderCard order={order} accountType="Carrier" isRequest />
+							<OrderCard title={title} order={order} accountType="Carrier" isRequest />
 						))}
 				</div>
 
@@ -121,7 +122,7 @@ export const RequestsPage: FC<RequestsPageProps> = (props) => {
 								onClick={() => setActiveButton('when')}
 							/>
 
-							<Button type="button" onClick={() => setActiveButton('calculate')}>
+							<Button type="button" onClick={() => setActiveButton('what')}>
 								Calculate
 							</Button>
 						</div>
