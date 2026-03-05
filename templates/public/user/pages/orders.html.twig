@@ -21,6 +21,9 @@
 {% block body %}
     <div
         data-react-island="OrdersPage"
-        data-props='{{ { orders }|json_encode|e("html_attr") }}'
+        data-props='{{ { 
+            orders, 
+            accountType: ("show.label_sender")|trans({}, "AppBundle")
+         }|json_encode|e("html_attr") }}'
     ></div>
 {% endblock %}

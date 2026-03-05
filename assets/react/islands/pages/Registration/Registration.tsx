@@ -1,6 +1,7 @@
 import { type FC, useEffect, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
+import { AccountType } from '@config/constants'
 import { Button } from '@ui/Button/Button'
 import { Checkbox } from '@ui/Checkbox/Checkbox'
 import { Icon } from '@ui/Icon/Icon'
@@ -12,17 +13,17 @@ import styles from './Registration.module.css'
 
 interface RegistrationProps {}
 
-type TypeField = 'sender' | 'carrier'
-
 type FormValues = {
-	type: TypeField
+	type: AccountType
 	login: string
 	password: string
 	repeat_password: string
 	checkbox: boolean
 }
 
-export const RegistrationPage: FC<RegistrationProps> = () => {
+export const RegistrationPage: FC<RegistrationProps> = (props) => {
+	console.log(props)
+
 	const {
 		register,
 		handleSubmit,
@@ -33,8 +34,8 @@ export const RegistrationPage: FC<RegistrationProps> = () => {
 		clearErrors,
 	} = useForm<FormValues>({
 		defaultValues: {
-			type: 'sender',
-			// type: 'carrier',
+			type: 'Sender',
+			// type: 'Carrier',
 		},
 	})
 
@@ -58,12 +59,12 @@ export const RegistrationPage: FC<RegistrationProps> = () => {
 			<div className={styles.content}>
 				<div
 					className={cn(styles.left, {
-						[styles.sender]: watch('type') === 'sender',
-						[styles.carrier]: watch('type') === 'carrier',
+						[styles.sender]: watch('type') === 'Sender',
+						[styles.carrier]: watch('type') === 'Carrier',
 					})}
 				>
 					<div className={styles.info}>
-						{watch('type') === 'sender' ? (
+						{watch('type') === 'Sender' ? (
 							<h2>
 								Heavy
 								<br />
@@ -80,10 +81,10 @@ export const RegistrationPage: FC<RegistrationProps> = () => {
 						<div className={styles.infoWrapper}>
 							<div className={styles.item}>
 								<div className={styles.iconWrapper}>
-									<Icon type={watch('type') === 'sender' ? 'time' : 'confirm_order'} size={34} />
+									<Icon type={watch('type') === 'Sender' ? 'time' : 'confirm_order'} size={34} />
 								</div>
 
-								{watch('type') === 'sender' ? (
+								{watch('type') === 'Sender' ? (
 									<span>
 										Order
 										<br />
@@ -101,12 +102,12 @@ export const RegistrationPage: FC<RegistrationProps> = () => {
 							<div className={styles.item}>
 								<div className={styles.iconWrapper}>
 									<Icon
-										type={watch('type') === 'sender' ? 'vehicle_drive' : 'path_map'}
+										type={watch('type') === 'Sender' ? 'vehicle_drive' : 'path_map'}
 										size={34}
 									/>
 								</div>
 
-								{watch('type') === 'sender' ? (
+								{watch('type') === 'Sender' ? (
 									<span>
 										Get in
 										<br />
@@ -140,7 +141,7 @@ export const RegistrationPage: FC<RegistrationProps> = () => {
 										{
 											label: (
 												<div className={styles.item}>
-													{watch('type') === 'sender' && (
+													{watch('type') === 'Sender' && (
 														<div className={styles.iconWrapper}>
 															<Icon type="box" size={20} />
 														</div>
@@ -148,12 +149,12 @@ export const RegistrationPage: FC<RegistrationProps> = () => {
 													Sender
 												</div>
 											),
-											value: 'sender',
+											value: 'Sender',
 										},
 										{
 											label: (
 												<div className={styles.item}>
-													{watch('type') === 'carrier' && (
+													{watch('type') === 'Carrier' && (
 														<div className={styles.iconWrapper}>
 															<Icon type="vehicle" size={20} />
 														</div>
@@ -161,7 +162,7 @@ export const RegistrationPage: FC<RegistrationProps> = () => {
 													Carrier
 												</div>
 											),
-											value: 'carrier',
+											value: 'Carrier',
 										},
 									]}
 									onChange={onChange}

@@ -30,11 +30,10 @@ interface RequestsPageProps {
 
 export type CalculateModalType = 'what' | 'where' | 'when' | 'calculate' | undefined
 
-export const RequestsPage: FC<RequestsPageProps> = ({
-	ordersSender,
-	ordersCarrier,
-	latestRoutes,
-}) => {
+export const RequestsPage: FC<RequestsPageProps> = (props) => {
+	const { ordersSender, ordersCarrier, latestRoutes } = props
+	console.log(props)
+
 	const [activeButton, setActiveButton] = useState<CalculateModalType>()
 
 	const { pathname } = useLocation()
@@ -71,7 +70,7 @@ export const RequestsPage: FC<RequestsPageProps> = ({
 					{ordersCarrier
 						.filter((order) => order.id === curOrderId)
 						.map((order) => (
-							<OrderCard order={order} accountType="carrier" isRequest />
+							<OrderCard order={order} accountType="Carrier" isRequest />
 						))}
 				</div>
 

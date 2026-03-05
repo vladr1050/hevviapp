@@ -1,6 +1,6 @@
 import { type FC, ReactNode, SetStateAction, useState } from 'react'
 
-import { FormActions, OrderStatusEnum, OrderType } from '@config/constants'
+import { AccountType, FormActions, OrderStatusEnum, OrderType } from '@config/constants'
 import { Button } from '@ui/Button/Button'
 import { Checkbox } from '@ui/Checkbox/Checkbox'
 import { CircleChart } from '@ui/CircleChart/CircleChart'
@@ -10,8 +10,17 @@ import { cn } from '@utils/cn'
 
 import styles from './StatusOrder.module.css'
 
+// @ts-ignore
+import awaitingPaymentGif from './images/awaitingPayment.gif'
+// @ts-ignore
+import awaitingPickupGif from './images/awaitingPickup.gif'
+// @ts-ignore
+import carrierMatchedGig from './images/carrierMatched.gif'
+// @ts-ignore
+import inTransitGif from './images/inTransit.gif'
+
 interface StatusOrderProps {
-	accountType: 'sender' | 'carrier'
+	accountType: AccountType
 	order: OrderType
 	setModalId: (value: SetStateAction<any>) => void
 }
@@ -22,29 +31,36 @@ export const StatusOrder: FC<StatusOrderProps> = ({ accountType, order, setModal
 	return (
 		<div
 			className={cn(styles.status, {
-				[styles.sender]: accountType === 'sender',
-				[styles.carrier]: accountType === 'carrier',
+				[styles.sender]: accountType === 'Sender',
+				[styles.carrier]: accountType === 'Carrier',
 			})}
 		>
 			<div className={styles.title}>Status</div>
 
-			{accountType === 'sender' && (
+			{accountType === 'Sender' && (
 				<div className={styles.statusWrapper}>
 					<div className={styles.item}>
 						Awaiting Payment
 						<div className={styles.dot} />
 						{order.status >= OrderStatusEnum.ACCEPTED && (
 							<div className={styles.active}>
-								Payment successful
+								{order.status <= OrderStatusEnum.INVOICED
+									? 'Awaiting Payment'
+									: 'Payment successful'}
 								<div
 									className={cn(styles.icon, {
 										[styles.activeIcon]: order.status > OrderStatusEnum.ACCEPTED,
 									})}
 								>
-									<Icon
-										type={order.status > OrderStatusEnum.ACCEPTED ? 'check_circle_1' : 'box'}
-										size={20}
-									/>
+									{order.status > OrderStatusEnum.INVOICED ? (
+										<Icon type="check_circle_1" size={20} />
+									) : (
+										<img
+											alt=""
+											src={awaitingPaymentGif} // carrierMatchedGig
+											style={{ width: '48px', height: '48px' }}
+										/>
+									)}
 								</div>
 							</div>
 						)}
@@ -55,18 +71,19 @@ export const StatusOrder: FC<StatusOrderProps> = ({ accountType, order, setModal
 					<div className={styles.item}>
 						Carrier matched
 						<div className={styles.dot} />
-						{order.status >= OrderStatusEnum.ASSIGNED && (
+						{order.status >= OrderStatusEnum.PAID && (
 							<div className={styles.active}>
 								Carrier matched
 								<div
 									className={cn(styles.icon, {
-										[styles.activeIcon]: order.status > OrderStatusEnum.ASSIGNED,
+										[styles.activeIcon]: order.status > OrderStatusEnum.PAID,
 									})}
 								>
-									<Icon
-										type={order.status > OrderStatusEnum.ASSIGNED ? 'check_circle_1' : 'box'}
-										size={20}
-									/>
+									{order.status > OrderStatusEnum.PAID ? (
+										<Icon type="check_circle_1" size={20} />
+									) : (
+										<img alt="" src={carrierMatchedGig} style={{ width: '48px', height: '48px' }} />
+									)}
 								</div>
 							</div>
 						)}
@@ -77,18 +94,19 @@ export const StatusOrder: FC<StatusOrderProps> = ({ accountType, order, setModal
 					<div className={styles.item}>
 						Awaiting pickup
 						<div className={styles.dot} />
-						{order.status >= OrderStatusEnum.AWAITING_PICKUP && (
+						{order.status >= OrderStatusEnum.ASSIGNED && (
 							<div className={styles.active}>
 								Awaiting pickup
 								<div
 									className={cn(styles.icon, {
-										[styles.activeIcon]: order.status > OrderStatusEnum.PICKUP_DONE,
+										[styles.activeIcon]: order.status > OrderStatusEnum.AWAITING_PICKUP,
 									})}
 								>
-									<Icon
-										type={order.status > OrderStatusEnum.PICKUP_DONE ? 'check_circle_1' : 'box'}
-										size={20}
-									/>
+									{order.status > OrderStatusEnum.AWAITING_PICKUP ? (
+										<Icon type="check_circle_1" size={20} />
+									) : (
+										<img alt="" src={awaitingPickupGif} style={{ width: '48px', height: '48px' }} />
+									)}
 								</div>
 							</div>
 						)}
@@ -99,7 +117,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ accountType, order, setModal
 					<div className={styles.item}>
 						In transit
 						<div className={styles.dot} />
-						{order.status >= OrderStatusEnum.IN_TRANSIT && (
+						{order.status >= OrderStatusEnum.PICKUP_DONE && (
 							<div className={styles.active}>
 								In transit
 								<div
@@ -107,10 +125,11 @@ export const StatusOrder: FC<StatusOrderProps> = ({ accountType, order, setModal
 										[styles.activeIcon]: order.status > OrderStatusEnum.IN_TRANSIT,
 									})}
 								>
-									<Icon
-										type={order.status === OrderStatusEnum.IN_TRANSIT ? 'box' : 'check_circle_1'}
-										size={20}
-									/>
+									{order.status > OrderStatusEnum.IN_TRANSIT ? (
+										<Icon type="check_circle_1" size={20} />
+									) : (
+										<img alt="" src={inTransitGif} style={{ width: '48px', height: '48px' }} />
+									)}
 								</div>
 							</div>
 						)}
@@ -133,7 +152,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ accountType, order, setModal
 				</div>
 			)}
 
-			{accountType === 'carrier' && (
+			{accountType === 'Carrier' && (
 				<div className={styles.statusWrapper}>
 					<div className={styles.top}>
 						<CircleChart size={150} percent={75} title="15:00:00h" subtitle="left" countdown />
@@ -208,7 +227,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ accountType, order, setModal
 				</div>
 			)}
 
-			{accountType === 'sender' && (
+			{accountType === 'Sender' && (
 				<>
 					<div>
 						{/* {order.status < OrderStatusEnum.PICKUP_DONE && (
@@ -234,7 +253,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ accountType, order, setModal
 				</>
 			)}
 
-			{accountType === 'carrier' && (
+			{accountType === 'Carrier' && (
 				<>
 					<div className={styles.footer}>
 						{!!valueForm && (

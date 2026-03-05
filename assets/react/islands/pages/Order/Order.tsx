@@ -1,7 +1,7 @@
 import { type FC } from 'react'
 
 import { OrderCard } from '@components/OrderCard/OrderCard'
-import { OrderType, Routes } from '@config/constants'
+import { AccountType, OrderType, Routes } from '@config/constants'
 import { Icon } from '@ui/Icon/Icon'
 import { cn } from '@utils/cn'
 
@@ -9,10 +9,14 @@ import styles from './Order.module.css'
 
 interface OrderPageProps {
 	order: OrderType
-	accountType: 'sender' | 'carrier'
+	accountType: AccountType
 }
 
-export const OrderPage: FC<OrderPageProps> = ({ accountType, order }) => {
+export const OrderPage: FC<OrderPageProps> = (props) => {
+	const { accountType, order } = props
+
+	console.log(props)
+
 	return (
 		<div className={cn('tw-container', styles.page)}>
 			<div className={styles.content}>

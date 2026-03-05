@@ -20,8 +20,6 @@ export const Info: FC<InfoProps> = (props) => {
 
 	const { orders } = props
 
-	console.log(props)
-
 	return (
 		<>
 			<Popover.Root>

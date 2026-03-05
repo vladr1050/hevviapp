@@ -1,14 +1,19 @@
 import { type FC, Suspense, useState } from 'react'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 
-import { EMPTY_STRING, FormActions, OrderStatusEnum, OrderType } from '@config/constants'
+import {
+	AccountType,
+	EMPTY_STRING,
+	FormActions,
+	OrderStatusEnum,
+	OrderType,
+} from '@config/constants'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
 import { Modal } from '@ui/Modal/Modal'
 import { cn } from '@utils/cn'
 // @ts-ignore
 import L from 'leaflet'
-import { fromJSONSchema } from 'zod'
 
 // @ts-ignore
 import CustomIcon from './CustomMarker.svg'
@@ -20,42 +25,20 @@ import { ConfirmModal } from './components/ConfirmModal/ConfirmModal'
 import { DeclineModal } from './components/DeclineModal/DeclineModal'
 import { RateModal } from './components/RateModal/RateModal'
 import { StatusOrder } from './components/StatusOrder/StatusOrder'
+import { getDefaultMapData } from './utils'
 
 interface OrderCardProps {
 	order: OrderType
-	accountType: 'sender' | 'carrier'
+	accountType: AccountType
 	isRequest?: boolean
 }
 
 type ModalIdType = 'confirmSender' | 'cancel' | 'rate' | 'declineCarrier'
 
-const getDefaultPosition = ({
-	from,
-	to,
-}: {
-	from: { lat?: string; lng?: string }
-	to: { lat?: string; lng?: string }
-}) => {
-	if (
-		typeof from.lat !== 'string' ||
-		typeof from.lng !== 'string' ||
-		typeof to.lat !== 'string' ||
-		typeof to.lng !== 'string'
-	) {
-		if (typeof from.lat === 'string' && typeof from.lng === 'string') return [from.lat, from.lng]
-
-		if (typeof to.lat === 'string' && typeof to.lng === 'string') return [to.lat, to.lng]
-
-		return [0, 0]
-	}
-
-	return [(Number(from.lat) + Number(to.lat)) / 2, (Number(from.lng) + Number(to.lng)) / 2]
-}
-
 export const OrderCard: FC<OrderCardProps> = ({ order, accountType, isRequest }) => {
 	const [modalId, setModalId] = useState<ModalIdType>()
 
-	const defaultPosition = getDefaultPosition({
+	const { defaultPosition, defaultBounds } = getDefaultMapData({
 		from: {
 			lat: order?.pickup_latitude,
 			lng: order?.pickup_longitude,
@@ -76,13 +59,17 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType, isRequest })
 
 	const showId = isRequest
 
+	const isCanceled = order.status === OrderStatusEnum.CANCELLED
+
 	const showInfo =
-		(accountType === 'sender' && order.status === OrderStatusEnum.DRAFT) ||
-		(accountType === 'carrier' && isRequest)
+		!isCanceled &&
+		((accountType === 'Sender' && order.status <= OrderStatusEnum.OFFERED) ||
+			(accountType === 'Carrier' && isRequest))
 
 	const showStatus =
-		(accountType === 'sender' && order.status > OrderStatusEnum.DRAFT) ||
-		(accountType === 'carrier' && !isRequest)
+		!isCanceled &&
+		((accountType === 'Sender' && order.status > OrderStatusEnum.OFFERED) ||
+			(accountType === 'Carrier' && !isRequest))
 
 	return (
 		<>
@@ -110,7 +97,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType, isRequest })
 						<div className={styles.row}>
 							<div className={styles.item}>
 								<div className={styles.label}>Type</div>
-								<div className={styles.value}>TYPE {EMPTY_STRING}</div>
+								<div className={styles.value}>{order?.type || EMPTY_STRING}</div>
 							</div>
 
 							<div className={styles.item}>
@@ -222,12 +209,10 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType, isRequest })
 						<MapContainer
 							// @ts-ignore
 							center={defaultPosition}
-							zoom={10}
-							// scrollWheelZoom={false}
+							bounds={defaultBounds}
+							boundsOptions={{ padding: [50, 50] }}
 							style={{
 								width: '100%',
-								// width: !showStatus ? '100%' : 'calc(100% - 276px)',
-								//
 								height: 'calc(100% + 20px)',
 								zIndex: 1,
 							}}
@@ -316,18 +301,18 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType, isRequest })
 								<div className={styles.bottomLeft}>
 									<div
 										className={cn({
-											[styles.icon]: accountType === 'sender',
-											[styles.avatar]: accountType === 'carrier',
+											[styles.icon]: accountType === 'Sender',
+											[styles.avatar]: accountType === 'Carrier',
 										})}
 										// style={
-										// 	accountType === 'carrier' && !!order?.sender?.image?.length
+										// 	accountType === 'Carrier' && !!order?.sender?.image?.length
 										// 		? {
 										// 				background: `url(${order?.sender?.image}) no-repeat center center/cover `,
 										// 			}
 										// 		: {}
 										// }
 									>
-										{/* {accountType === 'sender' ? (
+										{/* {accountType === 'Sender' ? (
 											<Icon type="clock_1" size={30} />
 										) : (
 											!order?.sender?.image?.length && (
@@ -341,13 +326,13 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType, isRequest })
 									</div>
 
 									<div className={styles.text}>
-										{accountType === 'sender' && (
+										{accountType === 'Sender' && (
 											<>
 												<span className={styles.subtitle}>Delivery time</span>
 												<span className={styles.title}>DT {EMPTY_STRING}</span>
 											</>
 										)}
-										{/* {accountType === 'carrier' && (
+										{/* {accountType === 'Carrier' && (
 											<>
 												<span className={styles.title}>{order?.sender?.name}</span>
 												<span className={styles.subtitle}>{order?.sender?.company}</span>
@@ -387,7 +372,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType, isRequest })
 			</div>
 
 			{/* CONFIRM */}
-			{accountType === 'sender' && (
+			{accountType === 'Sender' && (
 				<Modal
 					isOpen={modalId === 'confirmSender'}
 					onClose={() => setModalId(undefined)}
@@ -414,7 +399,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order, accountType, isRequest })
 			</Modal>
 
 			{/* DECLINE CARRIER */}
-			{accountType === 'carrier' && (
+			{accountType === 'Carrier' && (
 				<Modal
 					isOpen={modalId === 'declineCarrier'}
 					onClose={() => setModalId(undefined)}

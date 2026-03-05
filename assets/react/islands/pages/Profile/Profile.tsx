@@ -1,13 +1,13 @@
 import type { FC } from 'react'
 
-import { EMPTY_STRING } from '@config/constants'
+import { AccountType, EMPTY_STRING } from '@config/constants'
 import { CircleChart } from '@ui/CircleChart/CircleChart'
 import { cn } from '@utils/cn'
 
 import styles from './Profile.module.css'
 
 interface ProfilePageProps {
-	accountType: 'sender' | 'carrier'
+	accountType: AccountType
 	user: {
 		company_address?: string
 		company_name?: string
@@ -25,12 +25,15 @@ interface ProfilePageProps {
 	}
 }
 
-export const ProfilePage: FC<ProfilePageProps> = ({ accountType, user, orders }) => {
+export const ProfilePage: FC<ProfilePageProps> = (props) => {
+	const { accountType, user, orders } = props
+	console.log(props)
+
 	return (
 		<div className={cn('tw-container', styles.page)}>
 			<h1 className={styles.title}>Profile</h1>
 
-			<div className={cn(styles.content, { ['!grid-cols-3']: accountType === 'carrier' })}>
+			<div className={cn(styles.content, { ['!grid-cols-3']: accountType === 'Carrier' })}>
 				<div className={styles.left}>
 					<div className={styles.top}>
 						<div className={styles.avatar}>
@@ -96,7 +99,7 @@ export const ProfilePage: FC<ProfilePageProps> = ({ accountType, user, orders })
 					</div>
 				</div>
 
-				{accountType === 'sender' && (
+				{accountType === 'Sender' && (
 					<div className={cn(styles.right, styles.sender)}>
 						<div className={styles.card}>
 							<div className={styles.title}>My orders</div>
@@ -125,7 +128,7 @@ export const ProfilePage: FC<ProfilePageProps> = ({ accountType, user, orders })
 					</div>
 				)}
 
-				{accountType === 'carrier' && (
+				{accountType === 'Carrier' && (
 					<>
 						<div className={styles.centerWrapper}>
 							<div className={cn(styles.center, styles.top)}>

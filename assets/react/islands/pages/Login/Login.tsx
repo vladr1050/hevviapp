@@ -1,7 +1,7 @@
 import { type FC, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
-import { apiLogin } from '@api/authApi'
+import { apiLogin, apiResetPassword } from '@api/authApi'
 import { saveTokens } from '@hooks/useAuth'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
@@ -10,6 +10,8 @@ import { cn } from '@utils/cn'
 
 import styles from './Login.module.css'
 
+import { resolver } from './login.schema'
+
 interface LoginProps {}
 
 type FormValues = {
@@ -17,12 +19,20 @@ type FormValues = {
 	password: string
 }
 
-export const LoginPage: FC<LoginProps> = () => {
+export const LoginPage: FC<LoginProps> = (props) => {
+	console.log(props)
+
 	const [isReset, setIsReset] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
 	const [error, setError] = useState<string | null>(null)
 
-	const { control, handleSubmit, watch } = useForm<FormValues>()
+	const {
+		control,
+		handleSubmit,
+		watch,
+		trigger,
+		formState: { errors },
+	} = useForm<FormValues>({ resolver })
 
 	const onSubmit: SubmitHandler<FormValues> = async (values, event) => {
 		const submitter = (event?.nativeEvent as SubmitEvent)?.submitter as HTMLButtonElement | null
@@ -48,6 +58,18 @@ export const LoginPage: FC<LoginProps> = () => {
 			setIsLoading(false)
 		}
 	}
+
+	const onReset = async () => {
+		const valid = await trigger('login')
+
+		if (!valid) return
+
+		setIsReset(true)
+
+		await apiResetPassword(watch('login'))
+	}
+
+	console.log(errors)
 
 	return (
 		<div className={cn('tw-container', styles.page)}>
@@ -78,6 +100,7 @@ export const LoginPage: FC<LoginProps> = () => {
 								label="E-mail"
 								type="email"
 								required
+								error={errors?.login?.message}
 							/>
 
 							<div className="">
@@ -87,9 +110,10 @@ export const LoginPage: FC<LoginProps> = () => {
 									placeholder="Password"
 									label="Password"
 									type="password"
+									error={errors?.password?.message}
 								/>
 
-								<button type="submit" name="reset" className={styles.resetPassword}>
+								<button type="button" className={styles.resetPassword} onClick={onReset}>
 									Reset password
 								</button>
 							</div>

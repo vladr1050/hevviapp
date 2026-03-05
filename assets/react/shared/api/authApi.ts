@@ -45,6 +45,23 @@ export async function apiLogin(email: string, password: string): Promise<LoginRe
 	return data as LoginResponse
 }
 
+export async function apiResetPassword(email: string): Promise<any> {
+	// FIXME PAVEL
+	const res = await fetch(`${API_BASE}/reset-password`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ login: email }),
+	})
+
+	const data = await res.json()
+
+	if (!res.ok) {
+		throw new Error((data as ApiError).error ?? 'Password reset failed')
+	}
+
+	return data as LoginResponse
+}
+
 export async function apiRefreshToken(refreshToken: string): Promise<RefreshResponse> {
 	const res = await fetch(`${API_BASE}/refresh`, {
 		method: 'POST',

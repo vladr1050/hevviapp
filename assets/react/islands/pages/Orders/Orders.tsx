@@ -24,7 +24,10 @@ interface OrdersPageProps {
 	}[]
 }
 
-export const OrdersPage: FC<OrdersPageProps> = ({ orders }) => {
+export const OrdersPage: FC<OrdersPageProps> = (props) => {
+	const { orders } = props
+	console.log(props)
+
 	return (
 		<div className={cn('tw-container', styles.page)}>
 			<h1 className={styles.title}>
@@ -64,8 +67,11 @@ export const OrdersPage: FC<OrdersPageProps> = ({ orders }) => {
 
 							<span
 								className={cn(styles.status, {
-									[styles.inTransit]: OrderStatusEnum.IN_TRANSIT === order.status,
+									[styles.inTransit]:
+										order.status === OrderStatusEnum.PICKUP_DONE ||
+										order.status === OrderStatusEnum.IN_TRANSIT,
 								})}
+								title={order?.status_text}
 							>
 								<div className={styles.text}>
 									{OrderStatusEnum.IN_TRANSIT === order.status ? (
@@ -78,10 +84,10 @@ export const OrdersPage: FC<OrdersPageProps> = ({ orders }) => {
 										/>
 									)}
 
-									<span>{order.status_text}</span>
+									<span>{order?.status_text}</span>
 								</div>
 
-								<a href={`${Routes.ORDERS}/${order.id}`} className={styles.link}>
+								<a href={`${Routes.ORDERS}/${order.id}`} className={styles.link} title="">
 									view
 								</a>
 							</span>

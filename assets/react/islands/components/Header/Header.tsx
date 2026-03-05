@@ -10,7 +10,7 @@ import { cn } from '@utils/cn'
 import styles from './Header.module.css'
 
 interface HeaderProps {
-	user: {
+	user?: {
 		first_name?: string
 		last_name?: string
 		company_name?: string
@@ -19,8 +19,6 @@ interface HeaderProps {
 
 export const Header: FC<HeaderProps> = ({ user }) => {
 	const { push, pathname } = useLocation()
-
-	const isAuthedUrl = pathname !== Routes.LOGIN && pathname !== Routes.REGISTRATION
 
 	return (
 		<div className={styles.wrapper}>
@@ -32,7 +30,7 @@ export const Header: FC<HeaderProps> = ({ user }) => {
 				</div>
 
 				<div className={styles.center}>
-					{isAuthedUrl && (
+					{typeof user !== 'undefined' && (
 						<Tabs
 							items={[
 								{ label: 'Requests', value: Routes.REQUESTS },
@@ -51,7 +49,7 @@ export const Header: FC<HeaderProps> = ({ user }) => {
 				</div>
 
 				<div className={styles.right}>
-					{!isAuthedUrl ? (
+					{typeof user === 'undefined' ? (
 						<div>
 							<a
 								className={styles.link}
@@ -270,3 +268,24 @@ const Logo = () => (
 		/>
 	</svg>
 )
+
+const STATUS = {
+	// Confirm
+	DRAFT: 1,
+	OFFERED: 2,
+	// Awaiting Payment
+	ACCEPTED: 3,
+	INVOICED: 4,
+	// Carrier matched
+	PAID: 5,
+	// Awaiting pickup
+	ASSIGNED: 6,
+	AWAITING_PICKUP: 7,
+	// In transit
+	PICKUP_DONE: 8,
+	IN_TRANSIT: 9,
+	// Delivery
+	DELIVERED: 10,
+	// Cancelled
+	CANCELLED: -1,
+}

@@ -63,9 +63,6 @@ export enum OrderStatusEnum {
 	'CANCELLED' = -1
 }
 
-
-
-
 export type OrderType = {
 	id: string
 	status: OrderStatusEnum
@@ -94,5 +91,7 @@ export type OrderType = {
 	delivery_time_to?: string
 	pickup_request_date?: string
 	delivery_date?: string
+	type?: string
 }
 
+export type AccountType = 'Sender' | 'Carrier'
