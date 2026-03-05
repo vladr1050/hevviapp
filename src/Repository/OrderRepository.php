@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Order;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,6 +15,20 @@ class OrderRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Order::class);
+    }
+
+    /**
+     * Возвращает последние заказы отправителя, отсортированные по дате создания.
+     *
+     * @return Order[]
+     */
+    public function findRecentBySender(User $user, int $limit = 10): array
+    {
+        return $this->findBy(
+            ['sender' => $user],
+            ['createdAt' => 'DESC'],
+            $limit,
+        );
     }
 
     /**
