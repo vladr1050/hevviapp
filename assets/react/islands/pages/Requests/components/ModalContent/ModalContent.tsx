@@ -26,7 +26,7 @@ import { InputButton } from '../InputButton/InputButton'
 interface ModalContentProps {
 	activeButton: CalculateModalType
 	setActiveButton: Dispatch<SetStateAction<CalculateModalType>>
-	latestRoutes?: { from: string; to: string }[]
+	// latestRoutes?: { from: string; to: string }[]
 }
 
 type FormValues = {
@@ -60,7 +60,7 @@ const RADIUS = 10000
 export const ModalContent: FC<ModalContentProps> = ({
 	activeButton,
 	setActiveButton,
-	latestRoutes,
+	// latestRoutes,
 }) => {
 	const currentDate = new Date()
 	const currentMonthZeroBased = currentDate.getMonth()
@@ -341,7 +341,12 @@ export const ModalContent: FC<ModalContentProps> = ({
 
 			{activeButton === 'where' && (
 				<div className={cn(styles.body, styles.whereActive)}>
-					<div className={cn(styles.left, { [styles.noRoutes]: !latestRoutes?.length })}>
+					<div
+						className={cn(styles.left, {
+							// [styles.noRoutes]: !latestRoutes?.length,
+							[styles.noRoutes]: true,
+						})}
+					>
 						<div className={styles.top}>
 							<div className={styles.routeWrapper}>
 								<div className={styles.route} />
@@ -389,7 +394,8 @@ export const ModalContent: FC<ModalContentProps> = ({
 							</div>
 						</div>
 
-						{!!latestRoutes?.length && <div className={styles.hr} />}
+						<div />
+						{/* {!!latestRoutes?.length && <div className={styles.hr} />}
 
 						<div className={styles.history}>
 							{!latestRoutes?.length && <div className={styles.empty}>no recent routes</div>}
@@ -402,7 +408,7 @@ export const ModalContent: FC<ModalContentProps> = ({
 									<button type="button">Pielietot</button>
 								</div>
 							))}
-						</div>
+						</div> */}
 					</div>
 
 					<div className={styles.right}>

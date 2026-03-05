@@ -166,7 +166,6 @@
 			@apply grid-cols-[2fr,3fr];
 
 			& .left {
-				/* @apply flex flex-col gap-8; */
 				@apply grid grid-rows-[120px,1px,1fr] gap-8 max-h-[360px];
 
 				&.noRoutes {
@@ -180,14 +179,15 @@
 						@apply flex items-center;
 
 						& .route {
-							@apply h-[64%] w-[3px] bg-black relative;
+							@apply h-[80px] w-[3px] bg-black relative;
 
 							&:before,
 							&:after {
 								content: '';
 								@apply absolute h-4 w-4 bg-white rounded-full
-							left-0 -translate-x-[6.5px];
+								left-0 -translate-x-[6.5px];
 								border: 3px solid black;
+								box-sizing: border-box !important;
 							}
 
 							&:before {

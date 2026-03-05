@@ -92,6 +92,8 @@ export type OrderType = {
 	pickup_request_date?: string
 	delivery_date?: string
 	type?: string
+	vat?: string
+	brutto?: string
 }
 
 export type AccountType = 'Sender' | 'Carrier'

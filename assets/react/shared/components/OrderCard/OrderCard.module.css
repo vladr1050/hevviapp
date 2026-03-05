@@ -116,7 +116,7 @@
 		}
 
 		& .info {
-			@apply absolute bottom-3 left-3 right-3 p-8 bg-white rounded-[30px] shadow-md z-10 flex flex-col gap-4;
+			@apply absolute bottom-3 left-3 right-3 p-7 bg-white rounded-[30px] shadow-md z-10 flex flex-col gap-4;
 
 			& .top {
 				@apply grid grid-cols-4 gap-4;

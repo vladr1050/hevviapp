@@ -75,11 +75,12 @@ export const OrdersPage: FC<OrdersPageProps> = (props) => {
 								title={order?.status_text}
 							>
 								<div className={styles.text}>
-									{OrderStatusEnum.IN_TRANSIT === order.status ? (
+									{order.status === OrderStatusEnum.PICKUP_DONE ||
+									order.status === OrderStatusEnum.IN_TRANSIT ? (
 										<div className={styles.dot} />
 									) : (
 										<Icon
-											type={OrderStatusEnum.DELIVERED === order.status ? 'check' : 'clock_1'}
+											type={order.status === OrderStatusEnum.DELIVERED ? 'check' : 'clock_1'}
 											size={16}
 											className="text-white"
 										/>

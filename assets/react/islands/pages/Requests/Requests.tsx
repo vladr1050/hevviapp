@@ -23,7 +23,6 @@ interface RequestsPageProps {
 		count: number
 		route: { from: string; to: string }
 	}[]
-	latestRoutes?: { from: string; to: string }[]
 
 	// CARRIER
 	ordersCarrier?: OrderType[]
@@ -32,7 +31,7 @@ interface RequestsPageProps {
 export type CalculateModalType = 'what' | 'where' | 'when' | 'calculate' | undefined
 
 export const RequestsPage: FC<RequestsPageProps> = (props) => {
-	const { title, ordersSender, ordersCarrier, latestRoutes } = props
+	const { title, ordersSender, ordersCarrier } = props
 	console.log(props)
 
 	const [activeButton, setActiveButton] = useState<CalculateModalType>()
@@ -226,11 +225,7 @@ export const RequestsPage: FC<RequestsPageProps> = (props) => {
 				disableCloseButton
 				maxWidth="1200px"
 			>
-				<ModalContent
-					activeButton={activeButton}
-					setActiveButton={setActiveButton}
-					latestRoutes={latestRoutes}
-				/>
+				<ModalContent activeButton={activeButton} setActiveButton={setActiveButton} />
 			</Modal>
 		</>
 	)

@@ -99,7 +99,13 @@ export const OrderCard: FC<OrderCardProps> = ({ title, order, accountType, isReq
 						<div className={styles.row}>
 							<div className={styles.item}>
 								<div className={styles.label}>Type</div>
-								<div className={styles.value}>{order?.type || EMPTY_STRING}</div>
+								<div className={styles.value}>
+									{order?.type || EMPTY_STRING}
+
+									{!order?.type && typeof order?.item !== 'number'
+										? ''
+										: `, ${order.item}${order.item! > 1 ? 'pcs' : 'pc'}`}
+								</div>
 							</div>
 
 							<div className={styles.item}>
@@ -277,7 +283,7 @@ export const OrderCard: FC<OrderCardProps> = ({ title, order, accountType, isReq
 										<br />
 										21%
 									</div>
-									<div className={styles.value}>VAT {EMPTY_STRING}</div>
+									<div className={styles.value}>{order?.vat || EMPTY_STRING}</div>
 								</div>
 								<div className={styles.item}>
 									<div className={styles.label}>
@@ -285,7 +291,7 @@ export const OrderCard: FC<OrderCardProps> = ({ title, order, accountType, isReq
 										<br />
 										VAT 21$
 									</div>
-									<div className={styles.value}>TOTAL {EMPTY_STRING}</div>
+									<div className={styles.value}>{order?.brutto || EMPTY_STRING}</div>
 								</div>
 								<div className={styles.item}>
 									<div className={styles.label}>
@@ -301,20 +307,15 @@ export const OrderCard: FC<OrderCardProps> = ({ title, order, accountType, isReq
 
 							<div className={styles.bottom}>
 								<div className={styles.bottomLeft}>
-									<div
-										className={cn({
-											[styles.icon]: accountType === 'Sender',
-											[styles.avatar]: accountType === 'Carrier',
-										})}
-										// style={
-										// 	accountType === 'Carrier' && !!order?.sender?.image?.length
-										// 		? {
-										// 				background: `url(${order?.sender?.image}) no-repeat center center/cover `,
-										// 			}
-										// 		: {}
-										// }
-									>
-										{/* {accountType === 'Sender' ? (
+									{accountType === 'Carrier' && (
+										<>
+											<div
+												className={cn({
+													// [styles.icon]: accountType === 'Sender',
+													[styles.avatar]: accountType === 'Carrier',
+												})}
+											>
+												{/* {accountType === 'Sender' ? (
 											<Icon type="clock_1" size={30} />
 										) : (
 											!order?.sender?.image?.length && (
@@ -324,23 +325,25 @@ export const OrderCard: FC<OrderCardProps> = ({ title, order, accountType, isReq
 												</>
 											)
 										)} */}
-										NS {EMPTY_STRING}
-									</div>
+												NS {EMPTY_STRING}
+											</div>
 
-									<div className={styles.text}>
-										{accountType === 'Sender' && (
-											<>
-												<span className={styles.subtitle}>Delivery time</span>
-												<span className={styles.title}>DT {EMPTY_STRING}</span>
-											</>
-										)}
-										{/* {accountType === 'Carrier' && (
+											<div className={styles.text}>
+												{/* {accountType === 'Sender' && ( */}
+												<>
+													<span className={styles.subtitle}>Delivery time</span>
+													<span className={styles.title}>DT {EMPTY_STRING}</span>
+												</>
+												{/* )} */}
+												{/* {accountType === 'Carrier' && (
 											<>
 												<span className={styles.title}>{order?.sender?.name}</span>
 												<span className={styles.subtitle}>{order?.sender?.company}</span>
 											</>
 										)} */}
-									</div>
+											</div>
+										</>
+									)}
 								</div>
 
 								<form
