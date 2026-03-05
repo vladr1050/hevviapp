@@ -59,7 +59,7 @@ class UserController extends AbstractController
 
         $profile = [
             'first_name' => $user?->getFirstName(),
-            'last_name' => $user?->getLastName(),
+            'last_name' => substr($user?->getLastName(), 0, 1) . '.',
             'company_name' => $user?->getCompanyName(),
             'company_registration_number' => $user?->getCompanyRegistrationNumber(),
             'company_address' => $user?->getCompanyAddress(),
@@ -83,7 +83,7 @@ class UserController extends AbstractController
             'title' => $translator->trans('show.label_requests', domain: 'AppBundle', locale: $user?->getLocale()),
             'user' => [
                 'first_name' => $user?->getFirstName(),
-                'last_name' => $user?->getLastName(),
+                'last_name' => substr($user?->getLastName(), 0, 1) . '.',
                 'company_name' => $user?->getCompanyName(),
             ]
         ]);
@@ -123,7 +123,7 @@ class UserController extends AbstractController
             'orders' => $listOfOrders,
             'user' => [
                 'first_name' => $user?->getFirstName(),
-                'last_name' => $user?->getLastName(),
+                'last_name' => substr($user?->getLastName(), 0, 1) . '.',
                 'company_name' => $user?->getCompanyName(),
             ]
         ]);
@@ -179,7 +179,7 @@ class UserController extends AbstractController
             'order' => $item,
             'user' => [
                 'first_name' => $user?->getFirstName(),
-                'last_name' => $user?->getLastName(),
+                'last_name' => substr($user?->getLastName(), 0, 1) . '.',
                 'company_name' => $user?->getCompanyName(),
             ]
         ]);
