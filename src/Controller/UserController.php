@@ -122,7 +122,7 @@ class UserController extends AbstractController
             'status' => $order->getStatus(),
             'status_text' => $this->translator->trans('order.status_' . $order->getStatus(), domain: 'AppBundle', locale: $user->getLocale()),
             'price' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getNetto(), $order->getCurrency()),
-            'vat' => $order->getLatestOffer()?->getVat(),
+            'vat' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getVat(), $order->getCurrency()),
             'brutto' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
             'address' => [
                 'from' => $order->getPickupAddress(),
@@ -160,7 +160,7 @@ class UserController extends AbstractController
     #[Route('/confirmOrder', name: 'confirm_order', methods: ['POST'])]
     public function confirmOrder(Request $request, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
-        $token = new CsrfToken('confirm_order', (string) $request->request->get('_token'));
+        $token = new CsrfToken('confirm_order', (string)$request->request->get('_token'));
         if (!$csrfTokenManager->isTokenValid($token)) {
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
@@ -168,7 +168,7 @@ class UserController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $orderId = (string) $request->request->get('order_id');
+        $orderId = (string)$request->request->get('order_id');
         $order = $this->orderRepository->find($orderId);
 
         if (!$order || $order->getSender() !== $user) {
