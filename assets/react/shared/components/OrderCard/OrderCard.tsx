@@ -32,11 +32,12 @@ interface OrderCardProps {
 	order: OrderType
 	accountType: AccountType
 	isRequest?: boolean
+	csrfToken?: string
 }
 
 type ModalIdType = 'confirmSender' | 'cancel' | 'rate' | 'declineCarrier'
 
-export const OrderCard: FC<OrderCardProps> = ({ title, order, accountType, isRequest }) => {
+export const OrderCard: FC<OrderCardProps> = ({ title, order, accountType, isRequest, csrfToken }) => {
 	const [modalId, setModalId] = useState<ModalIdType>()
 
 	const { defaultPosition, defaultBounds } = getDefaultMapData({
@@ -347,6 +348,9 @@ export const OrderCard: FC<OrderCardProps> = ({ title, order, accountType, isReq
 									className={styles.bottomRight}
 									action={FormActions.CONFIRM_ORDER}
 								>
+									<input type="hidden" name="order_id" value={order.id} />
+									<input type="hidden" name="_token" value={csrfToken} />
+
 									{isRequest && (
 										<Button
 											type="button"

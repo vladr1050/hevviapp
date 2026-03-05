@@ -18,7 +18,7 @@ export enum FormActions {
 	LOGIN = '/login',
 	REGISTRATION = '/registration',
 	CALCULATE = '/calculate',
-	CONFIRM_ORDER = '/confirmOrder',
+	CONFIRM_ORDER = '/user/confirmOrder',
 	CANCEL_ORDER = '/cancelOrder',
 	RATE_ORDER = '/rateOrder',
 	UPDATE_STATUS = '/updateStatus',

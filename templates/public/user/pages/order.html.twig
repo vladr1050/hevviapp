@@ -24,6 +24,7 @@
         data-props='{{ { 
             order, 
             title,
+            csrf_token: csrf_token('confirm_order'),
             accountType: ("show.label_sender")|trans({}, "AppBundle")
          }|json_encode|e("html_attr") }}'
     ></div>

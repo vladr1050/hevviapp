@@ -396,6 +396,13 @@ class Order extends BaseUUID
         return $this->pickupLongitude;
     }
 
+    public function setPickupLongitude(?string $pickupLongitude): static
+    {
+        $this->pickupLongitude = $pickupLongitude;
+
+        return $this;
+    }
+
     public function getPickupTimeFrom(): ?\DateTime
     {
         return $this->pickupTimeFrom;

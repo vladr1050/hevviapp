@@ -11,10 +11,11 @@ interface OrderPageProps {
 	title: string
 	order: OrderType
 	accountType: AccountType
+	csrf_token: string
 }
 
 export const OrderPage: FC<OrderPageProps> = (props) => {
-	const { title, order, accountType } = props
+	const { title, order, accountType, csrf_token } = props
 
 	console.log(props)
 
@@ -25,7 +26,7 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 					<Icon type="arrow_right" className="rotate-180" size={18} />
 				</a>
 
-				<OrderCard title={title} order={order} accountType={accountType} />
+				<OrderCard title={title} order={order} accountType={accountType} csrfToken={csrf_token} />
 			</div>
 		</div>
 	)

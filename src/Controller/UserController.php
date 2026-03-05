@@ -4,12 +4,17 @@ namespace App\Controller;
 
 use App\Entity\Order;
 use App\Entity\OrderHistory;
+use App\Entity\OrderOffer;
 use App\Entity\User;
 use App\Repository\OrderRepository;
 use App\Twig\Extension\Filter\MoneyExtension;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -18,9 +23,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class UserController extends AbstractController
 {
     public function __construct(
-        private readonly OrderRepository     $orderRepository,
-        private readonly MoneyExtension      $moneyExtension,
-        private readonly TranslatorInterface $translator,
+        private readonly OrderRepository        $orderRepository,
+        private readonly MoneyExtension         $moneyExtension,
+        private readonly TranslatorInterface    $translator,
+        private readonly EntityManagerInterface $em,
     )
     {
     }
@@ -115,7 +121,9 @@ class UserController extends AbstractController
             'id' => $order->getId()?->toRfc4122(),
             'status' => $order->getStatus(),
             'status_text' => $this->translator->trans('order.status_' . $order->getStatus(), domain: 'AppBundle', locale: $user->getLocale()),
-            'price' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
+            'price' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getNetto(), $order->getCurrency()),
+            'vat' => $order->getLatestOffer()?->getVat(),
+            'brutto' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
             'address' => [
                 'from' => $order->getPickupAddress(),
                 'to' => $order->getDropoutAddress(),
@@ -147,6 +155,40 @@ class UserController extends AbstractController
             'order' => $item,
             'user' => $this->buildUserContext($user),
         ]);
+    }
+
+    #[Route('/confirmOrder', name: 'confirm_order', methods: ['POST'])]
+    public function confirmOrder(Request $request, CsrfTokenManagerInterface $csrfTokenManager): Response
+    {
+        $token = new CsrfToken('confirm_order', (string) $request->request->get('_token'));
+        if (!$csrfTokenManager->isTokenValid($token)) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $orderId = (string) $request->request->get('order_id');
+        $order = $this->orderRepository->find($orderId);
+
+        if (!$order || $order->getSender() !== $user) {
+            return $this->redirectToRoute('user_public_orders');
+        }
+
+        if (!in_array($order->getStatus(), [Order::STATUS['DRAFT'], Order::STATUS['OFFERED']], true)) {
+            return $this->redirectToRoute('user_public_order', ['id' => $orderId]);
+        }
+
+        $latestOffer = $order->getLatestOffer();
+        if (!$latestOffer || $latestOffer->getStatus() !== OrderOffer::STATUS['DRAFT']) {
+            return $this->redirectToRoute('user_public_order', ['id' => $orderId]);
+        }
+
+        $latestOffer->setStatus(OrderOffer::STATUS['ACCEPTED']);
+        $order->setStatus(Order::STATUS['ACCEPTED']);
+        $this->em->flush();
+
+        return $this->redirectToRoute('user_public_order', ['id' => $orderId]);
     }
 
     /**

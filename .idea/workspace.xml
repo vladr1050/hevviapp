@@ -4,9 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="order controller page updated">
+    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="small opt">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/islands/pages/Order/Order.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/islands/pages/Order/Order.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/shared/api/authApi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/api/authApi.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/OrderCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/OrderCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/shared/config/constants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/config/constants.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Order.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Order.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/public/user/pages/order.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/public/user/pages/order.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -314,7 +320,7 @@
       <workItem from="1772564946438" duration="12131000" />
       <workItem from="1772646988460" duration="306000" />
       <workItem from="1772654790742" duration="5432000" />
-      <workItem from="1772723570253" duration="1921000" />
+      <workItem from="1772723570253" duration="6527000" />
     </task>
     <task id="LOCAL-00001" summary="custom areas added to service areas">
       <option name="closed" value="true" />
@@ -476,7 +482,23 @@
       <option name="project" value="LOCAL" />
       <updated>1772727036041</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="last_name substripped and updated">
+      <option name="closed" value="true" />
+      <created>1772727212498</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1772727212498</updated>
+    </task>
+    <task id="LOCAL-00022" summary="small opt">
+      <option name="closed" value="true" />
+      <created>1772728438840</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1772728438840</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -489,6 +511,8 @@
     <MESSAGE value="authorization updated" />
     <MESSAGE value="user pages added" />
     <MESSAGE value="order controller page updated" />
-    <option name="LAST_COMMIT_MESSAGE" value="order controller page updated" />
+    <MESSAGE value="last_name substripped and updated" />
+    <MESSAGE value="small opt" />
+    <option name="LAST_COMMIT_MESSAGE" value="small opt" />
   </component>
 </project>
