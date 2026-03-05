@@ -32,7 +32,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/profile', name: 'public_profile')]
-    public function profile(): Response
+    public function profile(TranslatorInterface $translator): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -68,19 +68,19 @@ class UserController extends AbstractController
         ];
 
         return $this->render('public/user/pages/profile.html.twig', [
-            'title' => 'Profile',
+            'title' => $translator->trans('show.label_profile', domain: 'AppBundle', locale: $user?->getLocale()),
             'user' => $profile,
             'orders' => $orders,
         ]);
     }
 
     #[Route('/requests', name: 'public_requests')]
-    public function requests(): Response
+    public function requests(TranslatorInterface $translator): Response
     {
         /** @var User $user */
         $user = $this->getUser();
         return $this->render('public/user/pages/requests.html.twig', [
-            'title' => 'Requests',
+            'title' => $translator->trans('show.label_requests', domain: 'AppBundle', locale: $user?->getLocale()),
             'user' => [
                 'first_name' => $user?->getFirstName(),
                 'last_name' => $user?->getLastName(),
@@ -119,7 +119,7 @@ class UserController extends AbstractController
         }
 
         return $this->render('public/user/pages/orders.html.twig', [
-            'title' => 'Orders',
+            'title' => $translator->trans('show.label_orders', domain: 'AppBundle', locale: $user?->getLocale()),
             'orders' => $listOfOrders,
             'user' => [
                 'first_name' => $user?->getFirstName(),
@@ -175,7 +175,7 @@ class UserController extends AbstractController
         ];
 
         return $this->render('public/user/pages/order.html.twig', [
-            'title' => 'Order',
+            'title' => $translator->trans('show.label_order', domain: 'AppBundle', locale: $user?->getLocale()),
             'order' => $item,
             'user' => [
                 'first_name' => $user?->getFirstName(),

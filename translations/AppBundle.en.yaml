@@ -122,6 +122,9 @@ show:
     label_stackable:                   Stackable
     label_manipulator_needed:          Manipulator Needed
     label_related_order:               Related Order
+    label_profile:                     Profile
+    label_requests:                    Requests
+    label_orders:                      My Orders
     label_order:                       Order
     label_changed_by:                  Changed By
     label_meta:                        Metadata

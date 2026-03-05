@@ -110,7 +110,10 @@ show:
     label_stackable:          Штабелируемый
     label_manipulator_needed: Требуется манипулятор
     label_related_order:      Связанный заказ
+    label_profile:            Профиль
+    label_requests:           Запросы
     label_order:              Заказ
+    label_orders:             Мои заказы
     label_changed_by:         Изменено
     label_meta:               Метаданные
     label_status_history:     История изменений статуса
