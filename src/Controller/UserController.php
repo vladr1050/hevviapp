@@ -79,6 +79,7 @@ class UserController extends AbstractController
         $listOfOrders = [];
         foreach ($this->orderRepository->findRecentBySender($user) as $order) {
             $history = $this->resolvePickupHistory($order);
+            $cargo = $order->getCargo()->first();
 
             $listOfOrders[] = [
                 'id' => $order->getId()?->toRfc4122(),
@@ -89,7 +90,7 @@ class UserController extends AbstractController
                     'from' => $order->getPickupAddress(),
                     'to' => $order->getDropoutAddress(),
                 ],
-                'item' => $order->getCargo()->count(),
+                'item' => $cargo?->getQuantity(),
                 'comment' => $order->getNotes(),
                 'pickup_date' => false !== $history ? $history->getCreatedAt()->format('d.m.Y') : null,
                 'carrier' => $order->getCarrier()?->getLegalName(),
