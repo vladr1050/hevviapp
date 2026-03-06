@@ -5,21 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="request finished api added">
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/islands/pages/Requests/Requests.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/islands/pages/Requests/Requests.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/islands/pages/Requests/Requests.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/islands/pages/Requests/Requests.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/islands/pages/Requests/components/ModalContent/ModalContent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/islands/pages/Requests/components/ModalContent/ModalContent.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/OrderCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/OrderCard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/shared/config/constants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/config/constants.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Admin/OrderOfferAdmin.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Admin/OrderOfferAdmin.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Api/OrderController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/OrderController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Listener/OrderOfferAutoCreateListener.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Listener/OrderOfferAutoCreateListener.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/OrderOffer/DTO/OrderOfferCalculationResultDto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/OrderOffer/DTO/OrderOfferCalculationResultDto.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/OrderOffer/OrderOfferCalculatorService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/OrderOffer/OrderOfferCalculatorService.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/translations/AppBundle.en.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/translations/AppBundle.en.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/translations/AppBundle.ru.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/translations/AppBundle.ru.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -328,7 +314,7 @@
       <workItem from="1772646988460" duration="306000" />
       <workItem from="1772654790742" duration="5432000" />
       <workItem from="1772723570253" duration="8016000" />
-      <workItem from="1772786955928" duration="6637000" />
+      <workItem from="1772786955928" duration="6687000" />
     </task>
     <task id="LOCAL-00001" summary="custom areas added to service areas">
       <option name="closed" value="true" />
@@ -546,7 +532,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772791481946</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="request finished api added">
+      <option name="closed" value="true" />
+      <created>1772794464015</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1772794464016</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

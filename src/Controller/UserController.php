@@ -65,7 +65,7 @@ class UserController extends AbstractController
         $user = $this->getUser();
 
         $listOfOrders = [];
-        foreach ($this->orderRepository->findRecentBySender($user) as $order) {
+        foreach ($this->orderRepository->findRecentBySender($user, 5) as $order) {
             $cargo = $order->getCargo()->first();
 
             $listOfOrders[] = [
