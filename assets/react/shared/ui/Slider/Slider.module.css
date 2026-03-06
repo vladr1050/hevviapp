@@ -67,4 +67,8 @@
 	& .label {
 		@apply font-medium text-xs m-0;
 	}
+
+	& input {
+		@apply cursor-pointer;
+	}
 }

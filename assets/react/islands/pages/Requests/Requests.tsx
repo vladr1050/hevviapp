@@ -1,7 +1,7 @@
 import { type FC, useState } from 'react'
 
-import { OrderCard } from '@components/OrderCard/OrderCard'
-import { OrderType, Routes } from '@config/constants'
+// import { OrderCard } from '@components/OrderCard/OrderCard'
+import { AccountType, EMPTY_STRING, OrderType, Routes } from '@config/constants'
 import { useLocation } from '@hooks/useLocation'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
@@ -14,24 +14,21 @@ import { InputButton } from './components/InputButton/InputButton'
 import { ModalContent } from './components/ModalContent/ModalContent'
 
 interface RequestsPageProps {
+	accountType: AccountType
 	title: string
-	// SENDER
-	ordersSender?: {
-		//
+	orders: {
+		address: { from: string; to: string }
+		comment?: string
 		id: string
-		name: string
-		count: number
-		route: { from: string; to: string }
+		item: number
+		type: string
 	}[]
-
-	// CARRIER
-	ordersCarrier?: OrderType[]
 }
 
 export type CalculateModalType = 'what' | 'where' | 'when' | 'calculate' | undefined
 
 export const RequestsPage: FC<RequestsPageProps> = (props) => {
-	const { title, ordersSender, ordersCarrier } = props
+	const { title, orders, accountType } = props
 	console.log(props)
 
 	const [activeButton, setActiveButton] = useState<CalculateModalType>()
@@ -42,54 +39,54 @@ export const RequestsPage: FC<RequestsPageProps> = (props) => {
 	const _currentOrderId = '00001'
 	const [curOrderId, setCurOrderId] = useState(_currentOrderId)
 
-	if (typeof ordersCarrier !== 'undefined')
-		return (
-			<div className={cn('tw-container', styles.page, styles.carrier)}>
-				<div className={styles.main}>
-					<div className={styles.title}>
-						Requests {!!ordersCarrier?.length && <span>({ordersCarrier.length})</span>}
-					</div>
+	// if (accountType === 'Carrier')
+	// 	return (
+	// 		<div className={cn('tw-container', styles.page, styles.carrier)}>
+	// 			<div className={styles.main}>
+	// 				<div className={styles.title}>
+	// 					Requests {!!ordersCarrier?.length && <span>({ordersCarrier.length})</span>}
+	// 				</div>
 
-					{!ordersCarrier?.length && (
-						<div className={styles.empty}>
-							<Icon type="pallet" size={220} className={styles.icon} />
+	// 				{!ordersCarrier?.length && (
+	// 					<div className={styles.empty}>
+	// 						<Icon type="pallet" size={220} className={styles.icon} />
 
-							<div className={styles.text}>
-								<div className={styles.title}>No new requests yet</div>
-								<div className={styles.subtitle}>
-									We will notify you when there will be a new request
-								</div>
-							</div>
+	// 						<div className={styles.text}>
+	// 							<div className={styles.title}>No new requests yet</div>
+	// 							<div className={styles.subtitle}>
+	// 								We will notify you when there will be a new request
+	// 							</div>
+	// 						</div>
 
-							<a href={Routes.ORDERS} className={styles.link}>
-								View orders
-							</a>
-						</div>
-					)}
+	// 						<a href={Routes.ORDERS} className={styles.link}>
+	// 							View orders
+	// 						</a>
+	// 					</div>
+	// 				)}
 
-					{ordersCarrier
-						.filter((order) => order.id === curOrderId)
-						.map((order) => (
-							<OrderCard title={title} order={order} accountType="Carrier" isRequest />
-						))}
-				</div>
+	// 				{ordersCarrier
+	// 					.filter((order) => order.id === curOrderId)
+	// 					.map((order) => (
+	// 						<OrderCard title={title} order={order} accountType="Carrier" isRequest />
+	// 					))}
+	// 			</div>
 
-				<div className={styles.footer}>
-					<div className={styles.item}>
-						<Icon type="route_map" size={20} />
-						Fewer Empty Miles
-					</div>
-					<div className={styles.item}>
-						<Icon type="right_box" size={20} />
-						Less Manual Dispatch
-					</div>
-					<div className={styles.item}>
-						<Icon type="confirm_order" size={20} />
-						Predictable Payments
-					</div>
-				</div>
-			</div>
-		)
+	// 			<div className={styles.footer}>
+	// 				<div className={styles.item}>
+	// 					<Icon type="route_map" size={20} />
+	// 					Fewer Empty Miles
+	// 				</div>
+	// 				<div className={styles.item}>
+	// 					<Icon type="right_box" size={20} />
+	// 					Less Manual Dispatch
+	// 				</div>
+	// 				<div className={styles.item}>
+	// 					<Icon type="confirm_order" size={20} />
+	// 					Predictable Payments
+	// 				</div>
+	// 			</div>
+	// 		</div>
+	// 	)
 
 	return (
 		<>
@@ -142,75 +139,87 @@ export const RequestsPage: FC<RequestsPageProps> = (props) => {
 						</div>
 					</div>
 				</div>
-				<div className={cn(styles.ordersWrapper, { ['!px-0']: !!ordersSender?.length })}>
-					{!ordersSender?.length ? (
-						<>
-							<h2 className={styles.title}>How does it work?</h2>
+				{!orders?.length ? (
+					<div className={styles.emptyOrders}>
+						<h2 className={styles.title}>How does it work?</h2>
 
-							<div className={styles.description}>
-								<div className={styles.item}>
-									<div className={styles.icon}>
-										<Icon type="calculate_price" size={32} />
-									</div>
-									<div className={styles.text}>
-										Calculate price
-										<span>in seconds</span>
-									</div>
+						<div className={styles.description}>
+							<div className={styles.item}>
+								<div className={styles.icon}>
+									<Icon type="calculate_price" size={32} />
 								</div>
-
-								<Icon type="arrow_right" size={23} />
-
-								<div className={styles.item}>
-									<div className={styles.icon}>
-										<Icon type="confirm_order" size={32} />
-									</div>
-									<div className={styles.text}>
-										Confirm the order
-										<span>and make a payment</span>
-									</div>
-								</div>
-
-								<Icon type="arrow_right" size={23} />
-
-								<div className={styles.item}>
-									<div className={styles.icon}>
-										<Icon type="vehicle_drive" size={32} />
-									</div>
-									<div className={styles.text}>
-										Get the delivery
-										<span>in 48 hours</span>
-									</div>
+								<div className={styles.text}>
+									Calculate price
+									<span>in seconds</span>
 								</div>
 							</div>
-						</>
-					) : (
-						<>
+
+							<Icon type="arrow_right" size={23} />
+
+							<div className={styles.item}>
+								<div className={styles.icon}>
+									<Icon type="confirm_order" size={32} />
+								</div>
+								<div className={styles.text}>
+									Confirm the order
+									<span>and make a payment</span>
+								</div>
+							</div>
+
+							<Icon type="arrow_right" size={23} />
+
+							<div className={styles.item}>
+								<div className={styles.icon}>
+									<Icon type="vehicle_drive" size={32} />
+								</div>
+								<div className={styles.text}>
+									Get the delivery
+									<span>in 48 hours</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				) : (
+					<div className={styles.ordersWrapper}>
 						<div className={styles.header}>
 							<div className={styles.item}>
 								<div className={styles.icon}>
-									<Icon type="previous_orders" size={16} />
+									<Icon type="previous_orders" size={20} />
 								</div>
 								Your previous orders
 							</div>
 						</div>
 
-							<div className={styles.orders}>
-								{ordersSender?.map((order, index) => (
-									<div className={styles.order} key={index}>
-										<div className={styles.name}>{order.name}</div>
-										<div className="">{`${order.count} pallet${order.count > 1 ? 's' : ''}`}</div>
-										<div className="">
-											{order.route.from} → {order.route.to}
-										</div>
-										<button type="button" className={styles.button}>
-											Pielietot
-										</button>
+						<div className={styles.orders}>
+							{orders?.map((order, index) => (
+								<div className={styles.order} key={index}>
+									<div className={styles.name}>{order.comment || EMPTY_STRING}</div>
+									<div className="">{`${order.item} ${order.type}`}</div>
+									<div className="!text-[10px] !leading-[10px]">
+										{!!order.address.from && !!order.address.to && (
+											<>
+												{order.address.from}
+												<br />
+												→
+												<br />
+												{order.address.to}
+											</>
+										)}
 									</div>
-								))}
-							</div>
-						</>
-					)}
-				</div>
+
+									<button
+										type="button"
+										className={styles.button}
+										// TODO
+										onClick={() => console.log(order.id)}
+									>
+										Pielietot
+									</button>
+								</div>
+							))}
+						</div>
+					</div>
+				)}
 			</div>
 
 			<Modal

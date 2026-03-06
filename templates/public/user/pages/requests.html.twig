@@ -1,4 +1,4 @@
-{#
+	{#
 # SIA SLYFOX Confidential
 #
 # Copyright (C) 2026 SIA SLYFOX.
@@ -23,56 +23,8 @@
 		data-react-island="RequestsPage"
 		data-props='{{ {
 			title,
+			orders,
 			accountType: ("show.label_sender")|trans({}, "AppBundle"),
-			ordersCarrier1: [
-				{
-					id: "00001",
-					name: "Benu Pharma stock refill, fragile",
-					type: "Palletes, 5 items",
-					size: "120x80x180 cm",
-					weight: "500kg",
-					additionals: { stackability: true, lift: true },
-					routes: {
-						from: {
-							address: "Mūkusalas 3, Rīga",
-							loadingReady: "27.01.2026",
-							loadingWindow: "9:00 - 18:00",
-							position: { lat: "56.946845", lng: "24.106075" },
-						},
-						to: {
-							address: "IKEA bāze, Rīga",
-							deliveryWindow: "15:00 - 18:00",
-							deliveryDate: "27.01.2026",
-							position: { lat: "56.846845", lng: "24.006075" },
-						},
-						polyline:[
-							[56.946845, 24.106075],
-							[56.796845, 24.206075],
-							[56.846845, 24.006075],
-						],
-					},
-					comments: "Call me 20 min before arrival",
-					price: "€ 250.00",
-					vat: "€ 52.50",
-					total: " € 302.50",
-					platform: "Included",
-					deliveryTime: "~ 48 hours",
-					status: "carrierMatched",
-				},
-			],
-
-			ordersSender: [
-				{
-					id: "00001",
-					name: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, eaque.", 
-					count: 1, 
-					route: { from: "Piņķi",  to: "Rīga" }
-				},
-				{ id: "00002", name: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, eaque.", count: 2, route: { from: "Rīga", to: "Piņķi" } },
-				{ id: "00003", name: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, eaque.", count: 3, route: { from:"Piņķi", to: "Rīga" } },
-				{ id: "00004", name: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, eaque.", count: 4, route: { from:"Piņķi", to: "Rīga" } },
-				{ id: "00005", name: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, eaque.", count: 10, route: { from:"Piņķi", to: "Rīga" } },
-			],
 		}|json_encode|e("html_attr") }}'
 	></div>
 

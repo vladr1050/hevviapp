@@ -1,5 +1,5 @@
 import type { FC } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 
 import { FormActions } from '@config/constants'
 import { Button } from '@ui/Button/Button'
@@ -11,8 +11,8 @@ import styles from './DeclineModal.module.css'
 
 interface DeclineModalProps {
 	id: string
-	from: string
-	to: string
+	from?: string
+	to?: string
 }
 
 type FormValues = {
@@ -33,7 +33,11 @@ export const DeclineModal: FC<DeclineModalProps> = ({ id, from, to }) => {
 
 			<div className={styles.textWrapper}>
 				<span>
-					{from} → {to}
+					{!!from && !!to && (
+						<>
+							{from} → {to}
+						</>
+					)}
 				</span>
 				<span>Cancel order?</span>
 				<span>ID {id}</span>

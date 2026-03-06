@@ -219,6 +219,7 @@
 
 					& .buttonWrapper {
 						@apply flex items-center justify-center;
+						animation: fade1 0.5s ease-in-out;
 
 						& .button {
 							@apply bg-white text-black p-1 rounded-full transition-[opacity]
@@ -368,7 +369,8 @@
 /* ─── AddressSearchInput ─────────────────────────────────────────────────────── */
 
 .addressInputWrapper {
-	@apply relative w-full flex-1;
+	@apply relative w-full flex-1 rounded-full;
+	border: 1px solid #888888;
 
 	& .addressInputInner {
 		@apply relative overflow-hidden w-full rounded-3xl border border-gray-300 transition-colors

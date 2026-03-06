@@ -1,60 +1,31 @@
-import { type FC, Suspense, useState } from 'react';
-import { MapContainer, Marker, TileLayer } from 'react-leaflet';
+import { type FC, Suspense, useState } from 'react'
+import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 
-
-
-import { AccountType, EMPTY_STRING, FormActions, OrderStatusEnum, OrderType } from '@config/constants';
-import { Button } from '@ui/Button/Button';
-import { Icon } from '@ui/Icon/Icon';
-import { Modal } from '@ui/Modal/Modal';
-import { cn } from '@utils/cn';
+import {
+	AccountType,
+	EMPTY_STRING,
+	FormActions,
+	OrderStatusEnum,
+	OrderType,
+} from '@config/constants'
+import { Button } from '@ui/Button/Button'
+import { Icon } from '@ui/Icon/Icon'
+import { Modal } from '@ui/Modal/Modal'
+import { cn } from '@utils/cn'
 // @ts-ignore
-import L from 'leaflet';
-
-
+import L from 'leaflet'
 
 // @ts-ignore
-import CustomIcon from './CustomMarker.svg';
+import CustomIcon from './CustomMarker.svg'
 
+import styles from './OrderCard.module.css'
 
-
-import styles from './OrderCard.module.css';
-
-
-
-import { CancelModal } from './components/CancelModal/CancelModal';
-import { ConfirmModal } from './components/ConfirmModal/ConfirmModal';
-import { DeclineModal } from './components/DeclineModal/DeclineModal';
-import { RateModal } from './components/RateModal/RateModal';
-import { StatusOrder } from './components/StatusOrder/StatusOrder';
-import { getDefaultMapData } from './utils';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+import { CancelModal } from './components/CancelModal/CancelModal'
+import { ConfirmModal } from './components/ConfirmModal/ConfirmModal'
+import { DeclineModal } from './components/DeclineModal/DeclineModal'
+import { RateModal } from './components/RateModal/RateModal'
+import { StatusOrder } from './components/StatusOrder/StatusOrder'
+import { getDefaultMapData } from './utils'
 
 interface OrderCardProps {
 	title: string
@@ -66,7 +37,13 @@ interface OrderCardProps {
 
 type ModalIdType = 'confirmSender' | 'cancel' | 'rate' | 'declineCarrier'
 
-export const OrderCard: FC<OrderCardProps> = ({ title, order, accountType, isRequest, csrfToken }) => {
+export const OrderCard: FC<OrderCardProps> = ({
+	title,
+	order,
+	accountType,
+	isRequest,
+	csrfToken,
+}) => {
 	const [modalId, setModalId] = useState<ModalIdType>()
 
 	const { defaultPosition, defaultBounds } = getDefaultMapData({
@@ -247,7 +224,14 @@ export const OrderCard: FC<OrderCardProps> = ({ title, order, accountType, isReq
 							// @ts-ignore
 							center={defaultPosition}
 							bounds={defaultBounds}
-							boundsOptions={{ padding: [50, 50] }}
+							boundsOptions={
+								order.status < OrderStatusEnum.ACCEPTED
+									? {
+											paddingTopLeft: [50, 50],
+											paddingBottomRight: [50, 220],
+										}
+									: { padding: [50, 50] }
+							}
 							style={{
 								width: '100%',
 								height: 'calc(100% + 20px)',
@@ -417,8 +401,8 @@ export const OrderCard: FC<OrderCardProps> = ({ title, order, accountType, isReq
 				>
 					<ConfirmModal
 						id={order.id}
-						from="Riga"
-						to="Ventspils"
+						from={order.address.from}
+						to={order.address.to}
 						onClose={() => setModalId(undefined)}
 						email={'example@email.com'}
 					/>
@@ -427,7 +411,12 @@ export const OrderCard: FC<OrderCardProps> = ({ title, order, accountType, isReq
 
 			{/* CANCEL */}
 			<Modal isOpen={modalId === 'cancel'} onClose={() => setModalId(undefined)} maxWidth="400px">
-				<CancelModal id={order.id} from="Riga" to="Ventspils" accountType={accountType} />
+				<CancelModal
+					id={order.id}
+					from={order.address.from}
+					to={order.address.to}
+					accountType={accountType}
+				/>
 			</Modal>
 
 			{/* RATE */}
@@ -442,7 +431,7 @@ export const OrderCard: FC<OrderCardProps> = ({ title, order, accountType, isReq
 					onClose={() => setModalId(undefined)}
 					maxWidth="400px"
 				>
-					<DeclineModal id={order.id} from="Riga" to="Ventspils" />
+					<DeclineModal id={order.id} from={order.address.from} to={order.address.to} />
 				</Modal>
 			)}
 		</>

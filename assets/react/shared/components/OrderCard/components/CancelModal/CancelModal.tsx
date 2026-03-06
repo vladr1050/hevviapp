@@ -11,8 +11,8 @@ import styles from './CancelModal.module.css'
 
 interface CancelModalProps {
 	id: string
-	from: string
-	to: string
+	from?: string
+	to?: string
 	accountType: AccountType
 }
 
@@ -34,7 +34,11 @@ export const CancelModal: FC<CancelModalProps> = ({ id, from, to, accountType })
 
 			<div className={styles.textWrapper}>
 				<span>
-					{from} → {to}
+					{!!from && !!to && (
+						<>
+							{from} → {to}
+						</>
+					)}
 				</span>
 				<span>Cancel order?</span>
 				<span>ID {id}</span>

@@ -8,8 +8,8 @@ import styles from './ConfirmModal.module.css'
 
 interface ConfirmModalProps {
 	id: string | number | undefined
-	from: string
-	to: string
+	from?: string
+	to?: string
 	onClose: () => void
 	email: string
 }
@@ -29,7 +29,11 @@ export const ConfirmModal: FC<ConfirmModalProps> = ({ id, from, to, onClose, ema
 
 			<div className={styles.textWrapper}>
 				<span>
-					{from} → {to}
+					{!!from && !!to && (
+						<>
+							{from} → {to}
+						</>
+					)}
 				</span>
 				<span>Order Confirmed</span>
 				<span>ID {id}</span>

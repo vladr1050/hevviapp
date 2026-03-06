@@ -1,11 +1,16 @@
-import { type ChangeEvent, type Dispatch, type FC, type SetStateAction, Suspense, useEffect, useRef, useState } from 'react'
+import {
+	type ChangeEvent,
+	type Dispatch,
+	type FC,
+	type SetStateAction,
+	Suspense,
+	useEffect,
+	useRef,
+	useState,
+} from 'react'
 import { DateRange } from 'react-day-picker'
 import { Control, Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet'
-// @ts-ignore
-import L from 'leaflet'
-// @ts-ignore
-import CustomIcon from '../../../../../shared/components/OrderCard/CustomMarker.svg'
 
 import { apiCreateOrder } from '@api/orderApi'
 import { YearsType, months, years } from '@config/constants'
@@ -20,7 +25,11 @@ import { Switch } from '@ui/Switch/Switch'
 import { Textarea } from '@ui/Textarea/Textarea'
 import { cn } from '@utils/cn'
 import { addDays } from 'date-fns'
+// @ts-ignore
+import L from 'leaflet'
 
+// @ts-ignore
+import CustomIcon from '../../../../../shared/components/OrderCard/CustomMarker.svg'
 // @ts-ignore
 import pickup_ready from './pickup_ready.png'
 
@@ -180,7 +189,7 @@ export const ModalContent: FC<ModalContentProps> = ({
 
 			// Map cargoType string → Cargo.type int
 			const cargoTypeMap: Record<string, 1 | 2> = {
-				palette:         1,
+				palette: 1,
 				irregular_cargo: 2,
 			}
 
@@ -191,24 +200,24 @@ export const ModalContent: FC<ModalContentProps> = ({
 					: null
 
 			const result = await apiCreateOrder(token, {
-				pickupAddress:    values.from,
-				dropoutAddress:   values.to,
-				pickupLatitude:   values.pickupLatitude ?? null,
-				pickupLongitude:  values.pickupLongitude ?? null,
-				dropoutLatitude:  values.dropoutLatitude ?? null,
+				pickupAddress: values.from,
+				dropoutAddress: values.to,
+				pickupLatitude: values.pickupLatitude ?? null,
+				pickupLongitude: values.pickupLongitude ?? null,
+				dropoutLatitude: values.dropoutLatitude ?? null,
 				dropoutLongitude: values.dropoutLongitude ?? null,
-				notes:            values.comments || null,
-				pickupTimeFrom:   values.timeFrom || null,
-				pickupTimeTo:     values.timeTo || null,
+				notes: values.comments || null,
+				pickupTimeFrom: values.timeFrom || null,
+				pickupTimeTo: values.timeTo || null,
 				pickupDate,
 				deliveryDate,
 				cargo: {
-					type:              cargoTypeMap[values.cargoType] ?? 1,
-					quantity:          values.amount,
-					weightKg:          values.maxWeight,
+					type: cargoTypeMap[values.cargoType] ?? 1,
+					quantity: values.amount,
+					weightKg: values.maxWeight,
 					dimensionsCm,
-					name:              values.name,
-					stackable:         values.stackabilityPossible,
+					name: values.name,
+					stackable: values.stackabilityPossible,
 					manipulatorNeeded: values.truckWithLift,
 				},
 			})
@@ -316,9 +325,7 @@ export const ModalContent: FC<ModalContentProps> = ({
 					</Button>
 				</div>
 
-				{submitError && (
-					<div className={styles.submitError}>{submitError}</div>
-				)}
+				{submitError && <div className={styles.submitError}>{submitError}</div>}
 			</div>
 
 			{activeButton === 'what' && (
@@ -346,15 +353,15 @@ export const ModalContent: FC<ModalContentProps> = ({
 								<span>Amount</span>
 
 								<div className={styles.wrapper}>
-								<button
-									type="button"
-									disabled={watch('amount') <= 1}
-									className={styles.button}
-									onClick={() => {
-										const v = watch('amount')
-										setValue('amount', v <= 1 ? 1 : v - 1)
-									}}
-								>
+									<button
+										type="button"
+										disabled={watch('amount') <= 1}
+										className={styles.button}
+										onClick={() => {
+											const v = watch('amount')
+											setValue('amount', v <= 1 ? 1 : v - 1)
+										}}
+									>
 										–
 									</button>
 									<span>{watch('amount')}</span>
@@ -396,8 +403,8 @@ export const ModalContent: FC<ModalContentProps> = ({
 								name="maxHeight"
 								label="Max Height"
 								min={0}
-								max={200}
-								description="up to 200 cm"
+								max={1000}
+								description="up to 1000 cm"
 								unit="cm"
 							/>
 
@@ -406,8 +413,9 @@ export const ModalContent: FC<ModalContentProps> = ({
 								name="maxWeight"
 								label="Max Weight"
 								min={0}
-								max={500}
-								description="up to 500 kg"
+								max={10000}
+								// description="up to 10000 kg"
+								description="up to 10 tonnes"
 								unit="kg"
 							/>
 						</div>
@@ -437,142 +445,147 @@ export const ModalContent: FC<ModalContentProps> = ({
 				</div>
 			)}
 
-		{activeButton === 'where' && (
-			<div className={cn(styles.body, styles.whereActive)}>
-				<input type="hidden" {...register('pickupLatitude')} />
-				<input type="hidden" {...register('pickupLongitude')} />
-				<input type="hidden" {...register('dropoutLatitude')} />
-				<input type="hidden" {...register('dropoutLongitude')} />
+			{activeButton === 'where' && (
+				<div className={cn(styles.body, styles.whereActive)}>
+					<input type="hidden" {...register('pickupLatitude')} />
+					<input type="hidden" {...register('pickupLongitude')} />
+					<input type="hidden" {...register('dropoutLatitude')} />
+					<input type="hidden" {...register('dropoutLongitude')} />
 
-				<div className={cn(styles.left, { [styles.noRoutes]: true })}>
-					<div className={styles.top}>
-						<div className={styles.routeWrapper}>
-							<div className={styles.route} />
-						</div>
-
-						<div className={styles.inputs}>
-							<div className={styles.input}>
-								<span>From</span>
-								<Controller
-									control={control}
-									name="from"
-									render={({ field: { value, onChange } }) => (
-										<AddressSearchInput
-											value={value}
-											onChange={onChange}
-											onSelect={(_addr, lat, lng) => {
-												setValue('pickupLatitude', lat)
-												setValue('pickupLongitude', lng)
-												setFromMarkerPos({ lat, lng })
-											}}
-											onClear={() => {
-												setFromMarkerPos(null)
-												setValue('pickupLatitude', undefined)
-												setValue('pickupLongitude', undefined)
-											}}
-											placeholder="From"
-										/>
-									)}
-								/>
+					<div className={cn(styles.left, { [styles.noRoutes]: true })}>
+						<div className={styles.top}>
+							<div className={styles.routeWrapper}>
+								<div className={styles.route} />
 							</div>
-							<div className={styles.input}>
-								<span>To</span>
-								<Controller
-									control={control}
-									name="to"
-									render={({ field: { value, onChange } }) => (
-										<AddressSearchInput
-											value={value}
-											onChange={onChange}
-											onSelect={(_addr, lat, lng) => {
-												setValue('dropoutLatitude', lat)
-												setValue('dropoutLongitude', lng)
-												setToMarkerPos({ lat, lng })
-											}}
-											onClear={() => {
-												setToMarkerPos(null)
-												setValue('dropoutLatitude', undefined)
-												setValue('dropoutLongitude', undefined)
-											}}
-											placeholder="To"
-											disabled={!fromMarkerPos}
-										/>
-									)}
-								/>
+
+							<div className={styles.inputs}>
+								<div className={styles.input}>
+									<span>From</span>
+									<Controller
+										control={control}
+										name="from"
+										render={({ field: { value, onChange } }) => (
+											<AddressSearchInput
+												value={value}
+												onChange={onChange}
+												onSelect={(_addr, lat, lng) => {
+													setValue('pickupLatitude', lat)
+													setValue('pickupLongitude', lng)
+													setFromMarkerPos({ lat, lng })
+												}}
+												onClear={() => {
+													setFromMarkerPos(null)
+													setValue('pickupLatitude', undefined)
+													setValue('pickupLongitude', undefined)
+												}}
+												placeholder="From"
+											/>
+										)}
+									/>
+								</div>
+
+								<div className={styles.input}>
+									<span>To</span>
+									<Controller
+										control={control}
+										name="to"
+										render={({ field: { value, onChange } }) => (
+											<AddressSearchInput
+												value={value}
+												onChange={onChange}
+												onSelect={(_addr, lat, lng) => {
+													setValue('dropoutLatitude', lat)
+													setValue('dropoutLongitude', lng)
+													setToMarkerPos({ lat, lng })
+												}}
+												onClear={() => {
+													setToMarkerPos(null)
+													setValue('dropoutLatitude', undefined)
+													setValue('dropoutLongitude', undefined)
+												}}
+												placeholder="To"
+												disabled={!fromMarkerPos}
+											/>
+										)}
+									/>
+								</div>
 							</div>
+
+							{!watch('from') || !watch('to') ? (
+								<div />
+							) : (
+								<div className={styles.buttonWrapper}>
+									<button
+										className={styles.button}
+										type="button"
+										onClick={() => {
+											const curFrom = watch('from')
+											const curTo = watch('to')
+
+											if (!curFrom || !curTo) return
+
+											setValue('from', curTo)
+											setValue('to', curFrom)
+
+											const pLat = watch('pickupLatitude')
+											const pLng = watch('pickupLongitude')
+											const dLat = watch('dropoutLatitude')
+											const dLng = watch('dropoutLongitude')
+											setValue('pickupLatitude', dLat)
+											setValue('pickupLongitude', dLng)
+											setValue('dropoutLatitude', pLat)
+											setValue('dropoutLongitude', pLng)
+
+											setFromMarkerPos(toMarkerPos)
+											setToMarkerPos(fromMarkerPos)
+										}}
+									>
+										<Icon type="swap" size={16} />
+									</button>
+								</div>
+							)}
 						</div>
 
-						<div className={styles.buttonWrapper}>
-							<button
-								className={styles.button}
-								type="button"
-								onClick={() => {
-									const curFrom = watch('from')
-									const curTo = watch('to')
-
-									if (!curFrom || !curTo) return
-
-									setValue('from', curTo)
-									setValue('to', curFrom)
-
-									const pLat = watch('pickupLatitude')
-									const pLng = watch('pickupLongitude')
-									const dLat = watch('dropoutLatitude')
-									const dLng = watch('dropoutLongitude')
-									setValue('pickupLatitude', dLat)
-									setValue('pickupLongitude', dLng)
-									setValue('dropoutLatitude', pLat)
-									setValue('dropoutLongitude', pLng)
-
-									setFromMarkerPos(toMarkerPos)
-									setToMarkerPos(fromMarkerPos)
-								}}
-							>
-								<Icon type="swap" size={16} />
-							</button>
-						</div>
+						<div />
 					</div>
 
-					<div />
-				</div>
-
-				<div className={styles.right}>
-					<Suspense
-						fallback={
-							<div className="flex items-center justify-center h-full w-full">Loading...</div>
-						}
-					>
-						<MapContainer
-							// @ts-ignore
-							center={[DEFAULT_LAT, DEFAULT_LNG]}
-							zoom={10}
-							style={{ width: '100%', height: 'calc(100% + 20px)' }}
+					<div className={styles.right}>
+						<Suspense
+							fallback={
+								<div className="flex items-center justify-center h-full w-full">Loading...</div>
+							}
 						>
-							<TileLayer
+							<MapContainer
 								// @ts-ignore
-								attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-								url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-							/>
-							<MapController fromPos={fromMarkerPos} toPos={toMarkerPos} />
-							{fromMarkerPos && (
-								<Marker
+								center={[DEFAULT_LAT, DEFAULT_LNG]}
+								zoom={10}
+								style={{ width: '100%', height: 'calc(100% + 20px)' }}
+							>
+								<TileLayer
 									// @ts-ignore
-									icon={myIcon}
-									position={[fromMarkerPos.lat, fromMarkerPos.lng]}
+									attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+									url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 								/>
-							)}
-							{toMarkerPos && (
-								<Marker
-									// @ts-ignore
-									icon={myIcon}
-									position={[toMarkerPos.lat, toMarkerPos.lng]}
-								/>
-							)}
-						</MapContainer>
-					</Suspense>
+								<MapController fromPos={fromMarkerPos} toPos={toMarkerPos} />
+								{fromMarkerPos && (
+									<Marker
+										// @ts-ignore
+										icon={myIcon}
+										position={[fromMarkerPos.lat, fromMarkerPos.lng]}
+									/>
+								)}
+								{toMarkerPos && (
+									<Marker
+										// @ts-ignore
+										icon={myIcon}
+										position={[toMarkerPos.lat, toMarkerPos.lng]}
+									/>
+								)}
+							</MapContainer>
+						</Suspense>
+					</div>
 				</div>
-			</div>
-		)}
+			)}
 
 			{activeButton === 'when' && (
 				<div className={cn(styles.body, styles.whenActive)}>
@@ -772,10 +785,7 @@ const MapController: FC<{
 
 	useEffect(() => {
 		if (fromPos && toPos) {
-			const bounds = L.latLngBounds(
-				[fromPos.lat, fromPos.lng],
-				[toPos.lat, toPos.lng]
-			)
+			const bounds = L.latLngBounds([fromPos.lat, fromPos.lng], [toPos.lat, toPos.lng])
 			map.fitBounds(bounds, { padding: [50, 50] })
 		} else if (fromPos) {
 			map.setView([fromPos.lat, fromPos.lng], 12)
@@ -879,11 +889,7 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 			{showSuggestions && suggestions.length > 0 && (
 				<div className={styles.suggestions}>
 					{suggestions.map((s) => (
-						<div
-							key={s.place_id}
-							className={styles.suggestion}
-							onMouseDown={() => handleSelect(s)}
-						>
+						<div key={s.place_id} className={styles.suggestion} onMouseDown={() => handleSelect(s)}>
 							{s.display_name}
 						</div>
 					))}
