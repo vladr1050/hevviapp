@@ -74,7 +74,7 @@ class Order extends BaseUUID
     private Collection $offers;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $currency = null;
+    private ?string $currency = 'EUR';
 
     /**
      * @var Collection<int, OrderAssignment>

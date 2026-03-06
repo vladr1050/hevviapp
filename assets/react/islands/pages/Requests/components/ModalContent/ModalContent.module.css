@@ -86,6 +86,11 @@
 		}
 	}
 
+	& .submitError {
+		@apply text-red-600 text-sm font-medium px-1 mt-1;
+		animation: fade1 0.3s ease-in-out;
+	}
+
 	& .body {
 		@apply grid grid-cols-2 gap-12 min-h-[360px];
 		animation: fade1 0.5s ease-in-out;

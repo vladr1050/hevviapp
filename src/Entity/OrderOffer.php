@@ -30,6 +30,9 @@ class OrderOffer extends BaseUUID
     #[ORM\Column]
     private ?int $status = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $fee = null;
+
     public function getBrutto(): ?int
     {
         return $this->brutto;
@@ -102,5 +105,17 @@ class OrderOffer extends BaseUUID
             $net,
             $this->vat ?? 0,
         );
+    }
+
+    public function getFee(): ?int
+    {
+        return $this->fee;
+    }
+
+    public function setFee(int $fee): static
+    {
+        $this->fee = $fee;
+
+        return $this;
     }
 }

@@ -7,7 +7,9 @@ import L from 'leaflet'
 // @ts-ignore
 import CustomIcon from '../../../../../shared/components/OrderCard/CustomMarker.svg'
 
+import { apiCreateOrder } from '@api/orderApi'
 import { YearsType, months, years } from '@config/constants'
+import { useAuth } from '@hooks/useAuth'
 import { Button } from '@ui/Button/Button'
 import { Calendar } from '@ui/Calendar/Calendar'
 import { Icon } from '@ui/Icon/Icon'
@@ -73,7 +75,10 @@ export const ModalContent: FC<ModalContentProps> = ({
 	const currentMonthZeroBased = currentDate.getMonth()
 	const currentYear = currentDate.getFullYear()
 
+	const { getValidAccessToken } = useAuth()
+
 	const [isCalculating, setIsCalculating] = useState(false)
+	const [submitError, setSubmitError] = useState<string | null>(null)
 
 	const [fromMarkerPos, setFromMarkerPos] = useState<{ lat: number; lng: number } | null>(null)
 	const [toMarkerPos, setToMarkerPos] = useState<{ lat: number; lng: number } | null>(null)
@@ -150,27 +155,92 @@ export const ModalContent: FC<ModalContentProps> = ({
 	})
 
 	const onSubmit: SubmitHandler<FormValues> = async (values) => {
-		console.log(values)
-
+		setSubmitError(null)
 		setIsCalculating(true)
+
+		try {
+			const token = await getValidAccessToken()
+			if (!token) {
+				setSubmitError('Session expired. Please log in again.')
+				setIsCalculating(false)
+				return
+			}
+
+			// Map scheduleType + dateRange → pickupDate / deliveryDate
+			const formatDate = (d: Date | undefined): string | null =>
+				d ? d.toISOString().split('T')[0] : null
+
+			let pickupDate: string | null = null
+			let deliveryDate: string | null = null
+			if (values.scheduleType === 'pickup_later') {
+				pickupDate = formatDate(dateRange?.from)
+			} else if (values.scheduleType === 'deliver_at') {
+				deliveryDate = formatDate(dateRange?.from)
+			}
+
+			// Map cargoType string → Cargo.type int
+			const cargoTypeMap: Record<string, 1 | 2> = {
+				palette:         1,
+				irregular_cargo: 2,
+			}
+
+			// Compose dimensionsCm: "widthxlengthxheight"
+			const dimensionsCm =
+				values.width || values.length || values.maxHeight
+					? `${values.width}x${values.length}x${values.maxHeight}`
+					: null
+
+			const result = await apiCreateOrder(token, {
+				pickupAddress:    values.from,
+				dropoutAddress:   values.to,
+				pickupLatitude:   values.pickupLatitude ?? null,
+				pickupLongitude:  values.pickupLongitude ?? null,
+				dropoutLatitude:  values.dropoutLatitude ?? null,
+				dropoutLongitude: values.dropoutLongitude ?? null,
+				notes:            values.comments || null,
+				pickupTimeFrom:   values.timeFrom || null,
+				pickupTimeTo:     values.timeTo || null,
+				pickupDate,
+				deliveryDate,
+				cargo: {
+					type:              cargoTypeMap[values.cargoType] ?? 1,
+					quantity:          values.amount,
+					weightKg:          values.maxWeight,
+					dimensionsCm,
+					name:              values.name,
+					stackable:         values.stackabilityPossible,
+					manipulatorNeeded: values.truckWithLift,
+				},
+			})
+
+			// Redirect to the newly created order after 2 seconds
+			setTimeout(() => {
+				window.location.href = `/user/orders/${result.id}`
+			}, 2000)
+		} catch (err) {
+			setSubmitError(err instanceof Error ? err.message : 'Something went wrong')
+			setIsCalculating(false)
+		}
 	}
 
 	if (isCalculating)
 		return (
-			<div className={styles.isCalculating} onClick={() => setIsCalculating(false)}>
+			<div className={styles.isCalculating}>
 				<div className={styles.icon}>
 					<Icon type="big_box" size={40} />
 				</div>
 
 				<div className={styles.wrapper}>
 					<div className={styles.title}>Calculating...</div>
-					<div className={styles.subtitle}>150kg freight Riga-Adaži with lifting, 48h</div>
+					<div className={styles.subtitle}>
+						{watch('name') || 'Freight'} · {watch('from')} → {watch('to')}
+					</div>
 				</div>
 			</div>
 		)
 
 	return (
-		<form className={styles.modal} onSubmit={handleSubmit(onSubmit)}>
+		<form className={styles.modal} onSubmit={(e) => e.preventDefault()}>
 			<div className={styles.header}>
 				<div className={styles.title}>
 					Freight Item <span>(1)</span>
@@ -237,10 +307,18 @@ export const ModalContent: FC<ModalContentProps> = ({
 						className={cn(styles.inputButton, { [styles.active]: activeButton === 'when' })}
 					/>
 
-					<Button type="submit" className="w-[130px] shrink-0 ml-3">
+					<Button
+						type="button"
+						className="w-[130px] shrink-0 ml-3"
+						onClick={handleSubmit(onSubmit)}
+					>
 						Calculate
 					</Button>
 				</div>
+
+				{submitError && (
+					<div className={styles.submitError}>{submitError}</div>
+				)}
 			</div>
 
 			{activeButton === 'what' && (
