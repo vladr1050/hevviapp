@@ -360,6 +360,57 @@
 	}
 }
 
+/* ─── AddressSearchInput ─────────────────────────────────────────────────────── */
+
+.addressInputWrapper {
+	@apply relative w-full flex-1;
+
+	& .addressInputInner {
+		@apply relative overflow-hidden w-full rounded-3xl border border-gray-300 transition-colors
+		hover-hover:hover:border-black hover-none:active:border-black;
+
+		&.addressDisabled {
+			@apply bg-gray-200 border-gray-200 cursor-not-allowed;
+		}
+
+		&:focus-within {
+			@apply border-black;
+		}
+	}
+
+	& .addressInput {
+		@apply w-full border-none outline-none px-5 py-[11px] text-base text-black bg-transparent;
+		font-weight: 400 !important;
+
+		&:disabled {
+			@apply text-gray-500 cursor-not-allowed;
+		}
+
+		&::placeholder {
+			@apply text-gray-400;
+		}
+	}
+
+	& .suggestions {
+		@apply absolute left-0 w-full bg-white rounded-2xl mt-1 shadow-lg overflow-hidden;
+		top: 100%;
+		z-index: 9999;
+		border: 1px solid #e5e7eb;
+	}
+
+	& .suggestion {
+		@apply px-4 py-3 text-sm text-black cursor-pointer transition-colors truncate;
+
+		&:hover {
+			@apply bg-[#F2F2F2];
+		}
+
+		&:not(:last-child) {
+			border-bottom: 1px solid #f3f4f6;
+		}
+	}
+}
+
 .customTimeInput {
 	@apply w-[140px] h-[48px] rounded-full text-xl text-black
 	overflow-hidden grid grid-cols-[1fr,6px,1fr] items-center gap-0;

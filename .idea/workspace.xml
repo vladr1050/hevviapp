@@ -5,7 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="order confirm order route">
-      <change beforePath="$PROJECT_DIR$/src/Controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/islands/pages/Requests/components/ModalContent/ModalContent.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/islands/pages/Requests/components/ModalContent/ModalContent.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/islands/pages/Requests/components/ModalContent/ModalContent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/islands/pages/Requests/components/ModalContent/ModalContent.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,7 +19,7 @@
     <execution />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="652" />
+    <option name="cachedIndexableFilesCount" value="658" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="FileTemplateManagerImpl">
@@ -313,7 +315,8 @@
       <workItem from="1772564946438" duration="12131000" />
       <workItem from="1772646988460" duration="306000" />
       <workItem from="1772654790742" duration="5432000" />
-      <workItem from="1772723570253" duration="7405000" />
+      <workItem from="1772723570253" duration="8016000" />
+      <workItem from="1772786955928" duration="1552000" />
     </task>
     <task id="LOCAL-00001" summary="custom areas added to service areas">
       <option name="closed" value="true" />
@@ -507,7 +510,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772744889645</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="order confirm order route">
+      <option name="closed" value="true" />
+      <created>1772745363029</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1772745363029</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
