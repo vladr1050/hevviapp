@@ -45,6 +45,8 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
         private readonly LoggerInterface       $logger,
         #[Autowire('%env(int:TAX_VAT)%')]
         private readonly int                   $vatPercent,
+        #[Autowire('%env(int:PLATFORM_FEE_PERCENT)%')]
+        private readonly int                   $platformFeePercent,
     )
     {
     }
@@ -119,20 +121,35 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
                 );
             }
 
-            // Шаг 5: Получить базовую цену (брутто)
-            $bruttoPrice = $matrixItem->getPrice();
+            // Шаг 5: Получить базовый фрахт из матрицы (цена уже без НДС и без комиссии)
+            $baseNetto = $matrixItem->getPrice();
 
-            // Шаг 6: Рассчитать нетто цену
-            // Формула: netto = brutto / (1 + VAT/100)
-            $nettoPrice = $this->calculateNettoPrice($bruttoPrice, $this->vatPercent);
+            // Шаг 6: Рассчитать комиссию платформы от базового нетто
+            // fee = baseNetto × FEE%
+            $feeAmount = $this->calculateFeeAmount($baseNetto, $this->platformFeePercent);
+
+            // Шаг 7: Нетто с комиссией (Subtotal no VAT)
+            // netto = baseNetto + fee
+            $nettoPrice = $baseNetto + $feeAmount;
+
+            // Шаг 8: Сумма НДС от нетто с комиссией
+            // vat = netto × VAT%
+            $vatAmount = (int)round($nettoPrice * $this->vatPercent / 100);
+
+            // Шаг 9: Брутто = нетто + НДС
+            $bruttoPrice = $nettoPrice + $vatAmount;
 
             $this->logger->info('Successfully calculated order offer', [
                 'order_id' => $order->getId()?->toRfc4122(),
                 'service_area' => $serviceArea->getName(),
                 'total_weight' => $totalWeight,
-                'brutto_price' => $bruttoPrice,
+                'base_netto' => $baseNetto,
+                'fee_percent' => $this->platformFeePercent,
+                'fee_amount' => $feeAmount,
                 'netto_price' => $nettoPrice,
                 'vat_percent' => $this->vatPercent,
+                'vat_amount' => $vatAmount,
+                'brutto_price' => $bruttoPrice,
             ]);
 
             return OrderOfferCalculationResultDto::success(
@@ -140,6 +157,8 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
                 bruttoPrice: $bruttoPrice,
                 nettoPrice: $nettoPrice,
                 vatPercent: $this->vatPercent,
+                vatAmount: $vatAmount,
+                feeAmount: $feeAmount,
             );
         } catch (\Throwable $e) {
             $this->logger->error('Error calculating order offer', [
@@ -202,21 +221,17 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
     }
 
     /**
-     * Рассчитать нетто цену из брутто с учетом VAT.
+     * Рассчитать сумму комиссии платформы от базового нетто.
      *
-     * Формула: netto = brutto / (1 + VAT/100)
-     * Например: при brutto = 100 и VAT = 21%
-     * netto = 100 / 1.21 = 82.64
+     * Формула: fee = round(baseNetto * feePercent / 100)
      *
-     * @param int $bruttoPrice Брутто цена (с VAT)
-     * @param int $vatPercent Процент VAT
+     * @param int $baseNetto   Базовая нетто-цена (без VAT)
+     * @param int $feePercent  Процент комиссии платформы
      *
-     * @return int Нетто цена (без VAT), округленная до целого
+     * @return int Сумма комиссии, округлённая до целого
      */
-    private function calculateNettoPrice(int $bruttoPrice, int $vatPercent): int
+    private function calculateFeeAmount(int $baseNetto, int $feePercent): int
     {
-        $divisor = 1 + ($vatPercent / 100);
-
-        return (int)round($bruttoPrice / $divisor);
+        return (int)round($baseNetto * $feePercent / 100);
     }
 }

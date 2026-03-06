@@ -111,7 +111,8 @@ show:
     label_assigned_by:                 Assigned By
     label_brutto:                      Gross Price
     label_netto:                       Net Price
-    label_vat:                         VAT (%)
+    label_fee:                         Commission Amount
+    label_vat:                         VAT Amount
     label_offer_status:                Offer Status
     label_name:                        Name
     label_type:                        Type
@@ -211,7 +212,8 @@ form:
     label_offers:                      Offers
     label_brutto:                      Gross Price
     label_netto:                       Net Price
-    label_vat:                         VAT (%)
+    label_fee:                         Commission Amount
+    label_vat:                         VAT Amount
     label_offer_status:                Offer Status
     label_help_order_currency:         Leave this field empty, and it will be filled automatically after the successful calculation of the order’s shipping cost.
     group_legal:                       Legal information
@@ -391,8 +393,9 @@ order_offer:
         unknown:                Unknown error
     help:
         brutto_info:      Price including VAT
-        netto_info:       Price excluding VAT
-        vat_info:         Value Added Tax percentage
+        netto_info:       Subtotal price excluding VAT (base freight + commission)
+        fee_info:         Platform commission amount (calculated from base freight)
+        vat_info:         VAT amount (brutto minus netto)
         auto_calculation: Offer will be created automatically when saving the order
 
 # Email notifications

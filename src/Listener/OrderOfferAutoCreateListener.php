@@ -138,7 +138,8 @@ class OrderOfferAutoCreateListener
         $orderOffer->setRelatedOrder($order);
         $orderOffer->setBrutto($result->bruttoPrice);
         $orderOffer->setNetto($result->nettoPrice);
-        $orderOffer->setVat($result->vatPercent);
+        $orderOffer->setVat($result->vatAmount);
+        $orderOffer->setFee($result->feeAmount);
         $orderOffer->setStatus(OrderOffer::STATUS['DRAFT']);
 
         $order
@@ -163,6 +164,8 @@ class OrderOfferAutoCreateListener
             'offer_id' => $orderOffer->getId()?->toRfc4122(),
             'brutto' => $result->bruttoPrice,
             'netto' => $result->nettoPrice,
+            'fee' => $result->feeAmount,
+            'vat' => $result->vatPercent,
         ]);
     }
 

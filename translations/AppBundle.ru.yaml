@@ -99,7 +99,8 @@ show:
     label_assigned_by:        Назначено
     label_brutto:             Брутто цена
     label_netto:              Нетто цена
-    label_vat:                НДС (%)
+    label_fee:                Сумма комиссии
+    label_vat:                Сумма НДС
     label_offer_status:       Статус предложения
     label_name:               Название
     label_type:               Тип
@@ -184,7 +185,8 @@ form:
     label_offers:              Коммерческие предложения
     label_brutto:              Брутто цена
     label_netto:               Нетто цена
-    label_vat:                 НДС (%)
+    label_fee:                 Сумма комиссии
+    label_vat:                 Сумма НДС
     label_offer_status:        Статус предложения
     label_add_offer:           Добавить предложение
 
@@ -359,9 +361,10 @@ order_offer:
         calculation_failed:     Ошибка при расчете стоимости доставки
         unknown:                Неизвестная ошибка
     help:
-        brutto_info:      Цена с учетом НДС
-        netto_info:       Цена без учета НДС
-        vat_info:         Процент налога на добавленную стоимость
+        brutto_info:      Итоговая цена с учетом НДС
+        netto_info:       Промежуточная цена без НДС (базовый фрахт + комиссия платформы)
+        fee_info:         Сумма комиссии платформы (рассчитывается от базового фрахта)
+        vat_info:         Сумма НДС (брутто минус нетто)
         auto_calculation: При сохранении заказа коммерческое предложение будет создано автоматически
 
 order:

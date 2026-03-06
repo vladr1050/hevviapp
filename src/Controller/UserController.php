@@ -64,9 +64,26 @@ class UserController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
+        $listOfOrders = [];
+        foreach ($this->orderRepository->findRecentBySender($user) as $order) {
+            $cargo = $order->getCargo()->first();
+
+            $listOfOrders[] = [
+                'id' => $order->getId()?->toRfc4122(),
+                'address' => [
+                    'from' => $order->getPickupAddress(),
+                    'to' => $order->getDropoutAddress(),
+                ],
+                'item' => $cargo?->getQuantity(),
+                'comment' => $order->getNotes(),
+                'type' => $this->translator->trans('order.type_' . $cargo?->getType(), domain: 'AppBundle', locale: $user->getLocale()),
+            ];
+        }
+
         return $this->render('public/user/pages/requests.html.twig', [
             'title' => $this->translator->trans('show.label_requests', domain: 'AppBundle', locale: $user->getLocale()),
             'user' => $this->buildUserContext($user),
+            'orders' => $listOfOrders,
         ]);
     }
 
@@ -122,9 +139,10 @@ class UserController extends AbstractController
             'id' => $order->getId()?->toRfc4122(),
             'status' => $order->getStatus(),
             'status_text' => $this->translator->trans('order.status_' . $order->getStatus(), domain: 'AppBundle', locale: $user->getLocale()),
-            'price' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getNetto(), $order->getCurrency()),
+            'price' => $this->moneyExtension->currencyConvert($this->resolveBaseFreight($order->getLatestOffer()), $order->getCurrency()),
             'vat' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getVat(), $order->getCurrency()),
             'brutto' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
+            'fee' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getFee(), $order->getCurrency()),
             'address' => [
                 'from' => $order->getPickupAddress(),
                 'to' => $order->getDropoutAddress(),
@@ -239,5 +257,27 @@ class UserController extends AbstractController
         return $order->getHistories()
             ->filter(fn(OrderHistory $history) => $history->getStatus() === Order::STATUS['PICKUP_DONE'])
             ->first();
+    }
+
+    /**
+     * Возвращает базовый фрахт (без комиссии платформы и без НДС).
+     *
+     * base_freight = netto - fee
+     * Это позволяет корректно отобразить комиссию как % именно от базовой стоимости.
+     */
+    private function resolveBaseFreight(?OrderOffer $offer): ?int
+    {
+        if (!$offer) {
+            return null;
+        }
+
+        $netto = $offer->getNetto();
+        $fee   = $offer->getFee();
+
+        if ($netto === null) {
+            return null;
+        }
+
+        return $fee !== null ? $netto - $fee : $netto;
     }
 }

@@ -127,7 +127,7 @@ export const ModalContent: FC<ModalContentProps> = ({
 		defaultValues: {
 			// what
 			cargoType: 'palette',
-			amount: 0,
+			amount: 1,
 			width: 120,
 			length: 80,
 			maxHeight: 0,
@@ -346,15 +346,15 @@ export const ModalContent: FC<ModalContentProps> = ({
 								<span>Amount</span>
 
 								<div className={styles.wrapper}>
-									<button
-										type="button"
-										disabled={watch('amount') === 0}
-										className={styles.button}
-										onClick={() => {
-											const v = watch('amount')
-											setValue('amount', v === 0 ? 0 : v - 1)
-										}}
-									>
+								<button
+									type="button"
+									disabled={watch('amount') <= 1}
+									className={styles.button}
+									onClick={() => {
+										const v = watch('amount')
+										setValue('amount', v <= 1 ? 1 : v - 1)
+									}}
+								>
 										–
 									</button>
 									<span>{watch('amount')}</span>

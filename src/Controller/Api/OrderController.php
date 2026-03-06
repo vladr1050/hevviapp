@@ -130,16 +130,18 @@ class OrderController extends AbstractController
         if (!empty($data['pickupTimeTo'])) {
             $order->setPickupTimeTo(\DateTime::createFromFormat('H:i', $data['pickupTimeTo']) ?: null);
         }
-        if (!empty($data['pickupDate'])) {
-            $order->setPickupDate(\DateTime::createFromFormat('Y-m-d', $data['pickupDate']) ?: null);
-        }
+        $pickupDate = !empty($data['pickupDate'])
+            ? (\DateTime::createFromFormat('Y-m-d', $data['pickupDate']) ?: new \DateTime('today'))
+            : new \DateTime('today');
+        $order->setPickupDate($pickupDate);
         if (!empty($data['deliveryDate'])) {
             $order->setDeliveryDate(\DateTime::createFromFormat('Y-m-d', $data['deliveryDate']) ?: null);
         }
 
-        // Build Cargo
+        // Build Cargo and attach to order via addCargo() so the in-memory
+        // collection is populated before postPersist fires (the offer calculator
+        // iterates $order->getCargo() to compute total weight).
         $cargo = new Cargo();
-        $cargo->setRelatedOrder($order);
 
         $cargoType = isset($cargoData['type']) ? (int) $cargoData['type'] : Cargo::TYPE['PALLET'];
         $cargo->setType(in_array($cargoType, Cargo::TYPE, true) ? $cargoType : Cargo::TYPE['PALLET']);
@@ -152,6 +154,10 @@ class OrderController extends AbstractController
         if (!empty($cargoData['dimensionsCm'])) {
             $cargo->setDimensionsCm((string) $cargoData['dimensionsCm']);
         }
+
+        // addCargo() sets both sides of the relationship:
+        // $order->cargo collection (inverse side) + $cargo->relatedOrder (owning side)
+        $order->addCargo($cargo);
 
         $this->em->persist($order);
         $this->em->persist($cargo);

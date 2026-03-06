@@ -12,7 +12,7 @@ export enum Routes {
 	LOGIN = '/login',
 	LOGOUT = '/logout',
 	REGISTRATION = '/registration',
-} 
+}
 
 export enum FormActions {
 	LOGIN = '/login',
@@ -22,7 +22,7 @@ export enum FormActions {
 	CANCEL_ORDER = '/cancelOrder',
 	RATE_ORDER = '/rateOrder',
 	UPDATE_STATUS = '/updateStatus',
-} 
+}
 
 export const months = [
 	'january',
@@ -94,6 +94,7 @@ export type OrderType = {
 	type?: string
 	vat?: string
 	brutto?: string
+	fee?: string
 }
 
 export type AccountType = 'Sender' | 'Carrier'

@@ -1,31 +1,60 @@
-import { type FC, Suspense, useState } from 'react'
-import { MapContainer, Marker, TileLayer } from 'react-leaflet'
+import { type FC, Suspense, useState } from 'react';
+import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 
-import {
-	AccountType,
-	EMPTY_STRING,
-	FormActions,
-	OrderStatusEnum,
-	OrderType,
-} from '@config/constants'
-import { Button } from '@ui/Button/Button'
-import { Icon } from '@ui/Icon/Icon'
-import { Modal } from '@ui/Modal/Modal'
-import { cn } from '@utils/cn'
+
+
+import { AccountType, EMPTY_STRING, FormActions, OrderStatusEnum, OrderType } from '@config/constants';
+import { Button } from '@ui/Button/Button';
+import { Icon } from '@ui/Icon/Icon';
+import { Modal } from '@ui/Modal/Modal';
+import { cn } from '@utils/cn';
 // @ts-ignore
-import L from 'leaflet'
+import L from 'leaflet';
+
+
 
 // @ts-ignore
-import CustomIcon from './CustomMarker.svg'
+import CustomIcon from './CustomMarker.svg';
 
-import styles from './OrderCard.module.css'
 
-import { CancelModal } from './components/CancelModal/CancelModal'
-import { ConfirmModal } from './components/ConfirmModal/ConfirmModal'
-import { DeclineModal } from './components/DeclineModal/DeclineModal'
-import { RateModal } from './components/RateModal/RateModal'
-import { StatusOrder } from './components/StatusOrder/StatusOrder'
-import { getDefaultMapData } from './utils'
+
+import styles from './OrderCard.module.css';
+
+
+
+import { CancelModal } from './components/CancelModal/CancelModal';
+import { ConfirmModal } from './components/ConfirmModal/ConfirmModal';
+import { DeclineModal } from './components/DeclineModal/DeclineModal';
+import { RateModal } from './components/RateModal/RateModal';
+import { StatusOrder } from './components/StatusOrder/StatusOrder';
+import { getDefaultMapData } from './utils';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 interface OrderCardProps {
 	title: string
@@ -299,7 +328,7 @@ export const OrderCard: FC<OrderCardProps> = ({ title, order, accountType, isReq
 										<br />
 										commission 10%
 									</div>
-									<div className={styles.value}>PL {EMPTY_STRING}</div>
+									<div className={styles.value}>{order?.fee || EMPTY_STRING}</div>
 								</div>
 							</div>
 

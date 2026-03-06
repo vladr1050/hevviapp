@@ -33,6 +33,8 @@ final readonly class OrderOfferCalculationResultDto
         public ?int    $bruttoPrice = null,
         public ?int    $nettoPrice = null,
         public ?int    $vatPercent = null,
+        public ?int    $vatAmount = null,
+        public ?int    $feeAmount = null,
         public ?string $errorMessage = null,
         public ?string $errorCode = null,
     )
@@ -42,14 +44,22 @@ final readonly class OrderOfferCalculationResultDto
     /**
      * Создать успешный результат расчета.
      */
-    public static function success(string $currency, int $bruttoPrice, int $nettoPrice, int $vatPercent): self
-    {
+    public static function success(
+        string $currency,
+        int    $bruttoPrice,
+        int    $nettoPrice,
+        int    $vatPercent,
+        int    $vatAmount,
+        int    $feeAmount,
+    ): self {
         return new self(
             success: true,
             currency: $currency,
             bruttoPrice: $bruttoPrice,
             nettoPrice: $nettoPrice,
             vatPercent: $vatPercent,
+            vatAmount: $vatAmount,
+            feeAmount: $feeAmount,
         );
     }
 

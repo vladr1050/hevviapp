@@ -185,20 +185,14 @@ export const RequestsPage: FC<RequestsPageProps> = (props) => {
 						</>
 					) : (
 						<>
-							<div className={styles.header}>
-								<div className={styles.item}>
-									<div className={styles.icon}>
-										<Icon type="searched_history" size={16} />
-									</div>
-									Your recent searched
+						<div className={styles.header}>
+							<div className={styles.item}>
+								<div className={styles.icon}>
+									<Icon type="previous_orders" size={16} />
 								</div>
-								<div className={styles.item}>
-									<div className={styles.icon}>
-										<Icon type="previous_orders" size={16} />
-									</div>
-									Your previous orders
-								</div>
+								Your previous orders
 							</div>
+						</div>
 
 							<div className={styles.orders}>
 								{ordersSender?.map((order, index) => (
