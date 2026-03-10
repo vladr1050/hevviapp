@@ -2,8 +2,10 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\Carrier;
 use App\Entity\RefreshToken;
 use App\Entity\User;
+use App\Repository\CarrierRepository;
 use App\Repository\RefreshTokenRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,7 +15,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[Route('/auth', name: 'api_auth_')]
 class AuthController extends AbstractController
@@ -23,6 +25,7 @@ class AuthController extends AbstractController
 
     public function __construct(
         private readonly UserRepository $userRepository,
+        private readonly CarrierRepository $carrierRepository,
         private readonly RefreshTokenRepository $refreshTokenRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly JWTTokenManagerInterface $jwtManager,
@@ -39,29 +42,36 @@ class AuthController extends AbstractController
             return $this->json(['error' => 'Missing credentials'], JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        $user = $this->userRepository->findOneBy(['email' => $data['login']]);
+        $subject = $this->userRepository->findOneBy(['email' => $data['login']]);
+        $accountType = 'user';
 
-        if (!$user instanceof User) {
+        if (!$subject instanceof User) {
+            $subject = $this->carrierRepository->findOneBy(['email' => $data['login']]);
+            $accountType = 'carrier';
+        }
+
+        if (!$subject instanceof UserInterface) {
             return $this->json(['error' => 'Invalid credentials'], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
-        if (!$this->passwordHasher->isPasswordValid($user, $data['password'])) {
+        if (!$this->passwordHasher->isPasswordValid($subject, $data['password'])) {
             return $this->json(['error' => 'Invalid credentials'], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
-        if (!$this->isUserEnabled($user)) {
+        if (!$this->isSubjectEnabled($subject)) {
             return $this->json(['error' => 'Account is disabled'], JsonResponse::HTTP_FORBIDDEN);
         }
 
-        $accessToken = $this->jwtManager->create($user);
-        $refreshToken = $this->createRefreshToken($user);
+        $accessToken = $this->jwtManager->create($subject);
+        $refreshToken = $this->createRefreshToken($subject);
 
         return $this->json([
             'access_token'  => $accessToken,
             'refresh_token' => $refreshToken->getToken(),
             'expires_in'    => self::ACCESS_TOKEN_TTL_SECONDS,
             'token_type'    => 'Bearer',
-            'user'          => $this->serializeUser($user),
+            'account_type'  => $accountType,
+            'user'          => $this->serializeSubject($subject),
         ]);
     }
 
@@ -80,10 +90,10 @@ class AuthController extends AbstractController
             return $this->json(['error' => 'Invalid or expired refresh token'], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
-        $user = $refreshToken->getUser();
-        $accessToken = $this->jwtManager->create($user);
+        $subject = $refreshToken->getSubject();
+        $accessToken = $this->jwtManager->create($subject);
 
-        $newRefreshToken = $this->createRefreshToken($user);
+        $newRefreshToken = $this->createRefreshToken($subject);
         $this->entityManager->remove($refreshToken);
         $this->entityManager->flush();
 
@@ -98,13 +108,16 @@ class AuthController extends AbstractController
     #[Route('/me', name: 'me', methods: ['GET'])]
     public function me(): JsonResponse
     {
-        $user = $this->getUser();
+        $subject = $this->getUser();
 
-        if (!$user instanceof User) {
+        if (!$subject instanceof User && !$subject instanceof Carrier) {
             return $this->json(['error' => 'Unauthorized'], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
-        return $this->json(['user' => $this->serializeUser($user)]);
+        return $this->json([
+            'user'         => $this->serializeSubject($subject),
+            'account_type' => $subject instanceof Carrier ? 'carrier' : 'user',
+        ]);
     }
 
     #[Route('/logout', name: 'logout', methods: ['POST'])]
@@ -123,12 +136,12 @@ class AuthController extends AbstractController
         return $this->json(['success' => true]);
     }
 
-    private function createRefreshToken(User $user): RefreshToken
+    private function createRefreshToken(UserInterface $subject): RefreshToken
     {
         $token = bin2hex(random_bytes(64));
         $expiresAt = new \DateTimeImmutable(sprintf('+%d days', self::REFRESH_TOKEN_TTL_DAYS));
 
-        $refreshToken = new RefreshToken($user, $token, $expiresAt);
+        $refreshToken = new RefreshToken($subject, $token, $expiresAt);
 
         $this->entityManager->persist($refreshToken);
         $this->entityManager->flush();
@@ -136,21 +149,45 @@ class AuthController extends AbstractController
         return $refreshToken;
     }
 
-    private function isUserEnabled(User $user): bool
+    private function isSubjectEnabled(UserInterface $subject): bool
     {
-        return ($user->getState() & 4) === 4;
+        if ($subject instanceof User) {
+            return ($subject->getState() & 4) === 4;
+        }
+
+        if ($subject instanceof Carrier) {
+            return ($subject->getState() & 4) === 4;
+        }
+
+        return false;
     }
 
-    private function serializeUser(User $user): array
+    private function serializeSubject(UserInterface $subject): array
     {
-        return [
-            'id'         => (string) $user->getId(),
-            'email'      => $user->getUserIdentifier(),
-            'firstName'  => $user->getFirstName(),
-            'lastName'   => $user->getLastName(),
-            'phone'      => $user->getPhone(),
-            'locale'     => $user->getLocale(),
-            'roles'      => $user->getRoles(),
-        ];
+        if ($subject instanceof User) {
+            return [
+                'id'         => (string) $subject->getId(),
+                'email'      => $subject->getUserIdentifier(),
+                'firstName'  => $subject->getFirstName(),
+                'lastName'   => $subject->getLastName(),
+                'phone'      => $subject->getPhone(),
+                'locale'     => $subject->getLocale(),
+                'roles'      => $subject->getRoles(),
+            ];
+        }
+
+        if ($subject instanceof Carrier) {
+            return [
+                'id'         => (string) $subject->getId(),
+                'email'      => $subject->getUserIdentifier(),
+                'firstName'  => $subject->getFirstName(),
+                'lastName'   => $subject->getLastName(),
+                'phone'      => $subject->getPhone(),
+                'locale'     => $subject->getLocale(),
+                'roles'      => $subject->getRoles(),
+            ];
+        }
+
+        return [];
     }
 }

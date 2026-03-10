@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Carrier;
 use App\Entity\Order;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -26,6 +27,20 @@ class OrderRepository extends ServiceEntityRepository
     {
         return $this->findBy(
             ['sender' => $user],
+            ['createdAt' => 'DESC'],
+            $limit,
+        );
+    }
+
+    /**
+     * Возвращает последние заказы отправителя, отсортированные по дате создания.
+     *
+     * @return Order[]
+     */
+    public function findRecentByCarrier(Carrier $carrier, int $limit = 10): array
+    {
+        return $this->findBy(
+            ['carrier' => $carrier],
             ['createdAt' => 'DESC'],
             $limit,
         );

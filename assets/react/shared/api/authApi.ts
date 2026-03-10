@@ -15,6 +15,7 @@ export interface LoginResponse {
 	refresh_token: string
 	expires_in: number
 	token_type: string
+	account_type: 'user' | 'carrier'
 	user: AuthUser
 }
 

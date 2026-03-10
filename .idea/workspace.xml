@@ -5,7 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="request finished api added">
-      <change beforePath="$PROJECT_DIR$/src/Controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Controller/CarrierController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/public/carrier/pages/order.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/public/carrier/pages/orders.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/public/carrier/pages/profile.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/public/carrier/pages/requests.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/islands/pages/Login/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/islands/pages/Login/Login.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/shared/api/authApi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/api/authApi.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Api/AuthController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/AuthController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Carrier.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Carrier.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/RefreshToken.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/RefreshToken.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/OrderRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/OrderRepository.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -314,7 +327,7 @@
       <workItem from="1772646988460" duration="306000" />
       <workItem from="1772654790742" duration="5432000" />
       <workItem from="1772723570253" duration="8016000" />
-      <workItem from="1772786955928" duration="6687000" />
+      <workItem from="1772786955928" duration="14579000" />
     </task>
     <task id="LOCAL-00001" summary="custom areas added to service areas">
       <option name="closed" value="true" />
@@ -540,7 +553,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772794464016</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="request finished api added">
+      <option name="closed" value="true" />
+      <created>1772794509284</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1772794509284</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

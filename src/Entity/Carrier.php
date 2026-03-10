@@ -211,6 +211,11 @@ class Carrier extends BaseSecurityDBO
         return implode(', ', $labels);
     }
 
+    public function getRoles(): array
+    {
+        return ['ROLE_CARRIER'];
+    }
+
     public function __toString(): string
     {
         return $this->legalName ?? parent::__toString();

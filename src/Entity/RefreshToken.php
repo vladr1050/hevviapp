@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\RefreshTokenRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: RefreshTokenRepository::class)]
@@ -23,8 +24,12 @@ class RefreshToken
     private string $token;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private User $user;
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    private ?User $user = null;
+
+    #[ORM\ManyToOne(targetEntity: Carrier::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    private ?Carrier $carrier = null;
 
     #[ORM\Column(type: 'datetimetz_immutable')]
     private \DateTimeImmutable $expiresAt;
@@ -32,9 +37,16 @@ class RefreshToken
     #[ORM\Column(type: 'datetimetz_immutable')]
     private \DateTimeImmutable $createdAt;
 
-    public function __construct(User $user, string $token, \DateTimeImmutable $expiresAt)
+    public function __construct(UserInterface $subject, string $token, \DateTimeImmutable $expiresAt)
     {
-        $this->user = $user;
+        if ($subject instanceof User) {
+            $this->user = $subject;
+        } elseif ($subject instanceof Carrier) {
+            $this->carrier = $subject;
+        } else {
+            throw new \InvalidArgumentException('Subject must be User or Carrier');
+        }
+
         $this->token = $token;
         $this->expiresAt = $expiresAt;
         $this->createdAt = new \DateTimeImmutable();
@@ -50,9 +62,19 @@ class RefreshToken
         return $this->token;
     }
 
-    public function getUser(): User
+    public function getSubject(): UserInterface
+    {
+        return $this->user ?? $this->carrier ?? throw new \LogicException('RefreshToken has no subject');
+    }
+
+    public function getUser(): ?User
     {
         return $this->user;
+    }
+
+    public function getCarrier(): ?Carrier
+    {
+        return $this->carrier;
     }
 
     public function getExpiresAt(): \DateTimeImmutable

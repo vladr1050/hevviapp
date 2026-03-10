@@ -50,7 +50,7 @@ export const LoginPage: FC<LoginProps> = (props) => {
 
 			saveTokens(result.access_token, result.refresh_token, result.expires_in, result.user)
 
-			window.location.href = '/user/requests'
+			window.location.href = result.account_type === 'carrier' ? '/carrier/requests' : '/user/requests'
 		} catch (err: unknown) {
 			const message = err instanceof Error ? err.message : 'Login failed'
 			setError(message)

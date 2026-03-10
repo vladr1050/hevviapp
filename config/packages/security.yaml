@@ -11,6 +11,13 @@ security:
             entity:
                 class:    App\Entity\User
                 property: email
+        app_carriers:
+            entity:
+                class:    App\Entity\Carrier
+                property: email
+        app_all:
+            chain:
+                providers: [app_users, app_carriers]
     firewalls:
         dev:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
@@ -44,13 +51,13 @@ security:
         api:
             pattern:   ^/api
             stateless: true
-            provider:  app_users
+            provider:  app_all
             jwt: ~
         main:
             pattern:      ^/
             lazy:         true
             stateless:    true
-            provider:     app_users
+            provider:     app_all
             jwt:          ~
             entry_point:  App\Security\UserAuthenticationEntryPoint
 
@@ -67,6 +74,7 @@ security:
         - { path: ^/api/auth/me$, role: IS_AUTHENTICATED_FULLY }
         - { path: ^/logout$, role: PUBLIC_ACCESS }
         - { path: ^/user/, role: ROLE_USER }
+        - { path: ^/carrier/, role: ROLE_CARRIER }
         - { path: ^/.*, role: PUBLIC_ACCESS }
 
     role_hierarchy:
@@ -74,4 +82,6 @@ security:
             - ROLE_USER
         ROLE_MANAGER:
             - ROLE_USER
+        ROLE_CARRIER:
+            - ROLE_CARRIER
 
