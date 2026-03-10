@@ -8,7 +8,6 @@ import {
 	useRef,
 	useState,
 } from 'react'
-import { DateRange } from 'react-day-picker'
 import { Control, Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet'
 
@@ -24,7 +23,6 @@ import { Slider } from '@ui/Slider/Slider'
 import { Switch } from '@ui/Switch/Switch'
 import { Textarea } from '@ui/Textarea/Textarea'
 import { cn } from '@utils/cn'
-import { addDays } from 'date-fns'
 // @ts-ignore
 import L from 'leaflet'
 
@@ -98,14 +96,10 @@ export const ModalContent: FC<ModalContentProps> = ({
 		iconAnchor: [20, 30],
 	})
 
-	const [dateRange, setDateRange] = useState<DateRange | undefined>({
-		from: new Date(new Date().getFullYear(), 0, 12),
-		to: addDays(new Date(new Date().getFullYear(), 0, 12), 30),
-	})
-
-	const bookedDates = Array.from(
-		{ length: 15 },
-		(_, i) => new Date(new Date().getFullYear(), 2, 12 + i)
+	const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+		new Date(new Date().getFullYear(), 0, 12)
+		// from: new Date(new Date().getFullYear(), 0, 12),
+		// to: addDays(new Date(new Date().getFullYear(), 0, 12), 30),
 	)
 
 	const [month, setMonth] = useState(() => {
@@ -181,10 +175,10 @@ export const ModalContent: FC<ModalContentProps> = ({
 
 			let pickupDate: string | null = null
 			let deliveryDate: string | null = null
-			if (values.scheduleType === 'pickup_later') {
-				pickupDate = formatDate(dateRange?.from)
-			} else if (values.scheduleType === 'deliver_at') {
-				deliveryDate = formatDate(dateRange?.from)
+			if (selectedDate && values.scheduleType === 'pickup_later') {
+				pickupDate = formatDate(selectedDate)
+			} else if (selectedDate && values.scheduleType === 'deliver_at') {
+				deliveryDate = formatDate(selectedDate)
 			}
 
 			// Map cargoType string → Cargo.type int
@@ -687,22 +681,12 @@ export const ModalContent: FC<ModalContentProps> = ({
 								</div>
 								<div className={styles.calendar}>
 									<Calendar
-										mode="range"
-										//
+										mode="single"
 										month={month}
 										setMonth={setMonth}
-										//
-										selected={dateRange}
-										onSelect={setDateRange}
+										selected={selectedDate}
+										onSelect={setSelectedDate}
 										className="rounded-lg border"
-										//
-										disabled={bookedDates}
-										modifiers={{
-											booked: bookedDates,
-										}}
-										modifiersClassNames={{
-											booked: '[&>button]:line-through opacity-100',
-										}}
 									/>
 								</div>
 							</div>

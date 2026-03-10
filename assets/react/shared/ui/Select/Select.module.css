@@ -17,19 +17,34 @@
 .item {
 	@apply text-black font-medium text-base px-5 py-3 min-h-10 rounded-full transition-colors cursor-pointer;
 
-	&[data-highlighted],
 	&[data-state='checked'] {
+		border: 1px solid transparent;
+
 		&.black {
 			@apply bg-black text-white;
+			@apply hover-hover:hover:border-primary 
+			hover-none:active:bg-black/50 !important;
 		}
 
 		&.gray {
 			@apply bg-black/10;
+			@apply hover-hover:hover:border-black 
+			hover-none:active:bg-black !important;
 		}
 
 		&.green {
 			@apply bg-primary;
+			@apply hover-hover:hover:border-gray-400 
+			hover-none:active:border-gray-400 !important;
 		}
+	}
+
+	&[data-state='unchecked'] {
+		border: 1px solid transparent;
+		@apply bg-transparent !important;
+
+		@apply hover-hover:hover:border-gray-300 
+		hover-none:active:border-gray-300 !important;
 	}
 
 	&[data-disabled] {

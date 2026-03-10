@@ -1,4 +1,4 @@
-import { ComponentProps, FC, useEffect, useRef } from 'react'
+import { ComponentProps, FC, useEffect, useMemo, useRef } from 'react'
 import { type DayButton, DayPicker, getDefaultClassNames } from 'react-day-picker'
 
 import { cn } from '@utils/cn'
@@ -10,6 +10,12 @@ type CalendarProps = ComponentProps<typeof DayPicker> & {
 	month: Date
 	setMonth: (month: Date) => void
 }
+
+//
+// const _bookedDates = Array.from(
+// 	{ length: 15 },
+// 	(_, i) => new Date(new Date().getFullYear(), 2, 12 + i)
+// )
 
 const Calendar: FC<CalendarProps> = ({
 	className,
@@ -23,6 +29,13 @@ const Calendar: FC<CalendarProps> = ({
 	...props
 }) => {
 	const defaultClassNames = getDefaultClassNames()
+
+	const disabledDays = useMemo(() => {
+		const today = new Date()
+		today.setHours(0, 0, 0, 0)
+
+		return [{ before: new Date(today.getTime() + 24 * 60 * 60 * 1000) }]
+	}, [])
 
 	return (
 		<DayPicker
@@ -55,11 +68,8 @@ const Calendar: FC<CalendarProps> = ({
 					defaultClassNames.week_number
 				),
 				day: cn(
-					'relative w-full h-full p-0 text-center [&:last-child[data-selected=true]_button]:rounded-r-md group/day select-none',
+					'relative w-full h-full p-0 text-center group/day select-none',
 					'w-[44px] h-[40px]',
-					props.showWeekNumber
-						? '[&:nth-child(2)[data-selected=true]_button]:rounded-l-md'
-						: '[&:first-child[data-selected=true]_button]:rounded-l-md',
 					defaultClassNames.day
 				),
 				//
@@ -71,11 +81,8 @@ const Calendar: FC<CalendarProps> = ({
 					'!aspect-square transition-colors rounded-full',
 					'border-solid border-[3px] !border-transparent bg-transparent',
 					'hover-hover:hover:border-primary hover-none:active:border-primary',
-					//
 					'data-[range-start="true"]:!border-primary data-[range-start="true"]:!bg-primary data-[range-start="true"]:!rounded-full data-[range-start="true"]:!aspect-square',
-					//
 					'data-[range-middle="true"]:!border-primary data-[range-middle="true"]:!bg-transparent data-[range-middle="true"]:!rounded-full data-[range-middle="true"]:!aspect-square',
-					//
 					'data-[range-end="true"]:!border-primary data-[range-end="true"]:!bg-primary data-[range-end="true"]:!rounded-full data-[range-end="true"]:!aspect-square'
 				),
 
@@ -83,8 +90,8 @@ const Calendar: FC<CalendarProps> = ({
 					'!bg-black/5 !h-[40px] !w-[40px] !rounded-full data-[selected=true]:rounded-none !aspect-square',
 					defaultClassNames.today
 				),
-				outside: cn('text-black/40', defaultClassNames.outside),
-				disabled: cn('opacity-50', defaultClassNames.disabled),
+				outside: cn(defaultClassNames.outside, '[&>button]:text-gray-500'),
+				disabled: cn(defaultClassNames.disabled, '[&>button]:line-through opacity-50'),
 				hidden: cn('invisible', defaultClassNames.hidden),
 				...classNames,
 			}}
@@ -107,6 +114,11 @@ const Calendar: FC<CalendarProps> = ({
 				...components,
 			}}
 			{...props}
+			modifiers={{
+				...props.modifiers,
+				booked: props.disabled,
+			}}
+			disabled={props.disabled || disabledDays}
 		/>
 	)
 }
@@ -141,7 +153,15 @@ const CalendarDayButton: FC<ComponentProps<typeof DayButton>> = ({
 			data-range-end={modifiers.range_end}
 			data-range-middle={modifiers.range_middle}
 			className={cn(
-				'data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50 dark:hover:text-accent-foreground flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md [&>span]:text-xs [&>span]:opacity-70',
+				'flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal',
+				'rounded-full',
+				'group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50',
+				'group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px]',
+				'data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground',
+				'data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground',
+				'data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground',
+				'data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground',
+				'[&>span]:text-xs [&>span]:opacity-70',
 				defaultClassNames.day,
 				className
 			)}

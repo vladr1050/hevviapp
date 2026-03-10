@@ -1,7 +1,7 @@
 .button {
 	border-style: solid;
 
-	@apply px-[26px] py-[10px] rounded-full border-2 transition-colors font-medium;
+	@apply px-[26px] py-[10px] rounded-full border-2 transition-colors font-medium !cursor-pointer;
 
 	&:not(:disabled) {
 		@apply text-white bg-black border-black 
