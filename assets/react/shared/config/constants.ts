@@ -6,12 +6,18 @@ export const EMPTY_STRING = '—'
 
 export enum Routes {
 	HOME = '/',
-	REQUESTS = '/user/requests',
-	ORDERS = '/user/orders',
-	PROFILE = '/user/profile',
 	LOGIN = '/login',
 	LOGOUT = '/logout',
 	REGISTRATION = '/registration',
+	// USER
+	USER_REQUESTS = '/user/requests',
+	USER_ORDERS = '/user/orders',
+	USER_PROFILE = '/user/profile',
+	// CARRIER
+	CARRIER_REQUESTS = '/carrier/requests',
+	CARRIER_ORDERS = '/carrier/orders',
+	CARRIER_PROFILE = '/carrier/profile',
+
 }
 
 export enum FormActions {
@@ -95,6 +101,18 @@ export type OrderType = {
 	vat?: string
 	brutto?: string
 	fee?: string
+	sender?: { 
+		first_name?: string
+		last_name?: string
+	}
+}
+
+export type ShortOrderType = {
+	address: { from: string; to: string }
+	comment?: string
+	id: string
+	item: number
+	type: string
 }
 
 export type AccountType = 'Sender' | 'Carrier'

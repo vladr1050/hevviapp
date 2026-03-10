@@ -1,0 +1,41 @@
+{#
+# SIA SLYFOX Confidential
+#
+# Copyright (C) 2026 SIA SLYFOX.
+# All Rights Reserved.
+#
+# NOTICE:  All information contained herein is, and remains
+# the property of SIA SLYFOX, its suppliers and Customers,
+# if any.  The intellectual and technical concepts contained
+# herein are proprietary to SIA SLYFOX
+# its Suppliers and Customers are protected by trade secret or copyright law.
+#
+# Dissemination of this information or reproduction of this material
+# is strictly forbidden unless prior written permission is obtained.
+#
+# @author Pavel Ustimenko steve.jsfolio@gmail.com
+#}
+
+{% extends 'public/base.html.twig' %}
+
+{% block header %}
+    <div 
+        data-react-island="Header"
+        data-props='{{ { user, isCarrier: true }|json_encode|e("html_attr") }}'
+    ></div>
+{% endblock %}
+
+{% block info %}
+    <div 
+        data-react-island="Info"
+        style="z-index: 100;"
+        data-props='{{ {
+            orders: [
+                { id: "00001", name: "Order 1", status: "In Transit", hours: 1 },
+                { id: "00002", name: "Order 2", status: "Delivered", hours: 2 },
+                { id: "00003", name: "Order 3", status: "In Transit", hours: 3 },
+                { id: "00004", name: "Order 4", status: "Delivered", hours: 4 },
+            ],
+        }|json_encode|e("html_attr") }}'
+    ></div>
+{% endblock %}

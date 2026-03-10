@@ -1,8 +1,7 @@
 import { type FC, useState } from 'react'
 
-// import { OrderCard } from '@components/OrderCard/OrderCard'
-import { AccountType, EMPTY_STRING, OrderType, Routes } from '@config/constants'
-import { useLocation } from '@hooks/useLocation'
+import { OrderCard } from '@components/OrderCard/OrderCard'
+import { EMPTY_STRING, OrderType, Routes, ShortOrderType } from '@config/constants'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
 import { Modal } from '@ui/Modal/Modal'
@@ -14,79 +13,71 @@ import { InputButton } from './components/InputButton/InputButton'
 import { ModalContent } from './components/ModalContent/ModalContent'
 
 interface RequestsPageProps {
-	accountType: AccountType
 	title: string
-	orders: {
-		address: { from: string; to: string }
-		comment?: string
-		id: string
-		item: number
-		type: string
-	}[]
+	isCarrier?: boolean
+	orders: ShortOrderType[]
+	ordersCarrier: OrderType[]
 }
 
 export type CalculateModalType = 'what' | 'where' | 'when' | 'calculate' | undefined
 
 export const RequestsPage: FC<RequestsPageProps> = (props) => {
-	const { title, orders, accountType } = props
+	const { title, orders, isCarrier, ordersCarrier } = props
 	console.log(props)
 
 	const [activeButton, setActiveButton] = useState<CalculateModalType>()
 
-	const { pathname } = useLocation()
+	const [curOrderId, setCurOrderId] = useState('')
 
-	// const _currentOrderId = pathname.split('/').pop()
-	const _currentOrderId = '00001'
-	const [curOrderId, setCurOrderId] = useState(_currentOrderId)
+	if (isCarrier)
+		return (
+			<div className={cn('tw-container', styles.page, styles.carrier)}>
+				<div className={styles.main}>
+					<div className={styles.title}>
+						Requests {!!ordersCarrier?.length && <span>({ordersCarrier.length})</span>}
+					</div>
 
-	// if (accountType === 'Carrier')
-	// 	return (
-	// 		<div className={cn('tw-container', styles.page, styles.carrier)}>
-	// 			<div className={styles.main}>
-	// 				<div className={styles.title}>
-	// 					Requests {!!ordersCarrier?.length && <span>({ordersCarrier.length})</span>}
-	// 				</div>
+					{!ordersCarrier?.length && (
+						<div className={styles.empty}>
+							<Icon type="pallet" size={220} className={styles.icon} />
 
-	// 				{!ordersCarrier?.length && (
-	// 					<div className={styles.empty}>
-	// 						<Icon type="pallet" size={220} className={styles.icon} />
+							<div className={styles.text}>
+								<div className={styles.title}>No new requests yet</div>
+								<div className={styles.subtitle}>
+									We will notify you when there will be a new request
+								</div>
+							</div>
 
-	// 						<div className={styles.text}>
-	// 							<div className={styles.title}>No new requests yet</div>
-	// 							<div className={styles.subtitle}>
-	// 								We will notify you when there will be a new request
-	// 							</div>
-	// 						</div>
+							<a
+								href={isCarrier ? Routes.CARRIER_ORDERS : Routes.USER_ORDERS}
+								className={styles.link}
+							>
+								View orders
+							</a>
+						</div>
+					)}
 
-	// 						<a href={Routes.ORDERS} className={styles.link}>
-	// 							View orders
-	// 						</a>
-	// 					</div>
-	// 				)}
+					{ordersCarrier.map((order) => (
+						<OrderCard title={title} order={order} isCarrier isRequest key={order.id} />
+					))}
+				</div>
 
-	// 				{ordersCarrier
-	// 					.filter((order) => order.id === curOrderId)
-	// 					.map((order) => (
-	// 						<OrderCard title={title} order={order} accountType="Carrier" isRequest />
-	// 					))}
-	// 			</div>
-
-	// 			<div className={styles.footer}>
-	// 				<div className={styles.item}>
-	// 					<Icon type="route_map" size={20} />
-	// 					Fewer Empty Miles
-	// 				</div>
-	// 				<div className={styles.item}>
-	// 					<Icon type="right_box" size={20} />
-	// 					Less Manual Dispatch
-	// 				</div>
-	// 				<div className={styles.item}>
-	// 					<Icon type="confirm_order" size={20} />
-	// 					Predictable Payments
-	// 				</div>
-	// 			</div>
-	// 		</div>
-	// 	)
+				<div className={styles.footer}>
+					<div className={styles.item}>
+						<Icon type="route_map" size={20} />
+						Fewer Empty Miles
+					</div>
+					<div className={styles.item}>
+						<Icon type="right_box" size={20} />
+						Less Manual Dispatch
+					</div>
+					<div className={styles.item}>
+						<Icon type="confirm_order" size={20} />
+						Predictable Payments
+					</div>
+				</div>
+			</div>
+		)
 
 	return (
 		<>

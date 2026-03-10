@@ -95,7 +95,7 @@ export const Info: FC<InfoProps> = (props) => {
 
 										<a
 											//
-											href={`${Routes.ORDERS}/${orders[currentOrder].id}`}
+											href={`${isCarrier ? Routes.CARRIER_ORDERS : Routes.USER_ORDERS}/${orders[currentOrder].id}`}
 											className={styles.link}
 										>
 											View details

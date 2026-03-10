@@ -15,9 +15,10 @@ interface HeaderProps {
 		last_name?: string
 		company_name?: string
 	}
+	isCarrier?: boolean
 }
 
-export const Header: FC<HeaderProps> = ({ user }) => {
+export const Header: FC<HeaderProps> = ({ user, isCarrier }) => {
 	const { push, pathname } = useLocation()
 
 	return (
@@ -33,14 +34,25 @@ export const Header: FC<HeaderProps> = ({ user }) => {
 					{typeof user !== 'undefined' && (
 						<Tabs
 							items={[
-								{ label: 'Requests', value: Routes.REQUESTS },
-								{ label: 'Orders', value: Routes.ORDERS },
+								{
+									label: 'Requests',
+									value: isCarrier ? Routes.CARRIER_REQUESTS : Routes.USER_REQUESTS,
+								},
+								{
+									label: 'Orders',
+									value: isCarrier ? Routes.CARRIER_ORDERS : Routes.USER_ORDERS,
+								},
 							]}
 							defaultValue={
-								pathname.includes(Routes.REQUESTS) || pathname === Routes.HOME
-									? Routes.REQUESTS
-									: pathname.includes(Routes.ORDERS)
-										? Routes.ORDERS
+								pathname.includes(isCarrier ? Routes.CARRIER_REQUESTS : Routes.USER_REQUESTS) ||
+								pathname === Routes.HOME
+									? isCarrier
+										? Routes.CARRIER_REQUESTS
+										: Routes.USER_REQUESTS
+									: pathname.includes(isCarrier ? Routes.CARRIER_ORDERS : Routes.USER_ORDERS)
+										? isCarrier
+											? Routes.CARRIER_ORDERS
+											: Routes.USER_ORDERS
 										: 'undefined'
 							}
 							onChange={(v) => push(v)}
@@ -63,7 +75,9 @@ export const Header: FC<HeaderProps> = ({ user }) => {
 							<Popover.Trigger>
 								<div
 									className={cn(styles.profileWrapper, {
-										[styles.active]: pathname.includes(Routes.PROFILE),
+										[styles.active]: pathname.includes(
+											isCarrier ? Routes.CARRIER_PROFILE : Routes.USER_PROFILE
+										),
 									})}
 								>
 									<div className={styles.profile}>
@@ -85,7 +99,10 @@ export const Header: FC<HeaderProps> = ({ user }) => {
 								</div>
 							</Popover.Trigger>
 							<Popover.Content width="390px" height="220px" className={styles.popover}>
-								<a className={styles.link} href={Routes.PROFILE}>
+								<a
+									className={styles.link}
+									href={isCarrier ? Routes.CARRIER_PROFILE : Routes.USER_PROFILE}
+								>
 									<div className={styles.iconWrapper}>
 										<Icon
 											type="profile"

@@ -16,15 +16,15 @@
 # @author Pavel Ustimenko steve.jsfolio@gmail.com
 #}
 
-{% extends 'public/main_layout.html.twig' %}
+{% extends 'public/user_layout.html.twig' %}
 
 {% block body %}
-    <div
-        data-react-island="OrdersPage"
-        data-props='{{ { 
-            orders, 
-            title,
-            accountType: ("show.label_sender")|trans({}, "AppBundle")
-         }|json_encode|e("html_attr") }}'
-    ></div>
+	<div
+		data-react-island="OrdersPage"
+		data-props='{{ { 
+			orders, 
+			title,
+			accountType: ("show.label_sender")|trans({}, "AppBundle")
+		}|json_encode|e("html_attr") }}'
+	></div>
 {% endblock %}

@@ -9,6 +9,7 @@ import styles from './Profile.module.css'
 interface ProfilePageProps {
 	title: string
 	accountType: AccountType
+	isCarrier?: boolean
 	user: {
 		company_address?: string
 		company_name?: string
@@ -27,14 +28,14 @@ interface ProfilePageProps {
 }
 
 export const ProfilePage: FC<ProfilePageProps> = (props) => {
-	const { title, accountType, user, orders } = props
+	const { title, accountType, isCarrier, user, orders } = props
 	console.log(props)
 
 	return (
 		<div className={cn('tw-container', styles.page)}>
 			<h1 className={styles.title}>{title}</h1>
 
-			<div className={cn(styles.content, { ['!grid-cols-3']: accountType === 'Carrier' })}>
+			<div className={cn(styles.content, { ['!grid-cols-3']: isCarrier })}>
 				<div className={styles.left}>
 					<div className={styles.top}>
 						<div className={styles.avatar}>
@@ -53,40 +54,44 @@ export const ProfilePage: FC<ProfilePageProps> = (props) => {
 						<div className={styles.item}>
 							<div className={styles.label}>Account type</div>
 							<div className={styles.value}>
-								{`${accountType.charAt(0).toUpperCase()}${accountType.slice(1)}`}
+								{isCarrier ? (
+									'Carrier'
+								) : (
+									<>{`${accountType?.charAt(0).toUpperCase()}${accountType?.slice(1)}`}</>
+								)}
 							</div>
 						</div>
 
 						<div className={styles.hr} />
 
-						{!!user?.company_name ||
+						{(!!user?.company_name ||
 							!!user?.company_registration_number ||
-							(!!user?.company_address && (
-								<>
-									{!!user?.company_name && (
-										<div className={styles.item}>
-											<div className={styles.label}>Requisites</div>
-											<div className={styles.value}>{user.company_name}</div>
-										</div>
-									)}
+							!!user?.company_address) && (
+							<>
+								{!!user?.company_name && (
+									<div className={styles.item}>
+										<div className={styles.label}>Requisites</div>
+										<div className={styles.value}>{user.company_name}</div>
+									</div>
+								)}
 
-									{!!user?.company_registration_number && (
-										<div className={styles.item}>
-											<div className={styles.label}>Reg</div>
-											<div className={styles.value}>{user.company_registration_number}</div>
-										</div>
-									)}
+								{!!user?.company_registration_number && (
+									<div className={styles.item}>
+										<div className={styles.label}>Reg</div>
+										<div className={styles.value}>{user.company_registration_number}</div>
+									</div>
+								)}
 
-									{!!user?.company_address && (
-										<div className={styles.item}>
-											<div className={styles.label}>Address</div>
-											<div className={styles.value}>{user.company_address}</div>
-										</div>
-									)}
+								{!!user?.company_address && (
+									<div className={styles.item}>
+										<div className={styles.label}>Address</div>
+										<div className={styles.value}>{user.company_address}</div>
+									</div>
+								)}
 
-									<div className={styles.hr} />
-								</>
-							))}
+								<div className={styles.hr} />
+							</>
+						)}
 
 						<div className={styles.item}>
 							<div className={styles.label}>Contacts</div>
@@ -100,7 +105,7 @@ export const ProfilePage: FC<ProfilePageProps> = (props) => {
 					</div>
 				</div>
 
-				{accountType === 'Sender' && (
+				{!isCarrier && (
 					<div className={cn(styles.right, styles.sender)}>
 						<div className={styles.card}>
 							<div className={styles.title}>My orders</div>
@@ -129,7 +134,7 @@ export const ProfilePage: FC<ProfilePageProps> = (props) => {
 					</div>
 				)}
 
-				{accountType === 'Carrier' && (
+				{isCarrier && (
 					<>
 						<div className={styles.centerWrapper}>
 							<div className={cn(styles.center, styles.top)}>
@@ -156,28 +161,20 @@ export const ProfilePage: FC<ProfilePageProps> = (props) => {
 
 								<div className={styles.orders}>
 									<div className={styles.order}>
-										<div className={styles.value}>{orders.cancelled || 0}</div>
-										<div className={styles.label}>Cancelled by sender</div>
+										<div className={styles.value}>{orders.total || 0}</div>
+										<div className={styles.label}>Total orders</div>
+									</div>
+									<div className={styles.order}>
+										<div className={styles.value}>{orders.delivered || 0}</div>
+										<div className={styles.label}>Completed</div>
 									</div>
 									<div className={styles.order}>
 										<div className={styles.value}>{orders.cancelled || 0}</div>
-										<div className={styles.label}>Cancelled by sender</div>
+										<div className={styles.label}>Cancelled</div>
 									</div>
 									<div className={styles.order}>
-										<div className={styles.value}>{orders.cancelled || 0}</div>
-										<div className={styles.label}>Cancelled by sender</div>
-									</div>
-									<div className={styles.order}>
-										<div className={styles.value}>{orders.cancelled || 0}</div>
-										<div className={styles.label}>Cancelled by sender</div>
-									</div>
-									<div className={styles.order}>
-										<div className={styles.value}>{orders.cancelled || 0}</div>
-										<div className={styles.label}>Cancelled by sender</div>
-									</div>
-									<div className={styles.order}>
-										<div className={styles.value}>{orders.cancelled || 0}</div>
-										<div className={styles.label}>Cancelled by sender</div>
+										<div className={styles.value}>{orders.in_progress || 0}</div>
+										<div className={styles.label}>In progress</div>
 									</div>
 								</div>
 							</div>

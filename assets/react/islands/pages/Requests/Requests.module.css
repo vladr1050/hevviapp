@@ -123,7 +123,7 @@
 	}
 
 	&.carrier {
-		@apply gap-[78px];
+		@apply gap-[78px] h-full justify-between;
 
 		& .main {
 			@apply flex flex-col gap-[30px];

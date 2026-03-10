@@ -1,13 +1,7 @@
 import { type FC, Suspense, useState } from 'react'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 
-import {
-	AccountType,
-	EMPTY_STRING,
-	FormActions,
-	OrderStatusEnum,
-	OrderType,
-} from '@config/constants'
+import { EMPTY_STRING, FormActions, OrderStatusEnum, OrderType } from '@config/constants'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
 import { Modal } from '@ui/Modal/Modal'
@@ -30,7 +24,7 @@ import { getDefaultMapData } from './utils'
 interface OrderCardProps {
 	title: string
 	order: OrderType
-	accountType: AccountType
+	isCarrier?: boolean
 	isRequest?: boolean
 	csrfToken?: string
 }
@@ -40,7 +34,7 @@ type ModalIdType = 'confirmSender' | 'cancel' | 'rate' | 'declineCarrier'
 export const OrderCard: FC<OrderCardProps> = ({
 	title,
 	order,
-	accountType,
+	isCarrier,
 	isRequest,
 	csrfToken,
 }) => {
@@ -71,13 +65,11 @@ export const OrderCard: FC<OrderCardProps> = ({
 
 	const showInfo =
 		!isCanceled &&
-		((accountType === 'Sender' && order.status <= OrderStatusEnum.OFFERED) ||
-			(accountType === 'Carrier' && isRequest))
+		((!isCarrier && order.status <= OrderStatusEnum.OFFERED) || (isCarrier && isRequest))
 
 	const showStatus =
 		!isCanceled &&
-		((accountType === 'Sender' && order.status > OrderStatusEnum.OFFERED) ||
-			(accountType === 'Carrier' && !isRequest))
+		((!isCarrier && order.status > OrderStatusEnum.OFFERED) || (isCarrier && !isRequest))
 
 	return (
 		<>
@@ -320,40 +312,22 @@ export const OrderCard: FC<OrderCardProps> = ({
 
 							<div className={styles.bottom}>
 								<div className={styles.bottomLeft}>
-									{accountType === 'Carrier' && (
+									{isCarrier && !!order?.sender?.first_name && !!order?.sender?.last_name && (
 										<>
 											<div
 												className={cn({
-													// [styles.icon]: accountType === 'Sender',
-													[styles.avatar]: accountType === 'Carrier',
+													[styles.avatar]: isCarrier,
 												})}
 											>
-												{/* {accountType === 'Sender' ? (
-											<Icon type="clock_1" size={30} />
-										) : (
-											!order?.sender?.image?.length && (
-												<>
-													{order?.sender?.name.split(' ')[0].charAt(0)}
-													{order?.sender?.name.split(' ')[1].charAt(0)}
-												</>
-											)
-										)} */}
-												NS {EMPTY_STRING}
+												{order.sender.first_name.charAt(0)}
+												{order.sender.last_name?.charAt(0)}
 											</div>
 
 											<div className={styles.text}>
-												{/* {accountType === 'Sender' && ( */}
-												<>
-													<span className={styles.subtitle}>Delivery time</span>
-													<span className={styles.title}>DT {EMPTY_STRING}</span>
-												</>
-												{/* )} */}
-												{/* {accountType === 'Carrier' && (
-											<>
-												<span className={styles.title}>{order?.sender?.name}</span>
-												<span className={styles.subtitle}>{order?.sender?.company}</span>
-											</>
-										)} */}
+												<span className={styles.title}>
+													{order?.sender?.first_name} {order?.sender?.last_name}
+												</span>
+												{/* <span className={styles.subtitle}>Delivery time</span> */}
 											</div>
 										</>
 									)}
@@ -387,13 +361,11 @@ export const OrderCard: FC<OrderCardProps> = ({
 					)}
 				</div>
 
-				{showStatus && (
-					<StatusOrder order={order} setModalId={setModalId} accountType={accountType} />
-				)}
+				{showStatus && <StatusOrder order={order} setModalId={setModalId} isCarrier={isCarrier} />}
 			</div>
 
 			{/* CONFIRM */}
-			{accountType === 'Sender' && (
+			{!isCarrier && (
 				<Modal
 					isOpen={modalId === 'confirmSender'}
 					onClose={() => setModalId(undefined)}
@@ -415,7 +387,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 					id={order.id}
 					from={order.address.from}
 					to={order.address.to}
-					accountType={accountType}
+					isCarrier={isCarrier}
 				/>
 			</Modal>
 
@@ -425,7 +397,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 			</Modal>
 
 			{/* DECLINE CARRIER */}
-			{accountType === 'Carrier' && (
+			{isCarrier && (
 				<Modal
 					isOpen={modalId === 'declineCarrier'}
 					onClose={() => setModalId(undefined)}

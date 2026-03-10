@@ -1,6 +1,6 @@
 import { type FC, ReactNode, SetStateAction, useState } from 'react'
 
-import { AccountType, FormActions, OrderStatusEnum, OrderType } from '@config/constants'
+import { FormActions, OrderStatusEnum, OrderType } from '@config/constants'
 import { Button } from '@ui/Button/Button'
 import { Checkbox } from '@ui/Checkbox/Checkbox'
 import { CircleChart } from '@ui/CircleChart/CircleChart'
@@ -20,24 +20,24 @@ import carrierMatchedGig from './images/carrierMatched.gif'
 import inTransitGif from './images/inTransit.gif'
 
 interface StatusOrderProps {
-	accountType: AccountType
+	isCarrier?: boolean
 	order: OrderType
 	setModalId: (value: SetStateAction<any>) => void
 }
 
-export const StatusOrder: FC<StatusOrderProps> = ({ accountType, order, setModalId }) => {
+export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId }) => {
 	const [valueForm, setValueForm] = useState<'PICKUP_DONE' | 'DELIVERED'>()
 
 	return (
 		<div
 			className={cn(styles.status, {
-				[styles.sender]: accountType === 'Sender',
-				[styles.carrier]: accountType === 'Carrier',
+				[styles.sender]: !isCarrier,
+				[styles.carrier]: isCarrier,
 			})}
 		>
 			<div className={styles.title}>Status</div>
 
-			{accountType === 'Sender' && (
+			{!isCarrier && (
 				<div className={styles.statusWrapper}>
 					<div className={styles.item}>
 						Awaiting Payment
@@ -152,7 +152,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ accountType, order, setModal
 				</div>
 			)}
 
-			{accountType === 'Carrier' && (
+			{isCarrier && (
 				<div className={styles.statusWrapper}>
 					<div className={styles.top}>
 						<CircleChart size={150} percent={75} title="15:00:00h" subtitle="left" countdown />
@@ -227,7 +227,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ accountType, order, setModal
 				</div>
 			)}
 
-			{accountType === 'Sender' && (
+			{!isCarrier && (
 				<>
 					<div>
 						{/* {order.status < OrderStatusEnum.PICKUP_DONE && (
@@ -253,7 +253,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ accountType, order, setModal
 				</>
 			)}
 
-			{accountType === 'Carrier' && (
+			{isCarrier && (
 				<>
 					<div className={styles.footer}>
 						{!!valueForm && (

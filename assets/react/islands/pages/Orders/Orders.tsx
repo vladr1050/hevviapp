@@ -8,6 +8,7 @@ import styles from './Orders.module.css'
 
 interface OrdersPageProps {
 	title: string
+	isCarrier?: boolean
 	orders?: {
 		address: {
 			from: string
@@ -26,7 +27,7 @@ interface OrdersPageProps {
 }
 
 export const OrdersPage: FC<OrdersPageProps> = (props) => {
-	const { title, orders } = props
+	const { title, orders, isCarrier } = props
 	console.log(props)
 
 	return (
@@ -89,7 +90,11 @@ export const OrdersPage: FC<OrdersPageProps> = (props) => {
 									<span>{order?.status_text}</span>
 								</div>
 
-								<a href={`${Routes.ORDERS}/${order.id}`} className={styles.link} title="">
+								<a
+									href={`${isCarrier ? Routes.CARRIER_ORDERS : Routes.USER_ORDERS}/${order.id}`}
+									className={styles.link}
+									title=""
+								>
 									view
 								</a>
 							</span>

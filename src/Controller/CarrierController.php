@@ -50,17 +50,49 @@ class CarrierController extends AbstractController
 
         $listOfOrders = [];
         foreach ($this->orderRepository->findRecentByCarrier($user) as $order) {
+            $history = $this->resolvePickupHistory($order);
             $cargo = $order->getCargo()->first();
 
             $listOfOrders[] = [
                 'id' => $order->getId()?->toRfc4122(),
+                'status' => $order->getStatus(),
+                'status_text' => $this->translator->trans('order.status_' . $order->getStatus(), domain: 'AppBundle', locale: $user->getLocale()),
+                'price' => $this->moneyExtension->currencyConvert($this->resolveBaseFreight($order->getLatestOffer()), $order->getCurrency()),
+                'vat' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getVat(), $order->getCurrency()),
+                'brutto' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
+                'fee' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getFee(), $order->getCurrency()),
                 'address' => [
                     'from' => $order->getPickupAddress(),
                     'to' => $order->getDropoutAddress(),
                 ],
+                'name' => $cargo?->getName(),
                 'item' => $cargo?->getQuantity(),
-                'comment' => $order->getNotes(),
                 'type' => $this->translator->trans('order.type_' . $cargo?->getType(), domain: 'AppBundle', locale: $user->getLocale()),
+                'cargoDimensions' => $cargo?->getDimensionsCm(),
+                'cargoWeight' => $cargo?->getWeightKg(),
+                'comment' => $order->getNotes(),
+                'pickup_date' => false !== $history ? $history->getCreatedAt()->format('d.m.Y') : null,
+                'pickup_latitude' => $order->getPickupLatitude(),
+                'pickup_longitude' => $order->getPickupLongitude(),
+                'dropout_latitude' => $order->getDropoutLatitude(),
+                'dropout_longitude' => $order->getDropoutLongitude(),
+                'stackable' => $cargo?->isStackable(),
+                'manipulator_needed' => $cargo?->isManipulatorNeeded(),
+                'pickup_time_from' => $order->getPickupTimeFrom()?->format('H:i'),
+                'pickup_time_to' => $order->getPickupTimeTo()?->format('H:i'),
+                'delivery_time_from' => $order->getDeliveryTimeFrom()?->format('H:i'),
+                'delivery_time_to' => $order->getDeliveryTimeTo()?->format('H:i'),
+                'pickup_request_date' => $order->getPickupDate()?->format('d.m.Y'),
+                'delivery_date' => $order->getDeliveryDate()?->format('d.m.Y'),
+                /* FIXME PAVEL добавь имя клиента
+                
+                    sender: {
+                        first_name: string, 
+                        last_name: string
+                    }
+                */
+
+
             ];
         }
 

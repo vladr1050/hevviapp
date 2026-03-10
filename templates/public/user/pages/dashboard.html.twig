@@ -16,7 +16,7 @@
 # @author Pavel Ustimenko steve.jsfolio@gmail.com
 #}
 
-{% extends 'public/main_layout.html.twig' %}
+{% extends 'public/user_layout.html.twig' %}
 
 {% block header %}
     {{ parent() }}
@@ -24,6 +24,8 @@
 {% endblock %}
 
 {% block body %}
+    {{("show.label_sender")|trans({}, "AppBundle")}}
+
     <div>
         <p>Welcome to your dashboard.</p>
     </div>

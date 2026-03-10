@@ -47,7 +47,7 @@ export async function apiLogin(email: string, password: string): Promise<LoginRe
 }
 
 export async function apiResetPassword(email: string): Promise<any> {
-	// TODO FIXME PAVEL
+	// FIXME PAVEL
 	const res = await fetch(`${API_BASE}/reset-password`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },

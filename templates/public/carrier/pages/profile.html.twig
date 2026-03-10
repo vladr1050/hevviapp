@@ -16,8 +16,16 @@
 # @author Pavel Ustimenko steve.jsfolio@gmail.com
 #}
 
-{% extends 'public/main_layout.html.twig' %}
+{% extends 'public/carrier_layout.html.twig' %}
 
 {% block body %}
-
+	<div
+		data-react-island="ProfilePage"
+		data-props='{{ { 
+			user,
+			orders,
+			title,
+			isCarrier: true,
+		}|json_encode|e("html_attr") }}'
+	></div>
 {% endblock %}

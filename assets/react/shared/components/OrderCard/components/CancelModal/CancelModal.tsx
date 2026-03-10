@@ -1,7 +1,7 @@
 import { type FC } from 'react'
 import { useForm } from 'react-hook-form'
 
-import { AccountType, FormActions } from '@config/constants'
+import { FormActions } from '@config/constants'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
 import { RadioButtons } from '@ui/RadioButtons/RadioButtons'
@@ -13,7 +13,7 @@ interface CancelModalProps {
 	id: string
 	from?: string
 	to?: string
-	accountType: AccountType
+	isCarrier?: boolean
 }
 
 type FormValues = {
@@ -21,7 +21,7 @@ type FormValues = {
 	text?: string
 }
 
-export const CancelModal: FC<CancelModalProps> = ({ id, from, to, accountType }) => {
+export const CancelModal: FC<CancelModalProps> = ({ id, from, to, isCarrier }) => {
 	const { control, register, watch } = useForm<FormValues>({
 		defaultValues: { radio: '1' },
 	})
@@ -52,7 +52,7 @@ export const CancelModal: FC<CancelModalProps> = ({ id, from, to, accountType })
 					name="radio"
 					defaultValue="1"
 					items={
-						accountType === 'Sender'
+						!isCarrier
 							? [
 									{ label: 'Didn’t like the price', value: '1' },
 									{ label: 'Didn’t like the delivery time', value: '2' },
