@@ -1,4 +1,4 @@
-import { type FC, ReactNode, SetStateAction, useState } from 'react'
+import { type FC, ReactNode, SetStateAction, useEffect, useState } from 'react'
 
 import { FormActions, OrderStatusEnum, OrderType } from '@config/constants'
 import { Button } from '@ui/Button/Button'
@@ -25,8 +25,40 @@ interface StatusOrderProps {
 	setModalId: (value: SetStateAction<any>) => void
 }
 
+const DELIVERY_LIMIT_MS = 48 * 60 * 60 * 1000
+
+const useDeliveryCountdown = (paidDate: string | undefined) => {
+	const getRemaining = () => {
+		if (!paidDate) return 0
+		const deadline = new Date(paidDate).getTime() + DELIVERY_LIMIT_MS
+		return Math.max(0, deadline - Date.now())
+	}
+
+	const [remainingMs, setRemainingMs] = useState(getRemaining)
+
+	useEffect(() => {
+		if (!paidDate) return
+		const interval = setInterval(() => setRemainingMs(getRemaining()), 1000)
+		return () => clearInterval(interval)
+	}, [paidDate])
+
+	const isExpired = remainingMs === 0
+	const percent = paidDate ? (remainingMs / DELIVERY_LIMIT_MS) * 100 : 0
+
+	const hours = Math.floor(remainingMs / 3_600_000)
+	const minutes = Math.floor((remainingMs % 3_600_000) / 60_000)
+	const seconds = Math.floor((remainingMs % 60_000) / 1_000)
+
+	const pad = (n: number) => String(n).padStart(2, '0')
+	const timeLabel = isExpired ? '00:00:00' : `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
+	const subtitle = isExpired ? "Time's up" : 'left'
+
+	return { percent, timeLabel, subtitle }
+}
+
 export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId }) => {
 	const [valueForm, setValueForm] = useState<'PICKUP_DONE' | 'DELIVERED'>()
+	const countdown = useDeliveryCountdown(order.paid_date)
 
 	return (
 		<div
@@ -155,7 +187,13 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 			{isCarrier && (
 				<div className={styles.statusWrapper}>
 					<div className={styles.top}>
-						<CircleChart size={150} percent={75} title="15:00:00h" subtitle="left" countdown />
+						<CircleChart
+							size={150}
+							percent={countdown.percent}
+							title={countdown.timeLabel}
+							subtitle={countdown.subtitle}
+							countdown
+						/>
 					</div>
 
 					<div className={styles.bottom}>

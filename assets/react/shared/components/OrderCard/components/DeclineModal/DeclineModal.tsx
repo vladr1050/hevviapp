@@ -13,6 +13,7 @@ interface DeclineModalProps {
 	id: string
 	from?: string
 	to?: string
+	actionUrl?: string
 }
 
 type FormValues = {
@@ -20,13 +21,13 @@ type FormValues = {
 	text?: string
 }
 
-export const DeclineModal: FC<DeclineModalProps> = ({ id, from, to }) => {
+export const DeclineModal: FC<DeclineModalProps> = ({ id, from, to, actionUrl }) => {
 	const { control, register, watch } = useForm<FormValues>({
 		defaultValues: { radio: '1' },
 	})
 
 	return (
-		<form className={styles.modal} method="POST" action={FormActions.CANCEL_ORDER}>
+		<form className={styles.modal} method="POST" action={actionUrl ?? FormActions.CANCEL_ORDER}>
 			<div className={styles.icon}>
 				<Icon type="sad_box" size={60} />
 			</div>

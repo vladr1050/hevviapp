@@ -30,6 +30,15 @@ export enum FormActions {
 	UPDATE_STATUS = '/updateStatus',
 }
 
+export const carrierDeclineRequestUrl = (id: string): string =>
+	`/carrier/requests/${id}/decline`
+
+export const carrierConfirmRequestUrl = (id: string): string =>
+	`/carrier/requests/${id}/confirm`
+
+export const carrierCancelOrderUrl = (id: string): string =>
+	`/carrier/orders/${id}/cancel`
+
 export const months = [
 	'january',
 	'february',
@@ -97,6 +106,7 @@ export type OrderType = {
 	delivery_time_to?: string
 	pickup_request_date?: string
 	delivery_date?: string
+	paid_date?: string
 	type?: string
 	vat?: string
 	brutto?: string

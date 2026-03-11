@@ -6,8 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="carrier added">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/OrderCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/OrderCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/CancelModal/CancelModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/CancelModal/CancelModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/DeclineModal/DeclineModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/DeclineModal/DeclineModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/StatusOrder/StatusOrder.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/StatusOrder/StatusOrder.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/shared/config/constants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/config/constants.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/CarrierController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CarrierController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/EventSubscriber/OrderAssignmentSubscriber.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/EventSubscriber/OrderAssignmentSubscriber.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/OrderAssignmentRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/OrderAssignmentRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/OrderRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/OrderRepository.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -316,7 +323,7 @@
       <workItem from="1772646988460" duration="306000" />
       <workItem from="1772654790742" duration="5432000" />
       <workItem from="1772723570253" duration="8016000" />
-      <workItem from="1772786955928" duration="16823000" />
+      <workItem from="1772786955928" duration="20953000" />
     </task>
     <task id="LOCAL-00001" summary="custom areas added to service areas">
       <option name="closed" value="true" />
@@ -558,7 +565,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773164497866</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="carrier added">
+      <option name="closed" value="true" />
+      <created>1773248597046</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1773248597046</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

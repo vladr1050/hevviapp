@@ -141,7 +141,7 @@ class OrderAssignmentSubscriber
             $carrier = $update['carrier'];
 
             $order->setCarrier($carrier);
-            $order->setStatus(Order::STATUS['ASSIGNED']);
+            $order->setStatus(Order::STATUS['AWAITING_PICKUP']);
             $em->persist($order);
 
             $this->logger->info('Carrier установлен в Order и сохранен', [

@@ -19,8 +19,10 @@ namespace App\Controller;
 
 use App\Entity\Carrier;
 use App\Entity\Order;
+use App\Entity\OrderAssignment;
 use App\Entity\OrderHistory;
 use App\Entity\OrderOffer;
+use App\Repository\OrderAssignmentRepository;
 use App\Repository\OrderRepository;
 use App\Twig\Extension\Filter\MoneyExtension;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,10 +37,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class CarrierController extends AbstractController
 {
     public function __construct(
-        private readonly OrderRepository        $orderRepository,
-        private readonly MoneyExtension         $moneyExtension,
-        private readonly TranslatorInterface    $translator,
-        private readonly EntityManagerInterface $em,
+        private readonly OrderRepository           $orderRepository,
+        private readonly OrderAssignmentRepository $orderAssignmentRepository,
+        private readonly MoneyExtension            $moneyExtension,
+        private readonly TranslatorInterface       $translator,
+        private readonly EntityManagerInterface    $em,
     )
     {
     }
@@ -49,7 +52,7 @@ class CarrierController extends AbstractController
         $user = $this->getUser();
 
         $listOfOrders = [];
-        foreach ($this->orderRepository->findRecentByCarrier($user) as $order) {
+        foreach ($this->orderRepository->findRequestsByCarrier($user) as $order) {
             $history = $this->resolvePickupHistory($order);
             $cargo = $order->getCargo()->first();
 
@@ -96,6 +99,73 @@ class CarrierController extends AbstractController
             'user' => $this->buildCarrierContext($user),
             'orders' => $listOfOrders,
         ]);
+    }
+
+    #[Route('/requests/{id}/decline', name: 'public_request_decline', methods: ['POST'])]
+    public function declineRequest(string $id): Response
+    {
+        /** @var Carrier $user */
+        $user = $this->getUser();
+
+        $order = $this->orderRepository->find($id);
+        if (!$order) {
+            return $this->redirectToRoute('carrier_public_requests');
+        }
+
+        $assignment = $this->orderAssignmentRepository->findAssignedByOrderAndCarrier($order, $user);
+        if (!$assignment) {
+            return $this->redirectToRoute('carrier_public_requests');
+        }
+
+        $assignment->setStatus(OrderAssignment::STATUS['REJECTED']);
+        $order->setStatus(Order::STATUS['PAID']);
+
+        $this->em->flush();
+
+        return $this->redirectToRoute('carrier_public_requests');
+    }
+
+    #[Route('/requests/{id}/confirm', name: 'public_request_confirm', methods: ['POST'])]
+    public function confirmRequest(string $id): Response
+    {
+        /** @var Carrier $user */
+        $user = $this->getUser();
+
+        $order = $this->orderRepository->find($id);
+        if (!$order) {
+            return $this->redirectToRoute('carrier_public_requests');
+        }
+
+        $assignment = $this->orderAssignmentRepository->findAssignedByOrderAndCarrier($order, $user);
+        if (!$assignment) {
+            return $this->redirectToRoute('carrier_public_requests');
+        }
+
+        $assignment->setStatus(OrderAssignment::STATUS['ACCEPTED']);
+        $order->setStatus(Order::STATUS['AWAITING_PICKUP']);
+        $order->setCarrier($user);
+
+        $this->em->flush();
+
+        return $this->redirectToRoute('carrier_public_requests');
+    }
+
+    #[Route('/orders/{id}/cancel', name: 'public_order_cancel', methods: ['POST'])]
+    public function cancelOrder(string $id): Response
+    {
+        /** @var Carrier $user */
+        $user = $this->getUser();
+
+        $order = $this->orderRepository->find($id);
+        if (!$order || $order->getCarrier() !== $user) {
+            return $this->redirectToRoute('carrier_public_orders');
+        }
+
+        $order->setStatus(Order::STATUS['CANCELLED']);
+
+        $this->em->flush();
+
+        return $this->redirectToRoute('carrier_public_orders');
     }
 
     #[Route('/profile', name: 'public_profile')]
@@ -163,6 +233,7 @@ class CarrierController extends AbstractController
         }
 
         $history = $this->resolvePickupHistory($order);
+        $paidHistory = $this->resolvePaidHistory($order);
         $cargo = $order->getCargo()->first();
 
         $item = [
@@ -184,6 +255,7 @@ class CarrierController extends AbstractController
             'cargoWeight' => $cargo?->getWeightKg(),
             'comment' => $order->getNotes(),
             'pickup_date' => false !== $history ? $history->getCreatedAt()->format('d.m.Y') : null,
+            'paid_date' => false !== $paidHistory ? $paidHistory->getCreatedAt()->format(\DateTimeInterface::ATOM) : null,
             'carrier' => $order->getCarrier()?->getLegalName(),
             'pickup_latitude' => $order->getPickupLatitude(),
             'pickup_longitude' => $order->getPickupLongitude(),
@@ -252,6 +324,16 @@ class CarrierController extends AbstractController
     {
         return $order->getHistories()
             ->filter(fn(OrderHistory $history) => $history->getStatus() === Order::STATUS['PICKUP_DONE'])
+            ->first();
+    }
+
+    /**
+     * Ищет в истории заказа запись о факте оплаты заказа (PAID).
+     */
+    private function resolvePaidHistory(Order $order): OrderHistory|false
+    {
+        return $order->getHistories()
+            ->filter(fn(OrderHistory $history) => $history->getStatus() === Order::STATUS['PAID'])
             ->first();
     }
 

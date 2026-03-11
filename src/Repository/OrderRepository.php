@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Carrier;
 use App\Entity\Order;
+use App\Entity\OrderAssignment;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -44,6 +45,25 @@ class OrderRepository extends ServiceEntityRepository
             ['createdAt' => 'DESC'],
             $limit,
         );
+    }
+
+    /**
+     * Возвращает заказы, по которым текущий перевозчик имеет назначение
+     * со статусом ASSIGNED — то есть входящие запросы, ожидающие его ответа.
+     *
+     * @return Order[]
+     */
+    public function findRequestsByCarrier(Carrier $carrier): array
+    {
+        return $this->createQueryBuilder('o')
+            ->innerJoin('o.orderAssignments', 'oa')
+            ->where('oa.carrier = :carrier')
+            ->andWhere('oa.status = :status')
+            ->setParameter('carrier', $carrier)
+            ->setParameter('status', OrderAssignment::STATUS['ASSIGNED'])
+            ->orderBy('o.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 
     /**

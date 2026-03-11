@@ -14,6 +14,7 @@ interface CancelModalProps {
 	from?: string
 	to?: string
 	isCarrier?: boolean
+	actionUrl?: string
 }
 
 type FormValues = {
@@ -21,13 +22,13 @@ type FormValues = {
 	text?: string
 }
 
-export const CancelModal: FC<CancelModalProps> = ({ id, from, to, isCarrier }) => {
+export const CancelModal: FC<CancelModalProps> = ({ id, from, to, isCarrier, actionUrl }) => {
 	const { control, register, watch } = useForm<FormValues>({
 		defaultValues: { radio: '1' },
 	})
 
 	return (
-		<form className={styles.modal} method="POST" action={FormActions.CANCEL_ORDER}>
+		<form className={styles.modal} method="POST" action={actionUrl ?? FormActions.CANCEL_ORDER}>
 			<div className={styles.icon}>
 				<Icon type="sad_box" size={60} />
 			</div>
