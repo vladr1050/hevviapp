@@ -84,15 +84,10 @@ class CarrierController extends AbstractController
                 'delivery_time_to' => $order->getDeliveryTimeTo()?->format('H:i'),
                 'pickup_request_date' => $order->getPickupDate()?->format('d.m.Y'),
                 'delivery_date' => $order->getDeliveryDate()?->format('d.m.Y'),
-                /* FIXME PAVEL добавь имя клиента
-                
-                    sender: {
-                        first_name: string, 
-                        last_name: string
-                    }
-                */
-
-
+                'sender' => [
+                    'first_name' => $order->getSender()->getFirstName(),
+                    'last_name' => $order->getSender()->getLastName(),
+                ],
             ];
         }
 
@@ -163,7 +158,7 @@ class CarrierController extends AbstractController
         $user = $this->getUser();
 
         $order = $this->orderRepository->find($id);
-        if (!$order || $order->getSender() !== $user) {
+        if (!$order || $order->getCarrier() !== $user) {
             return $this->redirectToRoute('carrier_public_orders');
         }
 

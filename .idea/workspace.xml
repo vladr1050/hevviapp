@@ -4,21 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="request finished api added">
-      <change afterPath="$PROJECT_DIR$/src/Controller/CarrierController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/public/carrier/pages/order.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/public/carrier/pages/orders.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/public/carrier/pages/profile.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/public/carrier/pages/requests.html.twig" afterDir="false" />
+    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="carrier added">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/islands/pages/Login/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/islands/pages/Login/Login.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/shared/api/authApi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/api/authApi.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Api/AuthController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/AuthController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Carrier.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Carrier.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/RefreshToken.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/RefreshToken.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/OrderRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/OrderRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/CarrierController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CarrierController.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -327,7 +316,7 @@
       <workItem from="1772646988460" duration="306000" />
       <workItem from="1772654790742" duration="5432000" />
       <workItem from="1772723570253" duration="8016000" />
-      <workItem from="1772786955928" duration="14579000" />
+      <workItem from="1772786955928" duration="16823000" />
     </task>
     <task id="LOCAL-00001" summary="custom areas added to service areas">
       <option name="closed" value="true" />
@@ -561,7 +550,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772794509284</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="carrier added">
+      <option name="closed" value="true" />
+      <created>1773164497866</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1773164497866</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -579,6 +576,7 @@
     <MESSAGE value="order confirm order route" />
     <MESSAGE value="request geocoding added" />
     <MESSAGE value="request finished api added" />
-    <option name="LAST_COMMIT_MESSAGE" value="request finished api added" />
+    <MESSAGE value="carrier added" />
+    <option name="LAST_COMMIT_MESSAGE" value="carrier added" />
   </component>
 </project>
