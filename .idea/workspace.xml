@@ -4,14 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="profile stats">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/islands/pages/Order/Order.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/islands/pages/Order/Order.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/OrderCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/OrderCard.tsx" afterDir="false" />
+    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="order page updated">
       <change beforePath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/StatusOrder/StatusOrder.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/StatusOrder/StatusOrder.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/shared/config/constants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/config/constants.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/CarrierController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CarrierController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/public/carrier/pages/order.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/public/carrier/pages/order.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -320,7 +314,7 @@
       <workItem from="1772646988460" duration="306000" />
       <workItem from="1772654790742" duration="5432000" />
       <workItem from="1772723570253" duration="8016000" />
-      <workItem from="1772786955928" duration="24111000" />
+      <workItem from="1772786955928" duration="24916000" />
     </task>
     <task id="LOCAL-00001" summary="custom areas added to service areas">
       <option name="closed" value="true" />
@@ -586,7 +580,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773326520358</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="order page updated">
+      <option name="closed" value="true" />
+      <created>1773327705741</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1773327705741</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -607,6 +609,7 @@
     <MESSAGE value="carrier added" />
     <MESSAGE value="carrier updated" />
     <MESSAGE value="profile stats" />
-    <option name="LAST_COMMIT_MESSAGE" value="profile stats" />
+    <MESSAGE value="order page updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="order page updated" />
   </component>
 </project>

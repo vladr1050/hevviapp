@@ -28,7 +28,7 @@ interface StatusOrderProps {
 
 const DELIVERY_LIMIT_MS = 48 * 60 * 60 * 1000
 
-const useDeliveryCountdown = (paidDate: string | undefined) => {
+const useDeliveryCountdown = (paidDate: string | undefined, isDelivered: boolean) => {
 	const getRemaining = () => {
 		if (!paidDate) return 0
 		const deadline = new Date(paidDate).getTime() + DELIVERY_LIMIT_MS
@@ -38,10 +38,10 @@ const useDeliveryCountdown = (paidDate: string | undefined) => {
 	const [remainingMs, setRemainingMs] = useState(getRemaining)
 
 	useEffect(() => {
-		if (!paidDate) return
+		if (!paidDate || isDelivered) return
 		const interval = setInterval(() => setRemainingMs(getRemaining()), 1000)
 		return () => clearInterval(interval)
-	}, [paidDate])
+	}, [paidDate, isDelivered])
 
 	const isExpired = remainingMs === 0
 	const percent = paidDate ? (remainingMs / DELIVERY_LIMIT_MS) * 100 : 0
@@ -52,14 +52,15 @@ const useDeliveryCountdown = (paidDate: string | undefined) => {
 
 	const pad = (n: number) => String(n).padStart(2, '0')
 	const timeLabel = isExpired ? '00:00:00' : `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
-	const subtitle = isExpired ? "Time's up" : 'left'
+	const subtitle = isDelivered ? 'remaining' : isExpired ? "Time's up" : 'left'
 
 	return { percent, timeLabel, subtitle }
 }
 
 export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId, csrfToken }) => {
 	const [valueForm, setValueForm] = useState<'PICKUP_DONE' | 'IN_TRANSIT' | 'DELIVERED'>()
-	const countdown = useDeliveryCountdown(order.paid_date)
+	const isDelivered = order.status === OrderStatusEnum.DELIVERED
+	const countdown = useDeliveryCountdown(order.paid_date, isDelivered)
 
 	return (
 		<div
