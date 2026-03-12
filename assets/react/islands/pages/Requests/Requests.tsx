@@ -27,7 +27,7 @@ export const RequestsPage: FC<RequestsPageProps> = (props) => {
 
 	const [activeButton, setActiveButton] = useState<CalculateModalType>()
 
-	const [curOrderId, setCurOrderId] = useState('')
+	const [curOrderIndex, setCurOrderIndex] = useState(0)
 
 	if (isCarrier)
 		return (
@@ -57,9 +57,69 @@ export const RequestsPage: FC<RequestsPageProps> = (props) => {
 						</div>
 					)}
 
-					{ordersCarrier.map((order) => (
-						<OrderCard title={title} order={order} isCarrier isRequest key={order.id} />
-					))}
+					{!!ordersCarrier?.length && (
+						<div className={styles.ordersWrapper}>
+							<div
+								className={cn(styles.ordersSlide, {
+									[styles.someSlides]: ordersCarrier.length > 1,
+								})}
+							>
+								{ordersCarrier.length > 1 && (
+									<div className={styles.leftCard}>
+										<div className={styles.line} />
+
+										<button
+											type="button"
+											className={styles.arrowButton}
+											onClick={() =>
+												setCurOrderIndex((prev) =>
+													prev - 1 < 0 ? ordersCarrier.length - 1 : prev - 1
+												)
+											}
+										>
+											<Icon type="arrow_right" size={18} className="rotate-180" />
+										</button>
+									</div>
+								)}
+
+								<OrderCard
+									title={title}
+									order={ordersCarrier?.[curOrderIndex] || ordersCarrier[0]}
+									isCarrier
+									isRequest
+								/>
+
+								{ordersCarrier.length > 1 && (
+									<div className={styles.rightCard}>
+										<div className={styles.line} />
+
+										<button
+											type="button"
+											className={styles.arrowButton}
+											onClick={() =>
+												setCurOrderIndex((prev) =>
+													prev + 1 > ordersCarrier.length - 1 ? 0 : prev + 1
+												)
+											}
+										>
+											<Icon type="arrow_right" size={18} />
+										</button>
+									</div>
+								)}
+							</div>
+
+							{ordersCarrier.length > 1 && (
+								<div className={styles.dots}>
+									{ordersCarrier.map((_, idx) => (
+										<div
+											key={idx}
+											className={cn(styles.dot, { [styles.active]: idx === curOrderIndex })}
+										/>
+									))}
+								</div>
+							)}
+						</div>
+					)}
 				</div>
 
 				<div className={styles.footer}>

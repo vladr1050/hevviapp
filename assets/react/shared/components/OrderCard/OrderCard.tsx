@@ -227,16 +227,21 @@ export const OrderCard: FC<OrderCardProps> = ({
 							center={defaultPosition}
 							bounds={defaultBounds}
 							boundsOptions={
-								order.status < OrderStatusEnum.ACCEPTED
+								showId
 									? {
-											paddingTopLeft: [50, 50],
+											paddingTopLeft: [50, 120],
 											paddingBottomRight: [50, 220],
 										}
-									: { padding: [50, 50] }
+									: order.status < OrderStatusEnum.ACCEPTED
+										? {
+												paddingTopLeft: [50, 50],
+												paddingBottomRight: [50, 220],
+											}
+										: { padding: [50, 50] }
 							}
 							style={{
 								width: '100%',
-								height: 'calc(100% + 20px)',
+								height: '100%',
 								zIndex: 1,
 							}}
 						>
@@ -343,50 +348,50 @@ export const OrderCard: FC<OrderCardProps> = ({
 									)}
 								</div>
 
-							<form
-								method="POST"
-								className={styles.bottomRight}
-								action={
-									isCarrier && isRequest
-										? carrierConfirmRequestUrl(order.id)
-										: FormActions.CONFIRM_ORDER
-								}
-							>
-								{!(isCarrier && isRequest) && (
-									<>
-										<input type="hidden" name="order_id" value={order.id} />
-										<input type="hidden" name="_token" value={csrfToken} />
-									</>
-								)}
+								<form
+									method="POST"
+									className={styles.bottomRight}
+									action={
+										isCarrier && isRequest
+											? carrierConfirmRequestUrl(order.id)
+											: FormActions.CONFIRM_ORDER
+									}
+								>
+									{!(isCarrier && isRequest) && (
+										<>
+											<input type="hidden" name="order_id" value={order.id} />
+											<input type="hidden" name="_token" value={csrfToken} />
+										</>
+									)}
 
-								{isRequest && (
-									<Button
-										type="button"
-										className="w-full"
-										variant="transparent"
-										onClick={() => setModalId('declineCarrier')}
-									>
-										Decline
+									{isRequest && (
+										<Button
+											type="button"
+											className="w-full"
+											variant="transparent"
+											onClick={() => setModalId('declineCarrier')}
+										>
+											Decline
+										</Button>
+									)}
+
+									<Button type="submit" className="w-full">
+										Confirm
 									</Button>
-								)}
-
-								<Button type="submit" className="w-full">
-									Confirm
-								</Button>
-							</form>
+								</form>
 							</div>
 						</div>
 					)}
 				</div>
 
 				{showStatus && (
-				<StatusOrder
-					order={order}
-					setModalId={setModalId}
-					isCarrier={isCarrier}
-					csrfToken={updateStatusCsrfToken}
-				/>
-			)}
+					<StatusOrder
+						order={order}
+						setModalId={setModalId}
+						isCarrier={isCarrier}
+						csrfToken={updateStatusCsrfToken}
+					/>
+				)}
 			</div>
 
 			{/* CONFIRM */}
@@ -406,37 +411,37 @@ export const OrderCard: FC<OrderCardProps> = ({
 				</Modal>
 			)}
 
-		{/* CANCEL */}
-		<Modal isOpen={modalId === 'cancel'} onClose={() => setModalId(undefined)} maxWidth="400px">
-			<CancelModal
-				id={order.id}
-				from={order.address.from}
-				to={order.address.to}
-				isCarrier={isCarrier}
-				actionUrl={isCarrier ? carrierCancelOrderUrl(order.id) : undefined}
-			/>
-		</Modal>
+			{/* CANCEL */}
+			<Modal isOpen={modalId === 'cancel'} onClose={() => setModalId(undefined)} maxWidth="400px">
+				<CancelModal
+					id={order.id}
+					from={order.address.from}
+					to={order.address.to}
+					isCarrier={isCarrier}
+					actionUrl={isCarrier ? carrierCancelOrderUrl(order.id) : undefined}
+				/>
+			</Modal>
 
 			{/* RATE */}
 			<Modal isOpen={modalId === 'rate'} onClose={() => setModalId(undefined)} maxWidth="400px">
 				<RateModal id={order.id} />
 			</Modal>
 
-		{/* DECLINE CARRIER */}
-		{isCarrier && (
-			<Modal
-				isOpen={modalId === 'declineCarrier'}
-				onClose={() => setModalId(undefined)}
-				maxWidth="400px"
-			>
-				<DeclineModal
-					id={order.id}
-					from={order.address.from}
-					to={order.address.to}
-					actionUrl={carrierDeclineRequestUrl(order.id)}
-				/>
-			</Modal>
-		)}
+			{/* DECLINE CARRIER */}
+			{isCarrier && (
+				<Modal
+					isOpen={modalId === 'declineCarrier'}
+					onClose={() => setModalId(undefined)}
+					maxWidth="400px"
+				>
+					<DeclineModal
+						id={order.id}
+						from={order.address.from}
+						to={order.address.to}
+						actionUrl={carrierDeclineRequestUrl(order.id)}
+					/>
+				</Modal>
+			)}
 		</>
 	)
 }

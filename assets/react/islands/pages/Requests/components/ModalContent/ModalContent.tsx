@@ -553,7 +553,7 @@ export const ModalContent: FC<ModalContentProps> = ({
 								// @ts-ignore
 								center={[DEFAULT_LAT, DEFAULT_LNG]}
 								zoom={10}
-								style={{ width: '100%', height: 'calc(100% + 20px)' }}
+								style={{ width: '100%', height: '100%' }}
 							>
 								<TileLayer
 									// @ts-ignore

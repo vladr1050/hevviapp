@@ -165,6 +165,77 @@
 					}
 				}
 			}
+
+			& .ordersWrapper {
+				@apply flex flex-col items-center gap-7;
+
+				& .ordersSlide {
+					@apply w-full shrink-0 grid grid-cols-1;
+					&.someSlides {
+						@apply grid-cols-[64px,1fr,64px] !important;
+					}
+
+					& .leftCard,
+					& .rightCard {
+						@apply w-[80px] h-[100%] py-[30px] relative;
+
+						& .line {
+							@apply absolute top-[30px] bottom-[30px] 
+							h-[calc(100%-60px)] w-11 bg-white/70;
+
+							box-shadow: 0px 6px 54px 0px rgba(0, 0, 0, 0.0288);
+							box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.1);
+						}
+
+						& .arrowButton {
+							@apply absolute top-[50%] translate-y-[-50%] 
+							h-[52px] w-[52px] rounded-full flex items-center justify-center
+							bg-white cursor-pointer transition-colors;
+							border: none;
+
+							box-shadow: 0px 6px 54px 0px rgba(0, 0, 0, 0.0288);
+							box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.1);
+
+							@apply hover-hover:hover:bg-slate-100 hover-none:active:bg-slate-100;
+						}
+					}
+
+					& .leftCard {
+						& .line {
+							@apply right-0 rounded-l-[30px];
+						}
+
+						& .arrowButton {
+							@apply left-0;
+						}
+					}
+
+					& .rightCard {
+						@apply -ml-4;
+
+						& .line {
+							@apply left-0 rounded-r-[30px];
+						}
+
+						& .arrowButton {
+							@apply right-0;
+						}
+					}
+				}
+
+				& .dots {
+					@apply shrink-0 flex items-center gap-0 max-w-full overflow-x-auto mx-auto;
+
+					& .dot {
+						@apply bg-[#D8D8D8] h-2 w-2 rounded-full mx-1
+						shrink-0 transition-[width,background-color,margin];
+
+						&.active {
+							@apply w-7 bg-black/30 cursor-default;
+						}
+					}
+				}
+			}
 		}
 
 		& .footer {

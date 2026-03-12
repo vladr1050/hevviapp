@@ -219,34 +219,34 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 							})}
 						/>
 
-					<ItemCarrier
-						iconType="vehicle_right"
-						label={<>In transit</>}
-						checked={order.status >= OrderStatusEnum.IN_TRANSIT || valueForm === 'IN_TRANSIT'}
-						isActive={order.status >= OrderStatusEnum.IN_TRANSIT}
-						isWaiting={order.status === OrderStatusEnum.PICKUP_DONE}
-						showInfo={order.status === OrderStatusEnum.PICKUP_DONE}
-						infoText="In transit"
-						onClick={() => setValueForm('IN_TRANSIT')}
-					/>
+						<ItemCarrier
+							iconType="vehicle_right"
+							label={<>In transit</>}
+							checked={order.status >= OrderStatusEnum.IN_TRANSIT || valueForm === 'IN_TRANSIT'}
+							isActive={order.status >= OrderStatusEnum.IN_TRANSIT}
+							isWaiting={order.status === OrderStatusEnum.PICKUP_DONE}
+							showInfo={order.status === OrderStatusEnum.PICKUP_DONE}
+							infoText="In transit"
+							onClick={() => setValueForm('IN_TRANSIT')}
+						/>
 
-					<div
-						className={cn(styles.line, {
-							[styles.big]: order.status === OrderStatusEnum.IN_TRANSIT,
-						})}
-					/>
+						<div
+							className={cn(styles.line, {
+								[styles.big]: order.status === OrderStatusEnum.IN_TRANSIT,
+							})}
+						/>
 
-					<ItemCarrier
-						iconType="check_circle_1"
-						label={<>Delivered</>}
-						checked={order.status === OrderStatusEnum.DELIVERED || valueForm === 'DELIVERED'}
-						isActive={order.status === OrderStatusEnum.DELIVERED}
-						hideCheckbox
-						isWaiting={order.status === OrderStatusEnum.IN_TRANSIT}
-						showInfo={order.status === OrderStatusEnum.IN_TRANSIT}
-						infoText="Pending approval"
-						onClick={() => setValueForm('DELIVERED')}
-					/>
+						<ItemCarrier
+							iconType="check_circle_1"
+							label={<>Delivered</>}
+							checked={order.status === OrderStatusEnum.DELIVERED || valueForm === 'DELIVERED'}
+							isActive={order.status === OrderStatusEnum.DELIVERED}
+							hideCheckbox
+							isWaiting={order.status === OrderStatusEnum.IN_TRANSIT}
+							showInfo={order.status === OrderStatusEnum.IN_TRANSIT}
+							infoText="Pending approval"
+							onClick={() => setValueForm('DELIVERED')}
+						/>
 					</div>
 				</div>
 			)}
@@ -267,33 +267,38 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 					</div>
 
 					{(order.status === OrderStatusEnum.PICKUP_DONE ||
-						order.status === OrderStatusEnum.IN_TRANSIT) && <div />}
+						order.status === OrderStatusEnum.IN_TRANSIT ||
+						order.status >= OrderStatusEnum.DELIVERED) && <div />}
 
-					{order.status >= OrderStatusEnum.DELIVERED && (
+					{/* {order.status >= OrderStatusEnum.DELIVERED && (
 						<Button type="button" className="!w-full" onClick={() => setModalId('rate')}>
 							Rate delivery
 						</Button>
-					)}
+					)} */}
 				</>
 			)}
 
 			{isCarrier && (
 				<>
 					<div className={styles.footer}>
-				{!!valueForm && (
-						<form method="POST" action={carrierUpdateStatusUrl(order.id)} className={styles.button}>
-							<input type="hidden" name="_token" value={csrfToken} />
-							<Button
-								type="submit"
-								variant="outline"
-								name="action"
-								value={valueForm}
-								className="w-full"
+						{!!valueForm && (
+							<form
+								method="POST"
+								action={carrierUpdateStatusUrl(order.id)}
+								className={styles.button}
 							>
-								Update status
-							</Button>
-						</form>
-					)}
+								<input type="hidden" name="_token" value={csrfToken} />
+								<Button
+									type="submit"
+									variant="outline"
+									name="action"
+									value={valueForm}
+									className="w-full"
+								>
+									Update status
+								</Button>
+							</form>
+						)}
 
 						{order.status < OrderStatusEnum.PICKUP_DONE && (
 							<Button
@@ -307,7 +312,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 							</Button>
 						)}
 
-						{order.status === OrderStatusEnum.DELIVERED && (
+						{/* {order.status === OrderStatusEnum.DELIVERED && (
 							<Button
 								type="button"
 								className={styles.button}
@@ -316,7 +321,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 							>
 								Rate delivery
 							</Button>
-						)}
+						)} */}
 					</div>
 				</>
 			)}

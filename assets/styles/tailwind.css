@@ -54,3 +54,7 @@ input {
 		appearance: textfield;
 	}
 }
+
+.leaflet-bottom.leaflet-right {
+	@apply hidden !important
+}
