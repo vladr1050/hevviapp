@@ -24,6 +24,8 @@ interface ProfilePageProps {
 		delivered: number
 		in_progress: number
 		total: number
+		delivery_percent?: number
+		approval_percent?: number
 	}
 }
 
@@ -144,14 +146,19 @@ export const ProfilePage: FC<ProfilePageProps> = (props) => {
 									<div>
 										<CircleChart
 											size={120}
-											percent={97}
-											title={`${97}%`}
+											percent={orders.delivery_percent ?? 0}
+											title={`${orders.delivery_percent ?? 0}%`}
 											subtitle="Successful deliveries"
 										/>
 									</div>
 
 									<div>
-										<CircleChart size={150} percent={73} title={`${73}%`} subtitle="Apply rate" />
+										<CircleChart
+											size={150}
+											percent={orders.approval_percent ?? 0}
+											title={`${orders.approval_percent ?? 0}%`}
+											subtitle="Apply rate"
+										/>
 									</div>
 								</div>
 							</div>

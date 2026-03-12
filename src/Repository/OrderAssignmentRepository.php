@@ -31,28 +31,37 @@ class OrderAssignmentRepository extends ServiceEntityRepository
         ]);
     }
 
-    //    /**
-    //     * @return OrderAssignment[] Returns an array of OrderAssignment objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('o')
-    //            ->andWhere('o.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('o.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Возвращает количество назначений перевозчика со статусами ACCEPTED и REJECTED.
+     * Используется для расчёта процента одобрения (apply rate) на странице профиля.
+     *
+     * @return array{accepted: int, rejected: int}
+     */
+    public function countAcceptedAndRejectedByCarrier(Carrier $carrier): array
+    {
+        $rows = $this->createQueryBuilder('oa')
+            ->select('oa.status', 'COUNT(oa.id) as cnt')
+            ->where('oa.carrier = :carrier')
+            ->andWhere('oa.status IN (:statuses)')
+            ->setParameter('carrier', $carrier)
+            ->setParameter('statuses', [
+                OrderAssignment::STATUS['ACCEPTED'],
+                OrderAssignment::STATUS['REJECTED'],
+            ])
+            ->groupBy('oa.status')
+            ->getQuery()
+            ->getResult();
 
-    //    public function findOneBySomeField($value): ?OrderAssignment
-    //    {
-    //        return $this->createQueryBuilder('o')
-    //            ->andWhere('o.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $counts = ['accepted' => 0, 'rejected' => 0];
+
+        foreach ($rows as $row) {
+            match ((int) $row['status']) {
+                OrderAssignment::STATUS['ACCEPTED'] => $counts['accepted'] = (int) $row['cnt'],
+                OrderAssignment::STATUS['REJECTED']  => $counts['rejected'] = (int) $row['cnt'],
+                default => null,
+            };
+        }
+
+        return $counts;
+    }
 }

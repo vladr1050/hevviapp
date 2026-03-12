@@ -4,17 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="carrier added">
+    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="carrier updated">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/OrderCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/OrderCard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/CancelModal/CancelModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/CancelModal/CancelModal.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/DeclineModal/DeclineModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/DeclineModal/DeclineModal.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/StatusOrder/StatusOrder.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/StatusOrder/StatusOrder.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/shared/config/constants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/config/constants.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/islands/pages/Profile/Profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/islands/pages/Profile/Profile.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/CarrierController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CarrierController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/EventSubscriber/OrderAssignmentSubscriber.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/EventSubscriber/OrderAssignmentSubscriber.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Repository/OrderAssignmentRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/OrderAssignmentRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/OrderRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/OrderRepository.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -323,7 +317,7 @@
       <workItem from="1772646988460" duration="306000" />
       <workItem from="1772654790742" duration="5432000" />
       <workItem from="1772723570253" duration="8016000" />
-      <workItem from="1772786955928" duration="20953000" />
+      <workItem from="1772786955928" duration="22931000" />
     </task>
     <task id="LOCAL-00001" summary="custom areas added to service areas">
       <option name="closed" value="true" />
@@ -573,7 +567,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773248597046</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="carrier updated">
+      <option name="closed" value="true" />
+      <created>1773253356910</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1773253356910</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -592,6 +594,7 @@
     <MESSAGE value="request geocoding added" />
     <MESSAGE value="request finished api added" />
     <MESSAGE value="carrier added" />
-    <option name="LAST_COMMIT_MESSAGE" value="carrier added" />
+    <MESSAGE value="carrier updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="carrier updated" />
   </component>
 </project>

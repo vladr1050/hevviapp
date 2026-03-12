@@ -293,16 +293,19 @@ class CarrierController extends AbstractController
     }
 
     /**
-     * Считает заказы перевозчика по ключевым статусам.
+     * Считает заказы перевозчика по ключевым статусам и вычисляет статистику профиля.
      *
-     * @return array{total: int, cancelled: int, delivered: int, in_progress: int}
+     * delivery_percent — доля DELIVERED среди завершённых (DELIVERED + CANCELLED), макс. 100.
+     * approval_percent — доля ACCEPTED среди всех ответов на назначения (ACCEPTED + REJECTED), макс. 100.
+     *
+     * @return array{total: int, cancelled: int, delivered: int, in_progress: int, delivery_percent: int, approval_percent: int}
      */
     private function buildOrderStats(Carrier $carrier): array
     {
         $stats = [
-            'total' => $carrier->getOrders()->count(),
-            'cancelled' => 0,
-            'delivered' => 0,
+            'total'      => $carrier->getOrders()->count(),
+            'cancelled'  => 0,
+            'delivered'  => 0,
             'in_progress' => 0,
         ];
 
@@ -313,6 +316,17 @@ class CarrierController extends AbstractController
                 default => $stats['in_progress']++,
             };
         }
+
+        $completedTotal = $stats['delivered'] + $stats['cancelled'];
+        $stats['delivery_percent'] = $completedTotal > 0
+            ? (int) round(min($stats['delivered'] / $completedTotal * 100, 100))
+            : 0;
+
+        $assignmentCounts = $this->orderAssignmentRepository->countAcceptedAndRejectedByCarrier($carrier);
+        $assignmentTotal  = $assignmentCounts['accepted'] + $assignmentCounts['rejected'];
+        $stats['approval_percent'] = $assignmentTotal > 0
+            ? (int) round(min($assignmentCounts['accepted'] / $assignmentTotal * 100, 100))
+            : 0;
 
         return $stats;
     }
