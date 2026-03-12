@@ -9,6 +9,8 @@ type CalendarProps = ComponentProps<typeof DayPicker> & {
 	// buttonVariant?: ComponentProps<typeof Button>["variant"]
 	month: Date
 	setMonth: (month: Date) => void
+	startDate?: Date
+	disableDaysAhead?: number
 }
 
 //
@@ -26,16 +28,28 @@ const Calendar: FC<CalendarProps> = ({
 	components,
 	month,
 	setMonth,
+	startDate,
+	disableDaysAhead,
+	disabled,
 	...props
 }) => {
 	const defaultClassNames = getDefaultClassNames()
 
 	const disabledDays = useMemo(() => {
-		const today = new Date()
-		today.setHours(0, 0, 0, 0)
+		const baseDate = startDate ? new Date(startDate) : new Date()
+		baseDate.setHours(0, 0, 0, 0)
 
-		return [{ before: new Date(today.getTime() + 24 * 60 * 60 * 1000) }]
-	}, [])
+		const firstAvailableDate = new Date(baseDate)
+		firstAvailableDate.setDate(firstAvailableDate.getDate() + (disableDaysAhead || 0))
+
+		return [{ before: firstAvailableDate }]
+	}, [startDate, disableDaysAhead])
+
+	const mergedDisabled = useMemo(() => {
+		if (!disabled) return disabledDays
+
+		return Array.isArray(disabled) ? [...disabled, ...disabledDays] : [disabled, ...disabledDays]
+	}, [disabled, disabledDays])
 
 	return (
 		<DayPicker
@@ -116,9 +130,9 @@ const Calendar: FC<CalendarProps> = ({
 			{...props}
 			modifiers={{
 				...props.modifiers,
-				booked: props.disabled,
+				booked: mergedDisabled,
 			}}
-			disabled={props.disabled || disabledDays}
+			disabled={mergedDisabled}
 		/>
 	)
 }

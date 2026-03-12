@@ -22,6 +22,8 @@ export interface CreateOrderPayload {
 	pickupTimeTo: string | null
 	pickupDate: string | null
 	deliveryDate: string | null
+	deliveryTimeFrom: string | null
+	deliveryTimeTo: string | null
 	cargo: CreateOrderCargoPayload
 }
 

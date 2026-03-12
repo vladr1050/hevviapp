@@ -23,18 +23,22 @@ import { Slider } from '@ui/Slider/Slider'
 import { Switch } from '@ui/Switch/Switch'
 import { Textarea } from '@ui/Textarea/Textarea'
 import { cn } from '@utils/cn'
+import { addDays } from 'date-fns'
 // @ts-ignore
 import L from 'leaflet'
 
 // @ts-ignore
 import CustomIcon from '../../../../../shared/components/OrderCard/CustomMarker.svg'
 // @ts-ignore
-import pickup_ready from './pickup_ready.png'
+import pickup_ready from './images/pickup_ready.png'
 
 import styles from './ModalContent.module.css'
 
 import { CalculateModalType } from '../../Requests'
 import { InputButton } from '../InputButton/InputButton'
+
+// @ts-ignore
+import calculatingGif from './images/calculating.gif'
 
 interface ModalContentProps {
 	activeButton: CalculateModalType
@@ -43,7 +47,7 @@ interface ModalContentProps {
 }
 
 type FormValues = {
-	// what
+	// WHAT
 	cargoType: 'palette' | 'irregular_cargo'
 	amount: number
 	width: number
@@ -54,20 +58,25 @@ type FormValues = {
 	comments: string
 	stackabilityPossible: boolean
 	truckWithLift: boolean
-	// where
+	// WHERE
 	from: string
 	to: string
 	pickupLatitude: number | undefined
 	pickupLongitude: number | undefined
 	dropoutLatitude: number | undefined
 	dropoutLongitude: number | undefined
-	// when
-	scheduleType: 'pickup_ready' | 'pickup_later' | 'deliver_at'
-	month: number
-	year: YearsType
-	date?: string
-	timeFrom?: string
-	timeTo?: string
+	// WHEN
+	pickupType: 'pickup_ready' | 'pickup_later'
+	// pickup
+	pickupMonth: number
+	pickupYear: YearsType
+	pickupTimeFrom: string
+	pickupTimeTo: string
+	// delivery
+	deliverMonth: number
+	deliverYear: YearsType
+	deliverTimeFrom: string
+	deliverTimeTo: string
 }
 
 const DEFAULT_LAT = 56.946845
@@ -96,39 +105,60 @@ export const ModalContent: FC<ModalContentProps> = ({
 		iconAnchor: [20, 30],
 	})
 
-	const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-		new Date(new Date().getFullYear(), 0, 12)
-		// from: new Date(new Date().getFullYear(), 0, 12),
-		// to: addDays(new Date(new Date().getFullYear(), 0, 12), 30),
+	const [tabItem, setTabItem] = useState<'pickup_ready' | 'pickup_later' | 'deliver_at'>(
+		'pickup_ready'
 	)
+	const [selectedDate, setSelectedDate] = useState<{
+		pickup: Date | undefined
+		delivery: Date | undefined
+	}>({
+		pickup: addDays(new Date(), 1),
+		delivery: addDays(new Date(), 3),
+	})
 
-	const [month, setMonth] = useState(() => {
+	const createMonthDate = () => {
 		const d = new Date()
 		d.setDate(1)
 		return d
+	}
+
+	const [calendarMonth, setCalendarMonth] = useState<{
+		pickup: Date
+		deliver: Date
+	}>({
+		pickup: createMonthDate(),
+		deliver: createMonthDate(),
 	})
 
-	const onSelectMonth = (monthIndex: number) => {
-		setMonth((prev) => {
-			const next = new Date(prev)
+	const onSelectMonth = (type: 'pickup' | 'deliver', monthIndex: number) => {
+		setCalendarMonth((prev) => {
+			const next = new Date(prev[type])
 			next.setMonth(monthIndex)
 			next.setDate(1)
-			return next
+
+			return {
+				...prev,
+				[type]: next,
+			}
 		})
 	}
 
-	const handleYearChange = (year: number) => {
-		setMonth((prev) => {
-			const next = new Date(prev)
+	const handleYearChange = (type: 'pickup' | 'deliver', year: number) => {
+		setCalendarMonth((prev) => {
+			const next = new Date(prev[type])
 			next.setFullYear(year)
 			next.setDate(1)
-			return next
+
+			return {
+				...prev,
+				[type]: next,
+			}
 		})
 	}
 
-	const { control, register, handleSubmit, watch, setValue } = useForm<FormValues>({
+	const { control, register, handleSubmit, watch, setValue, resetField } = useForm<FormValues>({
 		defaultValues: {
-			// what
+			// WHAT
 			cargoType: 'palette',
 			amount: 1,
 			width: 120,
@@ -139,21 +169,26 @@ export const ModalContent: FC<ModalContentProps> = ({
 			comments: '',
 			stackabilityPossible: false,
 			truckWithLift: true,
-			// where
+			// WHERE
 			from: '',
 			to: '',
 			pickupLatitude: undefined,
 			pickupLongitude: undefined,
 			dropoutLatitude: undefined,
 			dropoutLongitude: undefined,
-			// when
-			scheduleType: 'pickup_ready',
-			// scheduleType: 'pickup_later',
-			month: currentMonthZeroBased,
-			year: currentYear.toString() as YearsType,
-			// date: '',
-			// timeFrom: '',
-			// timeTo: '',
+			// WHEN
+			pickupType: 'pickup_ready',
+			// pickup
+
+			pickupMonth: currentMonthZeroBased,
+			pickupYear: currentYear.toString() as YearsType,
+			pickupTimeFrom: '',
+			pickupTimeTo: '',
+			// delivery
+			deliverMonth: currentMonthZeroBased,
+			deliverYear: currentYear.toString() as YearsType,
+			deliverTimeFrom: '',
+			deliverTimeTo: '',
 		},
 	})
 
@@ -175,10 +210,10 @@ export const ModalContent: FC<ModalContentProps> = ({
 
 			let pickupDate: string | null = null
 			let deliveryDate: string | null = null
-			if (selectedDate && values.scheduleType === 'pickup_later') {
-				pickupDate = formatDate(selectedDate)
-			} else if (selectedDate && values.scheduleType === 'deliver_at') {
-				deliveryDate = formatDate(selectedDate)
+			if (selectedDate && tabItem === 'pickup_later') {
+				pickupDate = formatDate(selectedDate.pickup)
+			} else if (selectedDate && tabItem === 'deliver_at') {
+				deliveryDate = formatDate(selectedDate.delivery)
 			}
 
 			// Map cargoType string → Cargo.type int
@@ -201,10 +236,12 @@ export const ModalContent: FC<ModalContentProps> = ({
 				dropoutLatitude: values.dropoutLatitude ?? null,
 				dropoutLongitude: values.dropoutLongitude ?? null,
 				notes: values.comments || null,
-				pickupTimeFrom: values.timeFrom || null,
-				pickupTimeTo: values.timeTo || null,
+				pickupTimeFrom: values.pickupTimeFrom || null,
+				pickupTimeTo: values.pickupTimeTo || null,
 				pickupDate,
 				deliveryDate,
+				deliveryTimeFrom: values.deliverTimeFrom || null,
+				deliveryTimeTo: values.deliverTimeTo || null,
 				cargo: {
 					type: cargoTypeMap[values.cargoType] ?? 1,
 					quantity: values.amount,
@@ -230,7 +267,7 @@ export const ModalContent: FC<ModalContentProps> = ({
 		return (
 			<div className={styles.isCalculating}>
 				<div className={styles.icon}>
-					<Icon type="big_box" size={40} />
+					<img alt="" src={calculatingGif} style={{ width: '170px', height: '170px' }} />
 				</div>
 
 				<div className={styles.wrapper}>
@@ -586,34 +623,40 @@ export const ModalContent: FC<ModalContentProps> = ({
 					{/*  */}
 					<div
 						className={cn(styles.left, {
-							[styles.pickupReady]: watch('scheduleType') === 'pickup_ready',
+							[styles.pickupReady]: tabItem === 'pickup_ready',
 						})}
 					>
 						<div className={styles.buttons}>
 							<button
 								type="button"
 								className={cn(styles.button, {
-									[styles.active]: watch('scheduleType') === 'pickup_ready',
+									[styles.active]: tabItem === 'pickup_ready',
 								})}
-								onClick={() => setValue('scheduleType', 'pickup_ready')}
+								onClick={() => {
+									setValue('pickupType', 'pickup_ready')
+									setTabItem('pickup_ready')
+								}}
 							>
 								Pickup ready
 							</button>
 							<button
 								type="button"
 								className={cn(styles.button, {
-									[styles.active]: watch('scheduleType') === 'pickup_later',
+									[styles.active]: tabItem === 'pickup_later',
 								})}
-								onClick={() => setValue('scheduleType', 'pickup_later')}
+								onClick={() => {
+									setValue('pickupType', 'pickup_later')
+									setTabItem('pickup_later')
+								}}
 							>
 								Pickup later
 							</button>
 							<button
 								type="button"
 								className={cn(styles.button, {
-									[styles.active]: watch('scheduleType') === 'deliver_at',
+									[styles.active]: tabItem === 'deliver_at',
 								})}
-								onClick={() => setValue('scheduleType', 'deliver_at')}
+								onClick={() => setTabItem('deliver_at')}
 							>
 								Deliver at
 							</button>
@@ -623,15 +666,15 @@ export const ModalContent: FC<ModalContentProps> = ({
 					{/*  */}
 					<div
 						className={cn(styles.center, {
-							[styles.pickupReady]: watch('scheduleType') === 'pickup_ready',
-							[styles.notPickupReady]: watch('scheduleType') !== 'pickup_ready',
+							[styles.pickupReady]: tabItem === 'pickup_ready',
+							[styles.notPickupReady]: tabItem !== 'pickup_ready',
 							// [styles.pickupLater]: watch('scheduleType') === 'pickup_later',
 							// [styles.deliverAt]: watch('scheduleType') === 'deliver_at',
 						})}
 					>
-						{watch('scheduleType') === 'pickup_ready' && (
+						{tabItem === 'pickup_ready' && (
 							<div className={styles.centerContent}>
-								<img src={pickup_ready} alt="" />
+								<img src={pickup_ready} alt="" width={345} height={320} />
 
 								<div className={styles.icon}>
 									<Icon type="check_circle_2" size={26} />
@@ -639,20 +682,23 @@ export const ModalContent: FC<ModalContentProps> = ({
 							</div>
 						)}
 
-						{watch('scheduleType') !== 'pickup_ready' && (
+						{tabItem !== 'pickup_ready' && (
 							<div className={styles.centerContent}>
-								<div className={styles.top}>
+								<div className={styles.top} key={tabItem}>
 									<Controller
 										control={control}
-										name="month"
+										name={tabItem === 'pickup_later' ? 'pickupMonth' : 'deliverMonth'}
 										render={({ field: { value, onChange } }) => (
 											<Select
 												color="green"
-												defaultValue={value.toString()}
-												value={value.toString()}
+												defaultValue={value?.toString()}
+												value={value?.toString() || ''}
 												onChange={(v) => {
 													onChange(v)
-													onSelectMonth(Number(v))
+													onSelectMonth(
+														tabItem === 'pickup_later' ? 'pickup' : 'deliver',
+														Number(v)
+													)
 												}}
 												values={months.map((month, index) => ({
 													label: month.charAt(0).toUpperCase() + month.slice(1),
@@ -664,15 +710,18 @@ export const ModalContent: FC<ModalContentProps> = ({
 
 									<Controller
 										control={control}
-										name="year"
+										name={tabItem === 'pickup_later' ? 'pickupYear' : 'deliverYear'}
 										render={({ field: { value, onChange } }) => (
 											<Select
 												color="green"
 												defaultValue={value}
-												value={value}
+												value={value || ''}
 												onChange={(v) => {
 													onChange(v)
-													handleYearChange(Number(v))
+													handleYearChange(
+														tabItem === 'pickup_later' ? 'pickup' : 'deliver',
+														Number(v)
+													)
 												}}
 												values={years.map((year) => ({ label: year, value: year }))}
 											/>
@@ -682,10 +731,27 @@ export const ModalContent: FC<ModalContentProps> = ({
 								<div className={styles.calendar}>
 									<Calendar
 										mode="single"
-										month={month}
-										setMonth={setMonth}
-										selected={selectedDate}
-										onSelect={setSelectedDate}
+										month={
+											tabItem === 'pickup_later' ? calendarMonth.pickup : calendarMonth.deliver
+										}
+										key={tabItem}
+										setMonth={(date) =>
+											setCalendarMonth((prev) => ({
+												...prev,
+												[tabItem === 'pickup_later' ? 'pickup' : 'deliver']: date,
+											}))
+										}
+										selected={
+											tabItem === 'pickup_later' ? selectedDate?.pickup : selectedDate?.delivery
+										}
+										startDate={tabItem === 'deliver_at' ? selectedDate?.pickup : undefined}
+										disableDaysAhead={tabItem === 'pickup_later' ? 1 : 2}
+										onSelect={(v) =>
+											setSelectedDate((prev) => ({
+												...prev,
+												[tabItem === 'pickup_later' ? 'pickup' : 'delivery']: v,
+											}))
+										}
 										className="rounded-lg border"
 									/>
 								</div>
@@ -699,12 +765,20 @@ export const ModalContent: FC<ModalContentProps> = ({
 						<div className={styles.timeWrapper}>
 							<div className={styles.time}>
 								<div className={styles.title}>from</div>
-								<CustomTimeInput control={control} name="timeFrom" />
+								<CustomTimeInput
+									key={tabItem}
+									control={control}
+									name={tabItem === 'deliver_at' ? 'deliverTimeFrom' : 'pickupTimeFrom'}
+								/>
 							</div>
 
 							<div className={styles.time}>
 								<div className={styles.title}>to</div>
-								<CustomTimeInput control={control} name="timeTo" />
+								<CustomTimeInput
+									key={tabItem}
+									control={control}
+									name={tabItem === 'deliver_at' ? 'deliverTimeTo' : 'pickupTimeTo'}
+								/>
 							</div>
 						</div>
 					</div>

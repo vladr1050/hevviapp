@@ -28,10 +28,7 @@ interface StatusOrderProps {
 
 const DELIVERY_LIMIT_MS = 48 * 60 * 60 * 1000
 
-const useDeliveryCountdown = (
-	paidDate: string | undefined,
-	deliveredDate: string | undefined,
-) => {
+const useDeliveryCountdown = (paidDate: string | undefined, deliveredDate: string | undefined) => {
 	const getRemaining = () => {
 		if (!paidDate) return 0
 		const deadline = new Date(paidDate).getTime() + DELIVERY_LIMIT_MS
@@ -94,7 +91,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 									) : (
 										<img
 											alt=""
-											src={awaitingPaymentGif} // carrierMatchedGig
+											src={awaitingPaymentGif}
 											style={{ width: '48px', height: '48px' }}
 										/>
 									)}

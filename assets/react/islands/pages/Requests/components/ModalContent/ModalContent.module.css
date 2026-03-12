@@ -286,6 +286,7 @@
 
 			& .center {
 				@apply flex items-center justify-center;
+				@apply min-h-[382px];
 
 				&.pickupReady {
 					& .centerContent {
@@ -308,7 +309,7 @@
 						}
 
 						& .calendar {
-							@apply flex items-center justify-center h-[240px];
+							@apply flex items-center justify-center h-[312px];
 						}
 					}
 				}

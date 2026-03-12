@@ -160,13 +160,13 @@ export const RequestsPage: FC<RequestsPageProps> = (props) => {
 								label="Where"
 								placeholder="Enter destination"
 								className={cn(styles.inputButton)}
-								onClick={() => setActiveButton('where')}
+								onClick={() => setActiveButton('what')}
 							/>
 							<InputButton
 								label="When"
 								placeholder="Add date"
 								className={cn(styles.inputButton)}
-								onClick={() => setActiveButton('when')}
+								onClick={() => setActiveButton('what')}
 							/>
 
 							<Button type="button" onClick={() => setActiveButton('what')}>
