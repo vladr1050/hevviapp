@@ -110,6 +110,7 @@ export type OrderType = {
 	pickup_request_date?: string
 	delivery_date?: string
 	paid_date?: string
+	delivered_date?: string
 	type?: string
 	vat?: string
 	brutto?: string

@@ -279,6 +279,7 @@ class CarrierController extends AbstractController
 
         $history = $this->resolvePickupHistory($order);
         $paidHistory = $this->resolvePaidHistory($order);
+        $deliveredHistory = $this->resolveDeliveredHistory($order);
         $cargo = $order->getCargo()->first();
 
         $item = [
@@ -301,6 +302,7 @@ class CarrierController extends AbstractController
             'comment' => $order->getNotes(),
             'pickup_date' => false !== $history ? $history->getCreatedAt()->format('d.m.Y') : null,
             'paid_date' => false !== $paidHistory ? $paidHistory->getCreatedAt()->format(\DateTimeInterface::ATOM) : null,
+            'delivered_date' => false !== $deliveredHistory ? $deliveredHistory->getCreatedAt()->format(\DateTimeInterface::ATOM) : null,
             'carrier' => $order->getCarrier()?->getLegalName(),
             'pickup_latitude' => $order->getPickupLatitude(),
             'pickup_longitude' => $order->getPickupLongitude(),
@@ -393,6 +395,16 @@ class CarrierController extends AbstractController
     {
         return $order->getHistories()
             ->filter(fn(OrderHistory $history) => $history->getStatus() === Order::STATUS['PAID'])
+            ->first();
+    }
+
+    /**
+     * Ищет в истории заказа запись о факте доставки (DELIVERED).
+     */
+    private function resolveDeliveredHistory(Order $order): OrderHistory|false
+    {
+        return $order->getHistories()
+            ->filter(fn(OrderHistory $history) => $history->getStatus() === Order::STATUS['DELIVERED'])
             ->first();
     }
 
