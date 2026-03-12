@@ -11,13 +11,12 @@ interface OrderPageProps {
 	title: string
 	order: OrderType
 	csrf_token: string
+	update_status_csrf_token?: string
 	isCarrier?: boolean
 }
 
 export const OrderPage: FC<OrderPageProps> = (props) => {
-	const { title, order, csrf_token, isCarrier } = props
-
-	console.log(props)
+	const { title, order, csrf_token, update_status_csrf_token, isCarrier } = props
 
 	return (
 		<div className={cn('tw-container', styles.page)}>
@@ -26,7 +25,13 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 					<Icon type="arrow_right" className="rotate-180" size={18} />
 				</a>
 
-				<OrderCard title={title} order={order} isCarrier={isCarrier} csrfToken={csrf_token} />
+				<OrderCard
+					title={title}
+					order={order}
+					isCarrier={isCarrier}
+					csrfToken={csrf_token}
+					updateStatusCsrfToken={update_status_csrf_token}
+				/>
 			</div>
 		</div>
 	)

@@ -1,6 +1,6 @@
 import { type FC, ReactNode, SetStateAction, useEffect, useState } from 'react'
 
-import { FormActions, OrderStatusEnum, OrderType } from '@config/constants'
+import { OrderStatusEnum, OrderType, carrierUpdateStatusUrl } from '@config/constants'
 import { Button } from '@ui/Button/Button'
 import { Checkbox } from '@ui/Checkbox/Checkbox'
 import { CircleChart } from '@ui/CircleChart/CircleChart'
@@ -23,6 +23,7 @@ interface StatusOrderProps {
 	isCarrier?: boolean
 	order: OrderType
 	setModalId: (value: SetStateAction<any>) => void
+	csrfToken?: string
 }
 
 const DELIVERY_LIMIT_MS = 48 * 60 * 60 * 1000
@@ -56,8 +57,8 @@ const useDeliveryCountdown = (paidDate: string | undefined) => {
 	return { percent, timeLabel, subtitle }
 }
 
-export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId }) => {
-	const [valueForm, setValueForm] = useState<'PICKUP_DONE' | 'DELIVERED'>()
+export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId, csrfToken }) => {
+	const [valueForm, setValueForm] = useState<'PICKUP_DONE' | 'IN_TRANSIT' | 'DELIVERED'>()
 	const countdown = useDeliveryCountdown(order.paid_date)
 
 	return (
@@ -214,33 +215,34 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 							})}
 						/>
 
-						<ItemCarrier
-							iconType="vehicle_right"
-							label={<>In transit</>}
-							checked={order.status >= OrderStatusEnum.IN_TRANSIT || valueForm === 'DELIVERED'}
-							isActive={order.status >= OrderStatusEnum.IN_TRANSIT}
-							isWaiting={order.status === OrderStatusEnum.PICKUP_DONE}
-							showInfo={order.status === OrderStatusEnum.PICKUP_DONE}
-							infoText="In transit"
-							onClick={() => setValueForm('DELIVERED')}
-						/>
+					<ItemCarrier
+						iconType="vehicle_right"
+						label={<>In transit</>}
+						checked={order.status >= OrderStatusEnum.IN_TRANSIT || valueForm === 'IN_TRANSIT'}
+						isActive={order.status >= OrderStatusEnum.IN_TRANSIT}
+						isWaiting={order.status === OrderStatusEnum.PICKUP_DONE}
+						showInfo={order.status === OrderStatusEnum.PICKUP_DONE}
+						infoText="In transit"
+						onClick={() => setValueForm('IN_TRANSIT')}
+					/>
 
-						<div
-							className={cn(styles.line, {
-								[styles.big]: order.status === OrderStatusEnum.IN_TRANSIT,
-							})}
-						/>
+					<div
+						className={cn(styles.line, {
+							[styles.big]: order.status === OrderStatusEnum.IN_TRANSIT,
+						})}
+					/>
 
-						<ItemCarrier
-							iconType="check_circle_1"
-							label={<>Delivered</>}
-							checked={order.status === OrderStatusEnum.DELIVERED}
-							isActive={order.status === OrderStatusEnum.DELIVERED}
-							hideCheckbox
-							isWaiting={order.status === OrderStatusEnum.IN_TRANSIT}
-							showInfo={order.status === OrderStatusEnum.IN_TRANSIT}
-							infoText="Pending approval"
-						/>
+					<ItemCarrier
+						iconType="check_circle_1"
+						label={<>Delivered</>}
+						checked={order.status === OrderStatusEnum.DELIVERED || valueForm === 'DELIVERED'}
+						isActive={order.status === OrderStatusEnum.DELIVERED}
+						hideCheckbox
+						isWaiting={order.status === OrderStatusEnum.IN_TRANSIT}
+						showInfo={order.status === OrderStatusEnum.IN_TRANSIT}
+						infoText="Pending approval"
+						onClick={() => setValueForm('DELIVERED')}
+					/>
 					</div>
 				</div>
 			)}
@@ -274,19 +276,20 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 			{isCarrier && (
 				<>
 					<div className={styles.footer}>
-						{!!valueForm && (
-							<form method="POST" action={FormActions.UPDATE_STATUS} className={styles.button}>
-								<Button
-									type="submit"
-									variant="outline"
-									name="action"
-									value={valueForm}
-									className="w-full"
-								>
-									Update status
-								</Button>
-							</form>
-						)}
+				{!!valueForm && (
+						<form method="POST" action={carrierUpdateStatusUrl(order.id)} className={styles.button}>
+							<input type="hidden" name="_token" value={csrfToken} />
+							<Button
+								type="submit"
+								variant="outline"
+								name="action"
+								value={valueForm}
+								className="w-full"
+							>
+								Update status
+							</Button>
+						</form>
+					)}
 
 						{order.status < OrderStatusEnum.PICKUP_DONE && (
 							<Button

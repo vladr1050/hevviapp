@@ -27,8 +27,11 @@ use App\Repository\OrderRepository;
 use App\Twig\Extension\Filter\MoneyExtension;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -166,6 +169,48 @@ class CarrierController extends AbstractController
         $this->em->flush();
 
         return $this->redirectToRoute('carrier_public_orders');
+    }
+
+    #[Route('/orders/{id}/update-status', name: 'public_order_update_status', methods: ['POST'])]
+    public function updateOrderStatus(string $id, Request $request, CsrfTokenManagerInterface $csrfTokenManager): Response
+    {
+        /** @var Carrier $user */
+        $user = $this->getUser();
+
+        $order = $this->orderRepository->find($id);
+        if (!$order || $order->getCarrier() !== $user) {
+            return $this->redirectToRoute('carrier_public_orders');
+        }
+
+        $token = new CsrfToken('update_order_status', (string) $request->request->get('_token'));
+        if (!$csrfTokenManager->isTokenValid($token)) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
+        $allowedTransitions = [
+            Order::STATUS['AWAITING_PICKUP'] => ['PICKUP_DONE' => Order::STATUS['PICKUP_DONE']],
+            Order::STATUS['PICKUP_DONE']     => ['IN_TRANSIT'  => Order::STATUS['IN_TRANSIT']],
+            Order::STATUS['IN_TRANSIT']      => ['DELIVERED'   => Order::STATUS['DELIVERED']],
+        ];
+
+        $action        = (string) $request->request->get('action');
+        $currentStatus = $order->getStatus();
+
+        if (!isset($allowedTransitions[$currentStatus][$action])) {
+            return $this->redirectToRoute('carrier_public_order', ['id' => $id]);
+        }
+
+        $newStatus = $allowedTransitions[$currentStatus][$action];
+        $order->setStatus($newStatus);
+
+        $history = new OrderHistory();
+        $history->setRelatedOrder($order);
+        $history->setStatus($newStatus);
+        $history->setChangedBy(OrderHistory::CHANGED_BY['CARRIER']);
+        $this->em->persist($history);
+        $this->em->flush();
+
+        return $this->redirectToRoute('carrier_public_order', ['id' => $id]);
     }
 
     #[Route('/profile', name: 'public_profile')]

@@ -35,6 +35,7 @@ interface OrderCardProps {
 	isCarrier?: boolean
 	isRequest?: boolean
 	csrfToken?: string
+	updateStatusCsrfToken?: string
 }
 
 type ModalIdType = 'confirmSender' | 'cancel' | 'rate' | 'declineCarrier'
@@ -45,6 +46,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 	isCarrier,
 	isRequest,
 	csrfToken,
+	updateStatusCsrfToken,
 }) => {
 	const [modalId, setModalId] = useState<ModalIdType>()
 
@@ -377,7 +379,14 @@ export const OrderCard: FC<OrderCardProps> = ({
 					)}
 				</div>
 
-				{showStatus && <StatusOrder order={order} setModalId={setModalId} isCarrier={isCarrier} />}
+				{showStatus && (
+				<StatusOrder
+					order={order}
+					setModalId={setModalId}
+					isCarrier={isCarrier}
+					csrfToken={updateStatusCsrfToken}
+				/>
+			)}
 			</div>
 
 			{/* CONFIRM */}
