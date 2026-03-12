@@ -238,7 +238,6 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 							label={<>Delivered</>}
 							checked={order.status === OrderStatusEnum.DELIVERED || valueForm === 'DELIVERED'}
 							isActive={order.status === OrderStatusEnum.DELIVERED}
-							hideCheckbox
 							isWaiting={order.status === OrderStatusEnum.IN_TRANSIT}
 							showInfo={order.status === OrderStatusEnum.IN_TRANSIT}
 							infoText="Pending approval"

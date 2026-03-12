@@ -208,13 +208,8 @@ export const ModalContent: FC<ModalContentProps> = ({
 			const formatDate = (d: Date | undefined): string | null =>
 				d ? d.toISOString().split('T')[0] : null
 
-			let pickupDate: string | null = null
-			let deliveryDate: string | null = null
-			if (selectedDate && tabItem === 'pickup_later') {
-				pickupDate = formatDate(selectedDate.pickup)
-			} else if (selectedDate && tabItem === 'deliver_at') {
-				deliveryDate = formatDate(selectedDate.delivery)
-			}
+			const pickupDate = selectedDate.pickup ? formatDate(selectedDate.pickup) : null
+			const deliveryDate = selectedDate?.delivery ? formatDate(selectedDate.delivery) : null
 
 			// Map cargoType string → Cargo.type int
 			const cargoTypeMap: Record<string, 1 | 2> = {
