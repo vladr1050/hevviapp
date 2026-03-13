@@ -1,6 +1,8 @@
 import type { FC } from 'react'
 
+import { MobilePage } from '@components/MobilePage/MobilePage'
 import { EMPTY_STRING, OrderStatusEnum, Routes } from '@config/constants'
+import { DeviceType, useDevice } from '@hooks/useDevice'
 import { Icon } from '@ui/Icon/Icon'
 import { cn } from '@utils/cn'
 
@@ -24,11 +26,16 @@ interface OrdersPageProps {
 		carrier?: string
 		pickup_date?: string
 	}[]
+	device?: DeviceType
 }
 
 export const OrdersPage: FC<OrdersPageProps> = (props) => {
-	const { title, orders, isCarrier } = props
+	const { title, orders, isCarrier, device } = props
 	console.log(props)
+
+	const { isMobile } = useDevice(device)
+
+	if (isMobile) return <MobilePage />
 
 	return (
 		<div className={cn('tw-container', styles.page)}>

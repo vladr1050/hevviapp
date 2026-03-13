@@ -1,6 +1,7 @@
 import { type FC, useState } from 'react'
 
 import { EMAIL, PHONE, Routes } from '@config/constants'
+import { DeviceType, useDevice } from '@hooks/useDevice'
 import { Popover } from '@radix-ui/themes'
 import { Icon } from '@ui/Icon/Icon'
 import { cn } from '@utils/cn'
@@ -14,11 +15,16 @@ interface InfoProps {
 		status: 'In Transit' | 'Delivered'
 		hours: number
 	}[]
+	device?: DeviceType
 }
 export const Info: FC<InfoProps> = (props) => {
 	const [currentOrder, setCurrentOrder] = useState(0)
 
-	const { orders } = props
+	const { orders, device } = props
+
+	const { isMobile } = useDevice(device)
+
+	if (isMobile) return null
 
 	return (
 		<>

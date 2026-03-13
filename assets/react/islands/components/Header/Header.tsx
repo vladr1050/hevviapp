@@ -1,6 +1,7 @@
 import type { FC } from 'react'
 
 import { Routes } from '@config/constants'
+import { DeviceType, useDevice } from '@hooks/useDevice'
 import { useLocation } from '@hooks/useLocation'
 import { Popover } from '@radix-ui/themes'
 import { Icon } from '@ui/Icon/Icon'
@@ -16,113 +17,120 @@ interface HeaderProps {
 		company_name?: string
 	}
 	isCarrier?: boolean
+	device?: DeviceType
 }
 
-export const Header: FC<HeaderProps> = ({ user, isCarrier }) => {
+export const Header: FC<HeaderProps> = ({ user, isCarrier, device }) => {
 	const { push, pathname } = useLocation()
+
+	const { isMobile } = useDevice(device)
 
 	return (
 		<div className={styles.wrapper}>
-			<div className={cn('tw-container', styles.header)}>
+			<div className={cn('tw-container', styles.header, { [styles.mobile]: isMobile })}>
 				<div className={styles.left}>
 					<a className={styles.logo} href={Routes.HOME}>
 						<Logo />
 					</a>
 				</div>
 
-				<div className={styles.center}>
-					{typeof user !== 'undefined' && (
-						<Tabs
-							items={[
-								{
-									label: 'Requests',
-									value: isCarrier ? Routes.CARRIER_REQUESTS : Routes.USER_REQUESTS,
-								},
-								{
-									label: 'Orders',
-									value: isCarrier ? Routes.CARRIER_ORDERS : Routes.USER_ORDERS,
-								},
-							]}
-							defaultValue={
-								pathname.includes(isCarrier ? Routes.CARRIER_REQUESTS : Routes.USER_REQUESTS) ||
-								pathname === Routes.HOME
-									? isCarrier
-										? Routes.CARRIER_REQUESTS
-										: Routes.USER_REQUESTS
-									: pathname.includes(isCarrier ? Routes.CARRIER_ORDERS : Routes.USER_ORDERS)
-										? isCarrier
-											? Routes.CARRIER_ORDERS
-											: Routes.USER_ORDERS
-										: 'undefined'
-							}
-							onChange={(v) => push(v)}
-						/>
-					)}
-				</div>
-
-				<div className={styles.right}>
-					{typeof user === 'undefined' ? (
-						<div>
-							<a
-								className={styles.link}
-								href={pathname === Routes.LOGIN ? Routes.REGISTRATION : Routes.LOGIN}
-							>
-								{pathname === Routes.LOGIN ? 'Register' : 'Login'}
-							</a>
+				{!isMobile && (
+					<>
+						<div className={styles.center}>
+							{typeof user !== 'undefined' && (
+								<Tabs
+									items={[
+										{
+											label: 'Requests',
+											value: isCarrier ? Routes.CARRIER_REQUESTS : Routes.USER_REQUESTS,
+										},
+										{
+											label: 'Orders',
+											value: isCarrier ? Routes.CARRIER_ORDERS : Routes.USER_ORDERS,
+										},
+									]}
+									defaultValue={
+										pathname.includes(isCarrier ? Routes.CARRIER_REQUESTS : Routes.USER_REQUESTS) ||
+										pathname === Routes.HOME
+											? isCarrier
+												? Routes.CARRIER_REQUESTS
+												: Routes.USER_REQUESTS
+											: pathname.includes(isCarrier ? Routes.CARRIER_ORDERS : Routes.USER_ORDERS)
+												? isCarrier
+													? Routes.CARRIER_ORDERS
+													: Routes.USER_ORDERS
+												: 'undefined'
+									}
+									onChange={(v) => push(v)}
+								/>
+							)}
 						</div>
-					) : (
-						<Popover.Root>
-							<Popover.Trigger>
-								<div
-									className={cn(styles.profileWrapper, {
-										[styles.active]: pathname.includes(
-											isCarrier ? Routes.CARRIER_PROFILE : Routes.USER_PROFILE
-										),
-									})}
-								>
-									<div className={styles.profile}>
-										<div className={styles.avatar}>
-											{user?.first_name?.charAt(0)}
-											{user?.last_name?.charAt(0)}
-										</div>
 
-										<div>
-											<div className={styles.name}>
-												{user.first_name} {user.last_name}
-											</div>
-
-											{!!user?.company_name?.length && (
-												<div className={styles.company}>{user.company_name}</div>
-											)}
-										</div>
-									</div>
+						<div className={styles.right}>
+							{typeof user === 'undefined' ? (
+								<div>
+									<a
+										className={styles.link}
+										href={pathname === Routes.LOGIN ? Routes.REGISTRATION : Routes.LOGIN}
+									>
+										{pathname === Routes.LOGIN ? 'Register' : 'Login'}
+									</a>
 								</div>
-							</Popover.Trigger>
-							<Popover.Content width="390px" height="220px" className={styles.popover}>
-								<a
-									className={styles.link}
-									href={isCarrier ? Routes.CARRIER_PROFILE : Routes.USER_PROFILE}
-								>
-									<div className={styles.iconWrapper}>
-										<Icon
-											type="profile"
-											size={24}
-											className={cn(styles.icon, '-translate-x-[2px]')}
-										/>
-									</div>
-									Profile
-								</a>
+							) : (
+								<Popover.Root>
+									<Popover.Trigger>
+										<div
+											className={cn(styles.profileWrapper, {
+												[styles.active]: pathname.includes(
+													isCarrier ? Routes.CARRIER_PROFILE : Routes.USER_PROFILE
+												),
+											})}
+										>
+											<div className={styles.profile}>
+												<div className={styles.avatar}>
+													{user?.first_name?.charAt(0)}
+													{user?.last_name?.charAt(0)}
+												</div>
 
-								<a className={styles.link} href={Routes.LOGOUT}>
-									<div className={styles.iconWrapper}>
-										<Icon type="logout" className={styles.icon} />
-									</div>
-									Logout
-								</a>
-							</Popover.Content>
-						</Popover.Root>
-					)}
-				</div>
+												<div>
+													<div className={styles.name}>
+														{user.first_name} {user.last_name}
+													</div>
+
+													{!!user?.company_name?.length && (
+														<div className={styles.company}>{user.company_name}</div>
+													)}
+												</div>
+											</div>
+										</div>
+									</Popover.Trigger>
+									<Popover.Content width="390px" height="220px" className={styles.popover}>
+										<a
+											className={styles.link}
+											href={isCarrier ? Routes.CARRIER_PROFILE : Routes.USER_PROFILE}
+										>
+											<div className={styles.iconWrapper}>
+												<Icon
+													type="profile"
+													size={24}
+													className={cn(styles.icon, '-translate-x-[2px]')}
+												/>
+											</div>
+											Profile
+										</a>
+
+										<a className={styles.link} href={Routes.LOGOUT}>
+											<div className={styles.iconWrapper}>
+												<Icon type="logout" className={styles.icon} />
+											</div>
+											Logout
+										</a>
+									</Popover.Content>
+								</Popover.Root>
+							)}
+						</div>
+					</>
+				)}
 			</div>
 		</div>
 	)

@@ -1,7 +1,9 @@
 import { type FC } from 'react'
 
+import { MobilePage } from '@components/MobilePage/MobilePage'
 import { OrderCard } from '@components/OrderCard/OrderCard'
 import { OrderType, Routes } from '@config/constants'
+import { DeviceType, useDevice } from '@hooks/useDevice'
 import { Icon } from '@ui/Icon/Icon'
 import { cn } from '@utils/cn'
 
@@ -13,10 +15,16 @@ interface OrderPageProps {
 	csrf_token: string
 	update_status_csrf_token?: string
 	isCarrier?: boolean
+	device?: DeviceType
 }
 
 export const OrderPage: FC<OrderPageProps> = (props) => {
-	const { title, order, csrf_token, update_status_csrf_token, isCarrier } = props
+	const { title, order, csrf_token, update_status_csrf_token, isCarrier, device } = props
+	console.log(props)
+
+	const { isMobile } = useDevice(device)
+
+	if (isMobile) return <MobilePage />
 
 	return (
 		<div className={cn('tw-container', styles.page)}>

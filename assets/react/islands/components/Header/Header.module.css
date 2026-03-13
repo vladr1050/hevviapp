@@ -4,6 +4,18 @@
 	& .header {
 		@apply grid grid-cols-[auto,1fr,auto] gap-3 items-center w-full h-full;
 
+		&.mobile {
+			@apply grid-cols-1;
+
+			& .left {
+				@apply justify-center w-full;
+
+				& .logo {
+					@apply scale-150;
+				}
+			}
+		}
+
 		& .logo {
 			@apply cursor-pointer;
 		}

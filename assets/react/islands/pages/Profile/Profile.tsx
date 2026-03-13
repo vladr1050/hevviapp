@@ -1,6 +1,8 @@
 import type { FC } from 'react'
 
+import { MobilePage } from '@components/MobilePage/MobilePage'
 import { AccountType, EMPTY_STRING } from '@config/constants'
+import { DeviceType, useDevice } from '@hooks/useDevice'
 import { CircleChart } from '@ui/CircleChart/CircleChart'
 import { cn } from '@utils/cn'
 
@@ -10,6 +12,7 @@ interface ProfilePageProps {
 	title: string
 	accountType: AccountType
 	isCarrier?: boolean
+	device?: DeviceType
 	user: {
 		company_address?: string
 		company_name?: string
@@ -30,8 +33,12 @@ interface ProfilePageProps {
 }
 
 export const ProfilePage: FC<ProfilePageProps> = (props) => {
-	const { title, accountType, isCarrier, user, orders } = props
+	const { title, accountType, isCarrier, user, orders, device } = props
 	console.log(props)
+
+	const { isMobile } = useDevice(device)
+
+	if (isMobile) return <MobilePage />
 
 	return (
 		<div className={cn('tw-container', styles.page)}>

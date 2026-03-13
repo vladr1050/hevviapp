@@ -32,18 +32,23 @@ class UserController extends AbstractController
     }
 
     #[Route('/dashboard', name: 'public_dashboard')]
-    public function dashboard(): Response
+    public function dashboard(Request $request): Response
     {
+        $device = $request->cookies->get('device');
+
         return $this->render('public/user/pages/dashboard.html.twig', [
             'title' => 'Dashboard',
+            'device' => $device,
         ]);
     }
 
     #[Route('/profile', name: 'public_profile')]
-    public function profile(): Response
+    public function profile(Request $request): Response
     {
         /** @var User $user */
         $user = $this->getUser();
+
+        $device = $request->cookies->get('device');
 
         return $this->render('public/user/pages/profile.html.twig', [
             'title' => $this->translator->trans('show.label_profile', domain: 'AppBundle', locale: $user->getLocale()),
@@ -55,14 +60,17 @@ class UserController extends AbstractController
                 'phone' => $user->getPhone(),
             ],
             'orders' => $this->buildOrderStats($user),
+            'device' => $device,
         ]);
     }
 
     #[Route('/requests', name: 'public_requests')]
-    public function requests(): Response
+    public function requests(Request $request): Response
     {
         /** @var User $user */
         $user = $this->getUser();
+
+        $device = $request->cookies->get('device');
 
         $listOfOrders = [];
         foreach ($this->orderRepository->findRecentBySender($user, 5) as $order) {
@@ -84,14 +92,17 @@ class UserController extends AbstractController
             'title' => $this->translator->trans('show.label_requests', domain: 'AppBundle', locale: $user->getLocale()),
             'user' => $this->buildUserContext($user),
             'orders' => $listOfOrders,
+            'device' => $device,
         ]);
     }
 
     #[Route('/orders', name: 'public_orders', methods: ['GET'])]
-    public function orders(): Response
+    public function orders(Request $request): Response
     {
         /** @var User $user */
         $user = $this->getUser();
+
+        $device = $request->cookies->get('device');
 
         $listOfOrders = [];
         foreach ($this->orderRepository->findRecentBySender($user) as $order) {
@@ -118,14 +129,17 @@ class UserController extends AbstractController
             'title' => $this->translator->trans('show.label_orders', domain: 'AppBundle', locale: $user->getLocale()),
             'orders' => $listOfOrders,
             'user' => $this->buildUserContext($user),
+            'device' => $device,
         ]);
     }
 
     #[Route('/orders/{id}', name: 'public_order', methods: ['GET'])]
-    public function order(string $id): Response
+    public function order(string $id, Request $request): Response
     {
         /** @var User $user */
         $user = $this->getUser();
+
+        $device = $request->cookies->get('device');
 
         $order = $this->orderRepository->find($id);
         if (!$order || $order->getSender() !== $user) {
@@ -173,6 +187,7 @@ class UserController extends AbstractController
             'title' => $this->translator->trans('show.label_order', domain: 'AppBundle', locale: $user->getLocale()),
             'order' => $item,
             'user' => $this->buildUserContext($user),
+            'device' => $device,
         ]);
     }
 

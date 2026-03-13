@@ -21,7 +21,7 @@
 {% block header %}
     <div 
         data-react-island="Header"
-        data-props='{{ { user }|json_encode|e("html_attr") }}'
+        data-props='{{ { user, device }|json_encode|e("html_attr") }}'
     ></div>
 {% endblock %}
 
@@ -36,6 +36,7 @@
                 { id: "00003", name: "Order 3", status: "In Transit", hours: 3 },
                 { id: "00004", name: "Order 4", status: "Delivered", hours: 4 },
             ],
+            device,
         }|json_encode|e("html_attr") }}'
     ></div>
 {% endblock %}

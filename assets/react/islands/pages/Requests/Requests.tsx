@@ -1,7 +1,9 @@
 import { type FC, useState } from 'react'
 
+import { MobilePage } from '@components/MobilePage/MobilePage'
 import { OrderCard } from '@components/OrderCard/OrderCard'
 import { EMPTY_STRING, OrderType, Routes, ShortOrderType } from '@config/constants'
+import { DeviceType, useDevice } from '@hooks/useDevice'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
 import { Modal } from '@ui/Modal/Modal'
@@ -17,17 +19,22 @@ interface RequestsPageProps {
 	isCarrier?: boolean
 	orders: ShortOrderType[]
 	ordersCarrier: OrderType[]
+	device?: DeviceType
 }
 
 export type CalculateModalType = 'what' | 'where' | 'when' | 'calculate' | undefined
 
 export const RequestsPage: FC<RequestsPageProps> = (props) => {
-	const { title, orders, isCarrier, ordersCarrier } = props
+	const { title, orders, isCarrier, ordersCarrier, device } = props
 	console.log(props)
+
+	const { isMobile } = useDevice(device)
 
 	const [activeButton, setActiveButton] = useState<CalculateModalType>()
 
 	const [curOrderIndex, setCurOrderIndex] = useState(0)
+
+	if (isMobile) return <MobilePage />
 
 	if (isCarrier)
 		return (

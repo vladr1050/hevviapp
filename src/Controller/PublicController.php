@@ -22,6 +22,7 @@ use App\Entity\User;
 use App\Repository\RefreshTokenRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -39,24 +40,34 @@ class PublicController extends AbstractController
     }
 
     #[Route('/', name: 'public_index')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        return $this->render('public/user/pages/login.html.twig');
+        $device = $request->cookies->get('device');
+
+        return $this->render('public/user/pages/login.html.twig', [
+            'device' => $device,
+        ]);
     }
 
-     #[Route('/login', name: 'public_login')]
-    public function login(): Response
+    #[Route('/login', name: 'public_login')]
+    public function login(Request $request): Response
     {
+        $device = $request->cookies->get('device');
+
         return $this->render('public/user/pages/login.html.twig', [
             'title' => 'Dashboard',
+            'device' => $device,
         ]);
     }
 
      #[Route('/registration', name: 'public_registration')]
-    public function registration(): Response
+    public function registration(Request $request): Response
     {
+        $device = $request->cookies->get('device');
+
         return $this->render('public/user/pages/registration.html.twig', [
             'title' => 'Dashboard',
+            'device' => $device,
         ]);
     }
 

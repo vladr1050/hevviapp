@@ -1,7 +1,9 @@
 import { type FC, useEffect, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
+import { MobilePage } from '@components/MobilePage/MobilePage'
 import { AccountType } from '@config/constants'
+import { DeviceType, useDevice } from '@hooks/useDevice'
 import { Button } from '@ui/Button/Button'
 import { Checkbox } from '@ui/Checkbox/Checkbox'
 import { Icon } from '@ui/Icon/Icon'
@@ -11,7 +13,9 @@ import { cn } from '@utils/cn'
 
 import styles from './Registration.module.css'
 
-interface RegistrationProps {}
+interface RegistrationProps {
+	device?: DeviceType
+}
 
 type FormValues = {
 	type: AccountType
@@ -21,23 +25,17 @@ type FormValues = {
 	checkbox: boolean
 }
 
-export const RegistrationPage: FC<RegistrationProps> = (props) => {
-	console.log(props)
+export const RegistrationPage: FC<RegistrationProps> = ({ device }) => {
+	const { isMobile } = useDevice(device)
 
 	const {
-		register,
 		handleSubmit,
 		control,
 		watch,
 		formState: { errors },
 		setError,
 		clearErrors,
-	} = useForm<FormValues>({
-		defaultValues: {
-			type: 'Sender',
-			// type: 'Carrier',
-		},
-	})
+	} = useForm<FormValues>({ defaultValues: { type: 'Sender' } })
 
 	useEffect(() => {
 		clearErrors('password')
@@ -53,6 +51,8 @@ export const RegistrationPage: FC<RegistrationProps> = (props) => {
 
 		console.log(values)
 	}
+
+	if (isMobile) return <MobilePage />
 
 	return (
 		<div className={cn('tw-container', styles.page)}>

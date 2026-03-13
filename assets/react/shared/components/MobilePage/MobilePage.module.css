@@ -1,0 +1,16 @@
+.page {
+	background: #dbdbdb;
+	background:
+		url('./bg.png') no-repeat right 30% / contain,
+		linear-gradient(180deg, rgba(219, 219, 219, 1) 0%, rgba(254, 251, 251, 1) 100%);
+
+	@apply flex flex-col items-center justify-end min-h-[calc(100vh-90px)] h-full py-16 gap-5;
+
+	& h1 {
+		@apply m-0 text-black font-semibold text-3xl text-center text-balance;
+	}
+
+	& span {
+		@apply text-black/70 font-medium text-base text-center text-balance;
+	}
+}

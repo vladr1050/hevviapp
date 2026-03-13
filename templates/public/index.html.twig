@@ -2,5 +2,8 @@
 
 
 {% block body %}
-    <div data-react-island="LoginPage"></div>
+    <div 
+        data-react-island="LoginPage"
+        data-props='{{ { device }|json_encode|e("html_attr") }}'
+    ></div>
 {% endblock %}

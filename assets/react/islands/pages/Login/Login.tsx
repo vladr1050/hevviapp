@@ -2,7 +2,9 @@ import { type FC, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 import { apiLogin, apiResetPassword } from '@api/authApi'
+import { MobilePage } from '@components/MobilePage/MobilePage'
 import { saveTokens } from '@hooks/useAuth'
+import { DeviceType, useDevice } from '@hooks/useDevice'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
 import { Input } from '@ui/Input/Input'
@@ -12,15 +14,17 @@ import styles from './Login.module.css'
 
 import { resolver } from './login.schema'
 
-interface LoginProps {}
+interface LoginProps {
+	device?: DeviceType
+}
 
 type FormValues = {
 	login: string
 	password: string
 }
 
-export const LoginPage: FC<LoginProps> = (props) => {
-	console.log(props)
+export const LoginPage: FC<LoginProps> = ({ device }) => {
+	const { isMobile } = useDevice(device)
 
 	const [isReset, setIsReset] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
@@ -50,7 +54,8 @@ export const LoginPage: FC<LoginProps> = (props) => {
 
 			saveTokens(result.access_token, result.refresh_token, result.expires_in, result.user)
 
-			window.location.href = result.account_type === 'carrier' ? '/carrier/requests' : '/user/requests'
+			window.location.href =
+				result.account_type === 'carrier' ? '/carrier/requests' : '/user/requests'
 		} catch (err: unknown) {
 			const message = err instanceof Error ? err.message : 'Login failed'
 			setError(message)
@@ -69,7 +74,7 @@ export const LoginPage: FC<LoginProps> = (props) => {
 		await apiResetPassword(watch('login'))
 	}
 
-	console.log(errors)
+	if (isMobile) return <MobilePage />
 
 	return (
 		<div className={cn('tw-container', styles.page)}>
