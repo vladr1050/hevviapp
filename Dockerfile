@@ -112,9 +112,8 @@ RUN mkdir -p /root/.ssh && \
 COPY composer.json composer.lock symfony.lock ./
 
 # Устанавливаем PHP зависимости (условно в зависимости от APP_MODE)
-# Используем --mount=type=ssh для доступа к SSH ключам из build context
-RUN --mount=type=ssh \
-    if [ "$APP_MODE" = "dev" ]; then \
+# Без --mount=type=ssh для сборки на сервере; для приватных репо добавь mount локально
+RUN if [ "$APP_MODE" = "dev" ]; then \
         composer install --no-scripts --no-autoloader --prefer-dist; \
     else \
         composer install --no-dev --no-scripts --no-autoloader --prefer-dist --optimize-autoloader; \
@@ -135,14 +134,13 @@ COPY tsconfig.json ./
 # Копируем assets для сборки frontend
 COPY assets ./assets
 
-# Собираем frontend (dev build)
-RUN npm run dev
+# Собираем frontend (dev или production в зависимости от APP_MODE)
+RUN if [ "$APP_MODE" = "dev" ]; then npm run dev; else npm run build; fi
 
 # Копируем весь остальной код приложения
 COPY . .
 
-# ✅ Устанавливаем ENV переменные из ARG
-# APP_DEBUG: 1 для dev (автоинвалидация кеша), 0 для prod (производительность)
+# ✅ Устанавливаем ENV переменные из ARG (APP_DEBUG задаётся в compose/runtime)
 ENV APP_ENV=${APP_MODE}
 ENV APP_DEBUG=1
 

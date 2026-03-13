@@ -24,6 +24,7 @@ framework:
 
 when@prod:
     framework:
+        trusted_hosts: ['^hevvi\.app$', '^www\.hevvi\.app$', '^localhost$', '^37\.27\.188\.238$']
         session:
             cookie_secure: true  # Force HTTPS cookies in production
 
