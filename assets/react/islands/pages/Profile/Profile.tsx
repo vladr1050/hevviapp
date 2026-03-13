@@ -1,12 +1,13 @@
 import type { FC } from 'react'
 
-import { MobilePage } from '@components/MobilePage/MobilePage'
 import { AccountType, EMPTY_STRING } from '@config/constants'
 import { DeviceType, useDevice } from '@hooks/useDevice'
 import { CircleChart } from '@ui/CircleChart/CircleChart'
 import { cn } from '@utils/cn'
 
 import styles from './Profile.module.css'
+
+import { MobilePage } from '../MobilePage/MobilePage'
 
 interface ProfilePageProps {
 	title: string

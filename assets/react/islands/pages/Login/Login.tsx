@@ -2,7 +2,6 @@ import { type FC, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 import { apiLogin, apiResetPassword } from '@api/authApi'
-import { MobilePage } from '@components/MobilePage/MobilePage'
 import { saveTokens } from '@hooks/useAuth'
 import { DeviceType, useDevice } from '@hooks/useDevice'
 import { Button } from '@ui/Button/Button'
@@ -11,6 +10,8 @@ import { Input } from '@ui/Input/Input'
 import { cn } from '@utils/cn'
 
 import styles from './Login.module.css'
+
+import { MobilePage } from '../MobilePage/MobilePage'
 
 import { resolver } from './login.schema'
 

@@ -1,0 +1,12 @@
+{% block header %}
+    <div 
+        data-react-island="Header"
+        data-props='{{ { isMobile: true }|json_encode|e("html_attr") }}'
+    ></div>
+{% endblock %}
+
+{% block info %}{% endblock %}
+
+{% block body %}
+    <div data-react-island="MobilePage"></div>
+{% endblock %}

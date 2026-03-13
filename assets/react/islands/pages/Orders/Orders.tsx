@@ -1,12 +1,13 @@
 import type { FC } from 'react'
 
-import { MobilePage } from '@components/MobilePage/MobilePage'
 import { EMPTY_STRING, OrderStatusEnum, Routes } from '@config/constants'
 import { DeviceType, useDevice } from '@hooks/useDevice'
 import { Icon } from '@ui/Icon/Icon'
 import { cn } from '@utils/cn'
 
 import styles from './Orders.module.css'
+
+import { MobilePage } from '../MobilePage/MobilePage'
 
 interface OrdersPageProps {
 	title: string

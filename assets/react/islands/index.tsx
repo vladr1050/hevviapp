@@ -9,3 +9,5 @@ export { RequestsPage } from './pages/Requests/Requests'
 export { OrdersPage } from './pages/Orders/Orders'
 export { OrderPage } from './pages/Order/Order'
 export { ProfilePage } from './pages/Profile/Profile'
+
+export { MobilePage } from './pages/MobilePage/MobilePage'

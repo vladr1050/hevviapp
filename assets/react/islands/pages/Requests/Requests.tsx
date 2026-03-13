@@ -1,6 +1,5 @@
 import { type FC, useState } from 'react'
 
-import { MobilePage } from '@components/MobilePage/MobilePage'
 import { OrderCard } from '@components/OrderCard/OrderCard'
 import { EMPTY_STRING, OrderType, Routes, ShortOrderType } from '@config/constants'
 import { DeviceType, useDevice } from '@hooks/useDevice'
@@ -10,6 +9,8 @@ import { Modal } from '@ui/Modal/Modal'
 import { cn } from '@utils/cn'
 
 import styles from './Requests.module.css'
+
+import { MobilePage } from '../MobilePage/MobilePage'
 
 import { InputButton } from './components/InputButton/InputButton'
 import { ModalContent } from './components/ModalContent/ModalContent'

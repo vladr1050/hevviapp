@@ -19,17 +19,11 @@
 {% extends 'public/user_layout.html.twig' %}
 
 {% block header %}
-    <div 
-        data-react-island="Header"
-        data-props='{{ { device }|json_encode|e("html_attr") }}'
-    ></div>
+    <div data-react-island="Header"></div>
 {% endblock %}
 
 {% block info %}{% endblock %}
 
 {% block body %}
-    <div 
-        data-react-island="LoginPage"
-        data-props='{{ { device }|json_encode|e("html_attr") }}'
-    ></div>
+    <div data-react-island="LoginPage"></div>
 {% endblock %}

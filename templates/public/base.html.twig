@@ -20,11 +20,15 @@
     {% endblock %}
 </head>
 <body>
-    {% block header %}{% endblock %}
-    
-    {% block body %}{% endblock %}
+    {% set device = app.request.cookies.get('device') %}
 
-    {% block info %}{% endblock %}
+    {% if device == 'mobile' %}
+        {% include 'public/mobile_stub.html.twig' %}
+    {% else %}
+        {% block header %}{% endblock %}
+        {% block body %}{% endblock %}
+        {% block info %}{% endblock %}
+    {% endif %}
 
     {% block javascripts %}
         {{ encore_entry_script_tags('app') }}

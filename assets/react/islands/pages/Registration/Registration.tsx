@@ -1,7 +1,6 @@
 import { type FC, useEffect, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
-import { MobilePage } from '@components/MobilePage/MobilePage'
 import { AccountType } from '@config/constants'
 import { DeviceType, useDevice } from '@hooks/useDevice'
 import { Button } from '@ui/Button/Button'
@@ -12,6 +11,8 @@ import { Tabs } from '@ui/Tabs/Tabs'
 import { cn } from '@utils/cn'
 
 import styles from './Registration.module.css'
+
+import { MobilePage } from '../MobilePage/MobilePage'
 
 interface RegistrationProps {
 	device?: DeviceType

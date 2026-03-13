@@ -49,12 +49,10 @@ class CarrierController extends AbstractController
     {
     }
     #[Route('/requests', name: 'public_requests')]
-    public function requests(Request $request): Response
+    public function requests(): Response
     {
         /** @var Carrier $user */
         $user = $this->getUser();
-
-        $device = $request->cookies->get('device');
 
         $listOfOrders = [];
         foreach ($this->orderRepository->findRequestsByCarrier($user) as $order) {
@@ -103,7 +101,6 @@ class CarrierController extends AbstractController
             'title' => $this->translator->trans('show.label_requests', domain: 'AppBundle', locale: $user->getLocale()),
             'user' => $this->buildCarrierContext($user),
             'orders' => $listOfOrders,
-            'device' => $device,
         ]);
     }
 
@@ -217,12 +214,10 @@ class CarrierController extends AbstractController
     }
 
     #[Route('/profile', name: 'public_profile')]
-    public function profile(Request $request): Response
+    public function profile(): Response
     {
         /** @var Carrier $user */
         $user = $this->getUser();
-
-        $device = $request->cookies->get('device');
 
         return $this->render('public/carrier/pages/profile.html.twig', [
             'title' => $this->translator->trans('show.label_profile', domain: 'AppBundle', locale: $user->getLocale()),
@@ -234,17 +229,14 @@ class CarrierController extends AbstractController
                 'phone' => $user->getPhone(),
             ],
             'orders' => $this->buildOrderStats($user),
-            'device' => $device,
         ]);
     }
 
     #[Route('/orders', name: 'public_orders', methods: ['GET'])]
-    public function orders(Request $request): Response
+    public function orders(): Response
     {
         /** @var Carrier $user */
         $user = $this->getUser();
-
-        $device = $request->cookies->get('device');
 
         $listOfOrders = [];
         foreach ($this->orderRepository->findRecentByCarrier($user) as $order) {
@@ -271,17 +263,14 @@ class CarrierController extends AbstractController
             'title' => $this->translator->trans('show.label_orders', domain: 'AppBundle', locale: $user->getLocale()),
             'orders' => $listOfOrders,
             'user' => $this->buildCarrierContext($user),
-            'device' => $device,
         ]);
     }
 
     #[Route('/orders/{id}', name: 'public_order', methods: ['GET'])]
-    public function order(string $id, Request $request): Response
+    public function order(string $id): Response
     {
         /** @var Carrier $user */
         $user = $this->getUser();
-
-        $device = $request->cookies->get('device');
 
         $order = $this->orderRepository->find($id);
         if (!$order || $order->getCarrier() !== $user) {
@@ -333,7 +322,6 @@ class CarrierController extends AbstractController
             'title' => $this->translator->trans('show.label_order', domain: 'AppBundle', locale: $user->getLocale()),
             'order' => $item,
             'user' => $this->buildCarrierContext($user),
-            'device' => $device,
         ]);
     }
 

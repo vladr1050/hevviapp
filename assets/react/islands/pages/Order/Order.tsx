@@ -1,6 +1,5 @@
 import { type FC } from 'react'
 
-import { MobilePage } from '@components/MobilePage/MobilePage'
 import { OrderCard } from '@components/OrderCard/OrderCard'
 import { OrderType, Routes } from '@config/constants'
 import { DeviceType, useDevice } from '@hooks/useDevice'
@@ -8,6 +7,8 @@ import { Icon } from '@ui/Icon/Icon'
 import { cn } from '@utils/cn'
 
 import styles from './Order.module.css'
+
+import { MobilePage } from '../MobilePage/MobilePage'
 
 interface OrderPageProps {
 	title: string
