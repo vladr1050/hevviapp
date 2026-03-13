@@ -8,9 +8,11 @@ interface MobilePageProps {}
 
 export const MobilePage: FC<MobilePageProps> = () => {
 	return (
-		<div className={cn('tw-container', styles.page)}>
-			<h1>Beta version available only on desktop devices</h1>
-			<span>Please login with PC or your laptop</span>
+		<div className={styles.pageWrapper}>
+			<div className={cn('tw-container', styles.page)}>
+				<h1>Beta version available only on desktop devices</h1>
+				<span>Please login with PC or your laptop</span>
+			</div>
 		</div>
 	)
 }
