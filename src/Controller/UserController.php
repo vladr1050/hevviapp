@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Cargo;
 use App\Entity\Order;
 use App\Entity\OrderHistory;
 use App\Entity\OrderOffer;
@@ -66,17 +67,14 @@ class UserController extends AbstractController
 
         $listOfOrders = [];
         foreach ($this->orderRepository->findRecentBySender($user, 5) as $order) {
-            $cargo = $order->getCargo()->first();
-
             $listOfOrders[] = [
-                'id' => $order->getId()?->toRfc4122(),
+                'id'      => $order->getId()?->toRfc4122(),
                 'address' => [
                     'from' => $order->getPickupAddress(),
-                    'to' => $order->getDropoutAddress(),
+                    'to'   => $order->getDropoutAddress(),
                 ],
-                'item' => $cargo?->getQuantity(),
+                'cargo'   => $this->buildCargoList($order, $user->getLocale()),
                 'comment' => $order->getNotes(),
-                'type' => $this->translator->trans('order.type_' . $cargo?->getType(), domain: 'AppBundle', locale: $user->getLocale()),
             ];
         }
 
@@ -96,21 +94,20 @@ class UserController extends AbstractController
         $listOfOrders = [];
         foreach ($this->orderRepository->findRecentBySender($user) as $order) {
             $history = $this->resolvePickupHistory($order);
-            $cargo = $order->getCargo()->first();
 
             $listOfOrders[] = [
-                'id' => $order->getId()?->toRfc4122(),
-                'status' => $order->getStatus(),
+                'id'          => $order->getId()?->toRfc4122(),
+                'status'      => $order->getStatus(),
                 'status_text' => $this->translator->trans('order.status_' . $order->getStatus(), domain: 'AppBundle', locale: $user->getLocale()),
-                'price' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
-                'address' => [
+                'price'       => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
+                'address'     => [
                     'from' => $order->getPickupAddress(),
-                    'to' => $order->getDropoutAddress(),
+                    'to'   => $order->getDropoutAddress(),
                 ],
-                'item' => $cargo?->getQuantity(),
-                'comment' => $order->getNotes(),
+                'cargo'       => $this->buildCargoList($order, $user->getLocale()),
+                'comment'     => $order->getNotes(),
                 'pickup_date' => false !== $history ? $history->getCreatedAt()->format('d.m.Y') : null,
-                'carrier' => $order->getCarrier()?->getLegalName(),
+                'carrier'     => $order->getCarrier()?->getLegalName(),
             ];
         }
 
@@ -133,40 +130,33 @@ class UserController extends AbstractController
         }
 
         $history = $this->resolvePickupHistory($order);
-        $cargo = $order->getCargo()->first();
 
         $item = [
-            'id' => $order->getId()?->toRfc4122(),
-            'status' => $order->getStatus(),
-            'status_text' => $this->translator->trans('order.status_' . $order->getStatus(), domain: 'AppBundle', locale: $user->getLocale()),
-            'price' => $this->moneyExtension->currencyConvert($this->resolveBaseFreight($order->getLatestOffer()), $order->getCurrency()),
-            'vat' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getVat(), $order->getCurrency()),
-            'brutto' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
-            'fee' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getFee(), $order->getCurrency()),
-            'address' => [
+            'id'                  => $order->getId()?->toRfc4122(),
+            'status'              => $order->getStatus(),
+            'status_text'         => $this->translator->trans('order.status_' . $order->getStatus(), domain: 'AppBundle', locale: $user->getLocale()),
+            'price'               => $this->moneyExtension->currencyConvert($this->resolveBaseFreight($order->getLatestOffer()), $order->getCurrency()),
+            'vat'                 => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getVat(), $order->getCurrency()),
+            'brutto'              => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
+            'fee'                 => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getFee(), $order->getCurrency()),
+            'address'             => [
                 'from' => $order->getPickupAddress(),
-                'to' => $order->getDropoutAddress(),
+                'to'   => $order->getDropoutAddress(),
             ],
-            'name' => $cargo?->getName(),
-            'item' => $cargo?->getQuantity(),
-            'type' => $this->translator->trans('order.type_' . $cargo?->getType(), domain: 'AppBundle', locale: $user->getLocale()),
-            'cargoDimensions' => $cargo?->getDimensionsCm(),
-            'cargoWeight' => $cargo?->getWeightKg(),
-            'comment' => $order->getNotes(),
-            'pickup_date' => false !== $history ? $history->getCreatedAt()->format('d.m.Y') : null,
-            'carrier' => $order->getCarrier()?->getLegalName(),
-            'pickup_latitude' => $order->getPickupLatitude(),
-            'pickup_longitude' => $order->getPickupLongitude(),
-            'dropout_latitude' => $order->getDropoutLatitude(),
-            'dropout_longitude' => $order->getDropoutLongitude(),
-            'stackable' => $cargo?->isStackable(),
-            'manipulator_needed' => $cargo?->isManipulatorNeeded(),
-            'pickup_time_from' => $order->getPickupTimeFrom()?->format('H:i'),
-            'pickup_time_to' => $order->getPickupTimeTo()?->format('H:i'),
-            'delivery_time_from' => $order->getDeliveryTimeFrom()?->format('H:i'),
-            'delivery_time_to' => $order->getDeliveryTimeTo()?->format('H:i'),
+            'cargo'               => $this->buildCargoList($order, $user->getLocale()),
+            'comment'             => $order->getNotes(),
+            'pickup_date'         => false !== $history ? $history->getCreatedAt()->format('d.m.Y') : null,
+            'carrier'             => $order->getCarrier()?->getLegalName(),
+            'pickup_latitude'     => $order->getPickupLatitude(),
+            'pickup_longitude'    => $order->getPickupLongitude(),
+            'dropout_latitude'    => $order->getDropoutLatitude(),
+            'dropout_longitude'   => $order->getDropoutLongitude(),
+            'pickup_time_from'    => $order->getPickupTimeFrom()?->format('H:i'),
+            'pickup_time_to'      => $order->getPickupTimeTo()?->format('H:i'),
+            'delivery_time_from'  => $order->getDeliveryTimeFrom()?->format('H:i'),
+            'delivery_time_to'    => $order->getDeliveryTimeTo()?->format('H:i'),
             'pickup_request_date' => $order->getPickupDate()?->format('d.m.Y'),
-            'delivery_date' => $order->getDeliveryDate()?->format('d.m.Y'),
+            'delivery_date'       => $order->getDeliveryDate()?->format('d.m.Y'),
         ];
 
         return $this->render('public/user/pages/order.html.twig', [
@@ -208,6 +198,27 @@ class UserController extends AbstractController
         $this->em->flush();
 
         return $this->redirectToRoute('user_public_order', ['id' => $orderId]);
+    }
+
+    /**
+     * Сериализует коллекцию грузов заказа в массив скалярных данных для JSON-шаблона.
+     *
+     * @return list<array{type: int, type_text: string, dimensions: ?string, weight: ?int, quantity: ?int, name: ?string, stackable: ?bool, manipulator_needed: ?bool}>
+     */
+    private function buildCargoList(Order $order, string $locale): array
+    {
+        return $order->getCargo()->map(
+            fn(Cargo $cargo): array => [
+                'type'               => $cargo->getType(),
+                'type_text'          => $this->translator->trans('order.type_' . $cargo->getType(), domain: 'AppBundle', locale: $locale),
+                'dimensions'         => $cargo->getDimensionsCm(),
+                'weight'             => $cargo->getWeightKg(),
+                'quantity'           => $cargo->getQuantity(),
+                'name'               => $cargo->getName(),
+                'stackable'          => $cargo->isStackable(),
+                'manipulator_needed' => $cargo->isManipulatorNeeded(),
+            ]
+        )->toArray();
     }
 
     /**

@@ -37,7 +37,7 @@ class OrderController extends AbstractController
     }
 
     /**
-     * Создаёт новый заказ (Order + Cargo) от имени авторизованного пользователя.
+     * Создаёт новый заказ (Order + один или несколько Cargo) от имени авторизованного пользователя.
      *
      * Expected JSON body:
      * {
@@ -52,15 +52,18 @@ class OrderController extends AbstractController
      *   "pickupTimeTo":     string|null  (H:i),
      *   "pickupDate":       string|null  (Y-m-d),
      *   "deliveryDate":     string|null  (Y-m-d),
-     *   "cargo": {
-     *     "type":              int (1=PALLET, 2=OVERSIZED),
-     *     "quantity":          int,
-     *     "weightKg":          int,
-     *     "dimensionsCm":      string|null (e.g. "120x80x50"),
-     *     "name":              string,
-     *     "stackable":         bool,
-     *     "manipulatorNeeded": bool
-     *   }
+     *   "cargo": [
+     *     {
+     *       "type":              int (1=PALLET, 2=OVERSIZED),
+     *       "quantity":          int  (required),
+     *       "weightKg":          int  (required),
+     *       "dimensionsCm":      string|null (e.g. "120x80x50"),
+     *       "name":              string (required),
+     *       "stackable":         bool,
+     *       "manipulatorNeeded": bool
+     *     },
+     *     ...
+     *   ]
      * }
      */
     #[Route('', name: 'create', methods: ['POST'])]
@@ -76,9 +79,7 @@ class OrderController extends AbstractController
             return $this->json(['error' => 'Invalid JSON body'], JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        // Validate required top-level fields
-        $requiredFields = ['pickupAddress', 'dropoutAddress', 'cargo'];
-        foreach ($requiredFields as $field) {
+        foreach (['pickupAddress', 'dropoutAddress', 'cargo'] as $field) {
             if (empty($data[$field])) {
                 return $this->json(
                     ['error' => sprintf('Field "%s" is required', $field)],
@@ -87,18 +88,22 @@ class OrderController extends AbstractController
             }
         }
 
-        $cargoData = $data['cargo'];
-        if (!is_array($cargoData)) {
-            return $this->json(['error' => 'Field "cargo" must be an object'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+        $cargoList = $data['cargo'];
+        if (!is_array($cargoList) || !array_is_list($cargoList) || empty($cargoList)) {
+            return $this->json(
+                ['error' => 'Field "cargo" must be a non-empty array of cargo items'],
+                JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+            );
         }
 
-        $requiredCargoFields = ['quantity', 'weightKg', 'name'];
-        foreach ($requiredCargoFields as $field) {
-            if (!isset($cargoData[$field]) || $cargoData[$field] === '' || $cargoData[$field] === null) {
-                return $this->json(
-                    ['error' => sprintf('Field "cargo.%s" is required', $field)],
-                    JsonResponse::HTTP_UNPROCESSABLE_ENTITY
-                );
+        foreach ($cargoList as $index => $cargoData) {
+            foreach (['quantity', 'weightKg', 'name'] as $field) {
+                if (!isset($cargoData[$field]) || $cargoData[$field] === '' || $cargoData[$field] === null) {
+                    return $this->json(
+                        ['error' => sprintf('Field "cargo[%d].%s" is required', $index, $field)],
+                        JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+                    );
+                }
             }
         }
 
@@ -138,9 +143,31 @@ class OrderController extends AbstractController
             $order->setDeliveryDate(\DateTime::createFromFormat('Y-m-d', $data['deliveryDate']) ?: null);
         }
 
-        // Build Cargo and attach to order via addCargo() so the in-memory
-        // collection is populated before postPersist fires (the offer calculator
-        // iterates $order->getCargo() to compute total weight).
+        // Build each Cargo and attach via addCargo() so the in-memory collection
+        // is populated before postPersist fires (the offer calculator iterates
+        // $order->getCargo() to compute total weight across all cargo items).
+        foreach ($cargoList as $cargoData) {
+            $cargo = $this->buildCargoFromData($cargoData);
+            $order->addCargo($cargo);
+            $this->em->persist($cargo);
+        }
+
+        $this->em->persist($order);
+        $this->em->flush();
+
+        return $this->json(
+            ['id' => $order->getId()?->toRfc4122()],
+            JsonResponse::HTTP_CREATED
+        );
+    }
+
+    /**
+     * Создаёт объект Cargo из сырых данных запроса.
+     *
+     * @param array<string, mixed> $cargoData
+     */
+    private function buildCargoFromData(array $cargoData): Cargo
+    {
         $cargo = new Cargo();
 
         $cargoType = isset($cargoData['type']) ? (int) $cargoData['type'] : Cargo::TYPE['PALLET'];
@@ -155,17 +182,6 @@ class OrderController extends AbstractController
             $cargo->setDimensionsCm((string) $cargoData['dimensionsCm']);
         }
 
-        // addCargo() sets both sides of the relationship:
-        // $order->cargo collection (inverse side) + $cargo->relatedOrder (owning side)
-        $order->addCargo($cargo);
-
-        $this->em->persist($order);
-        $this->em->persist($cargo);
-        $this->em->flush();
-
-        return $this->json(
-            ['id' => $order->getId()?->toRfc4122()],
-            JsonResponse::HTTP_CREATED
-        );
+        return $cargo;
     }
 }
