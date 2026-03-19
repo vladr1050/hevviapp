@@ -45,6 +45,7 @@ export enum UIIconNames {
 	PALLET = 'Pallet',
 	RIGHT_BOX = 'RightBox',
 	ROUTE_MAP = 'RouteMap',
+	ARROW_LEFT_RIGHT = 'ArrowLeftRight',
 	X_MARK = 'XMark',
 }
 

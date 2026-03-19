@@ -30,11 +30,20 @@
 					grid grid-cols-[1fr,1fr,1fr,auto] gap-1;
 
 					& .inputButton {
+						@apply overflow-hidden w-full;
+
 						&:not(:first-child) {
 							&:before {
 								content: '';
 								@apply bg-black/50 h-[75%] w-[1px] absolute -left-0.5 top-[50%] -translate-y-[50%];
 							}
+						}
+
+						& div[id='placeholder'] {
+							@apply w-full text-left;
+							white-space: nowrap;
+							overflow: hidden;
+							text-overflow: ellipsis;
 						}
 					}
 				}

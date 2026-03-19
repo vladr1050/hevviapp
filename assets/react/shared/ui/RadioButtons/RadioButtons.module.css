@@ -1,4 +1,6 @@
 .radio {
+	@apply cursor-pointer;
+
 	& > button {
 		&[data-state='checked']:before {
 			@apply bg-black;

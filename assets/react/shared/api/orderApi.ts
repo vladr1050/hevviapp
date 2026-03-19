@@ -5,11 +5,9 @@ export interface CreateOrderCargoPayload {
 	quantity: number
 	weightKg: number
 	dimensionsCm: string | null
-	name: string
-	stackable: boolean
-	manipulatorNeeded: boolean
 }
 
+// FIXME PAVEL
 export interface CreateOrderPayload {
 	pickupAddress: string
 	dropoutAddress: string
@@ -18,13 +16,11 @@ export interface CreateOrderPayload {
 	dropoutLatitude: number | null
 	dropoutLongitude: number | null
 	notes: string | null
-	pickupTimeFrom: string | null
-	pickupTimeTo: string | null
-	pickupDate: string | null
-	deliveryDate: string | null
-	deliveryTimeFrom: string | null
-	deliveryTimeTo: string | null
-	cargo: CreateOrderCargoPayload
+	pickupTime: string | null
+	pickupDate?: string | null
+	cargo?: CreateOrderCargoPayload[]
+	stackable: boolean
+	manipulatorNeeded: boolean
 }
 
 export interface CreateOrderResponse {

@@ -2,7 +2,7 @@
 	@apply flex items-center justify-center shrink-0;
 
 	& .icon {
-		@apply inline-block w-auto;
+		@apply w-auto flex items-center justify-center;
 
 		& svg {
 			height: 100%;

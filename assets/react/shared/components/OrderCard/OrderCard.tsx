@@ -1,4 +1,4 @@
-import { type FC, Suspense, useState } from 'react'
+import { type FC, Fragment, Suspense, useState } from 'react'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 
 import {
@@ -99,33 +99,33 @@ export const OrderCard: FC<OrderCardProps> = ({
 					)}
 
 					<div className={styles.items}>
-						<div className={styles.item}>
-							<div className={styles.label}>Name</div>
-							<div className={styles.value}>{order?.name || EMPTY_STRING}</div>
-						</div>
+						{order.cargo.map((item, index) => (
+							<Fragment key={index}>
+								<div className={styles.row}>
+									<div className={styles.item}>
+										<div className={styles.label}>Cargo</div>
+										<div className={styles.value}>{item?.type || EMPTY_STRING}</div>
+									</div>
 
-						<div className={styles.row}>
-							<div className={styles.item}>
-								<div className={styles.label}>Type</div>
-								<div className={styles.value}>
-									{order?.type || EMPTY_STRING}
+									<div className={styles.item}>
+										<div className={styles.label}>Size</div>
+										<div className={styles.value}>{item?.dimensions || EMPTY_STRING}</div>
+									</div>
 
-									{!order?.type && typeof order?.item !== 'number'
-										? ''
-										: `, ${order.item}${order.item! > 1 ? 'pcs' : 'pc'}`}
+									<div className={styles.item}>
+										<div className={styles.label}>Weight (kg)</div>
+										<div className={styles.value}>{item?.weight || EMPTY_STRING}</div>
+									</div>
+
+									<div className={styles.item}>
+										<div className={styles.label}>Q-ty</div>
+										<div className={styles.value}>{item?.quantity || EMPTY_STRING}</div>
+									</div>
 								</div>
-							</div>
 
-							<div className={styles.item}>
-								<div className={styles.label}>Size</div>
-								<div className={styles.value}>{order?.cargoDimensions || EMPTY_STRING}</div>
-							</div>
-
-							<div className={styles.item}>
-								<div className={styles.label}>Weight</div>
-								<div className={styles.value}>{order?.cargoWeight || EMPTY_STRING}</div>
-							</div>
-						</div>
+								<div className={styles.hr} />
+							</Fragment>
+						))}
 
 						<div className={styles.item}>
 							<div className={styles.label}>Additionals</div>

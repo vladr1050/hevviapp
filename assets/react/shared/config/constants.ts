@@ -67,6 +67,11 @@ export const years = [
 
 export type YearsType = typeof years[number]
 
+export enum PickupTypeEnum {
+	pickup_ready = 'Pickup ready',
+	pickup_later = 'Pickup later'
+}
+
 export enum OrderStatusEnum {
 	'DRAFT' = 1,
 	'OFFERED' = 2,
@@ -81,34 +86,44 @@ export enum OrderStatusEnum {
 	'CANCELLED' = -1
 }
 
+// FIXME PAVEL
+type CargoType = {
+	type: 'palette' | 'irregular_cargo'
+	dimensions?: string
+	weight?: number
+	quantity: number
+}
+
 export type OrderType = {
 	id: string
-	status: OrderStatusEnum
-	status_text: string
-	price?: string
+	// 
+	cargo: CargoType[]
+	stackable?: boolean
+	manipulator_needed?: boolean
+	comment?: string
 	address: {
 		from?: string
 		to?: string
 	}
-	name?: string
-	item?: number
-	cargoDimensions?: string
-	cargoWeight?: number
-	comment?: string
+	// pickup
 	pickup_date?: string
-	carrier?: string
 	pickup_latitude?: string
 	pickup_longitude?: string
-	dropout_latitude?: string
-	dropout_longitude?: string
-	stackable?: boolean
-	manipulator_needed?: boolean
 	pickup_time_from?: string
 	pickup_time_to?: string
+	pickup_request_date?: string
+
+	// delivery
+	dropout_latitude?: string
+	dropout_longitude?: string
 	delivery_time_from?: string
 	delivery_time_to?: string
-	pickup_request_date?: string
 	delivery_date?: string
+
+	status: OrderStatusEnum
+	status_text: string
+	price?: string
+	carrier?: string
 	paid_date?: string
 	delivered_date?: string
 	type?: string

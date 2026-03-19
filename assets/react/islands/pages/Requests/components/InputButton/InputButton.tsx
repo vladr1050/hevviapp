@@ -17,7 +17,7 @@ export const InputButton: FC<InputButtonProps> = ({ className, label, placeholde
 			<div data-name="label" id="label">
 				{label}
 			</div>
-			<div data-name="placeholder" id="placeholder">
+			<div data-name="placeholder" id="placeholder" title={placeholder}>
 				{placeholder}
 			</div>
 		</button>

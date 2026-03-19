@@ -38,6 +38,8 @@ export const Modal: FC<ModalProps> = ({
 					</Dialog.Close>
 				)}
 
+				<Dialog.Title className="hidden"></Dialog.Title>
+
 				{children}
 			</Dialog.Content>
 		</Dialog.Root>
