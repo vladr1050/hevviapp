@@ -8,6 +8,14 @@ import {
 	useFieldArray,
 } from 'react-hook-form'
 
+import {
+	MAX_HEIGHT,
+	MAX_LENGTH,
+	MAX_QUANTITY,
+	MAX_WEIGHT,
+	MAX_WIDTH,
+	MIN_WEIGHT,
+} from '@config/constants'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
 import { Switch } from '@ui/Switch/Switch'
@@ -17,16 +25,7 @@ import { cn } from '@utils/cn'
 
 import styles from './ModalContent.module.css'
 
-import {
-	CargoItemType,
-	FormValues,
-	MAX_HEIGHT,
-	MAX_LENGTH,
-	MAX_QUANTITY,
-	MAX_WEIGHT,
-	MAX_WIDTH,
-	MIN_WEIGHT,
-} from '../RequestsUser/types'
+import { CargoItemType, FormValues } from '../RequestsUser/types'
 
 interface WhatContentProps {
 	control: Control<FormValues, any, FormValues>

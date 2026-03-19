@@ -38,10 +38,3 @@ export type FormValues = {
 	pickupTime: PickupTimeT
 	pickupDate?: Date
 }
-
-export const MAX_WIDTH = 1000
-export const MAX_LENGTH = 1000
-export const MAX_HEIGHT = 1000
-export const MIN_WEIGHT = 150
-export const MAX_WEIGHT = 700
-export const MAX_QUANTITY = 100

@@ -8,6 +8,7 @@ import {
 } from 'react-hook-form'
 import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet'
 
+import { DEFAULT_LAT, DEFAULT_LNG } from '@config/constants'
 import { Icon } from '@ui/Icon/Icon'
 import { cn } from '@utils/cn'
 // @ts-ignore
@@ -17,8 +18,8 @@ import L from 'leaflet'
 import CustomIcon from '../../../../../shared/components/OrderCard/CustomMarker.svg'
 
 import styles from './ModalContent.module.css'
-import { FormValues } from '../RequestsUser/types'
 
+import { FormValues } from '../RequestsUser/types'
 
 interface WhereContentProps {
 	watch: UseFormWatch<FormValues>
@@ -26,9 +27,6 @@ interface WhereContentProps {
 	setValue: UseFormSetValue<FormValues>
 	register: UseFormRegister<FormValues>
 }
-
-const DEFAULT_LAT = 56.946845
-const DEFAULT_LNG = 24.106075
 
 export const WhereContent: FC<WhereContentProps> = ({ watch, control, setValue, register }) => {
 	const [fromMarkerPos, setFromMarkerPos] = useState<{ lat: number; lng: number } | null>(null)

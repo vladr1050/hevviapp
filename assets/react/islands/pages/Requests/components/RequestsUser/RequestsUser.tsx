@@ -2,7 +2,7 @@ import { type FC, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 import { apiCreateOrder } from '@api/orderApi'
-import { EMPTY_STRING, ShortOrderType, YearsType } from '@config/constants'
+import { CargoTypeEnum, EMPTY_STRING, ShortOrderType, YearsType } from '@config/constants'
 import { useAuth } from '@hooks/useAuth'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
@@ -14,14 +14,7 @@ import styles from '../../Requests.module.css'
 
 import { InputButton } from '../InputButton/InputButton'
 import { ModalContent } from '../ModalContent/ModalContent'
-import {
-	cargoTypeMap,
-	dimensionsCm,
-	formatDate,
-	whatLabel,
-	whenLabel,
-	whereLabel,
-} from '../ModalContent/utils'
+import { dimensionsCm, formatDate, whatLabel, whenLabel, whereLabel } from '../ModalContent/utils'
 
 import { CalculateModalType, FormValues } from './types'
 
@@ -80,7 +73,7 @@ export const RequestsUser: FC<RequestsUserProps> = ({ orders }) => {
 				pickupTime: values.pickupTime || null,
 				pickupDate,
 				cargo: values.cargo.map((item) => ({
-					type: cargoTypeMap[item.type] ?? 1,
+					type: CargoTypeEnum[item.type] ?? 1,
 					quantity: item.quantity,
 					weightKg: item.weight,
 					dimensionsCm: dimensionsCm(item.width, item.length, item.height),

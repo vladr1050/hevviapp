@@ -2,6 +2,7 @@ import { type FC, Fragment, Suspense, useState } from 'react'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 
 import {
+	CargoTypeEnum,
 	EMPTY_STRING,
 	FormActions,
 	OrderStatusEnum,
@@ -104,7 +105,9 @@ export const OrderCard: FC<OrderCardProps> = ({
 								<div className={styles.row}>
 									<div className={styles.item}>
 										<div className={styles.label}>Cargo</div>
-										<div className={styles.value}>{item?.type || EMPTY_STRING}</div>
+										<div className={styles.value}>
+											{item?.type ? CargoTypeEnum[item.type] : EMPTY_STRING}
+										</div>
 									</div>
 
 									<div className={styles.item}>

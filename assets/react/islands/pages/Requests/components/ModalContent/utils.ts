@@ -12,11 +12,6 @@ export const dimensionsCm = (
 	height: number | undefined
 ) => (width && length && height ? `${width}x${length}x${height}` : null)
 
-export const cargoTypeMap: Record<string, 1 | 2> = {
-	palette: 1,
-	irregular_cargo: 2,
-}
-
 export const whatLabel = (cargos: CargoItemType[]) => {
 	const [palettes, irregular] = cargos.reduce(
 		(acc, curr) => [
