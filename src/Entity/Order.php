@@ -106,12 +106,19 @@ class Order extends BaseUUID
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $deliveryDate = null;
 
+    /**
+     * @var Collection<int, OrderAttachment>
+     */
+    #[ORM\OneToMany(targetEntity: OrderAttachment::class, mappedBy: 'relatedOrder', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $attachments;
+
     public function __construct()
     {
         $this->cargo = new ArrayCollection();
         $this->histories = new ArrayCollection();
         $this->offers = new ArrayCollection();
         $this->orderAssignments = new ArrayCollection();
+        $this->attachments = new ArrayCollection();
     }
 
     public function getSender(): ?User
@@ -471,6 +478,35 @@ class Order extends BaseUUID
     public function setDeliveryDate(?\DateTime $deliveryDate): static
     {
         $this->deliveryDate = $deliveryDate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, OrderAttachment>
+     */
+    public function getAttachments(): Collection
+    {
+        return $this->attachments;
+    }
+
+    public function addAttachment(OrderAttachment $attachment): static
+    {
+        if (!$this->attachments->contains($attachment)) {
+            $this->attachments->add($attachment);
+            $attachment->setRelatedOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAttachment(OrderAttachment $attachment): static
+    {
+        if ($this->attachments->removeElement($attachment)) {
+            if ($attachment->getRelatedOrder() === $this) {
+                $attachment->setRelatedOrder(null);
+            }
+        }
 
         return $this;
     }

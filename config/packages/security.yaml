@@ -73,6 +73,7 @@ security:
         - { path: ^/api/auth/logout$, role: PUBLIC_ACCESS }
         - { path: ^/api/auth/me$, role: IS_AUTHENTICATED_FULLY }
         - { path: ^/logout$, role: PUBLIC_ACCESS }
+        - { path: ^/files/, role: IS_AUTHENTICATED_FULLY }
         - { path: ^/user/, role: ROLE_USER }
         - { path: ^/carrier/, role: ROLE_CARRIER }
         - { path: ^/.*, role: PUBLIC_ACCESS }

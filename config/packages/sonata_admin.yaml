@@ -95,6 +95,7 @@ services:
             - [ addChild, [ '@App\Admin\OrderOfferAdmin', 'offers' ] ]
             - [ addChild, [ '@App\Admin\OrderAssignmentAdmin', 'orderAssignments' ] ]
             - [ addChild, [ '@App\Admin\OrderHistoryAdmin', 'histories' ] ]
+            - [ setAttachmentUploader, [ '@App\Service\OrderAttachmentUploader' ] ]
 
     App\Admin\CargoAdmin:
         tags:

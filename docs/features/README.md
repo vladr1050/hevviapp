@@ -180,6 +180,76 @@ docker compose exec php php bin/console app:test-osm-connection
 
 ---
 
+## 📎 Order Attachments - PDF-вложения к заказам
+
+### Описание
+
+Система загрузки, хранения и раздачи PDF-документов, прикреплённых к заказам. Файлы автоматически сжимаются при сохранении, раздаются только по уникальному salt без раскрытия пути на диске.
+
+### Основные возможности
+
+- ✅ **Загрузка через React UI** — drag & drop или кнопка на `/user/requests`
+- ✅ **Загрузка через Sonata Admin** — вкладка «Файлы» в форме редактирования заказа
+- ✅ **gzip-сжатие** — уровень 6, экономия места ~20–40% для PDF
+- ✅ **Безопасная раздача** — только по 64-символьному hex-salt, путь не раскрывается
+- ✅ **Контроль доступа** — User видит только свои файлы, Carrier — только по назначенному заказу, Admin — всё
+- ✅ **Каскадное удаление** — при удалении Order все вложения удаляются из БД и с диска
+- ✅ **Множественная загрузка** — один запрос = несколько файлов (`files[]`)
+
+### Структура данных
+
+**Таблица:** `order_attachment`
+
+| Поле | Тип | Описание |
+|------|-----|----------|
+| id | UUID | Уникальный идентификатор |
+| salt | VARCHAR(128) | Уникальный hex-токен для раздачи (64 символа) |
+| file_path | VARCHAR(512) | Путь относительно `public/` (`uploads/orders/{salt}.pdf.gz`) |
+| original_name | VARCHAR(255) | Оригинальное имя файла от клиента |
+| file_size | BIGINT | Размер **сжатого** файла на диске (байты) |
+| related_order_id | UUID FK | Заказ (ON DELETE CASCADE) |
+| created_at | TIMESTAMPTZ | Дата загрузки |
+| updated_at | TIMESTAMPTZ | Дата обновления |
+
+### API-эндпоинты
+
+| Метод | URL | Авторизация | Описание |
+|-------|-----|-------------|----------|
+| `POST` | `/api/orders/{id}/attachments` | JWT (ROLE_USER) | Загрузить файлы (`multipart/form-data`, поле `files[]`) |
+| `DELETE` | `/api/orders/{id}/attachments/{salt}` | JWT (ROLE_USER) | Удалить вложение |
+| `GET` | `/files/{salt}` | JWT (IS_AUTHENTICATED_FULLY) | Скачать файл (User/Carrier) |
+| `GET` | `/admin/files/{salt}` | Session (ROLE_ADMIN) | Скачать файл (Admin) |
+
+### Пример загрузки через API
+
+```javascript
+// 1. Создать заказ
+const { id } = await apiCreateOrder(token, payload)
+
+// 2. Загрузить файлы
+const formData = new FormData()
+files.forEach(file => formData.append('files[]', file))
+
+await fetch(`/api/orders/${id}/attachments`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: formData,  // Content-Type НЕ ставить вручную!
+})
+```
+
+### Требования при развёртывании
+
+> ⚠️ Подробная инструкция по развёртыванию — в главном [README.md](../../README.md#-pdf-вложения-к-заказам)
+
+Кратко:
+1. `docker compose exec php php bin/console doctrine:migrations:migrate` — создать таблицу
+2. Проверить права: `chown -R www-data:www-data public/uploads`
+3. NGINX: `client_max_body_size 30m` — уже в `nginx/default.conf`
+4. PHP: `upload_max_filesize = 25M` — уже в `docker/php/uploads.ini`
+5. Добавить `public/uploads/` в backup-стратегию
+
+---
+
 ## 🗺️ Map Integration - Интеграция карт
 
 ### Описание

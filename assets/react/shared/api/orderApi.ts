@@ -48,3 +48,33 @@ export async function apiCreateOrder(
 
 	return data as CreateOrderResponse
 }
+
+/**
+ * Загружает PDF-файлы к существующему заказу.
+ * Использует multipart/form-data — браузер сам выставляет boundary.
+ * Content-Type НЕ ставим вручную намеренно.
+ */
+export async function apiUploadOrderAttachments(
+	accessToken: string,
+	orderId: string,
+	files: File[]
+): Promise<void> {
+	if (!files.length) return
+
+	const formData = new FormData()
+	files.forEach((file) => formData.append('files[]', file))
+
+	const res = await fetch(`${API_BASE}/${orderId}/attachments`, {
+		method: 'POST',
+		headers: {
+			Authorization: `Bearer ${accessToken}`,
+		},
+		body: formData,
+	})
+
+	if (!res.ok) {
+		const data = await res.json().catch(() => ({}))
+		const message = (data as { error?: string }).error
+		throw new Error(message ?? `Failed to upload files (HTTP ${res.status})`)
+	}
+}

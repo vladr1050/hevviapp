@@ -23,6 +23,7 @@ use App\Entity\OrderOffer;
 use App\Entity\ServiceArea;
 use App\Form\Type\AddressWithMapType;
 use App\Form\Type\OrderStatusChoiceType;
+use App\Service\OrderAttachmentUploader;
 use FRPC\SonataAuthorization\Admin\BaseAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -36,17 +37,73 @@ use Sonata\Form\Type\CollectionType;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
 use Sonata\AdminBundle\Filter\Model\FilterData;
+use Symfony\Component\DependencyInjection\Attribute\Required;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 use Doctrine\ORM\Query\Expr\Join;
 
 class OrderAdmin extends BaseAdmin
 {
+    private OrderAttachmentUploader $attachmentUploader;
+
+    /**
+     * Инъекция через calls в sonata_admin.yaml, т.к. Admin-классы исключены
+     * из autowiring и имеют ограниченный конструктор (Sonata AbstractAdmin).
+     */
+    #[Required]
+    public function setAttachmentUploader(OrderAttachmentUploader $uploader): void
+    {
+        $this->attachmentUploader = $uploader;
+    }
+
+    // ------------------------------------------------------------------ hooks
+
+    /**
+     * @param Order $object
+     */
+    protected function prePersist(object $object): void
+    {
+        $this->handleUploadedFiles($object);
+    }
+
+    /**
+     * @param Order $object
+     */
+    protected function preUpdate(object $object): void
+    {
+        $this->handleUploadedFiles($object);
+    }
+
+    private function handleUploadedFiles(Order $order): void
+    {
+        /** @var UploadedFile[]|UploadedFile|null $files */
+        $files = $this->getForm()->get('uploadedFiles')->getData();
+
+        if (empty($files)) {
+            return;
+        }
+
+        if ($files instanceof UploadedFile) {
+            $files = [$files];
+        }
+
+        foreach ($files as $file) {
+            if (!$file instanceof UploadedFile || !$file->isValid()) {
+                continue;
+            }
+            $this->attachmentUploader->upload($file, $order);
+        }
+    }
+
+    // ------------------------------------------------------------------ query
+
     protected function configureQuery(ProxyQueryInterface $query): ProxyQueryInterface
     {
         $query = parent::configureQuery($query);
@@ -279,6 +336,10 @@ class OrderAdmin extends BaseAdmin
             ->add('histories', null, [
                 'label' => 'show.label_status_history',
             ])
+            ->add('attachments', null, [
+                'label'    => 'show.label_attachments',
+                'template' => 'admin/CRUD/show_order_attachments.html.twig',
+            ])
             ->add('createdAt')
             ->add('updatedAt');
     }
@@ -409,6 +470,20 @@ class OrderAdmin extends BaseAdmin
                 'required' => false,
                 'widget' => 'single_text',
                 'html5' => true,
+            ])
+            ->end()
+            ->end()
+            ->tab('tabs_files')
+            ->with('files_upload', [
+                'class' => 'col-md-12',
+            ])
+            ->add('uploadedFiles', FileType::class, [
+                'mapped'   => false,
+                'required' => false,
+                'multiple' => true,
+                'label'    => 'form.label_upload_files',
+                'attr'     => ['accept' => 'application/pdf'],
+                'help'     => 'form.label_help_upload_pdf',
             ])
             ->end()
             ->end()

@@ -1,4 +1,4 @@
-import { type FC, useState } from 'react'
+import { type DragEvent, type FC, useRef, useState } from 'react'
 import {
 	Control,
 	Controller,
@@ -78,12 +78,7 @@ export const WhatContent: FC<WhatContentProps> = ({ control, register }) => {
 				<div className={styles.rightBlock}>
 					<div className={styles.title}>Add documents</div>
 
-					<div className={styles.files}>
-						<button type="button" className={styles.empty} onClick={() => {}}>
-							<Icon type="x_mark" size={18} className="rotate-45" />
-							Add or drag & drop files
-						</button>
-					</div>
+					<DocumentsSection control={control} />
 				</div>
 
 				<div className={styles.rightBlock}>
@@ -170,6 +165,104 @@ const Item: FC<{
 		</div>
 	)
 }
+
+// ─── Documents Upload ─────────────────────────────────────────────────────────
+
+const ALLOWED_MIME = 'application/pdf'
+const MAX_FILE_SIZE_MB = 20
+
+const DocumentsSection: FC<{ control: Control<FormValues, any, FormValues> }> = ({ control }) => {
+	const inputRef = useRef<HTMLInputElement>(null)
+	const [isDragging, setIsDragging] = useState(false)
+
+	return (
+		<Controller
+			control={control}
+			name="documents"
+			render={({ field: { value = [], onChange } }) => {
+				const addFiles = (incoming: FileList | File[]) => {
+					const existing = value ?? []
+					const existingNames = new Set(existing.map((f) => f.name))
+
+					const valid = Array.from(incoming).filter((f) => {
+						if (f.type !== ALLOWED_MIME) return false
+						if (f.size > MAX_FILE_SIZE_MB * 1024 * 1024) return false
+						if (existingNames.has(f.name)) return false
+						return true
+					})
+
+					if (valid.length) onChange([...existing, ...valid])
+				}
+
+				const removeFile = (index: number) => {
+					onChange((value ?? []).filter((_, i) => i !== index))
+				}
+
+				const handleDrop = (e: DragEvent<HTMLButtonElement>) => {
+					e.preventDefault()
+					setIsDragging(false)
+					addFiles(e.dataTransfer.files)
+				}
+
+				return (
+					<div className={styles.files}>
+						{/* Hidden native input */}
+						<input
+							ref={inputRef}
+							type="file"
+							accept="application/pdf"
+							multiple
+							style={{ display: 'none' }}
+							onChange={(e) => {
+								if (e.target.files) addFiles(e.target.files)
+								e.target.value = ''
+							}}
+						/>
+
+						{/* Drop zone */}
+						<button
+							type="button"
+							className={cn(styles.empty, { [styles.dragging]: isDragging })}
+							onClick={() => inputRef.current?.click()}
+							onDragOver={(e) => {
+								e.preventDefault()
+								setIsDragging(true)
+							}}
+							onDragLeave={() => setIsDragging(false)}
+							onDrop={handleDrop}
+						>
+							<Icon type="x_mark" size={18} className="rotate-45" />
+							{isDragging ? 'Drop PDF files here' : 'Add or drag & drop files'}
+						</button>
+
+						{/* File list */}
+						{(value ?? []).map((file, index) => (
+							<div key={`${file.name}-${index}`} className={styles.fileItem}>
+								<Icon type="download_file" size={16} className={styles.fileIcon} />
+								<span className={styles.fileName} title={file.name}>
+									{file.name}
+								</span>
+								<span className={styles.fileSize}>
+									{(file.size / 1024).toFixed(0)} KB
+								</span>
+								<button
+									type="button"
+									className={styles.fileRemove}
+									onClick={() => removeFile(index)}
+									title="Remove"
+								>
+									<Icon type="x_mark" size={12} />
+								</button>
+							</div>
+						))}
+					</div>
+				)
+			}}
+		/>
+	)
+}
+
+// ─── AddItem ──────────────────────────────────────────────────────────────────
 
 const AddItem: FC<{
 	append: UseFieldArrayAppend<FormValues, 'cargo'>

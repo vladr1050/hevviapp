@@ -267,17 +267,46 @@
 				& .rightBlock {
 					@apply flex flex-col gap-6;
 
-					& .files {
-						@apply flex flex-col gap-3;
+				& .files {
+					@apply flex flex-col gap-3;
 
-						& > .empty {
-							@apply w-full h-[88px] rounded-3xl flex items-center justify-center gap-3
-							text-base font-medium text-black cursor-pointer bg-white;
-							border: 1px dashed rgba(0, 0, 0, 0.3);
-							@apply hover-hover:hover:border-black hover-none:active:border-black;
-							animation: fade1 0.5s ease-in-out;
+					& > .empty {
+						@apply w-full h-[88px] rounded-3xl flex items-center justify-center gap-3
+						text-base font-medium text-black cursor-pointer bg-white transition-colors;
+						border: 1px dashed rgba(0, 0, 0, 0.3);
+						@apply hover-hover:hover:border-black hover-none:active:border-black;
+						animation: fade1 0.5s ease-in-out;
+
+						&.dragging {
+							@apply border-black bg-black/5;
 						}
 					}
+
+					& .fileItem {
+						@apply w-full rounded-2xl flex items-center gap-3 px-4 py-3 bg-white;
+						box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.07);
+						animation: fade1 0.3s ease-in-out;
+
+						& .fileIcon {
+							@apply text-black/40 shrink-0;
+						}
+
+						& .fileName {
+							@apply flex-1 text-sm font-medium text-black truncate;
+						}
+
+						& .fileSize {
+							@apply text-xs text-black/40 shrink-0;
+						}
+
+						& .fileRemove {
+							@apply shrink-0 w-7 h-7 rounded-full flex items-center justify-center
+							bg-black/10 cursor-pointer transition-colors
+							hover-hover:hover:bg-black/20 hover-none:active:bg-black/20;
+							border: none;
+						}
+					}
+				}
 				}
 			}
 		}

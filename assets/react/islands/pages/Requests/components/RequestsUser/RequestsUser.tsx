@@ -1,7 +1,7 @@
 import { type FC, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
-import { apiCreateOrder } from '@api/orderApi'
+import { apiCreateOrder, apiUploadOrderAttachments } from '@api/orderApi'
 import { CargoTypeEnum, EMPTY_STRING, ShortOrderType, YearsType } from '@config/constants'
 import { useAuth } from '@hooks/useAuth'
 import { Button } from '@ui/Button/Button'
@@ -81,6 +81,10 @@ export const RequestsUser: FC<RequestsUserProps> = ({ orders }) => {
 				stackable: values.stackable,
 				manipulatorNeeded: values.manipulatorNeeded,
 			})
+
+			if (values.documents && values.documents.length > 0) {
+				await apiUploadOrderAttachments(token, result.id, values.documents)
+			}
 
 			setTimeout(() => {
 				window.location.href = `/user/orders/${result.id}`

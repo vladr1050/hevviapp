@@ -64,6 +64,8 @@ RUN mkdir -p /usr/local/log/php && \
       echo 'error_log = /proc/self/fd/2'; \
       echo 'upload_tmp_dir = /tmp/'; \
       echo 'allow_url_fopen = On'; \
+      echo 'upload_max_filesize = 25M'; \
+      echo 'post_max_size = 30M'; \
     } > /usr/local/etc/php/conf.d/php.ini && \
     if [ "$APP_MODE" = "dev" ]; then \
       { \

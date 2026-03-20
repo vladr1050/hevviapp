@@ -1,0 +1,63 @@
+{#
+/**
+ * Template for displaying order file attachments in Sonata Admin show view.
+ *
+ * Variables:
+ * - value: Collection<OrderAttachment>
+ * - object: Order
+ * - admin: OrderAdmin
+ */
+#}
+{% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %}
+
+{% block field %}
+    {% if value is empty %}
+        <span class="text-muted">
+            <i class="fas fa-paperclip me-1"></i>
+            {{ 'show.label_no_attachments'|trans({}, 'AppBundle') }}
+        </span>
+    {% else %}
+        <table class="table table-sm table-bordered mb-0">
+            <thead class="thead-light">
+                <tr>
+                    <th><i class="fas fa-file-pdf me-1 text-danger"></i>{{ 'show.label_attachment_name'|trans({}, 'AppBundle') }}</th>
+                    <th>{{ 'show.label_attachment_size'|trans({}, 'AppBundle') }}</th>
+                    <th>{{ 'show.label_attachment_uploaded'|trans({}, 'AppBundle') }}</th>
+                    <th>{{ 'show.label_attachment_action'|trans({}, 'AppBundle') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for attachment in value %}
+                    <tr>
+                        <td>
+                            <i class="fas fa-file-pdf text-danger me-1"></i>
+                            {{ attachment.originalName }}
+                        </td>
+                        <td class="text-nowrap">
+                            {% set sizeKb = (attachment.fileSize / 1024)|round(1) %}
+                            {% if sizeKb < 1024 %}
+                                {{ sizeKb }} KB <small class="text-muted">(compressed)</small>
+                            {% else %}
+                                {{ (sizeKb / 1024)|round(2) }} MB <small class="text-muted">(compressed)</small>
+                            {% endif %}
+                        </td>
+                        <td class="text-nowrap">
+                            {{ attachment.createdAt|date('d.m.Y H:i') }}
+                        </td>
+                        <td>
+                            <a
+                                href="{{ path('admin_file_download', { salt: attachment.salt }) }}"
+                                class="btn btn-sm btn-outline-primary"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <i class="fas fa-download me-1"></i>
+                                {{ 'show.label_attachment_download'|trans({}, 'AppBundle') }}
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

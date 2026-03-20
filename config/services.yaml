@@ -105,6 +105,12 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
+    ### FILE UPLOAD SERVICES ###
+    App\Service\OrderAttachmentUploader:
+        arguments:
+            $publicDir: '%kernel.project_dir%/public'
+
+
     # Email Services
     App\Service\Email\Contract\EmailServiceInterface:
         class: App\Service\Email\MailjetEmailService

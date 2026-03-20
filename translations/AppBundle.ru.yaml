@@ -73,6 +73,13 @@ show:
     group_menu_orders:        Заказ
     group_menu_cargo:         Груз
     group_menu_service_areas: Зона обслуживания
+    label_attachments:        Вложения
+    label_no_attachments:     Вложения отсутствуют
+    label_attachment_name:    Имя файла
+    label_attachment_size:    Размер (сжатый)
+    label_attachment_uploaded: Загружен
+    label_attachment_action:   Действие
+    label_attachment_download: Скачать
     label_first_name:         Имя
     label_last_name:          Фамилия
     label_phone:              Телефон
@@ -129,6 +136,8 @@ form:
     group_tabs_cargo:          Грузы
     group_tabs_offers:         Коммерческие предложения
     group_tabs_assigment:      Назначения
+    group_tabs_files:          Файлы
+    group_files_upload:        Загрузка документов
     group_tabs_geo_areas:      Гео-зоны
     group_tabs_matrix_items:   Элементы матрицы
     group_profile:             Профиль
@@ -189,6 +198,8 @@ form:
     label_vat:                 Сумма НДС
     label_offer_status:        Статус предложения
     label_add_offer:           Добавить предложение
+    label_upload_files:        PDF-документы
+    label_help_upload_pdf:     "Принимаются только PDF-файлы. Можно загрузить несколько файлов. Файлы автоматически сжимаются при сохранении."
 
 # Cargo Type choices
 PALLET:    Паллет

@@ -22,3 +22,9 @@ yarn-error.log
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
+
+# User uploaded files
+/public/uploads/
+
+# TypeScript build info
+tsconfig.tsbuildinfo

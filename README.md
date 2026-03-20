@@ -54,12 +54,13 @@ docker compose ps
 
 ### Основные функции
 
-| Модуль          | Описание                                                   |
-| --------------- | ---------------------------------------------------------- |
-| **GeoArea**     | Парсинг и управление геоданными (страны/города) через GADM |
-| **ServiceArea** | Зоны обслуживания с матрицей цен по километражу            |
-| **Orders**      | Управление заказами с историей изменений статусов          |
-| **Map**         | Интеграция карт Leaflet с поддержкой полигонов             |
+| Модуль                   | Описание                                                            |
+| ------------------------ | ------------------------------------------------------------------- |
+| **GeoArea**              | Парсинг и управление геоданными (страны/города) через GADM          |
+| **ServiceArea**          | Зоны обслуживания с матрицей цен по километражу                     |
+| **Orders**               | Управление заказами с историей изменений статусов                   |
+| **Order Attachments**    | PDF-вложения к заказам: загрузка, gzip-сжатие, раздача по salt      |
+| **Map**                  | Интеграция карт Leaflet с поддержкой полигонов                      |
 
 ### Технологии
 
@@ -142,6 +143,98 @@ docker compose exec php npm run build
 
 ---
 
+## 📎 PDF-вложения к заказам
+
+> Функция позволяет прикреплять PDF-документы к заказам: через форму на `/user/requests` (React UI) и через вкладку «Файлы» в Sonata Admin.
+
+### Как устроено
+
+```
+Загрузка → gzip (уровень 6) → public/uploads/orders/{salt}.pdf.gz
+Раздача  → GET /files/{salt}       (JWT, для User/Carrier)
+           GET /admin/files/{salt}  (session, для Manager/Admin)
+```
+
+- Путь до файла **никогда не передаётся** клиенту — только 64-символьный hex-salt
+- Файлы сжимаются автоматически при сохранении (экономия места ~20–40% для PDF)
+- При удалении заказа все вложения удаляются каскадно (ON DELETE CASCADE)
+
+### Требования при развёртывании
+
+#### 1. Применить миграцию БД
+
+```bash
+docker compose exec php php bin/console doctrine:migrations:migrate --no-interaction
+```
+
+Создаёт таблицу `order_attachment` с уникальным индексом по `salt` и FK → `order`.
+
+#### 2. Убедиться в правах на директорию загрузок
+
+Директория создаётся автоматически при первой загрузке, но в production-окружении проверьте права:
+
+```bash
+# Создать директорию и выдать права веб-серверу
+mkdir -p public/uploads/orders
+chown -R www-data:www-data public/uploads
+chmod -R 755 public/uploads
+```
+
+В Docker это уже настроено в `Dockerfile`:
+```dockerfile
+RUN mkdir -p var/cache var/log public/build && \
+    chown -R www-data:www-data var public
+```
+
+#### 3. Лимиты загрузки — NGINX
+
+В файле `nginx/default.conf` уже выставлены:
+
+```nginx
+client_max_body_size 30m;   # должен быть >= PHP post_max_size
+fastcgi_buffers      16 16k;
+fastcgi_buffer_size  32k;
+```
+
+После изменения конфига — перезагрузить NGINX **без перезапуска** контейнера:
+
+```bash
+docker compose exec nginx nginx -s reload
+```
+
+#### 4. Лимиты загрузки — PHP
+
+Файл `docker/php/uploads.ini` монтируется в PHP-контейнер через `compose.yaml`:
+
+```ini
+upload_max_filesize = 25M
+post_max_size       = 30M
+```
+
+Цепочка лимитов (`<=`): `upload_max_filesize ≤ post_max_size ≤ client_max_body_size`
+
+При изменении значений пересоздайте PHP-контейнер:
+
+```bash
+docker compose up -d php
+# Проверка:
+docker compose exec php php -i | grep -E "upload_max|post_max"
+```
+
+#### 5. Исключить загруженные файлы из Git
+
+В `.gitignore` должна быть строка (или директория уже исключена):
+
+```gitignore
+/public/uploads/
+```
+
+#### 6. Резервное копирование
+
+Директория `public/uploads/orders/` содержит **пользовательские данные** — включите её в backup-стратегию наравне с базой данных.
+
+---
+
 ## 🐛 Частые проблемы
 
 ### Контейнеры не запускаются
@@ -180,6 +273,30 @@ docker compose exec php npm run dev
 
 # npm error code ENOTEMPTY npm error syscall rename
 docker compose exec php sh -lc "rm -rf node_modules package-lock.json && npm install --no-audit --no-fund --legacy-peer-deps"
+```
+
+### Файлы не загружаются — «Failed to upload files»
+
+Типичные причины и решения:
+
+| Симптом | Причина | Решение |
+|---------|---------|---------|
+| `HTTP 413` | `client_max_body_size` в NGINX меньше размера файла | Увеличить `client_max_body_size` в `nginx/default.conf`, затем `nginx -s reload` |
+| `HTTP 413` | `post_max_size` или `upload_max_filesize` в PHP меньше файла | Увеличить значения в `docker/php/uploads.ini`, пересоздать контейнер |
+| `HTTP 422` «Only PDF files allowed» | Загружается не PDF-файл | Убедиться, что файл — PDF (`application/pdf`) |
+| `HTTP 422` «No files provided» | Поле формы называется не `files[]` | Проверить JS: `formData.append('files[]', file)` |
+| `HTTP 500` | Нет прав на запись в `public/uploads/orders/` | `chown -R www-data:www-data public/uploads` |
+| HTML-ответ вместо JSON | Symfony exception в dev-режиме | Смотреть логи: `docker compose logs -f php` |
+
+```bash
+# Проверить текущие PHP-лимиты
+docker compose exec php php -i | grep -E "upload_max|post_max"
+
+# Проверить NGINX-лимиты
+docker compose exec nginx nginx -T | grep client_max
+
+# Проверить права на директорию
+docker compose exec php ls -la public/uploads/
 ```
 
 ### Подробнее
@@ -277,6 +394,6 @@ docker compose exec php php bin/console cache:clear --env=prod
 
 ---
 
-**Версия:** 2.0.0  
-**Последнее обновление:** Февраль 2026  
+**Версия:** 2.1.0  
+**Последнее обновление:** Март 2026  
 **Статус:** ✅ Production Ready

@@ -85,6 +85,13 @@ show:
     group_menu_cargo:                  Cargo
     group_menu_carriers:               Carrier
     group_menu_service_areas:          Service Area
+    label_attachments:                 Attachments
+    label_no_attachments:              No attachments
+    label_attachment_name:             File Name
+    label_attachment_size:             Size (compressed)
+    label_attachment_uploaded:         Uploaded At
+    label_attachment_action:           Action
+    label_attachment_download:         Download
     label_first_name:                  First Name
     label_last_name:                   Last Name
     label_phone:                       Phone Number
@@ -152,6 +159,8 @@ form:
     group_tabs_cargo:                  Cargo
     group_tabs_offers:                 Offers
     group_tabs_assigment:              Assignments
+    group_tabs_files:                  Files
+    group_files_upload:                Upload Documents
     group_tabs_geo_areas:              Geo Areas
     group_tabs_matrix_items:           Matrix Items
     group_profile:                     Profile
@@ -220,6 +229,8 @@ form:
     label_company_name:                Company Name
     label_company_registration_number: Company Registration Number
     label_company_address:             Company Address
+    label_upload_files:                PDF Documents
+    label_help_upload_pdf:             "Only PDF files accepted. Multiple files allowed. Files are compressed automatically on save."
 
 
 # Cargo Type choices

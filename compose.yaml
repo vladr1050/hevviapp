@@ -34,6 +34,8 @@ services:
       - php_cache:/var/www/app/var/cache
       # Также исключаем var/log для чистых логов
       - php_logs:/var/www/app/var/log
+      # PHP upload limits override (no image rebuild needed)
+      - ./docker/php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini:ro
     ports:
       - "9020:9000"
     environment:
