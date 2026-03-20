@@ -97,7 +97,7 @@ class OrderController extends AbstractController
         }
 
         foreach ($cargoList as $index => $cargoData) {
-            foreach (['quantity', 'weightKg', 'name'] as $field) {
+            foreach (['quantity', 'weightKg'] as $field) {
                 if (!isset($cargoData[$field]) || $cargoData[$field] === '' || $cargoData[$field] === null) {
                     return $this->json(
                         ['error' => sprintf('Field "cargo[%d].%s" is required', $index, $field)],
@@ -174,7 +174,7 @@ class OrderController extends AbstractController
         $cargo->setType(in_array($cargoType, Cargo::TYPE, true) ? $cargoType : Cargo::TYPE['PALLET']);
         $cargo->setQuantity((int) $cargoData['quantity']);
         $cargo->setWeightKg((int) $cargoData['weightKg']);
-        $cargo->setName((string) $cargoData['name']);
+        $cargo->setName(!empty($cargoData['name']) ? (string) $cargoData['name'] : $cargo->getTypeLabel());
         $cargo->setStackable((bool) ($cargoData['stackable'] ?? false));
         $cargo->setManipulatorNeeded((bool) ($cargoData['manipulatorNeeded'] ?? false));
 

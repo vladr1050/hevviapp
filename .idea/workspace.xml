@@ -6,9 +6,24 @@
   <component name="ChangeListManager">
     <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="order page updated">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/StatusOrder/StatusOrder.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/StatusOrder/StatusOrder.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/shared/config/constants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/config/constants.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/CarrierController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CarrierController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/islands/pages/Requests/components/ModalContent/ModalContent.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/islands/pages/Requests/components/ModalContent/ModalContent.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/islands/pages/Requests/components/ModalContent/WhatContent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/islands/pages/Requests/components/ModalContent/WhatContent.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/islands/pages/Requests/components/RequestsUser/RequestsUser.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/islands/pages/Requests/components/RequestsUser/RequestsUser.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/shared/api/orderApi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/api/orderApi.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/compose.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/sonata_admin.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/sonata_admin.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/services.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/services.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nginx/default.conf" beforeDir="false" afterPath="$PROJECT_DIR$/nginx/default.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Admin/OrderAdmin.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Admin/OrderAdmin.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Api/OrderController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/OrderController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Cargo.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Cargo.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Order.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Order.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/translations/AppBundle.en.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/translations/AppBundle.en.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/translations/AppBundle.ru.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/translations/AppBundle.ru.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,7 +35,7 @@
     <execution />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="658" />
+    <option name="cachedIndexableFilesCount" value="680" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="FileTemplateManagerImpl">
@@ -317,7 +332,10 @@
       <workItem from="1772646988460" duration="306000" />
       <workItem from="1772654790742" duration="5432000" />
       <workItem from="1772723570253" duration="8016000" />
-      <workItem from="1772786955928" duration="25424000" />
+      <workItem from="1772786955928" duration="26484000" />
+      <workItem from="1773396227283" duration="718000" />
+      <workItem from="1773413982541" duration="3303000" />
+      <workItem from="1773947967806" duration="4937000" />
     </task>
     <task id="LOCAL-00001" summary="custom areas added to service areas">
       <option name="closed" value="true" />
@@ -599,7 +617,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773328950373</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="order page updated">
+      <option name="closed" value="true" />
+      <created>1773329999806</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1773329999807</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

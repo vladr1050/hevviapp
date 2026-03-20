@@ -20,6 +20,11 @@ class Cargo extends BaseUUID
         'OVERSIZED' => 2,
     ];
 
+    public const array TYPE_LABELS = [
+        self::TYPE['PALLET']    => 'Паллет',
+        self::TYPE['OVERSIZED'] => 'Негабаритный груз',
+    ];
+
     #[ORM\Column]
     private ?int $type = self::TYPE['PALLET'];
 
@@ -52,6 +57,11 @@ class Cargo extends BaseUUID
     public function getType(): ?int
     {
         return $this->type;
+    }
+
+    public function getTypeLabel(): string
+    {
+        return self::TYPE_LABELS[$this->type] ?? 'Груз';
     }
 
     public function setType(int $type): static
