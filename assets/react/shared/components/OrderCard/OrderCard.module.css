@@ -26,11 +26,19 @@
 		}
 
 		& .items {
-			@apply flex flex-col gap-3;
+			@apply flex flex-col gap-2;
 		}
 
 		& .row {
 			@apply grid grid-cols-3 gap-4 items-center;
+
+			&.cargo {
+				@apply grid-cols-[1fr,1fr,1fr,50px];
+
+				& .item {
+					@apply gap-0;
+				}
+			}
 		}
 
 		& .routeItem {

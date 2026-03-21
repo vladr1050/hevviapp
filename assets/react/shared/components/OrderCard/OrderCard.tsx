@@ -102,7 +102,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 					<div className={styles.items}>
 						{order.cargo.map((item, index) => (
 							<Fragment key={index}>
-								<div className={styles.row}>
+								<div className={cn(styles.row, styles.cargo)}>
 									<div className={styles.item}>
 										<div className={styles.label}>Cargo</div>
 										<div className={styles.value}>
@@ -130,29 +130,33 @@ export const OrderCard: FC<OrderCardProps> = ({
 							</Fragment>
 						))}
 
-						<div className={styles.item}>
-							<div className={styles.label}>Additionals</div>
-							<div className={styles.additionals}>
-								{order?.stackable && (
-									<div className={styles.additional}>
-										<div className={styles.icon}>
-											<Icon type="check_circle_1" size={20} />
-										</div>
-										Stackability
+						{(!!order?.stackable || !!order?.manipulator_needed) && (
+							<>
+								<div className={styles.item}>
+									<div className={styles.label}>Additionals</div>
+									<div className={styles.additionals}>
+										{order?.stackable && (
+											<div className={styles.additional}>
+												<div className={styles.icon}>
+													<Icon type="check_circle_1" size={20} />
+												</div>
+												Stackability
+											</div>
+										)}
+										{order?.manipulator_needed && (
+											<div className={styles.additional}>
+												<div className={styles.icon}>
+													<Icon type="check_circle_1" size={20} />
+												</div>
+												Truck with lift
+											</div>
+										)}
 									</div>
-								)}
-								{order?.manipulator_needed && (
-									<div className={styles.additional}>
-										<div className={styles.icon}>
-											<Icon type="check_circle_1" size={20} />
-										</div>
-										Truck with lift
-									</div>
-								)}
-							</div>
-						</div>
+								</div>
 
-						<div className={styles.hr} />
+								<div className={styles.hr} />
+							</>
+						)}
 
 						<div className={styles.routeItem}>
 							<div className={styles.routeWrapper}>

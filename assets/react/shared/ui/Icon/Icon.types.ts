@@ -49,10 +49,18 @@ export enum UIIconNames {
 	X_MARK = 'XMark',
 }
 
+export enum FileIconNames {
+	PDF = 'Pdf',
+	EXCEL = 'Excel',
+	DOCUMENT = 'Document',
+	UNKNOWN = 'Unknown',
+}
+
 export type IconNameType = Lowercase<keyof typeof UIIconNames>
+export type FileIconNameType = Lowercase<keyof typeof FileIconNames>
 
 export type IconProps = {
-	type: IconNameType
+	type: IconNameType | FileIconNameType
 	size?: number
 	className?: string
 	currentColor?: boolean

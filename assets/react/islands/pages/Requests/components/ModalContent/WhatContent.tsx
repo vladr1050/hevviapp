@@ -27,6 +27,8 @@ import styles from './ModalContent.module.css'
 
 import { CargoItemType, FormValues } from '../RequestsUser/types'
 
+import { formatFileSize, getFileCategory } from './utils'
+
 interface WhatContentProps {
 	control: Control<FormValues, any, FormValues>
 	register: UseFormRegister<FormValues>
@@ -198,6 +200,19 @@ const DocumentsSection: FC<{ control: Control<FormValues, any, FormValues> }> = 
 					onChange((value ?? []).filter((_, i) => i !== index))
 				}
 
+				const downloadFile = (file: File) => {
+					const url = URL.createObjectURL(file)
+					const a = document.createElement('a')
+
+					a.href = url
+					a.download = file.name
+					document.body.appendChild(a)
+					a.click()
+					a.remove()
+
+					URL.revokeObjectURL(url)
+				}
+
 				const handleDrop = (e: DragEvent<HTMLButtonElement>) => {
 					e.preventDefault()
 					setIsDragging(false)
@@ -237,22 +252,49 @@ const DocumentsSection: FC<{ control: Control<FormValues, any, FormValues> }> = 
 
 						{/* File list */}
 						{(value ?? []).map((file, index) => (
-							<div key={`${file.name}-${index}`} className={styles.fileItem}>
-								<Icon type="download_file" size={16} className={styles.fileIcon} />
-								<span className={styles.fileName} title={file.name}>
-									{file.name}
-								</span>
-								<span className={styles.fileSize}>
-									{(file.size / 1024).toFixed(0)} KB
-								</span>
-								<button
-									type="button"
-									className={styles.fileRemove}
-									onClick={() => removeFile(index)}
-									title="Remove"
-								>
-									<Icon type="x_mark" size={12} />
-								</button>
+							<div key={`${file.name}-${file.lastModified}`} className={styles.fileItem}>
+								<div className={styles.fileInfo}>
+									<span className={styles.fileName} title={file.name}>
+										{file.name}
+									</span>
+
+									<div className={styles.fileDescription}>
+										<div className={styles.fileType}>
+											<Icon type={getFileCategory(file)} size={16} />
+											<span>
+												{getFileCategory(file) === 'document'
+													? 'Word Document'
+													: getFileCategory(file) === 'excel'
+														? 'Excel Document'
+														: getFileCategory(file) === 'pdf'
+															? 'PDF Document'
+															: 'File'}
+											</span>
+										</div>
+
+										<span className={styles.fileSize}>{formatFileSize(file.size)}</span>
+									</div>
+								</div>
+
+								<div className={styles.fileButtons}>
+									<button
+										type="button"
+										className={styles.fileDownload}
+										onClick={() => downloadFile(file)}
+										title="Download"
+									>
+										<Icon type="download_file" size={16} />
+									</button>
+
+									<button
+										type="button"
+										className={styles.fileRemove}
+										onClick={() => removeFile(index)}
+										title="Remove"
+									>
+										<Icon type="x_mark" size={12} />
+									</button>
+								</div>
 							</div>
 						))}
 					</div>
@@ -422,7 +464,6 @@ const AddItem: FC<{
 					<Button
 						type="button"
 						onClick={() => {
-							console.log(3, item)
 							append(item)
 							onClose?.()
 						}}

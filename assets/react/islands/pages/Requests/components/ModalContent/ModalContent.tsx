@@ -74,7 +74,10 @@ export const ModalContent: FC<ModalContentProps> = ({
 						[styles.whenActive]: activeTab === 'when',
 					})}
 				>
-					<div className={cn(styles.tab, { [styles.active]: activeTab === 'what' })}>
+					<div
+						className={cn(styles.tab, { [styles.active]: activeTab === 'what' })}
+						// onClick={() => setActiveTab('what')}
+					>
 						<div className={styles.icon}>
 							<Icon type={activeTab === 'what' ? 'box' : 'check_circle_1'} size={20} />
 						</div>
@@ -92,7 +95,10 @@ export const ModalContent: FC<ModalContentProps> = ({
 
 					<div className={cn(styles.divider, { ['!bg-transparent']: activeTab !== 'when' })} />
 
-					<div className={cn(styles.tab, { [styles.active]: activeTab === 'where' })}>
+					<div
+						className={cn(styles.tab, { [styles.active]: activeTab === 'where' })}
+						// onClick={() => setActiveTab('where')}
+					>
 						{activeTab !== 'what' && (
 							<div className={styles.icon}>
 								<Icon type={activeTab === 'where' ? 'mark_map' : 'check_circle_1'} size={20} />
@@ -127,6 +133,7 @@ export const ModalContent: FC<ModalContentProps> = ({
 						className={cn(styles.tab, styles.withButton, {
 							[styles.active]: activeTab === 'when',
 						})}
+						// onClick={() => setActiveTab('when')}
 					>
 						<div className={styles.contentButton}>
 							{activeTab === 'when' && (

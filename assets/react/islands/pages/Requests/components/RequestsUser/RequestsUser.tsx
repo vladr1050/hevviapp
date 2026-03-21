@@ -33,7 +33,7 @@ export const RequestsUser: FC<RequestsUserProps> = ({ orders }) => {
 
 	const [submitError, setSubmitError] = useState<string>()
 
-	const { control, register, handleSubmit, watch, setValue, resetField } = useForm<FormValues>({
+	const { control, register, handleSubmit, watch, setValue } = useForm<FormValues>({
 		defaultValues: {
 			// WHAT
 			cargo: [],
@@ -70,7 +70,8 @@ export const RequestsUser: FC<RequestsUserProps> = ({ orders }) => {
 				dropoutLatitude: values.dropoutLatitude ?? null,
 				dropoutLongitude: values.dropoutLongitude ?? null,
 				notes: values.comments || null,
-				pickupTime: values.pickupTime || null,
+				timeFrom: values.pickupTime === 'anytime' ? null : values.pickupTime.split('-')[0],
+				timeTo: values.pickupTime === 'anytime' ? null : values.pickupTime.split('-')[1],
 				pickupDate,
 				cargo: values.cargo.map((item) => ({
 					type: CargoTypeEnum[item.type] ?? 1,

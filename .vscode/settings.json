@@ -9,13 +9,20 @@
         "Hevvi",
         "hotwired",
         "javascripts",
+        "macroenabled",
+        "msword",
         "Nominatim",
         "nowrap",
+        "officedocument",
+        "opendocument",
+        "openxmlformats",
         "Palletes",
         "Pielietot",
+        "spreadsheetml",
         "stackability",
         "stackable",
-        "symfony"
+        "symfony",
+        "wordprocessingml"
     ],
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true
