@@ -40,6 +40,41 @@ class UserController extends AbstractController
         ]);
     }
 
+    #[Route('/file', name: 'public_file')]
+    public function filePage(): Response
+    {
+        return $this->render('public/user/pages/file.html.twig', [
+            'invoice' => [
+                'number' => 'LV 0000000',
+                'date' => '21.03.2026',
+                'pickup_address' => 'Mūkusalas 3, Rīga',
+                'delivery_address' => 'IKEA bāze, Rīga',
+                'seller_name' => 'Vlad SIA',
+                'seller_reg' => 'XXXXXXXXX',
+                'seller_vat' => 'LVXXXXXXXX',
+                'seller_address' => ['Mūkusalas 3, Rīga', 'IKEA bāze, Rīga', 'IKEA bāze, Rīga'],
+                'seller_email' => 'billing@hevvi.app',
+                'seller_phone' => '+371 XXXXXXXX',
+                'buyer_first_name' => 'Vārds',
+                'buyer_last_name' => 'Uzvārds',
+                'buyer_company_name' => 'Uzņēmuma nosaukums',
+                'buyer_reg' => 'XXXXXXXXX',
+                'buyer_vat' => 'LVXXXXXXXX',
+                'buyer_address' => ['Mūkusalas 3, Rīga', 'IKEA bāze, Rīga', 'IKEA bāze, Rīga'],
+                'service_date' => '21.03.2026',
+                'amount_freight' => '100.00',
+                'amount_net' => '100.00',
+                'amount_commission' => '10.00',
+                'amount_subtotal' => '100.00',
+                'amount_vat' => '21.00',
+                'amount_total' => '121.00',
+                'bank_card' => 'Bankas karte',
+                'bank_transfer' => 'Bankas pārskaitījums',
+                'payment_status' => 'Apmaksāts',
+            ],
+        ]);
+    }
+
     #[Route('/profile', name: 'public_profile')]
     public function profile(): Response
     {
