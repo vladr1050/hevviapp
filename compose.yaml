@@ -49,6 +49,8 @@ services:
 
   nginx:
     image: nginx:stable
+    depends_on:
+      - php
     ports:
       - "8090:80"
     volumes:

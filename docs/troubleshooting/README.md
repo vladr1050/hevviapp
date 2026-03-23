@@ -77,6 +77,24 @@ docker compose run --rm php bash
 php bin/console --version
 ```
 
+### Nginx: `host not found in upstream "php"` / порт 8090 не слушается / 502 с Caddy
+
+**Проблема:** После `docker compose restart php nginx` контейнер **nginx** не поднимается, `curl http://127.0.0.1:8090/` не коннектится, в логах nginx: `host not found in upstream "php"`.
+
+**Причина:** Nginx по умолчанию резолвит имя `php` **один раз при старте**. Если nginx стартует раньше, чем контейнер `php` появился в Docker DNS, конфиг не применяется и процесс выходит.
+
+**Решение в репозитории:** В `nginx/default.conf` используется `resolver 127.0.0.11` и `fastcgi_pass` через переменную (`set $php_upstream php:9000`), плюс `depends_on: php` у сервиса nginx в `compose.yaml`.
+
+**На сервере после обновления файлов:**
+
+```bash
+cd /var/www/frpc_hevii-php-backoffice-service
+export COMPOSE_FILE=compose.yaml:compose.prod.yaml
+docker compose up -d nginx
+docker compose ps   # nginx и php должны быть Up
+curl -sS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8090/
+```
+
 ---
 
 ## 💾 База данных
