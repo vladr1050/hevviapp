@@ -13,7 +13,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{{ 'Hevii' }}{% endblock %}</title>
+    <title>{% block title %}{{ 'public_site.browser_title'|trans({}, 'AppBundle') }}{% endblock %}</title>
+    <meta name="apple-mobile-web-app-title" content="{{ 'public_site.browser_title'|trans({}, 'AppBundle') }}">
 
     {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}

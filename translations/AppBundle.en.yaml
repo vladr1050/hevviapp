@@ -1,3 +1,7 @@
+# Browser tab / PWA short name (public site)
+public_site:
+    browser_title: hevvi
+
 menu:
     users:             Users
     carriers:          Carriers
