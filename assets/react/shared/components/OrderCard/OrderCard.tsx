@@ -83,7 +83,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 
 	return (
 		<>
-			<div className={styles.card}>
+			<div className={cn(styles.card, { [styles.isCarrier]: isCarrier })}>
 				<div className={styles.left}>
 					{!isRequest && (
 						<>
