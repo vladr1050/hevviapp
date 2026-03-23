@@ -25,6 +25,16 @@ export const Header: FC<HeaderProps> = ({ user, isCarrier, device }) => {
 
 	const { isMobile } = useDevice(device)
 
+	const requestsTab = isCarrier ? Routes.CARRIER_REQUESTS : Routes.USER_REQUESTS
+	const ordersTab = isCarrier ? Routes.CARRIER_ORDERS : Routes.USER_ORDERS
+
+	const tabsDefaultValue =
+		pathname.includes(requestsTab) || pathname === Routes.HOME
+			? requestsTab
+			: pathname.includes(ordersTab)
+				? ordersTab
+				: requestsTab
+
 	return (
 		<div className={styles.wrapper}>
 			<div className={cn('tw-container', styles.header, { [styles.mobile]: isMobile })}>
@@ -42,25 +52,14 @@ export const Header: FC<HeaderProps> = ({ user, isCarrier, device }) => {
 									items={[
 										{
 											label: 'Requests',
-											value: isCarrier ? Routes.CARRIER_REQUESTS : Routes.USER_REQUESTS,
+											value: requestsTab,
 										},
 										{
 											label: 'Orders',
-											value: isCarrier ? Routes.CARRIER_ORDERS : Routes.USER_ORDERS,
+											value: ordersTab,
 										},
 									]}
-									defaultValue={
-										pathname.includes(isCarrier ? Routes.CARRIER_REQUESTS : Routes.USER_REQUESTS) ||
-										pathname === Routes.HOME
-											? isCarrier
-												? Routes.CARRIER_REQUESTS
-												: Routes.USER_REQUESTS
-											: pathname.includes(isCarrier ? Routes.CARRIER_ORDERS : Routes.USER_ORDERS)
-												? isCarrier
-													? Routes.CARRIER_ORDERS
-													: Routes.USER_ORDERS
-												: 'undefined'
-									}
+									defaultValue={tabsDefaultValue}
 									onChange={(v) => push(v)}
 								/>
 							)}
