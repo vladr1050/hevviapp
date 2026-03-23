@@ -94,6 +94,7 @@ export enum CargoTypeEnum {
 // FIXME PAVEL
 type CargoType = {
 	type: 1 | 2
+	type_text?: string
 	dimensions?: string
 	weight?: number
 	quantity: number
