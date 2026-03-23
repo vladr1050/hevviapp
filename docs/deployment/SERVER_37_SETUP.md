@@ -29,9 +29,11 @@ docker --version && docker compose version
 
 ```bash
 cd /var/www  # или /opt, как удобнее
-git clone https://github.com/praesyx/frpc_hevii-php-backoffice-service.git
+git clone git@github.com:vladr1050/hevviapp.git frpc_hevii-php-backoffice-service
 cd frpc_hevii-php-backoffice-service
 ```
+
+(Каталог при клоне можно назвать как удобно; на сервере часто используют `frpc_hevii-php-backoffice-service`. Если в репозитории код в подпапке — сделай `cd` в неё.)
 
 Если репо приватный — настрой SSH-ключ на сервере и клонируй по SSH-URL.
 

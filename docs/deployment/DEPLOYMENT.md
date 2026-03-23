@@ -2,6 +2,8 @@
 
 Краткая инструкция по деплою Hevii BackOffice на VPS или другом сервере с Docker.
 
+**Текущий прод (hevvi.app, Docker + Caddy):** пошаговый процесс и скрипт — **[DEPLOY_HEVVI_PRODUCTION.md](./DEPLOY_HEVVI_PRODUCTION.md)** и `scripts/deploy-production.sh`.
+
 ---
 
 ## Варианты

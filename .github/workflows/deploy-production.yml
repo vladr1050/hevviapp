@@ -1,0 +1,67 @@
+# Деплой на production по push в master (и вручную).
+# Секреты: см. docs/deployment/GITHUB_ACTIONS_DEPLOY.md
+name: Deploy production
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Rsync to server
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          RSYNC_TARGET="${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/"
+          rsync -az \
+            -e "ssh -i $HOME/.ssh/deploy_key -o IdentitiesOnly=yes" \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='var/cache/*' \
+            --exclude='var/log/*' \
+            --exclude='.env' \
+            --exclude='.env.local' \
+            --exclude='.DS_Store' \
+            ./ "$RSYNC_TARGET"
+
+      - name: Remote — composer, frontend, migrate, cache
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          ssh -i "$HOME/.ssh/deploy_key" -o IdentitiesOnly=yes \
+            "${DEPLOY_USER}@${DEPLOY_HOST}" \
+            "cd ${DEPLOY_PATH} && export COMPOSE_FILE=compose.yaml:compose.prod.yaml && \
+              docker compose exec -T php composer install --no-dev --optimize-autoloader --no-interaction && \
+              docker compose exec -T php sh -c 'cd /var/www/app && npm install && npm run build' && \
+              docker compose exec -T php php bin/console doctrine:migrations:migrate --no-interaction && \
+              docker compose exec -T php php bin/console cache:clear --env=prod --no-warmup && \
+              docker compose restart php nginx && \
+              sleep 3 && \
+              docker compose exec -T php php bin/console cache:warmup --env=prod"
