@@ -113,7 +113,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 										<div className={styles.value}>
 											{!item?.dimensions
 												? EMPTY_STRING
-												: item?.dimensions?.split(',').map((d, i, arr) => {
+												: item?.dimensions?.split('x').map((d, i, arr) => {
 														if (i === arr.length - 1) return d
 														return (
 															<>

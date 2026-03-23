@@ -37,8 +37,6 @@ export const RequestsUser: FC<RequestsUserProps> = ({ orders }) => {
 		defaultValues: {
 			// WHAT
 			cargo: [],
-			stackable: true,
-			manipulatorNeeded: true,
 			// WHEN
 			pickupType: 'pickup_ready',
 			pickupMonth: currentMonthZeroBased,
