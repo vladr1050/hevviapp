@@ -1,13 +1,12 @@
 .card {
-	/* h-[620px] */
-	@apply rounded-[30px] bg-white overflow-hidden
+	@apply rounded-[30px] h-[652px] bg-white overflow-hidden
 	grid grid-cols-2 gap-14 p-7 pl-9 relative;
 	z-index: 1;
 	box-shadow: 0px 6px 54px 0px rgba(0, 0, 0, 0.0288);
 	box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.1);
 
 	& .left {
-		@apply flex flex-col gap-3;
+		@apply flex flex-col gap-3 overflow-hidden;
 
 		& .titleWrapper {
 			@apply flex items-center gap-10;
@@ -27,13 +26,19 @@
 
 		& .items {
 			@apply flex flex-col gap-2;
+
+			@apply h-full overflow-auto;
+
+			/* & .cargoWrapper { */
+			/* @apply flex flex-col gap-1 max-h-[144px] overflow-auto; */
+			/* } */
 		}
 
 		& .row {
 			@apply grid grid-cols-3 gap-4 items-center;
 
 			&.cargo {
-				@apply grid-cols-[1fr,1fr,1fr,50px];
+				@apply grid-cols-[1fr,1fr,1fr,50px] shrink-0;
 
 				& .item {
 					@apply gap-0;
@@ -45,10 +50,10 @@
 			@apply grid grid-cols-[20px,1fr] gap-5 w-full;
 
 			& .routeWrapper {
-				@apply flex mt-7;
+				@apply flex justify-center mt-7;
 
 				& .route {
-					@apply h-[134px] w-[3px] bg-black relative;
+					@apply h-[calc(100%-62px)] w-[3px] bg-black relative;
 
 					&:before,
 					&:after {
@@ -71,7 +76,7 @@
 		}
 
 		& .hr {
-			@apply w-full h-[1px] bg-[#CCCCCC];
+			@apply w-full h-[1px] bg-[#CCCCCC] shrink-0;
 		}
 
 		& .item {
@@ -89,7 +94,7 @@
 			}
 
 			& .comments {
-				@apply h-[100px] overflow-y-auto;
+				/* @apply h-[100px] overflow-y-auto; */
 			}
 
 			& .additionals {

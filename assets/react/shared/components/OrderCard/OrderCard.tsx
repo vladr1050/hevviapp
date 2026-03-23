@@ -2,7 +2,6 @@ import { type FC, Fragment, Suspense, useState } from 'react'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 
 import {
-	CargoTypeEnum,
 	EMPTY_STRING,
 	FormActions,
 	OrderStatusEnum,
@@ -100,19 +99,32 @@ export const OrderCard: FC<OrderCardProps> = ({
 					)}
 
 					<div className={styles.items}>
+						{/* <div className={styles.cargoWrapper}> */}
 						{order.cargo.map((item, index) => (
 							<Fragment key={index}>
 								<div className={cn(styles.row, styles.cargo)}>
 									<div className={styles.item}>
 										<div className={styles.label}>Cargo</div>
-										<div className={styles.value}>
-											{item?.type ? CargoTypeEnum[item.type] : EMPTY_STRING}
-										</div>
+										<div className={styles.value}>{item?.type_text || EMPTY_STRING}</div>
 									</div>
 
 									<div className={styles.item}>
 										<div className={styles.label}>Size</div>
-										<div className={styles.value}>{item?.dimensions || EMPTY_STRING}</div>
+										<div className={styles.value}>
+											{!item?.dimensions
+												? EMPTY_STRING
+												: item?.dimensions?.split(',').map((d, i, arr) => {
+														if (i === arr.length - 1) return d
+														return (
+															<>
+																{d}{' '}
+																<span className="font-normal text-xs text-black/40">x</span>{' '}
+															</>
+														)
+													})}
+
+											{/* {item?.dimensions?.split(',').join(' x ') || EMPTY_STRING} */}
+										</div>
 									</div>
 
 									<div className={styles.item}>
@@ -129,6 +141,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 								<div className={styles.hr} />
 							</Fragment>
 						))}
+						{/* </div> */}
 
 						{(!!order?.stackable || !!order?.manipulator_needed) && (
 							<>

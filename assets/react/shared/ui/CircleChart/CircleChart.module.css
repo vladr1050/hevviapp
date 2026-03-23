@@ -15,6 +15,7 @@
 
 		& .title {
 			@apply font-medium text-xl text-black text-center;
+			font-variant-numeric: tabular-nums;
 		}
 
 		& .subtitle {
