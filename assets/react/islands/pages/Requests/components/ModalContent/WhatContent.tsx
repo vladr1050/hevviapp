@@ -8,14 +8,7 @@ import {
 	useFieldArray,
 } from 'react-hook-form'
 
-import {
-	MAX_HEIGHT,
-	MAX_LENGTH,
-	MAX_QUANTITY,
-	MAX_WEIGHT,
-	MAX_WIDTH,
-	MIN_WEIGHT,
-} from '@config/constants'
+import { MAX_HEIGHT, MAX_LENGTH, MAX_QUANTITY, MAX_WIDTH, MIN_WEIGHT } from '@config/constants'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
 import { Switch } from '@ui/Switch/Switch'
@@ -133,12 +126,10 @@ const Item: FC<{
 						<div className={styles.countButtons}>
 							<button
 								type="button"
-								onClick={() =>
-									onChange(() => {
-										if (value === 1) return 1
-										return value - 1
-									})
-								}
+								onClick={() => {
+									const v = value || 1
+									onChange(v === 1 ? 1 : v - 1)
+								}}
 							>
 								–
 							</button>
@@ -147,12 +138,10 @@ const Item: FC<{
 
 							<button
 								type="button"
-								onClick={() =>
-									onChange(() => {
-										if (value === MAX_QUANTITY) return MAX_QUANTITY
-										return value + 1
-									})
-								}
+								onClick={() => {
+									const v = value || 1
+									onChange(v === MAX_QUANTITY ? MAX_QUANTITY : v + 1)
+								}}
 							>
 								+
 							</button>
@@ -413,7 +402,8 @@ const AddItem: FC<{
 			</div>
 
 			<div className={styles.row}>
-				<div className={styles.rowTitle}>Weight ({MAX_WEIGHT} max)</div>
+				{/* <div className={styles.rowTitle}>Weight ({MAX_WEIGHT} max)</div> */}
+				<div className={styles.rowTitle}>Weight</div>
 				<div className={styles.rowContent}>
 					<div className={styles.inputKg}>
 						<input
@@ -421,13 +411,14 @@ const AddItem: FC<{
 							value={item.weight}
 							onChange={(e) => {
 								const v = Number(e.target.value)
-								const weight = v > MAX_WEIGHT ? MAX_WEIGHT : v < 1 ? 1 : v
+								// const weight = v > MAX_WEIGHT ? MAX_WEIGHT : v < 1 ? 1 : v
+								const weight = v < 1 ? 1 : v
 								setItem((v) => ({ ...v, weight }))
 							}}
 							type="number"
 							placeholder="0"
 							min={MIN_WEIGHT}
-							max={MAX_WEIGHT}
+							// max={MAX_WEIGHT}
 						/>
 
 						<span className={styles.info}>kg</span>

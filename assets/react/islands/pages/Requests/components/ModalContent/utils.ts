@@ -66,8 +66,8 @@ export const dimensionsCm = (
 export const whatLabel = (cargos: CargoItemType[]) => {
 	const [palettes, irregular] = cargos.reduce(
 		(acc, curr) => [
-			acc[0] + (curr.type === 'palette' ? 1 : 0),
-			acc[1] + (curr.type === 'irregular_cargo' ? 1 : 0),
+			acc[0] + (curr.type === 'palette' ? curr.quantity : 0),
+			acc[1] + (curr.type === 'irregular_cargo' ? curr.quantity : 0),
 		],
 		[0, 0]
 	)

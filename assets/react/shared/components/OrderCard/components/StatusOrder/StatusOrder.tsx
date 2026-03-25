@@ -207,7 +207,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 							isWaiting={order.status < OrderStatusEnum.PICKUP_DONE}
 							showInfo={order.status < OrderStatusEnum.PICKUP_DONE}
 							infoText="Awaiting pickup"
-							onClick={() => setValueForm('PICKUP_DONE')}
+							onClick={() => setValueForm((v) => (v === 'PICKUP_DONE' ? undefined : 'PICKUP_DONE'))}
 						/>
 
 						<div
@@ -224,7 +224,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 							isWaiting={order.status === OrderStatusEnum.PICKUP_DONE}
 							showInfo={order.status === OrderStatusEnum.PICKUP_DONE}
 							infoText="In transit"
-							onClick={() => setValueForm('IN_TRANSIT')}
+							onClick={() => setValueForm((v) => (v === 'IN_TRANSIT' ? undefined : 'IN_TRANSIT'))}
 						/>
 
 						<div
@@ -241,7 +241,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 							isWaiting={order.status === OrderStatusEnum.IN_TRANSIT}
 							showInfo={order.status === OrderStatusEnum.IN_TRANSIT}
 							infoText="Pending approval"
-							onClick={() => setValueForm('DELIVERED')}
+							onClick={() => setValueForm((v) => (v === 'DELIVERED' ? undefined : 'DELIVERED'))}
 						/>
 					</div>
 				</div>

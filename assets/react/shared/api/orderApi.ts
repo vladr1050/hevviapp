@@ -16,8 +16,8 @@ export interface CreateOrderPayload {
 	dropoutLatitude: number | null
 	dropoutLongitude: number | null
 	notes: string | null
-	timeFrom: string | null
-	timeTo: string | null
+	pickupTimeFrom: string | null
+	pickupTimeTo: string | null
 	pickupDate?: string | null
 	cargo?: CreateOrderCargoPayload[]
 	stackable: boolean
