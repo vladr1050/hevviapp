@@ -4,24 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="cargo name fixed">
+    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="fix(admin): make carrier read-only and block duplicate active OrderAssignments">
+      <change afterPath="$PROJECT_DIR$/migrations/Version20260326130000.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Admin/CargoAdmin.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Admin/CargoAdmin.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/islands/pages/Order/Order.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/islands/pages/Order/Order.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/OrderCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/OrderCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/CancelModal/CancelModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/CancelModal/CancelModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/shared/config/constants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/config/constants.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Admin/OrderAdmin.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Admin/OrderAdmin.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Api/OrderController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/OrderController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/CarrierController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CarrierController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Cargo.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Cargo.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/Order.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Order.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/OrderAssignment.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/OrderAssignment.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/EventSubscriber/OrderAssignmentSubscriber.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/EventSubscriber/OrderAssignmentSubscriber.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Listener/OrderAssignmentListener.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Listener/OrderAssignmentListener.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/translations/AppBundle.en.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/translations/AppBundle.en.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/translations/AppBundle.ru.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/translations/AppBundle.ru.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/translations/validators.en.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/translations/validators.en.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/translations/validators.ru.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/translations/validators.ru.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -334,7 +328,7 @@
       <workItem from="1773413982541" duration="3303000" />
       <workItem from="1773947967806" duration="5768000" />
       <workItem from="1774351852885" duration="56000" />
-      <workItem from="1774532556133" duration="3749000" />
+      <workItem from="1774532556133" duration="6944000" />
     </task>
     <task id="LOCAL-00001" summary="custom areas added to service areas">
       <option name="closed" value="true" />
@@ -632,7 +626,15 @@
       <option name="project" value="LOCAL" />
       <updated>1774028802567</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="fix(admin): make carrier read-only and block duplicate active OrderAssignments">
+      <option name="closed" value="true" />
+      <created>1774541219705</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1774541219705</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -655,6 +657,7 @@
     <MESSAGE value="profile stats" />
     <MESSAGE value="order page updated" />
     <MESSAGE value="cargo name fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="cargo name fixed" />
+    <MESSAGE value="fix(admin): make carrier read-only and block duplicate active OrderAssignments" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix(admin): make carrier read-only and block duplicate active OrderAssignments" />
   </component>
 </project>

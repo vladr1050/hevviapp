@@ -98,6 +98,7 @@ show:
     label_pickup_address:     Адрес забора
     label_dropout_address:    Адрес доставки
     label_notes:              Заметки
+    label_cancel_reason:      Причина отмены
     label_pickup_date:        Дата забора
     label_pickup_time_from:   Время забора с
     label_pickup_time_to:     Время забора до
@@ -204,6 +205,8 @@ form:
     label_offer_status:        Статус предложения
     label_add_offer:           Добавить предложение
     label_upload_files:        PDF-документы
+    label_cancel_reason:      Причина отмены
+    label_help_cancel_reason: Причина, указанная перевозчиком при отмене заказа.
     label_help_carrier_readonly: "Перевозчик назначается автоматически через вкладку «Назначения». Чтобы сменить перевозчика — переведите текущее назначение в статус «Отклонено»."
     label_help_upload_pdf:     "Принимаются только PDF-файлы. Можно загрузить несколько файлов. Файлы автоматически сжимаются при сохранении."
 
@@ -398,3 +401,6 @@ order:
     status_-1: "Отменён"
     type_1:    "Палет"
     type_2:    "Негабаритный"
+    cancel_reason_1:     "Нет доступных грузовиков"
+    cancel_reason_2:     "Неверный расчёт стоимости"
+    cancel_reason_other: "Прочее"

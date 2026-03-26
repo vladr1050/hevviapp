@@ -9,6 +9,7 @@ import {
 	carrierCancelOrderUrl,
 	carrierConfirmRequestUrl,
 	carrierDeclineRequestUrl,
+	userCancelOrderUrl,
 } from '@config/constants'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
@@ -435,13 +436,13 @@ export const OrderCard: FC<OrderCardProps> = ({
 
 			{/* CANCEL */}
 			<Modal isOpen={modalId === 'cancel'} onClose={() => setModalId(undefined)} maxWidth="400px">
-				<CancelModal
-					id={order.id}
-					from={order.address.from}
-					to={order.address.to}
-					isCarrier={isCarrier}
-					actionUrl={isCarrier ? carrierCancelOrderUrl(order.id) : undefined}
-				/>
+			<CancelModal
+				id={order.id}
+				from={order.address.from}
+				to={order.address.to}
+				isCarrier={isCarrier}
+				actionUrl={isCarrier ? carrierCancelOrderUrl(order.id) : userCancelOrderUrl(order.id)}
+			/>
 			</Modal>
 
 			{/* RATE */}

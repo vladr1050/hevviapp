@@ -110,6 +110,7 @@ show:
     label_pickup_address:              Pickup Address
     label_dropout_address:             Dropout Address
     label_notes:                       Notes
+    label_cancel_reason:               Cancel Reason
     label_pickup_date:                 Pickup Date
     label_pickup_time_from:            Pickup Time From
     label_pickup_time_to:              Pickup Time To
@@ -229,6 +230,8 @@ form:
     label_fee:                         Commission Amount
     label_vat:                         VAT Amount
     label_offer_status:                Offer Status
+    label_cancel_reason:               Cancel Reason
+    label_help_cancel_reason:          Reason given by the carrier when the order was cancelled.
     label_help_carrier_readonly:       Carrier is assigned automatically via Order Assignments. To change the carrier, reject the current assignment in the Assignments tab.
     label_help_order_currency:         Leave this field empty, and it will be filled automatically after the successful calculation of the order’s shipping cost.
     group_legal:                       Legal information
@@ -470,5 +473,8 @@ order:
     status_-1: "Cancelled"
     type_1:    "Pallet"
     type_2:    "Oversized"
+    cancel_reason_1: "No trucks available"
+    cancel_reason_2: "Wrong price calculation"
+    cancel_reason_other: "Other"
 
 

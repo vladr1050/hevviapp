@@ -39,6 +39,9 @@ export const carrierConfirmRequestUrl = (id: string): string =>
 export const carrierCancelOrderUrl = (id: string): string =>
 	`/carrier/orders/${id}/cancel`
 
+export const userCancelOrderUrl = (id: string): string =>
+	`/user/orders/${id}/cancel`
+
 export const carrierUpdateStatusUrl = (id: string): string =>
 	`/carrier/orders/${id}/update-status`
 

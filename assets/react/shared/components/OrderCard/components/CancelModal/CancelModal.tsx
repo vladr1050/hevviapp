@@ -15,6 +15,7 @@ interface CancelModalProps {
 	to?: string
 	isCarrier?: boolean
 	actionUrl?: string
+	csrfToken?: string
 }
 
 type FormValues = {
@@ -22,13 +23,15 @@ type FormValues = {
 	text?: string
 }
 
-export const CancelModal: FC<CancelModalProps> = ({ id, from, to, isCarrier, actionUrl }) => {
+export const CancelModal: FC<CancelModalProps> = ({ id, from, to, isCarrier, actionUrl, csrfToken }) => {
 	const { control, register, watch } = useForm<FormValues>({
 		defaultValues: { radio: '1' },
 	})
 
 	return (
 		<form className={styles.modal} method="POST" action={actionUrl ?? FormActions.CANCEL_ORDER}>
+			{csrfToken && <input type="hidden" name="_token" value={csrfToken} />}
+			<input type="hidden" name="radio" value={watch('radio')} />
 			<div className={styles.icon}>
 				<Icon type="sad_box" size={60} />
 			</div>
