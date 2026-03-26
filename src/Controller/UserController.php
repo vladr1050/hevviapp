@@ -103,13 +103,15 @@ class UserController extends AbstractController
         $listOfOrders = [];
         foreach ($this->orderRepository->findRecentBySender($user, 5) as $order) {
             $listOfOrders[] = [
-                'id'      => $order->getId()?->toRfc4122(),
-                'address' => [
+                'id'                 => $order->getId()?->toRfc4122(),
+                'address'            => [
                     'from' => $order->getPickupAddress(),
                     'to'   => $order->getDropoutAddress(),
                 ],
-                'cargo'   => $this->buildCargoList($order, $user->getLocale()),
-                'comment' => $order->getNotes(),
+                'cargo'              => $this->buildCargoList($order, $user->getLocale()),
+                'stackable'          => $order->isStackable(),
+                'manipulator_needed' => $order->isManipulatorNeeded(),
+                'comment'            => $order->getNotes(),
             ];
         }
 
@@ -139,10 +141,12 @@ class UserController extends AbstractController
                     'from' => $order->getPickupAddress(),
                     'to'   => $order->getDropoutAddress(),
                 ],
-                'cargo'       => $this->buildCargoList($order, $user->getLocale()),
-                'comment'     => $order->getNotes(),
-                'pickup_date' => false !== $history ? $history->getCreatedAt()->format('d.m.Y') : null,
-                'carrier'     => $order->getCarrier()?->getLegalName(),
+                'cargo'              => $this->buildCargoList($order, $user->getLocale()),
+                'stackable'          => $order->isStackable(),
+                'manipulator_needed' => $order->isManipulatorNeeded(),
+                'comment'            => $order->getNotes(),
+                'pickup_date'        => false !== $history ? $history->getCreatedAt()->format('d.m.Y') : null,
+                'carrier'            => $order->getCarrier()?->getLegalName(),
             ];
         }
 
@@ -179,6 +183,8 @@ class UserController extends AbstractController
                 'to'   => $order->getDropoutAddress(),
             ],
             'cargo'               => $this->buildCargoList($order, $user->getLocale()),
+            'stackable'           => $order->isStackable(),
+            'manipulator_needed'  => $order->isManipulatorNeeded(),
             'comment'             => $order->getNotes(),
             'pickup_date'         => false !== $history ? $history->getCreatedAt()->format('d.m.Y') : null,
             'carrier'             => $order->getCarrier()?->getLegalName(),
@@ -238,20 +244,18 @@ class UserController extends AbstractController
     /**
      * Сериализует коллекцию грузов заказа в массив скалярных данных для JSON-шаблона.
      *
-     * @return list<array{type: int, type_text: string, dimensions: ?string, weight: ?int, quantity: ?int, name: ?string, stackable: ?bool, manipulator_needed: ?bool}>
+     * @return list<array{type: int, type_text: string, dimensions: ?string, weight: ?int, quantity: ?int, name: ?string}>
      */
     private function buildCargoList(Order $order, string $locale): array
     {
         return $order->getCargo()->map(
             fn(Cargo $cargo): array => [
-                'type'               => $cargo->getType(),
-                'type_text'          => $this->translator->trans('order.type_' . $cargo->getType(), domain: 'AppBundle', locale: $locale),
-                'dimensions'         => $cargo->getDimensionsCm(),
-                'weight'             => $cargo->getWeightKg(),
-                'quantity'           => $cargo->getQuantity(),
-                'name'               => $cargo->getName(),
-                'stackable'          => $cargo->isStackable(),
-                'manipulator_needed' => $cargo->isManipulatorNeeded(),
+                'type'       => $cargo->getType(),
+                'type_text'  => $this->translator->trans('order.type_' . $cargo->getType(), domain: 'AppBundle', locale: $locale),
+                'dimensions' => $cargo->getDimensionsCm(),
+                'weight'     => $cargo->getWeightKg(),
+                'quantity'   => $cargo->getQuantity(),
+                'name'       => $cargo->getName(),
             ]
         )->toArray();
     }

@@ -38,6 +38,7 @@ use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
 use Sonata\AdminBundle\Filter\Model\FilterData;
 use Symfony\Component\DependencyInjection\Attribute\Required;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -326,6 +327,8 @@ class OrderAdmin extends BaseAdmin
             ->add('deliveryTimeTo', null, [
                 'format' => 'H:m',
             ])
+            ->add('stackable')
+            ->add('manipulatorNeeded')
             ->add('cargo')
             ->add('offers', null, [
                 'label' => 'show.label_offers',
@@ -376,25 +379,19 @@ class OrderAdmin extends BaseAdmin
                         ->setParameter('search', '%' . mb_strtolower($value) . '%');
                 },
             ])
-            ->add('carrier', ModelAutocompleteType::class, [
+            ->add('carrier', TextType::class, [
+                'mapped'   => false,
                 'required' => false,
-                'property' => ['email', 'phone', 'legalName'],
-                'to_string_callback' => function ($entity) {
-                    return $entity->getLegalName();
-                },
-                'callback' => function ($admin, $property, $value) {
-                    $datagrid = $admin->getDatagrid();
-                    $queryBuilder = $datagrid->getQuery();
-                    $queryBuilder
-                        ->andWhere(
-                            $queryBuilder->expr()->orX(
-                                $queryBuilder->expr()->like('LOWER(o.email)', ':search'),
-                                $queryBuilder->expr()->like('LOWER(o.phone)', ':search'),
-                                $queryBuilder->expr()->like('LOWER(o.legalName)', ':search'),
-                            )
-                        )
-                        ->setParameter('search', '%' . mb_strtolower($value) . '%');
-                },
+                'disabled' => true,
+                'data'     => (function (): string {
+                    $subject = $this->getSubject();
+                    if ($subject instanceof Order && $subject->getCarrier() !== null) {
+                        return $subject->getCarrier()->getLegalName();
+                    }
+                    return '';
+                })(),
+                'help'     => 'form.label_help_carrier_readonly',
+                'attr'     => ['placeholder' => '—'],
             ])
             ->add('currency', ChoiceType::class, [
                 'choices' => ServiceArea::CURRENCY,
@@ -405,6 +402,9 @@ class OrderAdmin extends BaseAdmin
                 'choices' => Order::STATUS,
                 'choice_translation_domain' => 'AppBundle',
                 'required' => true,
+                'choice_attr' => static fn(int $val): array => $val === Order::STATUS['ASSIGNED']
+                    ? ['disabled' => 'disabled', 'title' => 'Assigned status is managed automatically via Order Assignments']
+                    : [],
             ])
             ->end()
             ->with('addresses', [
@@ -470,6 +470,16 @@ class OrderAdmin extends BaseAdmin
                 'required' => false,
                 'widget' => 'single_text',
                 'html5' => true,
+            ])
+            ->end()
+            ->with('order_cargo_requirements', [
+                'class' => 'col-md-12',
+            ])
+            ->add('stackable', CheckboxType::class, [
+                'required' => false,
+            ])
+            ->add('manipulatorNeeded', CheckboxType::class, [
+                'required' => false,
             ])
             ->end()
             ->end()

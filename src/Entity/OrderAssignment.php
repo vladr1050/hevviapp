@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\OrderAssignmentRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: OrderAssignmentRepository::class)]
 class OrderAssignment extends BaseUUID
@@ -74,6 +76,35 @@ class OrderAssignment extends BaseUUID
         $this->status = $status;
 
         return $this;
+    }
+
+    /**
+     * Запрещает создание нового OrderAssignment, пока у заказа есть
+     * хотя бы одно активное (не REJECTED) назначение.
+     * Чтобы создать новое — необходимо сначала перевести предыдущее в REJECTED.
+     */
+    #[Assert\Callback]
+    public function validateNoActiveAssignment(ExecutionContextInterface $context): void
+    {
+        if ($this->relatedOrder === null) {
+            return;
+        }
+
+        foreach ($this->relatedOrder->getOrderAssignments() as $existing) {
+            if ($existing === $this) {
+                continue;
+            }
+
+            if ($existing->getStatus() !== self::STATUS['REJECTED']) {
+                $context->buildViolation(
+                    'order_assignment.error.active_assignment_exists'
+                )
+                    ->atPath('carrier')
+                    ->addViolation();
+
+                return;
+            }
+        }
     }
 
     public function __toString(): string

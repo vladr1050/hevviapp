@@ -52,15 +52,15 @@ class OrderController extends AbstractController
      *   "pickupTimeTo":     string|null  (H:i),
      *   "pickupDate":       string|null  (Y-m-d),
      *   "deliveryDate":     string|null  (Y-m-d),
+     *   "stackable":         bool,
+     *   "manipulatorNeeded": bool,
      *   "cargo": [
      *     {
-     *       "type":              int (1=PALLET, 2=OVERSIZED),
-     *       "quantity":          int  (required),
-     *       "weightKg":          int  (required),
-     *       "dimensionsCm":      string|null (e.g. "120x80x50"),
-     *       "name":              string (required),
-     *       "stackable":         bool,
-     *       "manipulatorNeeded": bool
+     *       "type":         int (1=PALLET, 2=OVERSIZED),
+     *       "quantity":     int    (required),
+     *       "weightKg":     int    (required),
+     *       "dimensionsCm": string|null (e.g. "120x80x50"),
+     *       "name":         string (required)
      *     },
      *     ...
      *   ]
@@ -142,6 +142,8 @@ class OrderController extends AbstractController
         if (!empty($data['deliveryDate'])) {
             $order->setDeliveryDate(\DateTime::createFromFormat('Y-m-d', $data['deliveryDate']) ?: null);
         }
+        $order->setStackable((bool) ($data['stackable'] ?? false));
+        $order->setManipulatorNeeded((bool) ($data['manipulatorNeeded'] ?? false));
 
         // Build each Cargo and attach via addCargo() so the in-memory collection
         // is populated before postPersist fires (the offer calculator iterates
@@ -175,8 +177,6 @@ class OrderController extends AbstractController
         $cargo->setQuantity((int) $cargoData['quantity']);
         $cargo->setWeightKg((int) $cargoData['weightKg']);
         $cargo->setName(!empty($cargoData['name']) ? (string) $cargoData['name'] : $cargo->getTypeLabel());
-        $cargo->setStackable((bool) ($cargoData['stackable'] ?? false));
-        $cargo->setManipulatorNeeded((bool) ($cargoData['manipulatorNeeded'] ?? false));
 
         if (!empty($cargoData['dimensionsCm'])) {
             $cargo->setDimensionsCm((string) $cargoData['dimensionsCm']);

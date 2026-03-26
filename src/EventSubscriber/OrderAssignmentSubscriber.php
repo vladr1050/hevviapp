@@ -79,15 +79,7 @@ class OrderAssignmentSubscriber
             'new_status' => $newStatus,
         ]);
 
-        // Проверяем, изменился ли статус на ACCEPTED
-        if ($newStatus !== OrderAssignment::STATUS['ACCEPTED']) {
-            $this->logger->info('Новый статус не ACCEPTED, пропускаем');
-            return;
-        }
-
-        // Получаем связанный Order и Carrier
         $order = $entity->getRelatedOrder();
-        $carrier = $entity->getCarrier();
 
         if ($order === null) {
             $this->logger->warning('OrderAssignment не имеет связанного Order', [
@@ -96,24 +88,47 @@ class OrderAssignmentSubscriber
             return;
         }
 
-        if ($carrier === null) {
-            $this->logger->warning('OrderAssignment не имеет carrier', [
-                'assignment_id' => $entity->getId()?->toRfc4122(),
+        if ($newStatus === OrderAssignment::STATUS['ACCEPTED']) {
+            $carrier = $entity->getCarrier();
+
+            if ($carrier === null) {
+                $this->logger->warning('OrderAssignment не имеет carrier', [
+                    'assignment_id' => $entity->getId()?->toRfc4122(),
+                ]);
+                return;
+            }
+
+            $this->logger->info('Carrier будет установлен в Order (ACCEPTED)', [
+                'order_id' => $order->getId()?->toRfc4122(),
+                'new_carrier_id' => $carrier->getId()?->toRfc4122(),
+                'carrier_legal_name' => $carrier->getLegalName(),
             ]);
+
+            $this->pendingOrderUpdates[] = [
+                'order'   => $order,
+                'carrier' => $carrier,
+                'status'  => Order::STATUS['AWAITING_PICKUP'],
+            ];
+
             return;
         }
 
-        $oldCarrier = $order->getCarrier();
+        if ($newStatus === OrderAssignment::STATUS['REJECTED']) {
+            $this->logger->info('Assignment REJECTED — carrier будет сброшен в Order', [
+                'order_id'      => $order->getId()?->toRfc4122(),
+                'old_status'    => $oldStatus,
+            ]);
 
-        $this->logger->info('Carrier будет установлен в Order', [
-            'order_id' => $order->getId()?->toRfc4122(),
-            'old_carrier_id' => $oldCarrier?->getId()?->toRfc4122(),
-            'new_carrier_id' => $carrier->getId()?->toRfc4122(),
-            'carrier_legal_name' => $carrier->getLegalName(),
-        ]);
+            $this->pendingOrderUpdates[] = [
+                'order'   => $order,
+                'carrier' => null,
+                'status'  => Order::STATUS['PAID'],
+            ];
 
-        // Сохраняем изменение для postFlush (как в OrderHistorySubscriber)
-        $this->pendingOrderUpdates[] = ['order' => $order, 'carrier' => $carrier];
+            return;
+        }
+
+        $this->logger->info('Новый статус не требует обновления Order, пропускаем');
     }
 
     /**
@@ -137,17 +152,18 @@ class OrderAssignmentSubscriber
         $this->pendingOrderUpdates = [];
 
         foreach ($updates as $update) {
-            $order = $update['order'];
+            $order   = $update['order'];
             $carrier = $update['carrier'];
+            $status  = $update['status'];
 
             $order->setCarrier($carrier);
-            $order->setStatus(Order::STATUS['AWAITING_PICKUP']);
+            $order->setStatus($status);
             $em->persist($order);
 
-            $this->logger->info('Carrier установлен в Order и сохранен', [
-                'order_id' => $order->getId()?->toRfc4122(),
-                'carrier_id' => $carrier->getId()?->toRfc4122(),
-                'carrier_legal_name' => $carrier->getLegalName(),
+            $this->logger->info('Order обновлён после изменения статуса Assignment', [
+                'order_id'   => $order->getId()?->toRfc4122(),
+                'carrier_id' => $carrier?->getId()?->toRfc4122() ?? 'null',
+                'new_status' => $status,
             ]);
         }
 

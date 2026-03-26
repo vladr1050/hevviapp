@@ -11,8 +11,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: CargoRepository::class)]
 #[ORM\Index(columns: ['type'])]
 #[ORM\Index(columns: ['weight_kg'])]
-#[ORM\Index(columns: ['stackable'])]
-#[ORM\Index(columns: ['manipulator_needed'])]
 class Cargo extends BaseUUID
 {
     public const array TYPE = [
@@ -43,12 +41,6 @@ class Cargo extends BaseUUID
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $comment = null;
-
-    #[ORM\Column]
-    private ?bool $stackable = null;
-
-    #[ORM\Column]
-    private ?bool $manipulatorNeeded = null;
 
     #[ORM\ManyToOne(inversedBy: 'cargo')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
@@ -127,30 +119,6 @@ class Cargo extends BaseUUID
     public function setComment(?string $comment): static
     {
         $this->comment = $comment;
-
-        return $this;
-    }
-
-    public function isStackable(): ?bool
-    {
-        return $this->stackable;
-    }
-
-    public function setStackable(bool $stackable): static
-    {
-        $this->stackable = $stackable;
-
-        return $this;
-    }
-
-    public function isManipulatorNeeded(): ?bool
-    {
-        return $this->manipulatorNeeded;
-    }
-
-    public function setManipulatorNeeded(bool $manipulatorNeeded): static
-    {
-        $this->manipulatorNeeded = $manipulatorNeeded;
 
         return $this;
     }
