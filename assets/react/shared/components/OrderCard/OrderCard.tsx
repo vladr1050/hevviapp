@@ -113,7 +113,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 										<div className={styles.value}>
 											{!item?.dimensions
 												? EMPTY_STRING
-												: item?.dimensions?.split(',').map((d, i, arr) => {
+												: item?.dimensions?.split('x').map((d, i, arr) => {
 														if (i === arr.length - 1) return d
 														return (
 															<>
@@ -319,12 +319,22 @@ export const OrderCard: FC<OrderCardProps> = ({
 
 								<div className={styles.item}>
 									<div className={styles.label}>
+										Platform
+										<br />
+										commission 10%
+									</div>
+									<div className={styles.value}>{order?.fee || EMPTY_STRING}</div>
+								</div>
+
+								<div className={styles.item}>
+									<div className={styles.label}>
 										VAT
 										<br />
 										21%
 									</div>
 									<div className={styles.value}>{order?.vat || EMPTY_STRING}</div>
 								</div>
+
 								<div className={styles.item}>
 									<div className={styles.label}>
 										Total, inc.
@@ -332,14 +342,6 @@ export const OrderCard: FC<OrderCardProps> = ({
 										VAT 21$
 									</div>
 									<div className={styles.value}>{order?.brutto || EMPTY_STRING}</div>
-								</div>
-								<div className={styles.item}>
-									<div className={styles.label}>
-										Platform
-										<br />
-										commission 10%
-									</div>
-									<div className={styles.value}>{order?.fee || EMPTY_STRING}</div>
 								</div>
 							</div>
 

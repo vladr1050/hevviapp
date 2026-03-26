@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 
-import { EMPTY_STRING, OrderStatusEnum, Routes } from '@config/constants'
+import { EMPTY_STRING, OrderStatusEnum, OrderType, Routes } from '@config/constants'
 import { DeviceType, useDevice } from '@hooks/useDevice'
 import { Icon } from '@ui/Icon/Icon'
 import { cn } from '@utils/cn'
@@ -12,21 +12,7 @@ import { MobilePage } from '../MobilePage/MobilePage'
 interface OrdersPageProps {
 	title: string
 	isCarrier?: boolean
-	orders?: {
-		address: {
-			from: string
-			to: string
-		}
-		comment: string
-		id: string
-		item: number
-		price: string
-		status: number
-		status_text: string
-
-		carrier?: string
-		pickup_date?: string
-	}[]
+	orders?: OrderType[]
 	device?: DeviceType
 }
 
@@ -58,12 +44,18 @@ export const OrdersPage: FC<OrdersPageProps> = (props) => {
 
 				<div className={styles.items}>
 					{orders?.map((order, index) => (
-						<div className={styles.item} key={index}>
+						<div
+							className={styles.item}
+							key={index}
+							onClick={() => {
+								console.log(order)
+							}}
+						>
 							<span>{order.id.split('-')[0]}</span>
 							<span className={styles.comment} title={order.comment}>
 								{order.comment}
 							</span>
-							<span>{`${order.item} ${order.item > 1 ? 'pcs' : 'pc'}`}</span>
+							<span>{`${order.cargo?.length} ${order.cargo?.length > 1 ? 'pcs' : 'pc'}`}</span>
 							<span className="!text-xs !leading-[12px]">
 								{order.address.from}
 								<br />

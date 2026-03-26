@@ -37,8 +37,6 @@ export const RequestsUser: FC<RequestsUserProps> = ({ orders }) => {
 		defaultValues: {
 			// WHAT
 			cargo: [],
-			stackable: true,
-			manipulatorNeeded: true,
 			// WHEN
 			pickupType: 'pickup_ready',
 			pickupMonth: currentMonthZeroBased,
@@ -70,8 +68,8 @@ export const RequestsUser: FC<RequestsUserProps> = ({ orders }) => {
 				dropoutLatitude: values.dropoutLatitude ?? null,
 				dropoutLongitude: values.dropoutLongitude ?? null,
 				notes: values.comments || null,
-				timeFrom: values.pickupTime === 'anytime' ? null : values.pickupTime.split('-')[0],
-				timeTo: values.pickupTime === 'anytime' ? null : values.pickupTime.split('-')[1],
+				pickupTimeFrom: values.pickupTime === 'anytime' ? null : values.pickupTime.split('-')[0],
+				pickupTimeTo: values.pickupTime === 'anytime' ? null : values.pickupTime.split('-')[1],
 				pickupDate,
 				cargo: values.cargo.map((item) => ({
 					type: CargoTypeEnum[item.type] ?? 1,
