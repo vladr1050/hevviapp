@@ -122,6 +122,10 @@ class Order extends BaseUUID
     #[ORM\Column(nullable: true)]
     private ?bool $manipulatorNeeded = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    private ?string $cancelReason = null;
+
     public function __construct()
     {
         $this->cargo = new ArrayCollection();
@@ -277,6 +281,18 @@ class Order extends BaseUUID
     public function setManipulatorNeeded(?bool $manipulatorNeeded): static
     {
         $this->manipulatorNeeded = $manipulatorNeeded;
+
+        return $this;
+    }
+
+    public function getCancelReason(): ?string
+    {
+        return $this->cancelReason;
+    }
+
+    public function setCancelReason(?string $cancelReason): static
+    {
+        $this->cancelReason = $cancelReason;
 
         return $this;
     }

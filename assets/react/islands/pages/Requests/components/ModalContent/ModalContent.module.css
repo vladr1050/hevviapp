@@ -19,7 +19,8 @@
 			& .tab {
 				@apply h-full overflow-hidden p-2 w-full rounded-full
 				flex items-center justify-start gap-3 relative
-				transition-[background-color,box-shadow];
+				transition-[background-color,box-shadow] cursor-pointer;
+				@apply hover-hover:hover:bg-gray-200 hover-none:active:bg-gray-200;
 
 				& .icon {
 					@apply w-10 h-10 rounded-full flex items-center justify-center 
@@ -56,12 +57,23 @@
 				}
 
 				&.active {
-					@apply bg-white;
+					@apply bg-white cursor-pointer !important;
 					box-shadow: 0px 6px 54px 0px rgba(0, 0, 0, 0.0288);
 					box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.1);
 
 					& .icon {
 						@apply bg-primary;
+					}
+				}
+
+				&.disable {
+					@apply cursor-default bg-transparent !important;
+
+					& .text {
+						& .title,
+						& .subtitle {
+							@apply text-black/40 !important;
+						}
 					}
 				}
 

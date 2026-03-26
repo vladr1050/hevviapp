@@ -309,6 +309,7 @@ class OrderAdmin extends BaseAdmin
                 'template' => 'admin/CRUD/show_address_with_map.html.twig',
             ])
             ->add('notes')
+            ->add('cancelReason')
             ->add('pickupDate', null, [
                 'format' => 'M d, Y',
             ])
@@ -436,6 +437,11 @@ class OrderAdmin extends BaseAdmin
             ])
             ->add('notes', TextareaType::class, [
                 'required' => false,
+            ])
+            ->add('cancelReason', TextType::class, [
+                'required' => false,
+                'attr'     => ['maxlength' => 255],
+                'help'     => 'form.label_help_cancel_reason',
             ])
             ->end()
             ->with('schedule', [

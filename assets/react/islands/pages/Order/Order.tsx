@@ -34,13 +34,13 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 					<Icon type="arrow_right" className="rotate-180" size={18} />
 				</a>
 
-				<OrderCard
-					title={title}
-					order={order}
-					isCarrier={isCarrier}
-					csrfToken={csrf_token}
-					updateStatusCsrfToken={update_status_csrf_token}
-				/>
+			<OrderCard
+				title={title}
+				order={order}
+				isCarrier={isCarrier}
+				csrfToken={csrf_token}
+				updateStatusCsrfToken={update_status_csrf_token}
+			/>
 			</div>
 		</div>
 	)
