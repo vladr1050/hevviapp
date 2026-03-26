@@ -30,6 +30,7 @@ breadcrumb:
     link_service_area_create: Create Service Area
 
 filter:
+    label_order_number:           Order №
     label_status:                 Status
     label_sender:                 Sender
     label_carrier:                Carrier
@@ -44,6 +45,7 @@ filter:
 
 
 list:
+    label_order_number:         Order №
     label_fullname:             Name
     label_email:                Email
     label_created_at:           Created At
@@ -84,6 +86,7 @@ list:
     label_offers:               Offers
 
 show:
+    label_order_number:                Order №
     group_menu_users:                  User
     group_menu_orders:                 Order
     group_menu_cargo:                  Cargo
@@ -160,6 +163,8 @@ show:
 
 
 form:
+    label_order_number:                Order №
+    label_help_order_number:           Human-readable order reference. Assigned automatically and cannot be changed.
     group_tabs_general:                General
     group_tabs_cargo:                  Cargo
     group_tabs_offers:                 Offers

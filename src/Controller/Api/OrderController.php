@@ -158,7 +158,10 @@ class OrderController extends AbstractController
         $this->em->flush();
 
         return $this->json(
-            ['id' => $order->getId()?->toRfc4122()],
+            [
+                'id'        => $order->getId()?->toRfc4122(),
+                'reference' => $order->getReference(),
+            ],
             JsonResponse::HTTP_CREATED
         );
     }
