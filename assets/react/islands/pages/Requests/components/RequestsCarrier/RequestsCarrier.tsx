@@ -50,7 +50,7 @@ export const RequestsCarrier: FC<RequestsCarrierProps> = ({ title, ordersCarrier
 								<div className={styles.leftCard}>
 									<div className={styles.line} />
 
-									<button
+									{/* <button
 										type="button"
 										className={styles.arrowButton}
 										onClick={() =>
@@ -60,7 +60,7 @@ export const RequestsCarrier: FC<RequestsCarrierProps> = ({ title, ordersCarrier
 										}
 									>
 										<Icon type="arrow_right" size={18} className="rotate-180" />
-									</button>
+									</button> */}
 								</div>
 							)}
 
@@ -75,7 +75,7 @@ export const RequestsCarrier: FC<RequestsCarrierProps> = ({ title, ordersCarrier
 								<div className={styles.rightCard}>
 									<div className={styles.line} />
 
-									<button
+									{/* <button
 										type="button"
 										className={styles.arrowButton}
 										onClick={() =>
@@ -85,7 +85,7 @@ export const RequestsCarrier: FC<RequestsCarrierProps> = ({ title, ordersCarrier
 										}
 									>
 										<Icon type="arrow_right" size={18} />
-									</button>
+									</button> */}
 								</div>
 							)}
 						</div>

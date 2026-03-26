@@ -58,14 +58,7 @@ export const ModalContent: FC<ModalContentProps> = ({
 	return (
 		<form className={styles.modal} onSubmit={(e) => e.preventDefault()}>
 			<div className={styles.header}>
-				<div
-					className={styles.title}
-					onClick={() => {
-						setActiveTab((v) => (v === 'what' ? 'where' : v === 'where' ? 'when' : 'what'))
-					}}
-				>
-					Request form
-				</div>
+				<div className={styles.title}>Request form</div>
 
 				<div
 					className={cn(styles.tabs, {
@@ -76,7 +69,7 @@ export const ModalContent: FC<ModalContentProps> = ({
 				>
 					<div
 						className={cn(styles.tab, { [styles.active]: activeTab === 'what' })}
-						// onClick={() => setActiveTab('what')}
+						onClick={() => watch('_step') >= 1 && setActiveTab('what')}
 					>
 						<div className={styles.icon}>
 							<Icon type={activeTab === 'what' ? 'box' : 'check_circle_1'} size={20} />
@@ -96,12 +89,20 @@ export const ModalContent: FC<ModalContentProps> = ({
 					<div className={cn(styles.divider, { ['!bg-transparent']: activeTab !== 'when' })} />
 
 					<div
-						className={cn(styles.tab, { [styles.active]: activeTab === 'where' })}
-						// onClick={() => setActiveTab('where')}
+						className={cn(styles.tab, {
+							[styles.disable]: watch('_step') === 1,
+							[styles.active]: activeTab === 'where',
+						})}
+						onClick={() => watch('_step') >= 2 && setActiveTab('where')}
 					>
-						{activeTab !== 'what' && (
+						{watch('_step') >= 2 && (
 							<div className={styles.icon}>
-								<Icon type={activeTab === 'where' ? 'mark_map' : 'check_circle_1'} size={20} />
+								<Icon
+									type={
+										activeTab === 'where' || watch('_step') === 2 ? 'mark_map' : 'check_circle_1'
+									}
+									size={20}
+								/>
 							</div>
 						)}
 
@@ -131,14 +132,15 @@ export const ModalContent: FC<ModalContentProps> = ({
 
 					<div
 						className={cn(styles.tab, styles.withButton, {
+							[styles.disable]: watch('_step') < 3,
 							[styles.active]: activeTab === 'when',
 						})}
-						// onClick={() => setActiveTab('when')}
+						onClick={() => watch('_step') === 3 && setActiveTab('when')}
 					>
 						<div className={styles.contentButton}>
-							{activeTab === 'when' && (
+							{watch('_step') === 3 && (
 								<div className={styles.icon}>
-									{activeTab === 'when' && <Icon type="mark_map" size={20} />}
+									{watch('_step') === 3 && <Icon type="mark_map" size={20} />}
 								</div>
 							)}
 
@@ -162,6 +164,10 @@ export const ModalContent: FC<ModalContentProps> = ({
 						<NextButton
 							onClick={() => {
 								if (activeTab === 'when') return onSubmit?.()
+
+								if (watch('_step') !== 3) {
+									setValue('_step', activeTab === 'what' ? 2 : 3)
+								}
 								setActiveTab((v) => (v === 'what' ? 'where' : v === 'where' ? 'when' : 'calculate'))
 							}}
 							showNext={activeTab !== 'when'}

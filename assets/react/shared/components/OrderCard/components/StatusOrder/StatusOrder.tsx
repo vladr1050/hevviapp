@@ -103,11 +103,11 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 					<div className={styles.line} />
 
 					<div className={styles.item}>
-						Carrier matched
+						Matching carrier
 						<div className={styles.dot} />
 						{order.status >= OrderStatusEnum.PAID && (
 							<div className={styles.active}>
-								Carrier matched
+								{order.status < OrderStatusEnum.ASSIGNED ? 'Matching carrier' : 'Carrier matched'}
 								<div
 									className={cn(styles.icon, {
 										[styles.activeIcon]: order.status > OrderStatusEnum.PAID,

@@ -56,11 +56,7 @@ export const OrdersPage: FC<OrdersPageProps> = (props) => {
 								{order.comment}
 							</span>
 							<span>{`${order.cargo?.length} ${order.cargo?.length > 1 ? 'pcs' : 'pc'}`}</span>
-							<span className="!text-xs !leading-[12px]">
-								{order.address.from}
-								<br />
-								→
-								<br />
+							<span className="truncate !text-sm" title={order.address.to}>
 								{order.address.to}
 							</span>
 							<span>{order?.pickup_date || EMPTY_STRING}</span>

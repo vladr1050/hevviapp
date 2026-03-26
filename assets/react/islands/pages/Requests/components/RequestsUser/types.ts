@@ -37,4 +37,7 @@ export type FormValues = {
 	pickupYear: YearsType
 	pickupTime: PickupTimeT
 	pickupDate?: Date
+
+	// какой этап заполнения формы и на какой можно вернуться
+	_step: 1 | 2 | 3
 }

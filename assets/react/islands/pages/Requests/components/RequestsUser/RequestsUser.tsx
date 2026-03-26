@@ -43,6 +43,8 @@ export const RequestsUser: FC<RequestsUserProps> = ({ orders }) => {
 			pickupYear: currentYear.toString() as YearsType,
 			pickupDate: addDays(new Date(), 1),
 			pickupTime: 'anytime',
+			//
+			_step: 1,
 		},
 	})
 
@@ -153,7 +155,48 @@ export const RequestsUser: FC<RequestsUserProps> = ({ orders }) => {
 						</div>
 					</div>
 				</div>
-				{!orders?.length ? (
+
+				<div className={styles.emptyOrders}>
+					<h2 className={styles.title}>How does it work?</h2>
+
+					<div className={styles.description}>
+						<div className={styles.item}>
+							<div className={styles.icon}>
+								<Icon type="calculate_price" size={32} />
+							</div>
+							<div className={styles.text}>
+								Calculate price
+								<span>in seconds</span>
+							</div>
+						</div>
+
+						<Icon type="arrow_right" size={23} />
+
+						<div className={styles.item}>
+							<div className={styles.icon}>
+								<Icon type="confirm_order" size={32} />
+							</div>
+							<div className={styles.text}>
+								Confirm the order
+								<span>and make a payment</span>
+							</div>
+						</div>
+
+						<Icon type="arrow_right" size={23} />
+
+						<div className={styles.item}>
+							<div className={styles.icon}>
+								<Icon type="vehicle_drive" size={32} />
+							</div>
+							<div className={styles.text}>
+								Get the delivery
+								<span>in 48 hours</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				{/* {!orders?.length ? (
 					<div className={styles.emptyOrders}>
 						<h2 className={styles.title}>How does it work?</h2>
 
@@ -233,7 +276,7 @@ export const RequestsUser: FC<RequestsUserProps> = ({ orders }) => {
 							))}
 						</div>
 					</div>
-				)}
+				)} */}
 			</div>
 
 			<Modal
