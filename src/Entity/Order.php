@@ -7,12 +7,16 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
 #[ORM\Index(name: 'idx_order_status', columns: ['status'])]
 #[ORM\Index(name: 'idx_order_pickup_address', columns: ['pickup_address'])]
 #[ORM\Index(name: 'idx_order_dropout_address', columns: ['dropout_address'])]
+#[ORM\Index(name: 'idx_order_stackable', columns: ['stackable'])]
+#[ORM\Index(name: 'idx_order_manipulator_needed', columns: ['manipulator_needed'])]
 class Order extends BaseUUID
 {
     public const array STATUS = [
@@ -111,6 +115,12 @@ class Order extends BaseUUID
      */
     #[ORM\OneToMany(targetEntity: OrderAttachment::class, mappedBy: 'relatedOrder', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $attachments;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $stackable = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $manipulatorNeeded = null;
 
     public function __construct()
     {
@@ -243,6 +253,30 @@ class Order extends BaseUUID
     public function setNotes(?string $notes): static
     {
         $this->notes = $notes;
+
+        return $this;
+    }
+
+    public function isStackable(): ?bool
+    {
+        return $this->stackable;
+    }
+
+    public function setStackable(?bool $stackable): static
+    {
+        $this->stackable = $stackable;
+
+        return $this;
+    }
+
+    public function isManipulatorNeeded(): ?bool
+    {
+        return $this->manipulatorNeeded;
+    }
+
+    public function setManipulatorNeeded(?bool $manipulatorNeeded): static
+    {
+        $this->manipulatorNeeded = $manipulatorNeeded;
 
         return $this;
     }
@@ -509,5 +543,28 @@ class Order extends BaseUUID
         }
 
         return $this;
+    }
+
+    /**
+     * Запрещает наличие более одного активного (не REJECTED) OrderAssignment.
+     * Constraint на агрегат-корне: к моменту его валидации inline-коллекция
+     * уже полностью собрана data mapper'ом родительской формы.
+     */
+    #[Assert\Callback]
+    public function validateOrderAssignments(ExecutionContextInterface $context): void
+    {
+        $activeCount = 0;
+
+        foreach ($this->orderAssignments as $assignment) {
+            if ($assignment->getStatus() !== OrderAssignment::STATUS['REJECTED']) {
+                $activeCount++;
+            }
+        }
+
+        if ($activeCount > 1) {
+            $context->buildViolation('order_assignment.error.active_assignment_exists')
+                ->atPath('orderAssignments')
+                ->addViolation();
+        }
     }
 }

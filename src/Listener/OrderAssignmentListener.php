@@ -48,6 +48,8 @@ class OrderAssignmentListener
      */
     public function prePersist(OrderAssignment $assignment): void
     {
+        $this->guardNoActiveAssignment($assignment);
+
         // Если AssignedBy уже установлен, не перезаписываем
         if ($assignment->getAssignedBy() !== null) {
             $this->logger->info('OrderAssignmentListener: AssignedBy уже установлен, пропускаем', [
@@ -84,5 +86,40 @@ class OrderAssignmentListener
             'manager_id' => $user->getId()?->toRfc4122(),
             'manager_name' => $user->getFullName(),
         ]);
+    }
+
+    /**
+     * Последний рубеж защиты: блокирует персист нового OrderAssignment,
+     * если у заказа уже есть активное (не REJECTED) назначение.
+     * Срабатывает даже если форм-валидация была обойдена.
+     *
+     * @throws \DomainException
+     */
+    private function guardNoActiveAssignment(OrderAssignment $assignment): void
+    {
+        $order = $assignment->getRelatedOrder();
+
+        if ($order === null) {
+            return;
+        }
+
+        foreach ($order->getOrderAssignments() as $existing) {
+            if ($existing === $assignment) {
+                continue;
+            }
+
+            if ($existing->getStatus() !== OrderAssignment::STATUS['REJECTED']) {
+                $this->logger->error('OrderAssignmentListener: попытка создать дублирующее назначение', [
+                    'order_id'            => $order->getId()?->toRfc4122(),
+                    'existing_assignment' => $existing->getId()?->toRfc4122(),
+                    'existing_status'     => $existing->getStatus(),
+                ]);
+
+                throw new \DomainException(
+                    'Cannot create assignment: an active assignment already exists for this order. ' .
+                    'Reject the existing assignment first.'
+                );
+            }
+        }
     }
 }

@@ -4,26 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="order page updated">
+    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="cargo name fixed">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/islands/pages/Requests/components/ModalContent/ModalContent.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/islands/pages/Requests/components/ModalContent/ModalContent.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/islands/pages/Requests/components/ModalContent/WhatContent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/islands/pages/Requests/components/ModalContent/WhatContent.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/islands/pages/Requests/components/RequestsUser/RequestsUser.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/islands/pages/Requests/components/RequestsUser/RequestsUser.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/react/shared/api/orderApi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/api/orderApi.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/compose.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/sonata_admin.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/sonata_admin.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/services.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/services.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nginx/default.conf" beforeDir="false" afterPath="$PROJECT_DIR$/nginx/default.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Admin/CargoAdmin.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Admin/CargoAdmin.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Admin/OrderAdmin.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Admin/OrderAdmin.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/Api/OrderController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/OrderController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/CarrierController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CarrierController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/Cargo.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Cargo.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/Order.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Order.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/OrderAssignment.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/OrderAssignment.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/EventSubscriber/OrderAssignmentSubscriber.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/EventSubscriber/OrderAssignmentSubscriber.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Listener/OrderAssignmentListener.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Listener/OrderAssignmentListener.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/translations/AppBundle.en.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/translations/AppBundle.en.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/translations/AppBundle.ru.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/translations/AppBundle.ru.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/translations/validators.en.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/translations/validators.en.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/translations/validators.ru.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/translations/validators.ru.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,8 +33,7 @@
     <execution />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="680" />
-    <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
+    <option name="cachedIndexableFilesCount" value="699" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -335,7 +332,9 @@
       <workItem from="1772786955928" duration="26484000" />
       <workItem from="1773396227283" duration="718000" />
       <workItem from="1773413982541" duration="3303000" />
-      <workItem from="1773947967806" duration="4937000" />
+      <workItem from="1773947967806" duration="5768000" />
+      <workItem from="1774351852885" duration="56000" />
+      <workItem from="1774532556133" duration="3749000" />
     </task>
     <task id="LOCAL-00001" summary="custom areas added to service areas">
       <option name="closed" value="true" />
@@ -625,7 +624,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773329999807</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="cargo name fixed">
+      <option name="closed" value="true" />
+      <created>1774028802567</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1774028802567</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -647,6 +654,7 @@
     <MESSAGE value="carrier updated" />
     <MESSAGE value="profile stats" />
     <MESSAGE value="order page updated" />
-    <option name="LAST_COMMIT_MESSAGE" value="order page updated" />
+    <MESSAGE value="cargo name fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="cargo name fixed" />
   </component>
 </project>

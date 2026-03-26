@@ -153,8 +153,9 @@ form:
     group_cargo_list:          Список грузов
     group_offers_list:         Список коммерческих предложений
     group_assigment_list:      Список назначений
-    group_cargo_info:          Информация о грузе
-    group_cargo_properties:    Свойства груза
+    group_cargo_info:                  Информация о грузе
+    group_cargo_properties:            Свойства груза
+    group_order_cargo_requirements:    Требования к грузу
     group_service_area_info:   Информация о зоне обслуживания
     group_geo_areas_selection: Выбор гео-зон
     group_matrix_items_list:   Список элементов матрицы
@@ -203,6 +204,7 @@ form:
     label_offer_status:        Статус предложения
     label_add_offer:           Добавить предложение
     label_upload_files:        PDF-документы
+    label_help_carrier_readonly: "Перевозчик назначается автоматически через вкладку «Назначения». Чтобы сменить перевозчика — переведите текущее назначение в статус «Отклонено»."
     label_help_upload_pdf:     "Принимаются только PDF-файлы. Можно загрузить несколько файлов. Файлы автоматически сжимаются при сохранении."
 
 # Cargo Type choices

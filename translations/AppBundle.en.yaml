@@ -178,6 +178,7 @@ form:
     group_assigment_list:              Assignments List
     group_cargo_info:                  Cargo Information
     group_cargo_properties:            Cargo Properties
+    group_order_cargo_requirements:    Cargo Requirements
     group_service_area_info:           Service Area Information
     group_geo_areas_selection:         Geo Areas Selection
     group_matrix_items_list:           Matrix Items List
@@ -228,6 +229,7 @@ form:
     label_fee:                         Commission Amount
     label_vat:                         VAT Amount
     label_offer_status:                Offer Status
+    label_help_carrier_readonly:       Carrier is assigned automatically via Order Assignments. To change the carrier, reject the current assignment in the Assignments tab.
     label_help_order_currency:         Leave this field empty, and it will be filled automatically after the successful calculation of the order’s shipping cost.
     group_legal:                       Legal information
     label_company_name:                Company Name

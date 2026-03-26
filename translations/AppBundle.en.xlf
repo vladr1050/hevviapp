@@ -1,0 +1,1642 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" target-language="en" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="GKIOkDA" resname="public_site.browser_title">
+        <source>public_site.browser_title</source>
+        <target>hevvi</target>
+      </trans-unit>
+      <trans-unit id="L3fUN28" resname="menu.users">
+        <source>menu.users</source>
+        <target>Users</target>
+      </trans-unit>
+      <trans-unit id=".6vqrZm" resname="menu.carriers">
+        <source>menu.carriers</source>
+        <target>Carriers</target>
+      </trans-unit>
+      <trans-unit id="pGoOw8J" resname="menu.orders">
+        <source>menu.orders</source>
+        <target>Orders</target>
+      </trans-unit>
+      <trans-unit id="L1XD1Cn" resname="menu.cargo">
+        <source>menu.cargo</source>
+        <target>Cargo</target>
+      </trans-unit>
+      <trans-unit id="yoaL.tD" resname="menu.offers">
+        <source>menu.offers</source>
+        <target>Offers</target>
+      </trans-unit>
+      <trans-unit id="wmqb5we" resname="menu.order_history">
+        <source>menu.order_history</source>
+        <target>Order History</target>
+      </trans-unit>
+      <trans-unit id="Bll6w1o" resname="menu.order_assignments">
+        <source>menu.order_assignments</source>
+        <target>Order Assignments</target>
+      </trans-unit>
+      <trans-unit id="8htXRF." resname="menu.service_areas">
+        <source>menu.service_areas</source>
+        <target>Service Areas</target>
+      </trans-unit>
+      <trans-unit id="EFmm1.z" resname="menu.matrix_items">
+        <source>menu.matrix_items</source>
+        <target>Matrix Items</target>
+      </trans-unit>
+      <trans-unit id="HwOJ9OC" resname="breadcrumb.link_user_list">
+        <source>breadcrumb.link_user_list</source>
+        <target>List of Users</target>
+      </trans-unit>
+      <trans-unit id="VMNMLfD" resname="breadcrumb.link_user_create">
+        <source>breadcrumb.link_user_create</source>
+        <target>Create</target>
+      </trans-unit>
+      <trans-unit id="anXAEQI" resname="breadcrumb.link_order_list">
+        <source>breadcrumb.link_order_list</source>
+        <target>List of Orders</target>
+      </trans-unit>
+      <trans-unit id="TBtuS4_" resname="breadcrumb.link_order_create">
+        <source>breadcrumb.link_order_create</source>
+        <target>Create Order</target>
+      </trans-unit>
+      <trans-unit id="6sK2pv7" resname="breadcrumb.link_cargo_list">
+        <source>breadcrumb.link_cargo_list</source>
+        <target>List of Cargo</target>
+      </trans-unit>
+      <trans-unit id="s6tkmYX" resname="breadcrumb.link_cargo_create">
+        <source>breadcrumb.link_cargo_create</source>
+        <target>Create Cargo</target>
+      </trans-unit>
+      <trans-unit id="d9Ft9zD" resname="breadcrumb.link_carrier_list">
+        <source>breadcrumb.link_carrier_list</source>
+        <target>List of Carriers</target>
+      </trans-unit>
+      <trans-unit id="Fpu8lRH" resname="breadcrumb.link_carrier_create">
+        <source>breadcrumb.link_carrier_create</source>
+        <target>Create Carrier</target>
+      </trans-unit>
+      <trans-unit id="Is5Of4j" resname="breadcrumb.link_servicearea_list">
+        <source>breadcrumb.link_servicearea_list</source>
+        <target>List of Service Areas</target>
+      </trans-unit>
+      <trans-unit id="32RE.7u" resname="breadcrumb.link_servicearea_create">
+        <source>breadcrumb.link_servicearea_create</source>
+        <target>Create Service Area</target>
+      </trans-unit>
+      <trans-unit id="U7ofLKo" resname="breadcrumb.link_matrixitem_list">
+        <source>breadcrumb.link_matrixitem_list</source>
+        <target>List of Matrix Items</target>
+      </trans-unit>
+      <trans-unit id="ZTtIA.n" resname="breadcrumb.link_matrixitem_create">
+        <source>breadcrumb.link_matrixitem_create</source>
+        <target>Create Matrix Item</target>
+      </trans-unit>
+      <trans-unit id="qBb7nva" resname="breadcrumb.link_service_area_list">
+        <source>breadcrumb.link_service_area_list</source>
+        <target>List of Service Areas</target>
+      </trans-unit>
+      <trans-unit id="oRLBPaF" resname="breadcrumb.link_service_area_create">
+        <source>breadcrumb.link_service_area_create</source>
+        <target>Create Service Area</target>
+      </trans-unit>
+      <trans-unit id="1bUmM2u" resname="filter.label_status">
+        <source>filter.label_status</source>
+        <target>Status</target>
+      </trans-unit>
+      <trans-unit id="QZzlYC4" resname="filter.label_sender">
+        <source>filter.label_sender</source>
+        <target>Sender</target>
+      </trans-unit>
+      <trans-unit id="vpBE2GR" resname="filter.label_carrier">
+        <source>filter.label_carrier</source>
+        <target>Carrier</target>
+      </trans-unit>
+      <trans-unit id="TOfRZQw" resname="filter.label_latest_offer_status">
+        <source>filter.label_latest_offer_status</source>
+        <target>Offer Status</target>
+      </trans-unit>
+      <trans-unit id="C0RBYx_" resname="filter.label_last_assignment_status">
+        <source>filter.label_last_assignment_status</source>
+        <target>Assignment Status</target>
+      </trans-unit>
+      <trans-unit id="LJCs1TO" resname="filter.label_order">
+        <source>filter.label_order</source>
+        <target>Order</target>
+      </trans-unit>
+      <trans-unit id="4y8w_1D" resname="filter.label_changed_by">
+        <source>filter.label_changed_by</source>
+        <target>Changed By</target>
+      </trans-unit>
+      <trans-unit id="XxBxUQR" resname="filter.label_name">
+        <source>filter.label_name</source>
+        <target>Name</target>
+      </trans-unit>
+      <trans-unit id="XDx.a_R" resname="filter.label_mileage_from">
+        <source>filter.label_mileage_from</source>
+        <target>Mileage From</target>
+      </trans-unit>
+      <trans-unit id="JlLYlNy" resname="filter.label_mileage_to">
+        <source>filter.label_mileage_to</source>
+        <target>Mileage To</target>
+      </trans-unit>
+      <trans-unit id="xkzHNC8" resname="filter.label_price">
+        <source>filter.label_price</source>
+        <target>Price</target>
+      </trans-unit>
+      <trans-unit id="Xo7GjXc" resname="list.label_fullname">
+        <source>list.label_fullname</source>
+        <target>Name</target>
+      </trans-unit>
+      <trans-unit id="dOK_cCk" resname="list.label_email">
+        <source>list.label_email</source>
+        <target>Email</target>
+      </trans-unit>
+      <trans-unit id="q1_cbx8" resname="list.label_created_at">
+        <source>list.label_created_at</source>
+        <target>Created At</target>
+      </trans-unit>
+      <trans-unit id="S_nLwL." resname="list.label_updated_at">
+        <source>list.label_updated_at</source>
+        <target>Updated At</target>
+      </trans-unit>
+      <trans-unit id="ycc7No0" resname="list.label__action">
+        <source>list.label__action</source>
+        <target>Actions</target>
+      </trans-unit>
+      <trans-unit id="jdoQ4GK" resname="list.label_id">
+        <source>list.label_id</source>
+        <target>ID</target>
+      </trans-unit>
+      <trans-unit id="wJluaNa" resname="list.label_status">
+        <source>list.label_status</source>
+        <target>Status</target>
+      </trans-unit>
+      <trans-unit id="oepy2IV" resname="list.label_sender">
+        <source>list.label_sender</source>
+        <target>Sender</target>
+      </trans-unit>
+      <trans-unit id="BevrT_l" resname="list.label_carrier">
+        <source>list.label_carrier</source>
+        <target>Carrier</target>
+      </trans-unit>
+      <trans-unit id="uL1zv3d" resname="list.label_addresses">
+        <source>list.label_addresses</source>
+        <target>Addresses</target>
+      </trans-unit>
+      <trans-unit id="Pg9TMDD" resname="list.label_pickup_address">
+        <source>list.label_pickup_address</source>
+        <target>Pickup Address</target>
+      </trans-unit>
+      <trans-unit id="FNZeFej" resname="list.label_dropout_address">
+        <source>list.label_dropout_address</source>
+        <target>Dropout Address</target>
+      </trans-unit>
+      <trans-unit id="QU9vs_a" resname="list.label_cargo_count">
+        <source>list.label_cargo_count</source>
+        <target>Cargo Items</target>
+      </trans-unit>
+      <trans-unit id="6iETGGl" resname="list.label_delivery_gross_price">
+        <source>list.label_delivery_gross_price</source>
+        <target>Delivery Gross Price</target>
+      </trans-unit>
+      <trans-unit id="yAAVtJ1" resname="list.label_order_assignments">
+        <source>list.label_order_assignments</source>
+        <target>Assignments</target>
+      </trans-unit>
+      <trans-unit id="nMlDZ4u" resname="list.label_no_assignments">
+        <source>list.label_no_assignments</source>
+        <target>No assignments</target>
+      </trans-unit>
+      <trans-unit id="3XSkTSV" resname="list.label_assigned_by">
+        <source>list.label_assigned_by</source>
+        <target>Assigned By</target>
+      </trans-unit>
+      <trans-unit id="yl7U6xt" resname="list.label_name">
+        <source>list.label_name</source>
+        <target>Name</target>
+      </trans-unit>
+      <trans-unit id="8b8dSM2" resname="list.label_type">
+        <source>list.label_type</source>
+        <target>Type</target>
+      </trans-unit>
+      <trans-unit id="QhKqVgT" resname="list.label_quantity">
+        <source>list.label_quantity</source>
+        <target>Quantity</target>
+      </trans-unit>
+      <trans-unit id="_n1t1ER" resname="list.label_weight_kg">
+        <source>list.label_weight_kg</source>
+        <target>Weight (kg)</target>
+      </trans-unit>
+      <trans-unit id="nsiA1p2" resname="list.label_stackable">
+        <source>list.label_stackable</source>
+        <target>Stackable</target>
+      </trans-unit>
+      <trans-unit id="1thH.mU" resname="list.label_manipulator_needed">
+        <source>list.label_manipulator_needed</source>
+        <target>Manipulator Needed</target>
+      </trans-unit>
+      <trans-unit id="pI3X3X7" resname="list.label_order">
+        <source>list.label_order</source>
+        <target>Order</target>
+      </trans-unit>
+      <trans-unit id="iy_kCjB" resname="list.label_changed_by">
+        <source>list.label_changed_by</source>
+        <target>Changed By</target>
+      </trans-unit>
+      <trans-unit id="imoWHbf" resname="list.label_changed_at">
+        <source>list.label_changed_at</source>
+        <target>Changed At</target>
+      </trans-unit>
+      <trans-unit id="VfAEywi" resname="list.label_registration_number">
+        <source>list.label_registration_number</source>
+        <target>Registration Number</target>
+      </trans-unit>
+      <trans-unit id="aBjJNtT" resname="list.label_phone">
+        <source>list.label_phone</source>
+        <target>Phone number</target>
+      </trans-unit>
+      <trans-unit id="wT.BDWG" resname="list.label_legal_name">
+        <source>list.label_legal_name</source>
+        <target>Legal Name</target>
+      </trans-unit>
+      <trans-unit id="CbSLXq7" resname="list.label_state">
+        <source>list.label_state</source>
+        <target>State</target>
+      </trans-unit>
+      <trans-unit id="iWJ14yK" resname="list.label_geo_areas_count">
+        <source>list.label_geo_areas_count</source>
+        <target>Geo Areas Count</target>
+      </trans-unit>
+      <trans-unit id="8Fk4r42" resname="list.label_matrix_items_count">
+        <source>list.label_matrix_items_count</source>
+        <target>Matrix Items Count</target>
+      </trans-unit>
+      <trans-unit id="Lbze_3w" resname="list.label_weight_from">
+        <source>list.label_weight_from</source>
+        <target>Weight From</target>
+      </trans-unit>
+      <trans-unit id="8deLDIT" resname="list.label_weight_to">
+        <source>list.label_weight_to</source>
+        <target>Weight To</target>
+      </trans-unit>
+      <trans-unit id="ndBkZii" resname="list.label_price">
+        <source>list.label_price</source>
+        <target>Price</target>
+      </trans-unit>
+      <trans-unit id="VkUBUOg" resname="list.label_service_area">
+        <source>list.label_service_area</source>
+        <target>Service Area</target>
+      </trans-unit>
+      <trans-unit id="zjuTSpo" resname="list.label_currency">
+        <source>list.label_currency</source>
+        <target>Currency</target>
+      </trans-unit>
+      <trans-unit id="RD6aZyn" resname="list.label_offers">
+        <source>list.label_offers</source>
+        <target>Offers</target>
+      </trans-unit>
+      <trans-unit id="H5okFZ5" resname="show.group_menu_users">
+        <source>show.group_menu_users</source>
+        <target>User</target>
+      </trans-unit>
+      <trans-unit id="_8G3W9d" resname="show.group_menu_orders">
+        <source>show.group_menu_orders</source>
+        <target>Order</target>
+      </trans-unit>
+      <trans-unit id="1krovzU" resname="show.group_menu_cargo">
+        <source>show.group_menu_cargo</source>
+        <target>Cargo</target>
+      </trans-unit>
+      <trans-unit id="OjJGztd" resname="show.group_menu_carriers">
+        <source>show.group_menu_carriers</source>
+        <target>Carrier</target>
+      </trans-unit>
+      <trans-unit id="4_5k0ws" resname="show.group_menu_service_areas">
+        <source>show.group_menu_service_areas</source>
+        <target>Service Area</target>
+      </trans-unit>
+      <trans-unit id="Y3Fe4zJ" resname="show.label_attachments">
+        <source>show.label_attachments</source>
+        <target>Attachments</target>
+      </trans-unit>
+      <trans-unit id="_XS8cqF" resname="show.label_no_attachments">
+        <source>show.label_no_attachments</source>
+        <target>No attachments</target>
+      </trans-unit>
+      <trans-unit id="4Mesr7o" resname="show.label_attachment_name">
+        <source>show.label_attachment_name</source>
+        <target>File Name</target>
+      </trans-unit>
+      <trans-unit id="9H4TaoN" resname="show.label_attachment_size">
+        <source>show.label_attachment_size</source>
+        <target>Size (compressed)</target>
+      </trans-unit>
+      <trans-unit id="Zyh1WWV" resname="show.label_attachment_uploaded">
+        <source>show.label_attachment_uploaded</source>
+        <target>Uploaded At</target>
+      </trans-unit>
+      <trans-unit id="OkQKoiS" resname="show.label_attachment_action">
+        <source>show.label_attachment_action</source>
+        <target>Action</target>
+      </trans-unit>
+      <trans-unit id="qPc.fiY" resname="show.label_attachment_download">
+        <source>show.label_attachment_download</source>
+        <target>Download</target>
+      </trans-unit>
+      <trans-unit id="5A4LocS" resname="show.label_first_name">
+        <source>show.label_first_name</source>
+        <target>First Name</target>
+      </trans-unit>
+      <trans-unit id="zhSlfZ_" resname="show.label_last_name">
+        <source>show.label_last_name</source>
+        <target>Last Name</target>
+      </trans-unit>
+      <trans-unit id="dGZhaYP" resname="show.label_phone">
+        <source>show.label_phone</source>
+        <target>Phone Number</target>
+      </trans-unit>
+      <trans-unit id="pWprW2j" resname="show.label_email">
+        <source>show.label_email</source>
+        <target>Email</target>
+      </trans-unit>
+      <trans-unit id="FJSEcxs" resname="show.label_locale">
+        <source>show.label_locale</source>
+        <target>Locale</target>
+      </trans-unit>
+      <trans-unit id="Yz66OSH" resname="show.label_created_at">
+        <source>show.label_created_at</source>
+        <target>Created At</target>
+      </trans-unit>
+      <trans-unit id=".rHBQ.i" resname="show.label_updated_at">
+        <source>show.label_updated_at</source>
+        <target>Updated At</target>
+      </trans-unit>
+      <trans-unit id="jgOr2.T" resname="show.label_id">
+        <source>show.label_id</source>
+        <target>ID</target>
+      </trans-unit>
+      <trans-unit id="9f7rpEX" resname="show.label_status">
+        <source>show.label_status</source>
+        <target>Status</target>
+      </trans-unit>
+      <trans-unit id="EUr0MLI" resname="show.label_sender">
+        <source>show.label_sender</source>
+        <target>Sender</target>
+      </trans-unit>
+      <trans-unit id="xHodNEh" resname="show.label_carrier">
+        <source>show.label_carrier</source>
+        <target>Carrier</target>
+      </trans-unit>
+      <trans-unit id="HD2vOpp" resname="show.label_pickup_address">
+        <source>show.label_pickup_address</source>
+        <target>Pickup Address</target>
+      </trans-unit>
+      <trans-unit id="2hjIPRL" resname="show.label_dropout_address">
+        <source>show.label_dropout_address</source>
+        <target>Dropout Address</target>
+      </trans-unit>
+      <trans-unit id="V6BUcy." resname="show.label_notes">
+        <source>show.label_notes</source>
+        <target>Notes</target>
+      </trans-unit>
+      <trans-unit id="ckdLaTQ" resname="show.label_pickup_date">
+        <source>show.label_pickup_date</source>
+        <target>Pickup Date</target>
+      </trans-unit>
+      <trans-unit id="fO9XQEQ" resname="show.label_pickup_time_from">
+        <source>show.label_pickup_time_from</source>
+        <target>Pickup Time From</target>
+      </trans-unit>
+      <trans-unit id="Z0w6te5" resname="show.label_pickup_time_to">
+        <source>show.label_pickup_time_to</source>
+        <target>Pickup Time To</target>
+      </trans-unit>
+      <trans-unit id="pd.6W9g" resname="show.label_delivery_date">
+        <source>show.label_delivery_date</source>
+        <target>Delivery Date</target>
+      </trans-unit>
+      <trans-unit id="wsZ3vD3" resname="show.label_delivery_time_from">
+        <source>show.label_delivery_time_from</source>
+        <target>Delivery Time From</target>
+      </trans-unit>
+      <trans-unit id="XBuel4z" resname="show.label_delivery_time_to">
+        <source>show.label_delivery_time_to</source>
+        <target>Delivery Time To</target>
+      </trans-unit>
+      <trans-unit id="i469dnp" resname="show.label_cargo">
+        <source>show.label_cargo</source>
+        <target>Cargo</target>
+      </trans-unit>
+      <trans-unit id="T0qtfJ3" resname="show.label_offers">
+        <source>show.label_offers</source>
+        <target>Offers</target>
+      </trans-unit>
+      <trans-unit id="JKFFk3u" resname="show.label_order_assignments">
+        <source>show.label_order_assignments</source>
+        <target>Order Assignments</target>
+      </trans-unit>
+      <trans-unit id="CDd6oQj" resname="show.label_assigned_by">
+        <source>show.label_assigned_by</source>
+        <target>Assigned By</target>
+      </trans-unit>
+      <trans-unit id="6p8HYq3" resname="show.label_brutto">
+        <source>show.label_brutto</source>
+        <target>Gross Price</target>
+      </trans-unit>
+      <trans-unit id="ignuynl" resname="show.label_netto">
+        <source>show.label_netto</source>
+        <target>Net Price</target>
+      </trans-unit>
+      <trans-unit id="AxuVJu4" resname="show.label_fee">
+        <source>show.label_fee</source>
+        <target>Commission Amount</target>
+      </trans-unit>
+      <trans-unit id="MBZb7VA" resname="show.label_vat">
+        <source>show.label_vat</source>
+        <target>VAT Amount</target>
+      </trans-unit>
+      <trans-unit id="umwdETb" resname="show.label_offer_status">
+        <source>show.label_offer_status</source>
+        <target>Offer Status</target>
+      </trans-unit>
+      <trans-unit id="sHKhl6H" resname="show.label_name">
+        <source>show.label_name</source>
+        <target>Name</target>
+      </trans-unit>
+      <trans-unit id="8ZflafH" resname="show.label_type">
+        <source>show.label_type</source>
+        <target>Type</target>
+      </trans-unit>
+      <trans-unit id="Iv7foKC" resname="show.label_quantity">
+        <source>show.label_quantity</source>
+        <target>Quantity</target>
+      </trans-unit>
+      <trans-unit id="tEz.hih" resname="show.label_weight_kg">
+        <source>show.label_weight_kg</source>
+        <target>Weight (kg)</target>
+      </trans-unit>
+      <trans-unit id="C2smVaa" resname="show.label_dimensions_cm">
+        <source>show.label_dimensions_cm</source>
+        <target>Dimensions (cm)</target>
+      </trans-unit>
+      <trans-unit id="6v4s6Fs" resname="show.label_comment">
+        <source>show.label_comment</source>
+        <target>Comment</target>
+      </trans-unit>
+      <trans-unit id="knb2omf" resname="show.label_stackable">
+        <source>show.label_stackable</source>
+        <target>Stackable</target>
+      </trans-unit>
+      <trans-unit id="FIRSVVx" resname="show.label_manipulator_needed">
+        <source>show.label_manipulator_needed</source>
+        <target>Manipulator Needed</target>
+      </trans-unit>
+      <trans-unit id="2nxbZhJ" resname="show.label_related_order">
+        <source>show.label_related_order</source>
+        <target>Related Order</target>
+      </trans-unit>
+      <trans-unit id="394KvOk" resname="show.label_profile">
+        <source>show.label_profile</source>
+        <target>Profile</target>
+      </trans-unit>
+      <trans-unit id="CZ1S_ml" resname="show.label_requests">
+        <source>show.label_requests</source>
+        <target>Requests</target>
+      </trans-unit>
+      <trans-unit id="6cvrdfN" resname="show.label_orders">
+        <source>show.label_orders</source>
+        <target>My Orders</target>
+      </trans-unit>
+      <trans-unit id="sbdjCUv" resname="show.label_order">
+        <source>show.label_order</source>
+        <target>Order</target>
+      </trans-unit>
+      <trans-unit id="FAA3Fx." resname="show.label_changed_by">
+        <source>show.label_changed_by</source>
+        <target>Changed By</target>
+      </trans-unit>
+      <trans-unit id="oz35Wg." resname="show.label_meta">
+        <source>show.label_meta</source>
+        <target>Metadata</target>
+      </trans-unit>
+      <trans-unit id="G4dBYZz" resname="show.label_status_history">
+        <source>show.label_status_history</source>
+        <target>Status History</target>
+      </trans-unit>
+      <trans-unit id="LwS3uYX" resname="show.label_address">
+        <source>show.label_address</source>
+        <target>Address</target>
+      </trans-unit>
+      <trans-unit id="HlTASGT" resname="show.label_registration_number">
+        <source>show.label_registration_number</source>
+        <target>Registration Number</target>
+      </trans-unit>
+      <trans-unit id="6fc64Fr" resname="show.label_legal_name">
+        <source>show.label_legal_name</source>
+        <target>Legal Name</target>
+      </trans-unit>
+      <trans-unit id="wKtNCWS" resname="show.label_state">
+        <source>show.label_state</source>
+        <target>State</target>
+      </trans-unit>
+      <trans-unit id="ddmUPAS" resname="show.label_matrix_items">
+        <source>show.label_matrix_items</source>
+        <target>Matrix Items</target>
+      </trans-unit>
+      <trans-unit id="Rx.LBn3" resname="show.label_weight_from">
+        <source>show.label_weight_from</source>
+        <target>Weight From</target>
+      </trans-unit>
+      <trans-unit id="pK7KQET" resname="show.label_weight_to">
+        <source>show.label_weight_to</source>
+        <target>Weight To</target>
+      </trans-unit>
+      <trans-unit id="VnNbRHx" resname="show.label_price">
+        <source>show.label_price</source>
+        <target>Price</target>
+      </trans-unit>
+      <trans-unit id="uYG.JFa" resname="show.label_service_area">
+        <source>show.label_service_area</source>
+        <target>Service Area</target>
+      </trans-unit>
+      <trans-unit id="Ni6ISie" resname="show.label_geo_areas">
+        <source>show.label_geo_areas</source>
+        <target>Geo Areas</target>
+      </trans-unit>
+      <trans-unit id="ke_lWD4" resname="show.label_currency">
+        <source>show.label_currency</source>
+        <target>Currency</target>
+      </trans-unit>
+      <trans-unit id="DnbRkTV" resname="show.group_legal">
+        <source>show.group_legal</source>
+        <target>Legal information</target>
+      </trans-unit>
+      <trans-unit id="rfVoHr1" resname="show.label_company_name">
+        <source>show.label_company_name</source>
+        <target>Company Name</target>
+      </trans-unit>
+      <trans-unit id="YDAKT8o" resname="show.label_company_registration_number">
+        <source>show.label_company_registration_number</source>
+        <target>Company Registration Number</target>
+      </trans-unit>
+      <trans-unit id="j2GJPYk" resname="show.label_company_address">
+        <source>show.label_company_address</source>
+        <target>Company Address</target>
+      </trans-unit>
+      <trans-unit id="XSibEwb" resname="form.group_tabs_general">
+        <source>form.group_tabs_general</source>
+        <target>General</target>
+      </trans-unit>
+      <trans-unit id="sJQok41" resname="form.group_tabs_cargo">
+        <source>form.group_tabs_cargo</source>
+        <target>Cargo</target>
+      </trans-unit>
+      <trans-unit id="lrlsufp" resname="form.group_tabs_offers">
+        <source>form.group_tabs_offers</source>
+        <target>Offers</target>
+      </trans-unit>
+      <trans-unit id="hcY3n75" resname="form.group_tabs_assigment">
+        <source>form.group_tabs_assigment</source>
+        <target>Assignments</target>
+      </trans-unit>
+      <trans-unit id="OKV8wAU" resname="form.group_tabs_files">
+        <source>form.group_tabs_files</source>
+        <target>Files</target>
+      </trans-unit>
+      <trans-unit id="QWXb2Ve" resname="form.group_files_upload">
+        <source>form.group_files_upload</source>
+        <target>Upload Documents</target>
+      </trans-unit>
+      <trans-unit id="5n2YKbc" resname="form.group_tabs_geo_areas">
+        <source>form.group_tabs_geo_areas</source>
+        <target>Geo Areas</target>
+      </trans-unit>
+      <trans-unit id="xNlH5hm" resname="form.group_tabs_matrix_items">
+        <source>form.group_tabs_matrix_items</source>
+        <target>Matrix Items</target>
+      </trans-unit>
+      <trans-unit id="UqL03VK" resname="form.group_profile">
+        <source>form.group_profile</source>
+        <target>Profile</target>
+      </trans-unit>
+      <trans-unit id="OzjeWh3" resname="form.group_contacts">
+        <source>form.group_contacts</source>
+        <target>Contact</target>
+      </trans-unit>
+      <trans-unit id="3poG52l" resname="form.group_general">
+        <source>form.group_general</source>
+        <target>General</target>
+      </trans-unit>
+      <trans-unit id="fs8VN29" resname="form.group_order_info">
+        <source>form.group_order_info</source>
+        <target>Order Information</target>
+      </trans-unit>
+      <trans-unit id="W.u_IWQ" resname="form.group_addresses">
+        <source>form.group_addresses</source>
+        <target>Addresses</target>
+      </trans-unit>
+      <trans-unit id="I7n4bnc" resname="form.group_schedule">
+        <source>form.group_schedule</source>
+        <target>Schedule</target>
+      </trans-unit>
+      <trans-unit id="zUQNnil" resname="form.group_cargo_list">
+        <source>form.group_cargo_list</source>
+        <target>Cargo Items</target>
+      </trans-unit>
+      <trans-unit id="OS2_17s" resname="form.group_offers_list">
+        <source>form.group_offers_list</source>
+        <target>Offers List</target>
+      </trans-unit>
+      <trans-unit id="KQqGhvr" resname="form.group_assigment_list">
+        <source>form.group_assigment_list</source>
+        <target>Assignments List</target>
+      </trans-unit>
+      <trans-unit id="rBmInv8" resname="form.group_cargo_info">
+        <source>form.group_cargo_info</source>
+        <target>Cargo Information</target>
+      </trans-unit>
+      <trans-unit id="3e0ESTv" resname="form.group_cargo_properties">
+        <source>form.group_cargo_properties</source>
+        <target>Cargo Properties</target>
+      </trans-unit>
+      <trans-unit id="R4kAcKv" resname="form.group_order_cargo_requirements">
+        <source>form.group_order_cargo_requirements</source>
+        <target>Cargo Requirements</target>
+      </trans-unit>
+      <trans-unit id="pneuAoC" resname="form.group_service_area_info">
+        <source>form.group_service_area_info</source>
+        <target>Service Area Information</target>
+      </trans-unit>
+      <trans-unit id="UYHTicZ" resname="form.group_geo_areas_selection">
+        <source>form.group_geo_areas_selection</source>
+        <target>Geo Areas Selection</target>
+      </trans-unit>
+      <trans-unit id="y6NeUNK" resname="form.group_matrix_items_list">
+        <source>form.group_matrix_items_list</source>
+        <target>Matrix Items List</target>
+      </trans-unit>
+      <trans-unit id="ND2zsoW" resname="form.label_first_name">
+        <source>form.label_first_name</source>
+        <target>First Name</target>
+      </trans-unit>
+      <trans-unit id="SBVu8AX" resname="form.label_last_name">
+        <source>form.label_last_name</source>
+        <target>Last Name</target>
+      </trans-unit>
+      <trans-unit id="LatuaeE" resname="form.label_phone">
+        <source>form.label_phone</source>
+        <target>Phone Number</target>
+      </trans-unit>
+      <trans-unit id="9GFcdIs" resname="form.label_email">
+        <source>form.label_email</source>
+        <target>Email</target>
+      </trans-unit>
+      <trans-unit id="VNuW4RR" resname="form.label_locale">
+        <source>form.label_locale</source>
+        <target>Locale</target>
+      </trans-unit>
+      <trans-unit id="tsAStGz" resname="form.label_state">
+        <source>form.label_state</source>
+        <target>State</target>
+      </trans-unit>
+      <trans-unit id="7K7EZKt" resname="form.label_plain_password">
+        <source>form.label_plain_password</source>
+        <target>Password</target>
+      </trans-unit>
+      <trans-unit id="fj9Lmu0" resname="form.label_help_plain_password">
+        <source>form.label_help_plain_password</source>
+        <target>Leave the field blank if you don't want to change member password</target>
+      </trans-unit>
+      <trans-unit id="q0Bsnso" resname="form.label_status">
+        <source>form.label_status</source>
+        <target>Status</target>
+      </trans-unit>
+      <trans-unit id="yaWwu4l" resname="form.label_sender">
+        <source>form.label_sender</source>
+        <target>Sender</target>
+      </trans-unit>
+      <trans-unit id="U5kRnm9" resname="form.label_carrier">
+        <source>form.label_carrier</source>
+        <target>Carrier</target>
+      </trans-unit>
+      <trans-unit id="koGgBe0" resname="form.label_assigned_by">
+        <source>form.label_assigned_by</source>
+        <target>Assigned By Manager</target>
+      </trans-unit>
+      <trans-unit id="B4Gl2VR" resname="form.label_help_assigned_by">
+        <source>form.label_help_assigned_by</source>
+        <target>Automatically filled with current manager. Can be changed manually if needed.</target>
+      </trans-unit>
+      <trans-unit id="i.tJiaw" resname="form.label_pickup_address">
+        <source>form.label_pickup_address</source>
+        <target>Pickup Address</target>
+      </trans-unit>
+      <trans-unit id="zi6rdQH" resname="form.label_dropout_address">
+        <source>form.label_dropout_address</source>
+        <target>Dropout Address</target>
+      </trans-unit>
+      <trans-unit id="4NxTs08" resname="form.label_notes">
+        <source>form.label_notes</source>
+        <target>Notes</target>
+      </trans-unit>
+      <trans-unit id="tw9RZt5" resname="form.label_pickup_date">
+        <source>form.label_pickup_date</source>
+        <target>Pickup Date</target>
+      </trans-unit>
+      <trans-unit id="fd48uqr" resname="form.label_pickup_time_from">
+        <source>form.label_pickup_time_from</source>
+        <target>Pickup Time From</target>
+      </trans-unit>
+      <trans-unit id="Cq3qrPt" resname="form.label_pickup_time_to">
+        <source>form.label_pickup_time_to</source>
+        <target>Pickup Time To</target>
+      </trans-unit>
+      <trans-unit id="1G1TH0J" resname="form.label_delivery_date">
+        <source>form.label_delivery_date</source>
+        <target>Delivery Date</target>
+      </trans-unit>
+      <trans-unit id="nnXmTX4" resname="form.label_delivery_time_from">
+        <source>form.label_delivery_time_from</source>
+        <target>Delivery Time From</target>
+      </trans-unit>
+      <trans-unit id="CeA1qBa" resname="form.label_delivery_time_to">
+        <source>form.label_delivery_time_to</source>
+        <target>Delivery Time To</target>
+      </trans-unit>
+      <trans-unit id="ubSZANZ" resname="form.label_cargo">
+        <source>form.label_cargo</source>
+        <target>Cargo</target>
+      </trans-unit>
+      <trans-unit id="O0AVoHq" resname="form.label_name">
+        <source>form.label_name</source>
+        <target>Name</target>
+      </trans-unit>
+      <trans-unit id="NwZnmoL" resname="form.label_type">
+        <source>form.label_type</source>
+        <target>Type</target>
+      </trans-unit>
+      <trans-unit id="T3w.3cI" resname="form.label_quantity">
+        <source>form.label_quantity</source>
+        <target>Quantity</target>
+      </trans-unit>
+      <trans-unit id="0RAvBcG" resname="form.label_weight_kg">
+        <source>form.label_weight_kg</source>
+        <target>Weight (kg)</target>
+      </trans-unit>
+      <trans-unit id="_NzE1Xb" resname="form.label_dimensions_cm">
+        <source>form.label_dimensions_cm</source>
+        <target>Dimensions (cm)</target>
+      </trans-unit>
+      <trans-unit id="bCySlLk" resname="form.label_comment">
+        <source>form.label_comment</source>
+        <target>Comment</target>
+      </trans-unit>
+      <trans-unit id="1S0FtFt" resname="form.label_stackable">
+        <source>form.label_stackable</source>
+        <target>Stackable</target>
+      </trans-unit>
+      <trans-unit id=".2h1q3T" resname="form.label_manipulator_needed">
+        <source>form.label_manipulator_needed</source>
+        <target>Manipulator Needed</target>
+      </trans-unit>
+      <trans-unit id="ombfaWv" resname="form.help_dimensions_cm">
+        <source>form.help_dimensions_cm</source>
+        <target>Format: Length,Width,Height (e.g., 120,80,100)</target>
+      </trans-unit>
+      <trans-unit id="aENrhfs" resname="form.label_address">
+        <source>form.label_address</source>
+        <target>Address</target>
+      </trans-unit>
+      <trans-unit id="UKEW8fu" resname="form.label_registration_number">
+        <source>form.label_registration_number</source>
+        <target>Registration Number</target>
+      </trans-unit>
+      <trans-unit id="kqh9Azs" resname="form.label_legal_name">
+        <source>form.label_legal_name</source>
+        <target>Legal Name</target>
+      </trans-unit>
+      <trans-unit id="1JbFrrH" resname="form.label_matrix_items">
+        <source>form.label_matrix_items</source>
+        <target>Matrix Items</target>
+      </trans-unit>
+      <trans-unit id="Be2vI81" resname="form.label_price">
+        <source>form.label_price</source>
+        <target>Price</target>
+      </trans-unit>
+      <trans-unit id="ZUequ3y" resname="form.label_service_area">
+        <source>form.label_service_area</source>
+        <target>Service Area</target>
+      </trans-unit>
+      <trans-unit id="XMkUK5C" resname="form.label_currency">
+        <source>form.label_currency</source>
+        <target>Currency</target>
+      </trans-unit>
+      <trans-unit id="Xa7MoVC" resname="form.label_weight_from">
+        <source>form.label_weight_from</source>
+        <target>Weight From</target>
+      </trans-unit>
+      <trans-unit id="3zZ4ppM" resname="form.label_weight_to">
+        <source>form.label_weight_to</source>
+        <target>Weight To</target>
+      </trans-unit>
+      <trans-unit id="VCJrAda" resname="form.label_offers">
+        <source>form.label_offers</source>
+        <target>Offers</target>
+      </trans-unit>
+      <trans-unit id="XQEwAWY" resname="form.label_brutto">
+        <source>form.label_brutto</source>
+        <target>Gross Price</target>
+      </trans-unit>
+      <trans-unit id="7LRYukH" resname="form.label_netto">
+        <source>form.label_netto</source>
+        <target>Net Price</target>
+      </trans-unit>
+      <trans-unit id="LPTRMvu" resname="form.label_fee">
+        <source>form.label_fee</source>
+        <target>Commission Amount</target>
+      </trans-unit>
+      <trans-unit id="Yb2DK86" resname="form.label_vat">
+        <source>form.label_vat</source>
+        <target>VAT Amount</target>
+      </trans-unit>
+      <trans-unit id="rd41fwl" resname="form.label_offer_status">
+        <source>form.label_offer_status</source>
+        <target>Offer Status</target>
+      </trans-unit>
+      <trans-unit id=".xTtDaI" resname="form.label_help_order_currency">
+        <source>form.label_help_order_currency</source>
+        <target>Leave this field empty, and it will be filled automatically after the successful calculation of the order’s shipping cost.</target>
+      </trans-unit>
+      <trans-unit id="gIXTs7f" resname="form.group_legal">
+        <source>form.group_legal</source>
+        <target>Legal information</target>
+      </trans-unit>
+      <trans-unit id="HPINDh7" resname="form.label_company_name">
+        <source>form.label_company_name</source>
+        <target>Company Name</target>
+      </trans-unit>
+      <trans-unit id="gHCokOt" resname="form.label_company_registration_number">
+        <source>form.label_company_registration_number</source>
+        <target>Company Registration Number</target>
+      </trans-unit>
+      <trans-unit id=".6WpuWm" resname="form.label_company_address">
+        <source>form.label_company_address</source>
+        <target>Company Address</target>
+      </trans-unit>
+      <trans-unit id="ThLn1V_" resname="form.label_upload_files">
+        <source>form.label_upload_files</source>
+        <target>PDF Documents</target>
+      </trans-unit>
+      <trans-unit id="IDTrF74" resname="form.label_help_upload_pdf">
+        <source>form.label_help_upload_pdf</source>
+        <target>Only PDF files accepted. Multiple files allowed. Files are compressed automatically on save.</target>
+      </trans-unit>
+      <trans-unit id="dGOt7Nk" resname="PALLET">
+        <source>PALLET</source>
+        <target>Pallet</target>
+      </trans-unit>
+      <trans-unit id="VN_9hXV" resname="OVERSIZED">
+        <source>OVERSIZED</source>
+        <target>Oversized</target>
+      </trans-unit>
+      <trans-unit id="WmDDd9d" resname="address_map.modal.title">
+        <source>address_map.modal.title</source>
+        <target>Select address on map</target>
+      </trans-unit>
+      <trans-unit id="GvnuejP" resname="address_map.modal.search_placeholder">
+        <source>address_map.modal.search_placeholder</source>
+        <target>Enter address to search...</target>
+      </trans-unit>
+      <trans-unit id="JOVXOc6" resname="address_map.modal.search_button">
+        <source>address_map.modal.search_button</source>
+        <target>Search</target>
+      </trans-unit>
+      <trans-unit id="HV2H2fF" resname="address_map.modal.search_help">
+        <source>address_map.modal.search_help</source>
+        <target>Enter an address and click "Search" or select a point on the map</target>
+      </trans-unit>
+      <trans-unit id="OSnvLwq" resname="address_map.modal.button_cancel">
+        <source>address_map.modal.button_cancel</source>
+        <target>Cancel</target>
+      </trans-unit>
+      <trans-unit id="vqB5rEa" resname="address_map.modal.button_confirm">
+        <source>address_map.modal.button_confirm</source>
+        <target>Confirm</target>
+      </trans-unit>
+      <trans-unit id="QAULDou" resname="address_map.modal.instruction">
+        <source>address_map.modal.instruction</source>
+        <target>Click on the map to select a point or use the search. After selecting, click "Confirm" to apply the address.</target>
+      </trans-unit>
+      <trans-unit id="3jkEcC8" resname="address_map.button.select_on_map">
+        <source>address_map.button.select_on_map</source>
+        <target>Select on map</target>
+      </trans-unit>
+      <trans-unit id="jRsOd9x" resname="address_map.error.no_selection">
+        <source>address_map.error.no_selection</source>
+        <target>Please select an address on the map or enter it in the search field</target>
+      </trans-unit>
+      <trans-unit id="V1e1nWj" resname="address_map.error.address_not_found">
+        <source>address_map.error.address_not_found</source>
+        <target>Address not found. Try to clarify the query.</target>
+      </trans-unit>
+      <trans-unit id="dkcngq." resname="address_map.error.geocoding_failed">
+        <source>address_map.error.geocoding_failed</source>
+        <target>Failed to get address for selected point</target>
+      </trans-unit>
+      <trans-unit id="zKaOxTM" resname="address_map.error.search_failed">
+        <source>address_map.error.search_failed</source>
+        <target>Error searching for address. Try again later.</target>
+      </trans-unit>
+      <trans-unit id="gl1g6tO" resname="address_map.error.empty_search">
+        <source>address_map.error.empty_search</source>
+        <target>Enter an address to search</target>
+      </trans-unit>
+      <trans-unit id="VOW49GY" resname="address_map.status.searching">
+        <source>address_map.status.searching</source>
+        <target>Searching...</target>
+      </trans-unit>
+      <trans-unit id="Y5qhlFv" resname="address_view.modal.title">
+        <source>address_view.modal.title</source>
+        <target>View address on map</target>
+      </trans-unit>
+      <trans-unit id="aY2FWq8" resname="address_view.modal.title_pickup">
+        <source>address_view.modal.title_pickup</source>
+        <target>Pickup Address</target>
+      </trans-unit>
+      <trans-unit id="qa0_wYX" resname="address_view.modal.title_dropout">
+        <source>address_view.modal.title_dropout</source>
+        <target>Dropout Address</target>
+      </trans-unit>
+      <trans-unit id="AFXqj5z" resname="address_view.modal.current_address">
+        <source>address_view.modal.current_address</source>
+        <target>Current address</target>
+      </trans-unit>
+      <trans-unit id="Dwan8oC" resname="address_view.modal.button_close">
+        <source>address_view.modal.button_close</source>
+        <target>Close</target>
+      </trans-unit>
+      <trans-unit id="s.OkheK" resname="address_view.button.view_on_map">
+        <source>address_view.button.view_on_map</source>
+        <target>View on map</target>
+      </trans-unit>
+      <trans-unit id="1wcnOUf" resname="address_view.error.geocoding_failed">
+        <source>address_view.error.geocoding_failed</source>
+        <target>Failed to find address on map. Please check if the address is correct.</target>
+      </trans-unit>
+      <trans-unit id="dTjJlFv" resname="address_view.status.loading">
+        <source>address_view.status.loading</source>
+        <target>Loading map...</target>
+      </trans-unit>
+      <trans-unit id="PAQm6lm" resname="geo_area_view.label.selected_areas">
+        <source>geo_area_view.label.selected_areas</source>
+        <target>Selected Geo Areas</target>
+      </trans-unit>
+      <trans-unit id=".AuYkW8" resname="geo_area_view.label.map">
+        <source>geo_area_view.label.map</source>
+        <target>Areas Map</target>
+      </trans-unit>
+      <trans-unit id="k0MYz38" resname="geo_area_view.scope.country">
+        <source>geo_area_view.scope.country</source>
+        <target>Country</target>
+      </trans-unit>
+      <trans-unit id="LrgPw29" resname="geo_area_view.scope.city">
+        <source>geo_area_view.scope.city</source>
+        <target>City</target>
+      </trans-unit>
+      <trans-unit id="MLGRkMZ" resname="geo_area_view.help.map_info">
+        <source>geo_area_view.help.map_info</source>
+        <target>Displays boundaries of all selected geo areas</target>
+      </trans-unit>
+      <trans-unit id="nOHyvpD" resname="geo_area_view.message.no_areas">
+        <source>geo_area_view.message.no_areas</source>
+        <target>No selected geo areas</target>
+      </trans-unit>
+      <trans-unit id="SR.UHDZ" resname="geo_area_view.error.load_geometry">
+        <source>geo_area_view.error.load_geometry</source>
+        <target>Failed to load area geometry</target>
+      </trans-unit>
+      <trans-unit id="yc5qNwW" resname="geo_area_selection.title">
+        <source>geo_area_selection.title</source>
+        <target>Geo Areas Selection on Map</target>
+      </trans-unit>
+      <trans-unit id="5R1Vnz2" resname="geo_area_selection.label.country">
+        <source>geo_area_selection.label.country</source>
+        <target>Country</target>
+      </trans-unit>
+      <trans-unit id="XAbGkOU" resname="geo_area_selection.label.city">
+        <source>geo_area_selection.label.city</source>
+        <target>City</target>
+      </trans-unit>
+      <trans-unit id="2X5C1da" resname="geo_area_selection.label.custom_area">
+        <source>geo_area_selection.label.custom_area</source>
+        <target>Custom Area</target>
+      </trans-unit>
+      <trans-unit id="TAv1AFU" resname="geo_area_selection.label.selected_areas">
+        <source>geo_area_selection.label.selected_areas</source>
+        <target>Selected Areas</target>
+      </trans-unit>
+      <trans-unit id="U0IjHt_" resname="geo_area_selection.select.no_country">
+        <source>geo_area_selection.select.no_country</source>
+        <target>-- Select Country --</target>
+      </trans-unit>
+      <trans-unit id="LY8S5YD" resname="geo_area_selection.select.no_city">
+        <source>geo_area_selection.select.no_city</source>
+        <target>-- Select City --</target>
+      </trans-unit>
+      <trans-unit id="P6QaeQT" resname="geo_area_selection.select.no_custom_area">
+        <source>geo_area_selection.select.no_custom_area</source>
+        <target>-- Select Custom Area --</target>
+      </trans-unit>
+      <trans-unit id="Z8BGEv2" resname="geo_area_selection.button.add">
+        <source>geo_area_selection.button.add</source>
+        <target>Add</target>
+      </trans-unit>
+      <trans-unit id="BS8lS3p" resname="geo_area_selection.button.remove">
+        <source>geo_area_selection.button.remove</source>
+        <target>Remove</target>
+      </trans-unit>
+      <trans-unit id="LsOKLQD" resname="geo_area_selection.button.create_custom_area">
+        <source>geo_area_selection.button.create_custom_area</source>
+        <target>Create Custom Area</target>
+      </trans-unit>
+      <trans-unit id="Z0tmk0X" resname="geo_area_selection.button.edit_custom_area">
+        <source>geo_area_selection.button.edit_custom_area</source>
+        <target>Edit Custom Area</target>
+      </trans-unit>
+      <trans-unit id="bJ4JV3B" resname="geo_area_selection.help.select_country_first">
+        <source>geo_area_selection.help.select_country_first</source>
+        <target>First select a country to load the list of cities</target>
+      </trans-unit>
+      <trans-unit id="HOJOBwq" resname="geo_area_selection.help.select_city">
+        <source>geo_area_selection.help.select_city</source>
+        <target>Select a country, then a city and click "+" to add to the map</target>
+      </trans-unit>
+      <trans-unit id="w8smgN_" resname="geo_area_selection.help.select_custom_area">
+        <source>geo_area_selection.help.select_custom_area</source>
+        <target>Select an existing custom area or create a new one</target>
+      </trans-unit>
+      <trans-unit id="rDcMZHk" resname="geo_area_selection.help.map_info">
+        <source>geo_area_selection.help.map_info</source>
+        <target>Selected geo areas are displayed on the map as polygons</target>
+      </trans-unit>
+      <trans-unit id="OPWZNPX" resname="geo_area_selection.message.no_selected_areas">
+        <source>geo_area_selection.message.no_selected_areas</source>
+        <target>No selected areas</target>
+      </trans-unit>
+      <trans-unit id="6o_iU7J" resname="geo_area_selection.hexagon.toggle_grid">
+        <source>geo_area_selection.hexagon.toggle_grid</source>
+        <target>Show hexagonal grid</target>
+      </trans-unit>
+      <trans-unit id="I04QlYA" resname="geo_area_selection.hexagon.resolution">
+        <source>geo_area_selection.hexagon.resolution</source>
+        <target>Grid resolution</target>
+      </trans-unit>
+      <trans-unit id="ROds.UW" resname="geo_area_selection.hexagon.coarse">
+        <source>geo_area_selection.hexagon.coarse</source>
+        <target>Coarse</target>
+      </trans-unit>
+      <trans-unit id="tffik81" resname="geo_area_selection.hexagon.fine">
+        <source>geo_area_selection.hexagon.fine</source>
+        <target>Fine</target>
+      </trans-unit>
+      <trans-unit id="8ZNgQ_k" resname="geo_area_selection.hexagon.selected_label">
+        <source>geo_area_selection.hexagon.selected_label</source>
+        <target>Selected</target>
+      </trans-unit>
+      <trans-unit id="Y3aHg7j" resname="geo_area_selection.hexagon.clear_button">
+        <source>geo_area_selection.hexagon.clear_button</source>
+        <target>Clear</target>
+      </trans-unit>
+      <trans-unit id="ay1dY.O" resname="geo_area_selection.hexagon.click_hint">
+        <source>geo_area_selection.hexagon.click_hint</source>
+        <target>Click = select/deselect hexagon</target>
+      </trans-unit>
+      <trans-unit id="KBSEAXI" resname="geo_area_selection.hexagon.instruction_or">
+        <source>geo_area_selection.hexagon.instruction_or</source>
+        <target>OR enable hexagonal grid and click on hexagons to select</target>
+      </trans-unit>
+      <trans-unit id="PlriVmZ" resname="geo_area_selection.hexagon.instruction_edit">
+        <source>geo_area_selection.hexagon.instruction_edit</source>
+        <target>use polygon editing tools OR enable grid to add new hexagons</target>
+      </trans-unit>
+      <trans-unit id="VxZgo3h" resname="geo_area_selection.hexagon.instruction_edit_title">
+        <source>geo_area_selection.hexagon.instruction_edit_title</source>
+        <target>When editing</target>
+      </trans-unit>
+      <trans-unit id="HgBy8Vh" resname="geo_area_selection.error.load_countries">
+        <source>geo_area_selection.error.load_countries</source>
+        <target>Failed to load countries list</target>
+      </trans-unit>
+      <trans-unit id="aofW6GG" resname="geo_area_selection.error.load_cities">
+        <source>geo_area_selection.error.load_cities</source>
+        <target>Failed to load cities list</target>
+      </trans-unit>
+      <trans-unit id="B7qZTR_" resname="geo_area_selection.error.load_geometry">
+        <source>geo_area_selection.error.load_geometry</source>
+        <target>Failed to load area geometry</target>
+      </trans-unit>
+      <trans-unit id="OALf0Ou" resname="geo_area_selection.error.area_already_added">
+        <source>geo_area_selection.error.area_already_added</source>
+        <target>This area has already been added</target>
+      </trans-unit>
+      <trans-unit id="pq7jSpr" resname="geo_area_selection.status.loading_cities">
+        <source>geo_area_selection.status.loading_cities</source>
+        <target>Loading cities...</target>
+      </trans-unit>
+      <trans-unit id="iBlBwnI" resname="custom_area.modal.title">
+        <source>custom_area.modal.title</source>
+        <target>Create/Edit Custom Area</target>
+      </trans-unit>
+      <trans-unit id="yNsGp_F" resname="custom_area.label.name">
+        <source>custom_area.label.name</source>
+        <target>Custom Area Name</target>
+      </trans-unit>
+      <trans-unit id="SSexHYr" resname="custom_area.label.draw_area">
+        <source>custom_area.label.draw_area</source>
+        <target>Map Area</target>
+      </trans-unit>
+      <trans-unit id="MLSTRsr" resname="custom_area.placeholder.name">
+        <source>custom_area.placeholder.name</source>
+        <target>Enter area name</target>
+      </trans-unit>
+      <trans-unit id="fTz1oKj" resname="custom_area.help.name">
+        <source>custom_area.help.name</source>
+        <target>Specify a clear name for this area</target>
+      </trans-unit>
+      <trans-unit id="_gORDvd" resname="custom_area.help.draw_area">
+        <source>custom_area.help.draw_area</source>
+        <target>Use drawing tools to create a polygon on the map</target>
+      </trans-unit>
+      <trans-unit id="DREO2nD" resname="custom_area.button.save">
+        <source>custom_area.button.save</source>
+        <target>Save</target>
+      </trans-unit>
+      <trans-unit id="VnWSQc3" resname="custom_area.button.cancel">
+        <source>custom_area.button.cancel</source>
+        <target>Cancel</target>
+      </trans-unit>
+      <trans-unit id="A.k8vbt" resname="custom_area.button.edit">
+        <source>custom_area.button.edit</source>
+        <target>Edit</target>
+      </trans-unit>
+      <trans-unit id="sumi2oE" resname="custom_area.badge.custom">
+        <source>custom_area.badge.custom</source>
+        <target>custom</target>
+      </trans-unit>
+      <trans-unit id="p8H1ydT" resname="custom_area.message.name_required">
+        <source>custom_area.message.name_required</source>
+        <target>Please enter a name for the custom area</target>
+      </trans-unit>
+      <trans-unit id="Y6nj5sX" resname="custom_area.message.geometry_required">
+        <source>custom_area.message.geometry_required</source>
+        <target>Please draw an area on the map</target>
+      </trans-unit>
+      <trans-unit id="5NPDE86" resname="custom_area.message.jquery_not_loaded">
+        <source>custom_area.message.jquery_not_loaded</source>
+        <target>Error: jQuery is not loaded</target>
+      </trans-unit>
+      <trans-unit id="uOatBL4" resname="custom_area.message.draw_library_not_loaded">
+        <source>custom_area.message.draw_library_not_loaded</source>
+        <target>Error: drawing library is not loaded</target>
+      </trans-unit>
+      <trans-unit id="a9mAVUj" resname="custom_area.message.invalid_geometry">
+        <source>custom_area.message.invalid_geometry</source>
+        <target>Error: geometry contains no coordinates</target>
+      </trans-unit>
+      <trans-unit id="Q8oxZiK" resname="custom_area.message.geometry_load_error">
+        <source>custom_area.message.geometry_load_error</source>
+        <target>Error loading geometry</target>
+      </trans-unit>
+      <trans-unit id="Diladd." resname="custom_area.message.created">
+        <source>custom_area.message.created</source>
+        <target>Custom area created</target>
+      </trans-unit>
+      <trans-unit id="gRwfPFV" resname="custom_area.message.updated">
+        <source>custom_area.message.updated</source>
+        <target>Custom area updated</target>
+      </trans-unit>
+      <trans-unit id="6DyBBLH" resname="custom_area.message.save_error">
+        <source>custom_area.message.save_error</source>
+        <target>Error saving custom area</target>
+      </trans-unit>
+      <trans-unit id="koeyS3l" resname="custom_area.message.select_country_first">
+        <source>custom_area.message.select_country_first</source>
+        <target>Please select a country first</target>
+      </trans-unit>
+      <trans-unit id="YriMFmo" resname="custom_area.message.modal_not_found">
+        <source>custom_area.message.modal_not_found</source>
+        <target>Error: modal window not found</target>
+      </trans-unit>
+      <trans-unit id="al_MnXs" resname="custom_area.message.controller_not_found">
+        <source>custom_area.message.controller_not_found</source>
+        <target>Error: modal controller not found</target>
+      </trans-unit>
+      <trans-unit id="iQ7K4Pe" resname="custom_area.message.edit_load_error">
+        <source>custom_area.message.edit_load_error</source>
+        <target>Error loading geometry for editing</target>
+      </trans-unit>
+      <trans-unit id="IWI51WJ" resname="custom_area.select.loading">
+        <source>custom_area.select.loading</source>
+        <target>Loading...</target>
+      </trans-unit>
+      <trans-unit id="8z5JyOl" resname="custom_area.select.placeholder">
+        <source>custom_area.select.placeholder</source>
+        <target>Select custom area</target>
+      </trans-unit>
+      <trans-unit id="StiOrJX" resname="custom_area.instruction.title">
+        <source>custom_area.instruction.title</source>
+        <target>Instructions</target>
+      </trans-unit>
+      <trans-unit id="7pwaSqU" resname="custom_area.instruction.step1">
+        <source>custom_area.instruction.step1</source>
+        <target>Click the polygon icon button in the upper right corner of the map</target>
+      </trans-unit>
+      <trans-unit id="UQRiwLt" resname="custom_area.instruction.step2">
+        <source>custom_area.instruction.step2</source>
+        <target>Click on the map to create polygon points</target>
+      </trans-unit>
+      <trans-unit id="95p8TXn" resname="custom_area.instruction.step3">
+        <source>custom_area.instruction.step3</source>
+        <target>Complete the polygon by clicking on the first point or double-clicking</target>
+      </trans-unit>
+      <trans-unit id="uM2NG5l" resname="custom_area.instruction.step4">
+        <source>custom_area.instruction.step4</source>
+        <target>Use editing tools to adjust or delete the polygon</target>
+      </trans-unit>
+      <trans-unit id="oo1dELU" resname="DRAFT">
+        <source>DRAFT</source>
+        <target>Draft</target>
+      </trans-unit>
+      <trans-unit id="unlUogY" resname="ACCEPTED">
+        <source>ACCEPTED</source>
+        <target>Accepted</target>
+      </trans-unit>
+      <trans-unit id="yWy76o7" resname="REJECTED">
+        <source>REJECTED</source>
+        <target>Rejected</target>
+      </trans-unit>
+      <trans-unit id="lQZp6Oy" resname="ASSIGNED">
+        <source>ASSIGNED</source>
+        <target>Assigned</target>
+      </trans-unit>
+      <trans-unit id="uF1bPuC" resname="order_offer.button.calculate">
+        <source>order_offer.button.calculate</source>
+        <target>Calculate Offer</target>
+      </trans-unit>
+      <trans-unit id="ardZ5Iq" resname="order_offer.button.add_manual">
+        <source>order_offer.button.add_manual</source>
+        <target>Add Manually</target>
+      </trans-unit>
+      <trans-unit id="bUWiDWi" resname="order_offer.success.calculated">
+        <source>order_offer.success.calculated</source>
+        <target>Offer successfully calculated</target>
+      </trans-unit>
+      <trans-unit id="U62fABQ" resname="order_offer.success.auto_created">
+        <source>order_offer.success.auto_created</source>
+        <target>Offer automatically created</target>
+      </trans-unit>
+      <trans-unit id="C.P1lGa" resname="order_offer.success.can_calculate">
+        <source>order_offer.success.can_calculate</source>
+        <target>Can calculate price for this order</target>
+      </trans-unit>
+      <trans-unit id="8css55u" resname="order_offer.warning.auto_create_failed">
+        <source>order_offer.warning.auto_create_failed</source>
+        <target>Failed to automatically create offer. Reason: %reason%</target>
+      </trans-unit>
+      <trans-unit id="sAyBVOo" resname="order_offer.warning.service_area_not_found">
+        <source>order_offer.warning.service_area_not_found</source>
+        <target>Service area not found for the specified delivery address</target>
+      </trans-unit>
+      <trans-unit id="Vb9BVYz" resname="order_offer.error.missing_coordinates">
+        <source>order_offer.error.missing_coordinates</source>
+        <target>Missing delivery address coordinates</target>
+      </trans-unit>
+      <trans-unit id="WD9euid" resname="order_offer.error.service_area_not_found">
+        <source>order_offer.error.service_area_not_found</source>
+        <target>Service area not found for specified address</target>
+      </trans-unit>
+      <trans-unit id="cTd_fXx" resname="order_offer.error.no_cargo_weight">
+        <source>order_offer.error.no_cargo_weight</source>
+        <target>Order has no cargo or cargo weight is zero</target>
+      </trans-unit>
+      <trans-unit id="6VP.xEk" resname="order_offer.error.matrix_item_not_found">
+        <source>order_offer.error.matrix_item_not_found</source>
+        <target>Pricing plan not found for specified cargo weight</target>
+      </trans-unit>
+      <trans-unit id="0yuRSuP" resname="order_offer.error.calculation_failed">
+        <source>order_offer.error.calculation_failed</source>
+        <target>Error calculating delivery cost</target>
+      </trans-unit>
+      <trans-unit id="NN9T8zW" resname="order_offer.error.unknown">
+        <source>order_offer.error.unknown</source>
+        <target>Unknown error</target>
+      </trans-unit>
+      <trans-unit id="NgwQdZM" resname="order_offer.help.brutto_info">
+        <source>order_offer.help.brutto_info</source>
+        <target>Price including VAT</target>
+      </trans-unit>
+      <trans-unit id="lcYcD4d" resname="order_offer.help.netto_info">
+        <source>order_offer.help.netto_info</source>
+        <target>Subtotal price excluding VAT (base freight + commission)</target>
+      </trans-unit>
+      <trans-unit id="723IV6A" resname="order_offer.help.fee_info">
+        <source>order_offer.help.fee_info</source>
+        <target>Platform commission amount (calculated from base freight)</target>
+      </trans-unit>
+      <trans-unit id="aunSDCT" resname="order_offer.help.vat_info">
+        <source>order_offer.help.vat_info</source>
+        <target>VAT amount (brutto minus netto)</target>
+      </trans-unit>
+      <trans-unit id="qx9ZqnO" resname="order_offer.help.auto_calculation">
+        <source>order_offer.help.auto_calculation</source>
+        <target>Offer will be created automatically when saving the order</target>
+      </trans-unit>
+      <trans-unit id="fnzJPVq" resname="email.order_status.header">
+        <source>email.order_status.header</source>
+        <target>Order Status Update</target>
+      </trans-unit>
+      <trans-unit id="kne3LUN" resname="email.order_status.greeting">
+        <source>email.order_status.greeting</source>
+        <target>Hello, %name%!</target>
+      </trans-unit>
+      <trans-unit id="GY.cHPw" resname="email.order_status.order_details">
+        <source>email.order_status.order_details</source>
+        <target>Order details</target>
+      </trans-unit>
+      <trans-unit id="x92Ma4M" resname="email.order_status.order_id">
+        <source>email.order_status.order_id</source>
+        <target>Order ID</target>
+      </trans-unit>
+      <trans-unit id="weW1pXC" resname="email.order_status.pickup_address">
+        <source>email.order_status.pickup_address</source>
+        <target>Pickup Address</target>
+      </trans-unit>
+      <trans-unit id="AgA3fji" resname="email.order_status.dropout_address">
+        <source>email.order_status.dropout_address</source>
+        <target>Dropout Address</target>
+      </trans-unit>
+      <trans-unit id="dl.FuEK" resname="email.order_status.notes">
+        <source>email.order_status.notes</source>
+        <target>Notes</target>
+      </trans-unit>
+      <trans-unit id="TVv1TrX" resname="email.order_status.footer">
+        <source>email.order_status.footer</source>
+        <target>This is an automated notification. Please do not reply to this email.</target>
+      </trans-unit>
+      <trans-unit id="9NAGWC0" resname="email.order_status.accepted.title">
+        <source>email.order_status.accepted.title</source>
+        <target>Order Accepted</target>
+      </trans-unit>
+      <trans-unit id="JLlnKFC" resname="email.order_status.accepted.status">
+        <source>email.order_status.accepted.status</source>
+        <target>ACCEPTED</target>
+      </trans-unit>
+      <trans-unit id="3hV.A5." resname="email.order_status.accepted.message">
+        <source>email.order_status.accepted.message</source>
+        <target>Your order has been accepted and is being processed.</target>
+      </trans-unit>
+      <trans-unit id="4hZJ.KM" resname="email.order_status.accepted.details">
+        <source>email.order_status.accepted.details</source>
+        <target>We have received your order and begun processing it. We will notify you of further updates.</target>
+      </trans-unit>
+      <trans-unit id="dZHEPti" resname="email.order_status.assigned.title">
+        <source>email.order_status.assigned.title</source>
+        <target>Carrier Assigned</target>
+      </trans-unit>
+      <trans-unit id="nP1SudU" resname="email.order_status.assigned.status">
+        <source>email.order_status.assigned.status</source>
+        <target>ASSIGNED</target>
+      </trans-unit>
+      <trans-unit id="3j6tmi6" resname="email.order_status.assigned.message">
+        <source>email.order_status.assigned.message</source>
+        <target>A carrier has been assigned to your order.</target>
+      </trans-unit>
+      <trans-unit id="B.04awM" resname="email.order_status.assigned.carrier_info">
+        <source>email.order_status.assigned.carrier_info</source>
+        <target>Carrier Information</target>
+      </trans-unit>
+      <trans-unit id="D2JsD8B" resname="email.order_status.assigned.carrier_name">
+        <source>email.order_status.assigned.carrier_name</source>
+        <target>Name</target>
+      </trans-unit>
+      <trans-unit id="bvOmQkP" resname="email.order_status.assigned.carrier_phone">
+        <source>email.order_status.assigned.carrier_phone</source>
+        <target>Phone</target>
+      </trans-unit>
+      <trans-unit id="fdx.7Vu" resname="email.order_status.assigned.details">
+        <source>email.order_status.assigned.details</source>
+        <target>Your order has been assigned to a carrier. They will contact you shortly to coordinate pickup.</target>
+      </trans-unit>
+      <trans-unit id="AMIIusP" resname="email.order_status.pickup_done.title">
+        <source>email.order_status.pickup_done.title</source>
+        <target>Pickup Completed</target>
+      </trans-unit>
+      <trans-unit id="MKQzNlJ" resname="email.order_status.pickup_done.status">
+        <source>email.order_status.pickup_done.status</source>
+        <target>PICKUP DONE</target>
+      </trans-unit>
+      <trans-unit id="EyRe9Vu" resname="email.order_status.pickup_done.message">
+        <source>email.order_status.pickup_done.message</source>
+        <target>Your order has been picked up by the carrier.</target>
+      </trans-unit>
+      <trans-unit id="GmALvIn" resname="email.order_status.pickup_done.details">
+        <source>email.order_status.pickup_done.details</source>
+        <target>The carrier has picked up your cargo and it is now in transit to the destination.</target>
+      </trans-unit>
+      <trans-unit id="ZJ1_Acb" resname="email.order_status.pickup_done.in_transit_note">
+        <source>email.order_status.pickup_done.in_transit_note</source>
+        <target>Your order is currently in transit to the delivery address.</target>
+      </trans-unit>
+      <trans-unit id="QfGr_NR" resname="email.order_status.delivered.title">
+        <source>email.order_status.delivered.title</source>
+        <target>Order Delivered</target>
+      </trans-unit>
+      <trans-unit id="FLGvIrN" resname="email.order_status.delivered.status">
+        <source>email.order_status.delivered.status</source>
+        <target>DELIVERED</target>
+      </trans-unit>
+      <trans-unit id="tVif8jl" resname="email.order_status.delivered.message">
+        <source>email.order_status.delivered.message</source>
+        <target>Your order has been successfully delivered!</target>
+      </trans-unit>
+      <trans-unit id="HGyjIfy" resname="email.order_status.delivered.details">
+        <source>email.order_status.delivered.details</source>
+        <target>Your cargo has been delivered to the destination address. We hope you are satisfied with our service.</target>
+      </trans-unit>
+      <trans-unit id="QowWl8X" resname="email.order_status.delivered.thank_you">
+        <source>email.order_status.delivered.thank_you</source>
+        <target>Thank you for using our service!</target>
+      </trans-unit>
+      <trans-unit id="A4SyV_j" resname="order.status_1">
+        <source>order.status_1</source>
+        <target>Draft</target>
+      </trans-unit>
+      <trans-unit id="IuKtW6e" resname="order.status_2">
+        <source>order.status_2</source>
+        <target>Offered</target>
+      </trans-unit>
+      <trans-unit id="1UXV6ER" resname="order.status_3">
+        <source>order.status_3</source>
+        <target>Accepted</target>
+      </trans-unit>
+      <trans-unit id="cK.yEYZ" resname="order.status_4">
+        <source>order.status_4</source>
+        <target>Invoiced</target>
+      </trans-unit>
+      <trans-unit id=".jZnwi2" resname="order.status_5">
+        <source>order.status_5</source>
+        <target>Paid</target>
+      </trans-unit>
+      <trans-unit id="Q6a1e0D" resname="order.status_6">
+        <source>order.status_6</source>
+        <target>Assigned</target>
+      </trans-unit>
+      <trans-unit id="J.uhvcr" resname="order.status_7">
+        <source>order.status_7</source>
+        <target>Awaiting pickup</target>
+      </trans-unit>
+      <trans-unit id="n_ArAE9" resname="order.status_8">
+        <source>order.status_8</source>
+        <target>Pickup completed</target>
+      </trans-unit>
+      <trans-unit id="deXgs9I" resname="order.status_9">
+        <source>order.status_9</source>
+        <target>In transit</target>
+      </trans-unit>
+      <trans-unit id="OXskO_1" resname="order.status_10">
+        <source>order.status_10</source>
+        <target>Delivered</target>
+      </trans-unit>
+      <trans-unit id="qcuMKck" resname="order.status_-1">
+        <source>order.status_-1</source>
+        <target>Cancelled</target>
+      </trans-unit>
+      <trans-unit id="0bGkAWk" resname="order.type_1">
+        <source>order.type_1</source>
+        <target>Pallet</target>
+      </trans-unit>
+      <trans-unit id="yRfw_dX" resname="order.type_2">
+        <source>order.type_2</source>
+        <target>Oversized</target>
+      </trans-unit>
+      <trans-unit id="Ht459bQ" resname="order_offer.warning.missing_coordinates_for_calculation">
+        <source>order_offer.warning.missing_coordinates_for_calculation</source>
+        <target>__order_offer.warning.missing_coordinates_for_calculation</target>
+      </trans-unit>
+      <trans-unit id="SIYPmL5" resname="users">
+        <source>users</source>
+        <target>__users</target>
+      </trans-unit>
+      <trans-unit id="tH5fJ4s" resname="orders">
+        <source>orders</source>
+        <target>__orders</target>
+      </trans-unit>
+      <trans-unit id="RmWZXRm" resname="service_areas">
+        <source>service_areas</source>
+        <target>__service_areas</target>
+      </trans-unit>
+      <trans-unit id="hOOFBNu" resname="show.group_default">
+        <source>show.group_default</source>
+        <target>__show.group_default</target>
+      </trans-unit>
+      <trans-unit id="TWOjR2C" resname="form.label_dropout_latitude">
+        <source>form.label_dropout_latitude</source>
+        <target>__form.label_dropout_latitude</target>
+      </trans-unit>
+      <trans-unit id="qA0ssnJ" resname="form.label_dropout_longitude">
+        <source>form.label_dropout_longitude</source>
+        <target>__form.label_dropout_longitude</target>
+      </trans-unit>
+      <trans-unit id="ncPg8Vl" resname="form.label_pickup_latitude">
+        <source>form.label_pickup_latitude</source>
+        <target>__form.label_pickup_latitude</target>
+      </trans-unit>
+      <trans-unit id="XZuwnbR" resname="form.label_pickup_longitude">
+        <source>form.label_pickup_longitude</source>
+        <target>__form.label_pickup_longitude</target>
+      </trans-unit>
+      <trans-unit id="9c5.Ar5" resname="filter.label_type">
+        <source>filter.label_type</source>
+        <target>__filter.label_type</target>
+      </trans-unit>
+      <trans-unit id="VWkdBGr" resname="filter.label_weight_kg">
+        <source>filter.label_weight_kg</source>
+        <target>__filter.label_weight_kg</target>
+      </trans-unit>
+      <trans-unit id="h8ZypYM" resname="form.group_default">
+        <source>form.group_default</source>
+        <target>__form.group_default</target>
+      </trans-unit>
+      <trans-unit id="3pYDAdl" resname="show.group_menu_offers">
+        <source>show.group_menu_offers</source>
+        <target>__show.group_menu_offers</target>
+      </trans-unit>
+      <trans-unit id="u60EsI6" resname="form.group_menu_offers">
+        <source>form.group_menu_offers</source>
+        <target>__form.group_menu_offers</target>
+      </trans-unit>
+      <trans-unit id="tJQm4.N" resname="breadcrumb.link_order_offer_list">
+        <source>breadcrumb.link_order_offer_list</source>
+        <target>__breadcrumb.link_order_offer_list</target>
+      </trans-unit>
+      <trans-unit id="LoEbzSJ" resname="breadcrumb.link_order_offer_create">
+        <source>breadcrumb.link_order_offer_create</source>
+        <target>__breadcrumb.link_order_offer_create</target>
+      </trans-unit>
+      <trans-unit id="LlqnjZn" resname="show.group_menu_order_history">
+        <source>show.group_menu_order_history</source>
+        <target>__show.group_menu_order_history</target>
+      </trans-unit>
+      <trans-unit id="evpB6c4" resname="breadcrumb.link_order_history_list">
+        <source>breadcrumb.link_order_history_list</source>
+        <target>__breadcrumb.link_order_history_list</target>
+      </trans-unit>
+      <trans-unit id="YahEbdd" resname="breadcrumb.link_order_history_create">
+        <source>breadcrumb.link_order_history_create</source>
+        <target>__breadcrumb.link_order_history_create</target>
+      </trans-unit>
+      <trans-unit id="0DKITHW" resname="show.group_menu_order_assignments">
+        <source>show.group_menu_order_assignments</source>
+        <target>__show.group_menu_order_assignments</target>
+      </trans-unit>
+      <trans-unit id="n0TpYmh" resname="form.group_menu_order_assignments">
+        <source>form.group_menu_order_assignments</source>
+        <target>__form.group_menu_order_assignments</target>
+      </trans-unit>
+      <trans-unit id="D8Cl4tF" resname="breadcrumb.link_order_assignment_list">
+        <source>breadcrumb.link_order_assignment_list</source>
+        <target>__breadcrumb.link_order_assignment_list</target>
+      </trans-unit>
+      <trans-unit id="c6TUKQw" resname="breadcrumb.link_order_assignment_create">
+        <source>breadcrumb.link_order_assignment_create</source>
+        <target>__breadcrumb.link_order_assignment_create</target>
+      </trans-unit>
+      <trans-unit id="yjMQiQd" resname="show.group_menu_matrix_items">
+        <source>show.group_menu_matrix_items</source>
+        <target>__show.group_menu_matrix_items</target>
+      </trans-unit>
+      <trans-unit id="CxDToAy" resname="filter.label_weight_from">
+        <source>filter.label_weight_from</source>
+        <target>__filter.label_weight_from</target>
+      </trans-unit>
+      <trans-unit id="pZoiDLm" resname="filter.label_weight_to">
+        <source>filter.label_weight_to</source>
+        <target>__filter.label_weight_to</target>
+      </trans-unit>
+      <trans-unit id="14usQr7" resname="form.group_menu_matrix_items">
+        <source>form.group_menu_matrix_items</source>
+        <target>__form.group_menu_matrix_items</target>
+      </trans-unit>
+      <trans-unit id="dFl6jri" resname="breadcrumb.link_matrix_item_list">
+        <source>breadcrumb.link_matrix_item_list</source>
+        <target>__breadcrumb.link_matrix_item_list</target>
+      </trans-unit>
+      <trans-unit id="n3Ac79A" resname="breadcrumb.link_matrix_item_create">
+        <source>breadcrumb.link_matrix_item_create</source>
+        <target>__breadcrumb.link_matrix_item_create</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

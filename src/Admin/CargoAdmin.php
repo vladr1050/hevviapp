@@ -23,7 +23,6 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -41,9 +40,7 @@ class CargoAdmin extends BaseAdmin
                     'choice_translation_domain' => 'AppBundle',
                 ],
             ])
-            ->add('weightKg')
-            ->add('stackable')
-            ->add('manipulatorNeeded');
+            ->add('weightKg');
     }
 
     protected function configureListFields(ListMapper $list): void
@@ -59,12 +56,6 @@ class CargoAdmin extends BaseAdmin
             ->add('quantity')
             ->add('weightKg', null, [
                 'label' => 'list.label_weight_kg',
-            ])
-            ->add('stackable', null, [
-                'editable' => false,
-            ])
-            ->add('manipulatorNeeded', null, [
-                'editable' => false,
             ])
             ->add('createdAt', 'datetime', [
                 'format' => self::BASE_LIST_DATETIME_FORMAT,
@@ -86,8 +77,6 @@ class CargoAdmin extends BaseAdmin
             ->add('weightKg')
             ->add('dimensionsCm')
             ->add('comment')
-            ->add('stackable')
-            ->add('manipulatorNeeded')
             ->add('relatedOrder')
             ->add('createdAt')
             ->add('updatedAt');
@@ -122,12 +111,6 @@ class CargoAdmin extends BaseAdmin
             ->end()
             ->with('cargo_properties', [
                 'class' => 'col-md-6',
-            ])
-            ->add('stackable', CheckboxType::class, [
-                'required' => false,
-            ])
-            ->add('manipulatorNeeded', CheckboxType::class, [
-                'required' => false,
             ])
             ->add('comment', TextareaType::class, [
                 'required' => false,
