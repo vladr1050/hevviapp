@@ -26,6 +26,7 @@ breadcrumb:
     link_matrixitem_create:  Создать элемент матрицы
 
 filter:
+    label_order_number:           Номер заказа
     label_status:                 Статус
     label_sender:                 Отправитель
     label_carrier:                Перевозчик
@@ -39,6 +40,7 @@ filter:
     label_price:                  Цена
 
 list:
+    label_order_number:         Номер заказа
     label_fullname:             Имя
     label_email:                Email
     label_created_at:           Создан
@@ -73,6 +75,7 @@ list:
     label_service_area:         Зона обслуживания
 
 show:
+    label_order_number:       Номер заказа
     group_menu_users:         Пользователь
     group_menu_orders:        Заказ
     group_menu_cargo:         Груз
@@ -137,6 +140,8 @@ show:
     label_service_area:       Зона обслуживания
 
 form:
+    label_order_number:        Номер заказа
+    label_help_order_number:   Человекочитаемый номер заказа. Присваивается автоматически, изменить нельзя.
     group_tabs_general:        Общее
     group_tabs_cargo:          Грузы
     group_tabs_offers:         Коммерческие предложения

@@ -104,6 +104,7 @@ class UserController extends AbstractController
         foreach ($this->orderRepository->findRecentBySender($user, 5) as $order) {
             $listOfOrders[] = [
                 'id'                 => $order->getId()?->toRfc4122(),
+                'reference'          => $order->getReference(),
                 'address'            => [
                     'from' => $order->getPickupAddress(),
                     'to'   => $order->getDropoutAddress(),
@@ -134,6 +135,7 @@ class UserController extends AbstractController
 
             $listOfOrders[] = [
                 'id'          => $order->getId()?->toRfc4122(),
+                'reference'   => $order->getReference(),
                 'status'      => $order->getStatus(),
                 'status_text' => $this->translator->trans('order.status_' . $order->getStatus(), domain: 'AppBundle', locale: $user->getLocale()),
                 'price'       => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
@@ -172,6 +174,7 @@ class UserController extends AbstractController
 
         $item = [
             'id'                  => $order->getId()?->toRfc4122(),
+            'reference'           => $order->getReference(),
             'status'              => $order->getStatus(),
             'status_text'         => $this->translator->trans('order.status_' . $order->getStatus(), domain: 'AppBundle', locale: $user->getLocale()),
             'price'               => $this->moneyExtension->currencyConvert($this->resolveBaseFreight($order->getLatestOffer()), $order->getCurrency()),

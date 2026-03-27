@@ -127,6 +127,9 @@ class OrderAdmin extends BaseAdmin
     protected function configureDatagridFilters(DatagridMapper $datagrid): void
     {
         $datagrid
+            ->add('orderNumber', null, [
+                'label' => 'filter.label_order_number',
+            ])
             ->add('status', ChoiceFilter::class, [
                 'label' => 'filter.label_status',
                 'field_type' => OrderStatusChoiceType::class,
@@ -247,6 +250,10 @@ class OrderAdmin extends BaseAdmin
     protected function configureListFields(ListMapper $list): void
     {
         $list
+            ->add('reference', TextType::class, [
+                'label'    => 'list.label_order_number',
+                'accessor' => static fn(Order $order): string => $order->getReference(),
+            ])
             ->add('sender', null, [
                 'associated_property' => function ($user) {
                     return sprintf('%s %s', $user->getFirstName(), $user->getLastName());
@@ -290,6 +297,10 @@ class OrderAdmin extends BaseAdmin
     {
         $show
             ->add('id')
+            ->add('reference', TextType::class, [
+                'label'    => 'show.label_order_number',
+                'accessor' => static fn(Order $order): string => $order->getReference(),
+            ])
             ->add('status', TextType::class, [
                 'catalogue' => 'AppBundle',
                 'accessor' => static function ($object): string {
@@ -354,6 +365,18 @@ class OrderAdmin extends BaseAdmin
             ->tab('tabs_general')
             ->with('order_info', [
                 'class' => 'col-md-6',
+            ])
+            ->add('_orderNumber', TextType::class, [
+                'mapped'   => false,
+                'required' => false,
+                'disabled' => true,
+                'label'    => 'form.label_order_number',
+                'data'     => (function (): string {
+                    $subject = $this->getSubject();
+                    return $subject instanceof Order ? $subject->getReference() : 'HVY-?????';
+                })(),
+                'help'     => 'form.label_help_order_number',
+                'attr'     => ['style' => 'font-weight: bold; font-size: 1.1em;'],
             ])
             ->add('sender', ModelAutocompleteType::class, [
                 'required' => true,

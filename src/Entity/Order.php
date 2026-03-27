@@ -126,6 +126,9 @@ class Order extends BaseUUID
     #[Assert\Length(max: 255)]
     private ?string $cancelReason = null;
 
+    #[ORM\Column(nullable: true, unique: true)]
+    private ?int $orderNumber = null;
+
     public function __construct()
     {
         $this->cargo = new ArrayCollection();
@@ -297,10 +300,32 @@ class Order extends BaseUUID
         return $this;
     }
 
+    public function getOrderNumber(): ?int
+    {
+        return $this->orderNumber;
+    }
+
+    public function setOrderNumber(int $orderNumber): static
+    {
+        $this->orderNumber = $orderNumber;
+
+        return $this;
+    }
+
+    /**
+     * Возвращает человекочитаемый номер заказа для отображения пользователю.
+     * UUID остаётся техническим первичным ключом и не меняется.
+     */
+    public function getReference(): string
+    {
+        return $this->orderNumber !== null
+            ? sprintf('HEV-%05d', $this->orderNumber)
+            : 'HEV-?????';
+    }
+
     public function __toString(): string
     {
-        $id = $this->getId() ? $this->getId()->toRfc4122() : 'new';
-        return sprintf('Order #%s', substr($id, 0, 8));
+        return $this->getReference();
     }
 
     /**
