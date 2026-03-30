@@ -108,7 +108,7 @@
 				& .top {
 					@apply flex flex-col gap-6;
 
-					& .items {
+					/* & .items1 {
 						@apply flex flex-col gap-4 w-full;
 
 						& .item {
@@ -265,6 +265,167 @@
 							@apply hover-hover:hover:border-black hover-none:active:border-black;
 							animation: fade1 0.5s ease-in-out;
 						}
+					} */
+
+					& .items {
+						@apply flex flex-col gap-4 w-full;
+
+						& .addNewItem {
+							@apply w-full h-[88px] rounded-3xl 
+							flex items-center justify-center gap-3
+							text-base font-medium text-black 
+							cursor-pointer bg-white transition-colors;
+							border: 1px dashed rgba(0, 0, 0, 0.3);
+							@apply hover-hover:hover:border-black hover-none:active:border-black;
+							animation: fade1 0.5s ease-in-out;
+						}
+
+						& .item {
+							@apply bg-white rounded-3xl py-5 px-6 flex flex-col gap-5;
+							box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.1);
+
+							& .hr {
+								@apply h-[1px] w-full bg-black/30;
+							}
+
+							& > .headerItem {
+								@apply grid grid-cols-[1fr,auto] items-center gap-7 w-full overflow-hidden;
+
+								& > .left {
+									@apply flex flex-col overflow-hidden;
+
+									& > .title {
+										@apply font-medium text-base text-black truncate;
+									}
+									& > .subtitle {
+										@apply font-medium text-sm text-black/40 flex items-center justify-between gap-4;
+									}
+								}
+
+								& .right {
+									@apply flex items-center gap-4;
+
+									& > .countButtons {
+										@apply grid grid-cols-[40px,1fr,40px] gap-1 items-center;
+
+										& button {
+											@apply h-10 w-10 flex items-center justify-center 
+											bg-[#f2f2f2] text-black 
+											font-medium rounded-full transition-colors cursor-pointer
+											hover-hover:hover:bg-slate-200 hover-none:active:bg-slate-200;
+											border: none;
+											@apply text-[18px] leading-[18px] !important;
+										}
+
+										& .count {
+											@apply text-black text-base font-medium text-center min-w-8 px-1;
+											font-variant-numeric: tabular-nums;
+										}
+									}
+
+									& > .headerButton {
+										@apply cursor-pointer w-8 h-8 transition-colors
+										rounded-lg flex items-center justify-center
+										text-black bg-transparent;
+										border: none;
+
+										@apply hover-hover:hover:bg-gray-100 hover-none:active:bg-gray-100;
+
+										&.red {
+											@apply hover-hover:hover:text-red-600 hover-none:active:text-red-600
+											hover-hover:hover:bg-red-100 
+											hover-none:active:bg-red-100;
+										}
+									}
+								}
+							}
+
+							& > .contentItem {
+								@apply flex flex-col gap-5;
+
+								& .row {
+									@apply flex flex-col gap-2 w-full;
+
+									& .rowTitle {
+										@apply font-medium text-xs text-black ml-4;
+									}
+
+									& > .input {
+										border: 1px solid red;
+										@apply h-12 w-full rounded-full bg-[#F7F7F7] px-6 text-base font-medium;
+										@apply border-black/5 !important;
+
+										&.error {
+											@apply border-red-600 !important;
+										}
+									}
+
+									& .dimensions {
+										@apply grid grid-cols-3 gap-8 h-12 items-center;
+										border: 1px solid #d4d4d4;
+										@apply rounded-full grid-cols-[1fr,1px,1fr,1px,1fr] 
+										items-center overflow-hidden gap-[1px];
+										@apply border-black/5 !important;
+										@apply bg-[#F7F7F7];
+
+										& .divider {
+											@apply h-full w-[1px] bg-[#d4d4d4];
+											border-top: 10px solid white;
+											border-bottom: 10px solid white;
+										}
+
+										& .inputWrapper {
+											@apply h-full w-full overflow-hidden relative;
+
+											& > .input {
+												@apply h-full w-full pr-[50%] text-right
+												text-base font-medium bg-transparent;
+												font-variant-numeric: tabular-nums;
+												border: none;
+											}
+
+											& .info {
+												@apply absolute top-0 bottom-0 left-[calc(50%+6px)] 
+													flex items-center gap-3 pointer-events-none;
+
+												& span {
+													@apply font-medium text-xs text-black/40;
+												}
+											}
+										}
+									}
+
+									& .inputKg {
+										border: 1px solid #d4d4d4;
+										@apply w-full h-full overflow-hidden relative rounded-full;
+										@apply border-black/5 !important;
+
+										/* & .input {
+											@apply h-full w-full pr-[50%] text-right
+											text-base font-medium rounded-full bg-[#F7F7F7];
+											font-variant-numeric: tabular-nums;
+											border: none;
+										} */
+
+										& > .input {
+											border: 1px solid red;
+											@apply h-12 w-full rounded-full bg-[#F7F7F7] px-6 text-base font-medium pr-[50%] text-right;
+											@apply border-black/5 !important;
+										}
+
+										& .info {
+											@apply absolute top-0 bottom-0 left-[calc(50%+6px)] h-full flex items-center pointer-events-none;
+
+											@apply font-medium text-xs text-black/40;
+										}
+									}
+								}
+
+								& .addButton {
+									@apply h-[50px] text-base;
+								}
+							}
+						}
 					}
 				}
 
@@ -274,13 +435,13 @@
 			}
 
 			& > .right {
-				@apply flex flex-col gap-6;
+				@apply flex flex-col gap-6 justify-between;
 
 				& .rightBlock {
 					@apply flex flex-col gap-6;
 
 					& .files {
-						@apply flex flex-col gap-3;
+						@apply flex flex-col gap-4;
 
 						& > .empty {
 							@apply w-full h-[88px] rounded-3xl flex items-center justify-center gap-3
@@ -295,14 +456,13 @@
 						}
 
 						& .fileItem {
-							@apply w-full rounded-2xl px-6 py-5 bg-white
+							@apply w-full rounded-3xl px-6 py-5 bg-white
 							flex items-center justify-between gap-3 overflow-hidden;
-							box-shadow: 0px 6px 54px 0px rgba(0, 0, 0, 0.0288);
 							box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.1);
 							animation: fade1 0.3s ease-in-out;
 
 							& .fileInfo {
-								@apply flex flex-col gap-2 overflow-hidden;
+								@apply flex flex-col overflow-hidden;
 
 								& .fileName {
 									@apply flex-1 text-base font-medium text-black truncate;
@@ -345,6 +505,12 @@
 								}
 							}
 						}
+					}
+
+					& .textarea textarea {
+						border: 1px solid red;
+						@apply bg-[#F7F7F7];
+						@apply border-black/5 !important;
 					}
 				}
 			}

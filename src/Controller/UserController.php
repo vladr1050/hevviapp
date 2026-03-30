@@ -229,6 +229,11 @@ class UserController extends AbstractController
         $orderId = (string)$request->request->get('order_id');
         $order = $this->orderRepository->find($orderId);
 
+        // FIXME PAVEL
+        $action = (string) $request->request->get('action');
+
+        dd($action); // confirm or cancel 
+
         if (!$order || $order->getSender() !== $user) {
             return $this->redirectToRoute('user_public_orders');
         }

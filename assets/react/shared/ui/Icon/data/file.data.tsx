@@ -6,8 +6,8 @@ export const Document = () => (
 		/>
 		<path
 			opacity="0.302"
-			fill-rule="evenodd"
-			clip-rule="evenodd"
+			fillRule="evenodd"
+			clipRule="evenodd"
 			d="M7.42969 0V4.68913H11.9678L7.42969 0Z"
 			fill="white"
 		/>
@@ -21,15 +21,15 @@ export const Document = () => (
 export const Pdf = () => (
 	<svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 12 16" fill="none">
 		<path
-			fill-rule="evenodd"
-			clip-rule="evenodd"
+			fillRule="evenodd"
+			clipRule="evenodd"
 			d="M2.08295 0H7.43227L11.966 4.72564V13.917C11.966 15.0685 11.0345 16 9.88704 16H2.08295C0.931531 16 3.29037e-10 15.0685 3.29037e-10 13.917V2.08295C-2.02156e-05 0.931531 0.931511 0 2.08295 0Z"
 			fill="#E5252A"
 		/>
 		<path
 			opacity="0.302"
-			fill-rule="evenodd"
-			clip-rule="evenodd"
+			fillRule="evenodd"
+			clipRule="evenodd"
 			d="M7.42969 0V4.68966H11.9674L7.42969 0Z"
 			fill="white"
 		/>
@@ -43,15 +43,15 @@ export const Pdf = () => (
 export const Excel = () => (
 	<svg xmlns="http://www.w3.org/2000/svg" width="13" height="16" viewBox="0 0 13 16" fill="none">
 		<path
-			fill-rule="evenodd"
-			clip-rule="evenodd"
+			fillRule="evenodd"
+			clipRule="evenodd"
 			d="M2.16059 0H7.72594L12.4355 4.72978V13.9149C12.4355 15.0652 11.4706 15.9995 10.275 15.9995H2.16059C0.971048 15.9995 3.40957e-10 15.0652 3.40957e-10 13.9149V2.07876C-2.10107e-05 0.934272 0.971048 0 2.16059 0Z"
 			fill="#00733B"
 		/>
 		<path
 			opacity="0.302"
-			fill-rule="evenodd"
-			clip-rule="evenodd"
+			fillRule="evenodd"
+			clipRule="evenodd"
 			d="M7.72266 0V4.68891H12.4383L7.72266 0Z"
 			fill="white"
 		/>
