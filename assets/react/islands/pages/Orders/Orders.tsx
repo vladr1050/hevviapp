@@ -44,13 +44,7 @@ export const OrdersPage: FC<OrdersPageProps> = (props) => {
 
 				<div className={styles.items}>
 					{orders?.map((order, index) => (
-						<div
-							className={styles.item}
-							key={index}
-							onClick={() => {
-								console.log(order)
-							}}
-						>
+						<div className={styles.item} key={index}>
 							<span>{order.id.split('-')[0]}</span>
 							<span
 								className={cn(styles.comment, { [styles.empty]: !order.comment })}

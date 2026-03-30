@@ -1,7 +1,7 @@
 import { type FC, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
-import { apiCreateOrder, apiUpdateOrder, apiUploadOrderAttachments } from '@api/orderApi'
+import { apiUpdateOrder, apiUploadOrderAttachments } from '@api/orderApi'
 import { AddOrderModal } from '@components/AddOrderModal/AddOrderModal'
 import { CalculateModalType, FormValues } from '@components/AddOrderModal/types'
 import { dimensionsCm, formatDate } from '@components/AddOrderModal/utils'
@@ -80,8 +80,6 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 		},
 	})
 
-	console.log(watch('pickupDate'))
-
 	const onSubmit: SubmitHandler<FormValues> = async (values) => {
 		setSubmitError(undefined)
 		setActiveTab('calculate')
@@ -144,7 +142,7 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 		<>
 			<div className={cn('tw-container', styles.page)}>
 				<div className={styles.content}>
-					{isDraft ? (
+					{isDraft && !isCarrier ? (
 						<button type="button" className={styles.back} onClick={() => setActiveTab('what')}>
 							<Icon type="edit" size={18} />
 						</button>
