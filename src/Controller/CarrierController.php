@@ -70,6 +70,7 @@ class CarrierController extends AbstractController
                 'vat' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getVat(), $order->getCurrency()),
                 'brutto' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
                 'fee' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getFee(), $order->getCurrency()),
+                'subtotal' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getNetto() + $order->getLatestOffer()?->getFee(), $order->getCurrency()),
                 'address' => [
                     'from' => $order->getPickupAddress(),
                     'to' => $order->getDropoutAddress(),
@@ -319,6 +320,7 @@ class CarrierController extends AbstractController
             'vat' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getVat(), $order->getCurrency()),
             'brutto' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
             'fee' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getFee(), $order->getCurrency()),
+            'subtotal' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getNetto() + $order->getLatestOffer()?->getFee(), $order->getCurrency()),
             'address' => [
                 'from' => $order->getPickupAddress(),
                 'to' => $order->getDropoutAddress(),
