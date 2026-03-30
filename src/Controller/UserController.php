@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Cargo;
 use App\Entity\Order;
+use App\Entity\OrderAttachment;
 use App\Entity\OrderHistory;
 use App\Entity\OrderOffer;
 use App\Entity\User;
@@ -103,16 +104,17 @@ class UserController extends AbstractController
         $listOfOrders = [];
         foreach ($this->orderRepository->findRecentBySender($user, 5) as $order) {
             $listOfOrders[] = [
-                'id'                 => $order->getId()?->toRfc4122(),
-                'reference'          => $order->getReference(),
-                'address'            => [
+                'id' => $order->getId()?->toRfc4122(),
+                'reference' => $order->getReference(),
+                'address' => [
                     'from' => $order->getPickupAddress(),
-                    'to'   => $order->getDropoutAddress(),
+                    'to' => $order->getDropoutAddress(),
                 ],
-                'cargo'              => $this->buildCargoList($order, $user->getLocale()),
-                'stackable'          => $order->isStackable(),
+                'attachments' => $this->buildAttachmentList($order),
+                'cargo' => $this->buildCargoList($order, $user->getLocale()),
+                'stackable' => $order->isStackable(),
                 'manipulator_needed' => $order->isManipulatorNeeded(),
-                'comment'            => $order->getNotes(),
+                'comment' => $order->getNotes(),
             ];
         }
 
@@ -134,21 +136,22 @@ class UserController extends AbstractController
             $history = $this->resolvePickupHistory($order);
 
             $listOfOrders[] = [
-                'id'          => $order->getId()?->toRfc4122(),
-                'reference'   => $order->getReference(),
-                'status'      => $order->getStatus(),
+                'id' => $order->getId()?->toRfc4122(),
+                'reference' => $order->getReference(),
+                'status' => $order->getStatus(),
                 'status_text' => $this->translator->trans('order.status_' . $order->getStatus(), domain: 'AppBundle', locale: $user->getLocale()),
-                'price'       => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
-                'address'     => [
+                'price' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
+                'address' => [
                     'from' => $order->getPickupAddress(),
-                    'to'   => $order->getDropoutAddress(),
+                    'to' => $order->getDropoutAddress(),
                 ],
-                'cargo'              => $this->buildCargoList($order, $user->getLocale()),
-                'stackable'          => $order->isStackable(),
+                'attachments' => $this->buildAttachmentList($order),
+                'cargo' => $this->buildCargoList($order, $user->getLocale()),
+                'stackable' => $order->isStackable(),
                 'manipulator_needed' => $order->isManipulatorNeeded(),
-                'comment'            => $order->getNotes(),
-                'pickup_date'        => false !== $history ? $history->getCreatedAt()->format('d.m.Y') : null,
-                'carrier'            => $order->getCarrier()?->getLegalName(),
+                'comment' => $order->getNotes(),
+                'pickup_date' => false !== $history ? $history->getCreatedAt()->format('d.m.Y') : null,
+                'carrier' => $order->getCarrier()?->getLegalName(),
             ];
         }
 
@@ -173,34 +176,35 @@ class UserController extends AbstractController
         $history = $this->resolvePickupHistory($order);
 
         $item = [
-            'id'                  => $order->getId()?->toRfc4122(),
-            'reference'           => $order->getReference(),
-            'status'              => $order->getStatus(),
-            'status_text'         => $this->translator->trans('order.status_' . $order->getStatus(), domain: 'AppBundle', locale: $user->getLocale()),
-            'price'               => $this->moneyExtension->currencyConvert($this->resolveBaseFreight($order->getLatestOffer()), $order->getCurrency()),
-            'vat'                 => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getVat(), $order->getCurrency()),
-            'brutto'              => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
-            'fee'                 => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getFee(), $order->getCurrency()),
-            'address'             => [
+            'id' => $order->getId()?->toRfc4122(),
+            'reference' => $order->getReference(),
+            'status' => $order->getStatus(),
+            'status_text' => $this->translator->trans('order.status_' . $order->getStatus(), domain: 'AppBundle', locale: $user->getLocale()),
+            'price' => $this->moneyExtension->currencyConvert($this->resolveBaseFreight($order->getLatestOffer()), $order->getCurrency()),
+            'vat' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getVat(), $order->getCurrency()),
+            'brutto' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
+            'fee' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getFee(), $order->getCurrency()),
+            'address' => [
                 'from' => $order->getPickupAddress(),
-                'to'   => $order->getDropoutAddress(),
+                'to' => $order->getDropoutAddress(),
             ],
-            'cargo'               => $this->buildCargoList($order, $user->getLocale()),
-            'stackable'           => $order->isStackable(),
-            'manipulator_needed'  => $order->isManipulatorNeeded(),
-            'comment'             => $order->getNotes(),
-            'pickup_date'         => false !== $history ? $history->getCreatedAt()->format('d.m.Y') : null,
-            'carrier'             => $order->getCarrier()?->getLegalName(),
-            'pickup_latitude'     => $order->getPickupLatitude(),
-            'pickup_longitude'    => $order->getPickupLongitude(),
-            'dropout_latitude'    => $order->getDropoutLatitude(),
-            'dropout_longitude'   => $order->getDropoutLongitude(),
-            'pickup_time_from'    => $order->getPickupTimeFrom()?->format('H:i'),
-            'pickup_time_to'      => $order->getPickupTimeTo()?->format('H:i'),
-            'delivery_time_from'  => $order->getDeliveryTimeFrom()?->format('H:i'),
-            'delivery_time_to'    => $order->getDeliveryTimeTo()?->format('H:i'),
+            'attachments' => $this->buildAttachmentList($order),
+            'cargo' => $this->buildCargoList($order, $user->getLocale()),
+            'stackable' => $order->isStackable(),
+            'manipulator_needed' => $order->isManipulatorNeeded(),
+            'comment' => $order->getNotes(),
+            'pickup_date' => false !== $history ? $history->getCreatedAt()->format('d.m.Y') : null,
+            'carrier' => $order->getCarrier()?->getLegalName(),
+            'pickup_latitude' => $order->getPickupLatitude(),
+            'pickup_longitude' => $order->getPickupLongitude(),
+            'dropout_latitude' => $order->getDropoutLatitude(),
+            'dropout_longitude' => $order->getDropoutLongitude(),
+            'pickup_time_from' => $order->getPickupTimeFrom()?->format('H:i'),
+            'pickup_time_to' => $order->getPickupTimeTo()?->format('H:i'),
+            'delivery_time_from' => $order->getDeliveryTimeFrom()?->format('H:i'),
+            'delivery_time_to' => $order->getDeliveryTimeTo()?->format('H:i'),
             'pickup_request_date' => $order->getPickupDate()?->format('d.m.Y'),
-            'delivery_date'       => $order->getDeliveryDate()?->format('d.m.Y'),
+            'delivery_date' => $order->getDeliveryDate()?->format('d.m.Y'),
         ];
 
         return $this->render('public/user/pages/order.html.twig', [
@@ -244,6 +248,16 @@ class UserController extends AbstractController
         return $this->redirectToRoute('user_public_order', ['id' => $orderId]);
     }
 
+    private function buildAttachmentList(Order $order): array
+    {
+        return $order->getAttachments()->map(
+            fn(OrderAttachment $attachment): array => [
+                'filename' => $attachment->getOriginalName(),
+                'path' => $this->generateUrl('file_download', ['salt' => $attachment->getSalt()]),
+            ]
+        )->toArray();
+    }
+
     /**
      * Сериализует коллекцию грузов заказа в массив скалярных данных для JSON-шаблона.
      *
@@ -253,12 +267,12 @@ class UserController extends AbstractController
     {
         return $order->getCargo()->map(
             fn(Cargo $cargo): array => [
-                'type'       => $cargo->getType(),
-                'type_text'  => $this->translator->trans('order.type_' . $cargo->getType(), domain: 'AppBundle', locale: $locale),
+                'type' => $cargo->getType(),
+                'type_text' => $this->translator->trans('order.type_' . $cargo->getType(), domain: 'AppBundle', locale: $locale),
                 'dimensions' => $cargo->getDimensionsCm(),
-                'weight'     => $cargo->getWeightKg(),
-                'quantity'   => $cargo->getQuantity(),
-                'name'       => $cargo->getName(),
+                'weight' => $cargo->getWeightKg(),
+                'quantity' => $cargo->getQuantity(),
+                'name' => $cargo->getName(),
             ]
         )->toArray();
     }
@@ -325,7 +339,7 @@ class UserController extends AbstractController
         }
 
         $netto = $offer->getNetto();
-        $fee   = $offer->getFee();
+        $fee = $offer->getFee();
 
         if ($netto === null) {
             return null;

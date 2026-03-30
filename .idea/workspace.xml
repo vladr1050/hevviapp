@@ -4,16 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="feat(order): add cancel_reason field with carrier translations&#10;&#10;- Add nullable cancelReason (VARCHAR 255) to Order entity with Assert\Length&#10;- Migration Version20260326130000: add cancel_reason column to order table&#10;- CarrierController: read radio/text from CancelModal, resolve translated reason&#10;- OrderAdmin: show and form fields for cancelReason&#10;- AppBundle.en/ru.yaml: translations for show/form labels and order.cancel_reason_* keys&#10;- CancelModal: hidden input for radio value (Radix UI bypasses native form serialization)&#10;- constants.ts: userCancelOrderUrl helper; OrderCard passes actionUrl for both roles">
+    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="order number added">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/services.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/services.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Admin/OrderAdmin.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Admin/OrderAdmin.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Api/OrderController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/OrderController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/CarrierController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CarrierController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Order.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Order.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/translations/AppBundle.en.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/translations/AppBundle.en.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/translations/AppBundle.ru.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/translations/AppBundle.ru.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -326,7 +320,9 @@
       <workItem from="1773413982541" duration="3303000" />
       <workItem from="1773947967806" duration="5768000" />
       <workItem from="1774351852885" duration="56000" />
-      <workItem from="1774532556133" duration="8960000" />
+      <workItem from="1774532556133" duration="9597000" />
+      <workItem from="1774554052210" duration="18000" />
+      <workItem from="1774799208479" duration="1621000" />
     </task>
     <task id="LOCAL-00001" summary="custom areas added to service areas">
       <option name="closed" value="true" />
@@ -640,7 +636,15 @@
       <option name="project" value="LOCAL" />
       <updated>1774548754657</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="order number added">
+      <option name="closed" value="true" />
+      <created>1774551034898</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1774551034898</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -665,6 +669,7 @@
     <MESSAGE value="cargo name fixed" />
     <MESSAGE value="fix(admin): make carrier read-only and block duplicate active OrderAssignments" />
     <MESSAGE value="feat(order): add cancel_reason field with carrier translations&#10;&#10;- Add nullable cancelReason (VARCHAR 255) to Order entity with Assert\Length&#10;- Migration Version20260326130000: add cancel_reason column to order table&#10;- CarrierController: read radio/text from CancelModal, resolve translated reason&#10;- OrderAdmin: show and form fields for cancelReason&#10;- AppBundle.en/ru.yaml: translations for show/form labels and order.cancel_reason_* keys&#10;- CancelModal: hidden input for radio value (Radix UI bypasses native form serialization)&#10;- constants.ts: userCancelOrderUrl helper; OrderCard passes actionUrl for both roles" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(order): add cancel_reason field with carrier translations&#10;&#10;- Add nullable cancelReason (VARCHAR 255) to Order entity with Assert\Length&#10;- Migration Version20260326130000: add cancel_reason column to order table&#10;- CarrierController: read radio/text from CancelModal, resolve translated reason&#10;- OrderAdmin: show and form fields for cancelReason&#10;- AppBundle.en/ru.yaml: translations for show/form labels and order.cancel_reason_* keys&#10;- CancelModal: hidden input for radio value (Radix UI bypasses native form serialization)&#10;- constants.ts: userCancelOrderUrl helper; OrderCard passes actionUrl for both roles" />
+    <MESSAGE value="order number added" />
+    <option name="LAST_COMMIT_MESSAGE" value="order number added" />
   </component>
 </project>
