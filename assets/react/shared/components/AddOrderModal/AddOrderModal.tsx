@@ -7,19 +7,17 @@ import { cn } from '@utils/cn'
 
 import styles from './ModalContent.module.css'
 
-import { CalculateModalType, FormValues } from '../RequestsUser/types'
-
 import { WhatContent } from './WhatContent'
 import { WhenContent } from './WhenContent'
 import { WhereContent } from './WhereContent'
 // @ts-ignore
 import calculatingGif from './images/calculating.gif'
+import { CalculateModalType, FormValues } from './types'
 import { whatLabel, whenLabel, whereLabel } from './utils'
 
-interface ModalContentProps {
+interface AddOrderModalProps {
 	activeTab: CalculateModalType
 	setActiveTab: Dispatch<SetStateAction<CalculateModalType>>
-
 	watch: UseFormWatch<FormValues>
 	control: Control<FormValues, any, FormValues>
 	register: UseFormRegister<FormValues>
@@ -28,7 +26,7 @@ interface ModalContentProps {
 	submitError?: string
 }
 
-export const ModalContent: FC<ModalContentProps> = ({
+export const AddOrderModal: FC<AddOrderModalProps> = ({
 	activeTab,
 	setActiveTab,
 	watch,
@@ -190,10 +188,25 @@ export const ModalContent: FC<ModalContentProps> = ({
 			{activeTab === 'what' && <WhatContent control={control} register={register} />}
 
 			{activeTab === 'where' && (
-				<WhereContent control={control} watch={watch} setValue={setValue} register={register} />
+				<WhereContent
+					control={control}
+					watch={watch}
+					setValue={setValue}
+					register={register}
+					defaultValues={{
+						from: {
+							lat: Number(watch('pickupLatitude')),
+							lng: Number(watch('pickupLongitude')),
+						},
+						to: {
+							lat: Number(watch('dropoutLatitude')),
+							lng: Number(watch('dropoutLongitude')),
+						},
+					}}
+				/>
 			)}
 
-			{activeTab === 'when' && <WhenContent control={control} />}
+			{activeTab === 'when' && <WhenContent control={control} watch={watch} />}
 		</form>
 	)
 }

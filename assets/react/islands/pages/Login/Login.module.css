@@ -4,10 +4,23 @@
 	& .content {
 		@apply grid grid-cols-[auto,400px] max-w-[1010px] w-full min-h-[620px] rounded-[30px];
 
-		background: #ebeaea;
-		background: linear-gradient(180deg, rgba(235, 234, 234, 1) 0%, rgba(214, 214, 214, 1) 100%);
+		background: #f9f9f9;
+		background:
+			url('./bg.png') no-repeat 46% -130% / 60%,
+			linear-gradient(180deg, #f9f9f9 61.06%, #e7e7e7 100%);
+
+		&.reset {
+			background:
+				url('./bg-reset.png') no-repeat left center / 70%,
+				linear-gradient(180deg, #f9f9f9 61.06%, #e7e7e7 100%);
+		}
 
 		& .left {
+			@apply flex flex-col justify-end items-start p-16 h-full w-full;
+
+			& h1 {
+				@apply m-0 text-[40px] leading-[40px] font-semibold text-black text-left text-balance;
+			}
 		}
 
 		& .right {

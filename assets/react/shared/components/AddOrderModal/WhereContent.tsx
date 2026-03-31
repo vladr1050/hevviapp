@@ -15,22 +15,42 @@ import { cn } from '@utils/cn'
 import L from 'leaflet'
 
 // @ts-ignore
-import CustomIcon from '../../../../../shared/components/OrderCard/CustomMarker.svg'
+import CustomIcon from '../OrderCard/CustomMarker.svg'
 
 import styles from './ModalContent.module.css'
 
-import { FormValues } from '../RequestsUser/types'
+import { FormValues } from './types'
 
 interface WhereContentProps {
 	watch: UseFormWatch<FormValues>
 	control: Control<FormValues, any, FormValues>
 	setValue: UseFormSetValue<FormValues>
 	register: UseFormRegister<FormValues>
+	defaultValues?: {
+		from: {
+			lat: number
+			lng: number
+		}
+		to: {
+			lat: number
+			lng: number
+		}
+	}
 }
 
-export const WhereContent: FC<WhereContentProps> = ({ watch, control, setValue, register }) => {
-	const [fromMarkerPos, setFromMarkerPos] = useState<{ lat: number; lng: number } | null>(null)
-	const [toMarkerPos, setToMarkerPos] = useState<{ lat: number; lng: number } | null>(null)
+export const WhereContent: FC<WhereContentProps> = ({
+	watch,
+	control,
+	setValue,
+	register,
+	defaultValues,
+}) => {
+	const [fromMarkerPos, setFromMarkerPos] = useState<{ lat: number; lng: number } | null>(
+		defaultValues?.from || null
+	)
+	const [toMarkerPos, setToMarkerPos] = useState<{ lat: number; lng: number } | null>(
+		defaultValues?.to || null
+	)
 
 	const myIcon = new L.Icon({
 		iconUrl: CustomIcon,

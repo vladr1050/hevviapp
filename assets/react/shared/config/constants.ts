@@ -96,19 +96,19 @@ export enum CargoTypeEnum {
 	irregular_cargo = 2
 }
 
-// FIXME PAVEL
 type CargoType = {
-	type: 1 | 2
 	type_text?: string
 	dimensions?: string
 	weight?: number
 	quantity: number
+	name: string
 }
 
 export type OrderType = {
 	id: string
 	// 
 	cargo: CargoType[]
+	attachments: {filename: string, path: string}[]
 	stackable?: boolean
 	manipulator_needed?: boolean
 	comment?: string
@@ -140,6 +140,7 @@ export type OrderType = {
 	type?: string
 	vat?: string
 	brutto?: string
+	subtotal?: string
 	fee?: string
 	sender?: { 
 		first_name?: string

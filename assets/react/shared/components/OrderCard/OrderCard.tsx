@@ -16,6 +16,8 @@ import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
 import { Modal } from '@ui/Modal/Modal'
 import { cn } from '@utils/cn'
+import { downloadFileByUrl } from '@utils/file/downloadFile'
+import { getFileCategory } from '@utils/file/getFileCategory'
 // @ts-ignore
 import L from 'leaflet'
 
@@ -74,6 +76,8 @@ export const OrderCard: FC<OrderCardProps> = ({
 	const showId = isRequest
 
 	const isCanceled = order.status === OrderStatusEnum.CANCELLED
+	const isDelivered = order.status === OrderStatusEnum.DELIVERED
+	const isDraft = order.status === OrderStatusEnum.DRAFT
 
 	const showInfo =
 		!isCanceled &&
@@ -82,6 +86,35 @@ export const OrderCard: FC<OrderCardProps> = ({
 	const showStatus =
 		!isCanceled &&
 		((!isCarrier && order.status > OrderStatusEnum.OFFERED) || (isCarrier && !isRequest))
+
+	const PriceBlock = () => (
+		<div className="grid grid-cols-5 gap-3">
+			<div className={styles.item}>
+				<div className={styles.label}>Base fee</div>
+				<div className={styles.value}>{order?.price || EMPTY_STRING}</div>
+			</div>
+
+			<div className={styles.item}>
+				<div className={styles.label}>Platform fee</div>
+				<div className={styles.value}>{order?.fee || EMPTY_STRING}</div>
+			</div>
+
+			<div className={styles.item}>
+				<div className={styles.label}>Subtotal</div>
+				<div className={styles.value}>{order?.subtotal || EMPTY_STRING}</div>
+			</div>
+
+			<div className={styles.item}>
+				<div className={styles.label}>VAT 21%</div>
+				<div className={styles.value}>{order?.vat || EMPTY_STRING}</div>
+			</div>
+
+			<div className={styles.item}>
+				<div className={styles.label}>Total</div>
+				<div className={styles.value}>{order?.brutto || EMPTY_STRING}</div>
+			</div>
+		</div>
+	)
 
 	return (
 		<>
@@ -101,49 +134,105 @@ export const OrderCard: FC<OrderCardProps> = ({
 					)}
 
 					<div className={styles.items}>
-						{/* <div className={styles.cargoWrapper}> */}
-						{order.cargo.map((item, index) => (
-							<Fragment key={index}>
-								<div className={cn(styles.row, styles.cargo)}>
-									<div className={styles.item}>
-										<div className={styles.label}>Cargo</div>
-										<div className={styles.value}>{item?.type_text || EMPTY_STRING}</div>
-									</div>
+						<div className={styles.itemsWrapper}>
+							<div className={styles.label}>Cargo</div>
 
-									<div className={styles.item}>
-										<div className={styles.label}>Size</div>
-										<div className={styles.value}>
-											{!item?.dimensions
-												? EMPTY_STRING
-												: item?.dimensions?.split('x').map((d, i, arr) => {
-														if (i === arr.length - 1) return d
-														return (
-															<>
-																{d}{' '}
-																<span className="font-normal text-xs text-black/40">x</span>{' '}
-															</>
-														)
-													})}
+							<div className={styles.itemsContent}>
+								{/* CARGO */}
+								{order.cargo.map((item, index) => (
+									<Fragment key={index}>
+										<div className={styles.cargo}>
+											<div className={styles.index}>{index + 1}.</div>
 
-											{/* {item?.dimensions?.split(',').join(' x ') || EMPTY_STRING} */}
+											{/* NAME */}
+											<div className={cn(styles.value, '!truncate')} title={item?.name}>
+												{item?.name || EMPTY_STRING}
+											</div>
+
+											{/* Q-ty */}
+											<div className={styles.value}>
+												{!item?.quantity ? (
+													EMPTY_STRING
+												) : (
+													<>
+														{item?.quantity}{' '}
+														<span className="font-normal text-xs">
+															{item?.quantity > 1 ? 'pcs' : 'pc'}
+														</span>
+													</>
+												)}
+											</div>
+
+											{/* Size */}
+											<div className={styles.value}>
+												{!item?.dimensions
+													? EMPTY_STRING
+													: item?.dimensions?.split('x').map((d, i, arr) => {
+															if (i === arr.length - 1)
+																return (
+																	<>
+																		{d} <span className="font-normal text-xs">cm</span>
+																	</>
+																)
+															return (
+																<>
+																	{d} <span className="font-normal text-xs">x</span>{' '}
+																</>
+															)
+														})}
+											</div>
+
+											{/* weight*/}
+											<div className={styles.value}>
+												{!item?.weight ? (
+													EMPTY_STRING
+												) : (
+													<>
+														{item?.weight} <span className="font-normal text-xs">kg</span>
+													</>
+												)}
+											</div>
 										</div>
-									</div>
 
-									<div className={styles.item}>
-										<div className={styles.label}>Weight (kg)</div>
-										<div className={styles.value}>{item?.weight || EMPTY_STRING}</div>
-									</div>
+										<div className={styles.hr} />
+									</Fragment>
+								))}
+							</div>
 
-									<div className={styles.item}>
-										<div className={styles.label}>Q-ty</div>
-										<div className={styles.value}>{item?.quantity || EMPTY_STRING}</div>
+							{/* FILES */}
+							{!!order?.attachments?.length && (
+								<div className={styles.itemsWrapper}>
+									<div className={styles.label}>Documents</div>
+
+									<div className={styles.itemsContent}>
+										{order?.attachments?.map((file, index) => (
+											<Fragment key={index}>
+												<div className={styles.document}>
+													<div className={styles.value}>
+														<Icon type={getFileCategory(file.filename)} size={16} />
+													</div>
+
+													<div className={cn(styles.value, '!truncate')} title={file.filename}>
+														{file.filename}
+													</div>
+
+													<button
+														type="button"
+														className={styles.fileDownload}
+														onClick={() => downloadFileByUrl(file.path, file.filename)}
+														title="Download"
+													>
+														<Icon type="download_file" size={16} />
+													</button>
+												</div>
+
+												<div className={styles.hr} />
+											</Fragment>
+										))}
 									</div>
 								</div>
-
-								<div className={styles.hr} />
-							</Fragment>
-						))}
-						{/* </div> */}
+							)}
+						</div>
 
 						{(!!order?.stackable || !!order?.manipulator_needed) && (
 							<>
@@ -175,7 +264,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 
 						<div className={styles.routeItem}>
 							<div className={styles.routeWrapper}>
-								<div className={styles.route} />
+								<div className={cn(styles.route, { [styles.delivered]: isDelivered })} />
 							</div>
 
 							<div className={styles.items}>
@@ -184,21 +273,25 @@ export const OrderCard: FC<OrderCardProps> = ({
 									<div className={styles.value}>{order?.address.from || EMPTY_STRING}</div>
 								</div>
 
-								<div className={styles.row}>
-									<div className={styles.item}>
-										<div className={styles.label}>Loading ready</div>
-										<div className={styles.value}>{order?.pickup_request_date || EMPTY_STRING}</div>
-									</div>
+								{!isDelivered && (
+									<div className={styles.row}>
+										<div className={styles.item}>
+											<div className={styles.label}>Loading ready</div>
+											<div className={styles.value}>
+												{order?.pickup_request_date || EMPTY_STRING}
+											</div>
+										</div>
 
-									<div className={styles.item}>
-										<div className={styles.label}>Loading window</div>
-										<div className={styles.value}>
-											{!order.pickup_time_from && !order.pickup_time_to
-												? EMPTY_STRING
-												: `${order?.pickup_time_from} - ${order?.pickup_time_to}`}
+										<div className={styles.item}>
+											<div className={styles.label}>Loading window</div>
+											<div className={styles.value}>
+												{!order.pickup_time_from && !order.pickup_time_to
+													? EMPTY_STRING
+													: `${order?.pickup_time_from} - ${order?.pickup_time_to}`}
+											</div>
 										</div>
 									</div>
-								</div>
+								)}
 
 								<div className={styles.hr} />
 
@@ -207,21 +300,23 @@ export const OrderCard: FC<OrderCardProps> = ({
 									<div className={styles.value}>{order?.address.to || EMPTY_STRING}</div>
 								</div>
 
-								<div className={styles.row}>
-									<div className={styles.item}>
-										<div className={styles.label}>Delivery date</div>
-										<div className={styles.value}>{order?.delivery_date || EMPTY_STRING}</div>
-									</div>
+								{!isDelivered && (
+									<div className={styles.row}>
+										<div className={styles.item}>
+											<div className={styles.label}>Delivery date</div>
+											<div className={styles.value}>{order?.delivery_date || EMPTY_STRING}</div>
+										</div>
 
-									<div className={styles.item}>
-										<div className={styles.label}>Delivery window</div>
-										<div className={styles.value}>
-											{!order?.delivery_time_from && !order.delivery_time_to
-												? EMPTY_STRING
-												: `${order?.delivery_time_from} - ${order?.delivery_time_to}`}
+										<div className={styles.item}>
+											<div className={styles.label}>Delivery window</div>
+											<div className={styles.value}>
+												{!order?.delivery_time_from && !order.delivery_time_to
+													? EMPTY_STRING
+													: `${order?.delivery_time_from} - ${order?.delivery_time_to}`}
+											</div>
 										</div>
 									</div>
-								</div>
+								)}
 							</div>
 						</div>
 
@@ -231,6 +326,10 @@ export const OrderCard: FC<OrderCardProps> = ({
 							<div className={styles.label}>Comments</div>
 							<div className={styles.comments}>{order?.comment || EMPTY_STRING}</div>
 						</div>
+
+						<div className={styles.hr} />
+
+						<PriceBlock />
 					</div>
 				</div>
 
@@ -310,41 +409,8 @@ export const OrderCard: FC<OrderCardProps> = ({
 
 					{showInfo && (
 						<div className={styles.info}>
-							<div className={styles.top}>
-								<div className={styles.item}>
-									<div className={styles.label}>
-										Price <br />
-										TOTAL
-									</div>
-									<div className={styles.value}>{order?.price || EMPTY_STRING}</div>
-								</div>
-
-								<div className={styles.item}>
-									<div className={styles.label}>
-										Platform
-										<br />
-										commission 10%
-									</div>
-									<div className={styles.value}>{order?.fee || EMPTY_STRING}</div>
-								</div>
-
-								<div className={styles.item}>
-									<div className={styles.label}>
-										VAT
-										<br />
-										21%
-									</div>
-									<div className={styles.value}>{order?.vat || EMPTY_STRING}</div>
-								</div>
-
-								<div className={styles.item}>
-									<div className={styles.label}>
-										Total, inc.
-										<br />
-										VAT 21$
-									</div>
-									<div className={styles.value}>{order?.brutto || EMPTY_STRING}</div>
-								</div>
+							<div className={cn(styles.top, '!grid-cols-5')}>
+								<PriceBlock />
 							</div>
 
 							<div className={styles.hr} />
@@ -396,7 +462,19 @@ export const OrderCard: FC<OrderCardProps> = ({
 										</Button>
 									)}
 
-									<Button type="submit" className="w-full">
+									{isDraft && (
+										<Button
+											type="submit"
+											name="action"
+											value="cancel"
+											className="w-full"
+											variant="outline"
+										>
+											Cancel
+										</Button>
+									)}
+
+									<Button type="submit" name="action" value="confirm" className="w-full">
 										Confirm
 									</Button>
 								</form>
@@ -434,13 +512,13 @@ export const OrderCard: FC<OrderCardProps> = ({
 
 			{/* CANCEL */}
 			<Modal isOpen={modalId === 'cancel'} onClose={() => setModalId(undefined)} maxWidth="400px">
-			<CancelModal
-				id={order.id}
-				from={order.address.from}
-				to={order.address.to}
-				isCarrier={isCarrier}
-				actionUrl={isCarrier ? carrierCancelOrderUrl(order.id) : userCancelOrderUrl(order.id)}
-			/>
+				<CancelModal
+					id={order.id}
+					from={order.address.from}
+					to={order.address.to}
+					isCarrier={isCarrier}
+					actionUrl={isCarrier ? carrierCancelOrderUrl(order.id) : userCancelOrderUrl(order.id)}
+				/>
 			</Modal>
 
 			{/* RATE */}

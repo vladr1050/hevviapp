@@ -35,7 +35,7 @@ export const OrdersPage: FC<OrdersPageProps> = (props) => {
 					<span>ID</span>
 					<span>Comment</span>
 					<span>Item</span>
-					<span>Address</span>
+					<span>Delivery Address</span>
 					<span>Pickup Date</span>
 					<span>Type</span>
 					<span>Price</span>
@@ -44,16 +44,13 @@ export const OrdersPage: FC<OrdersPageProps> = (props) => {
 
 				<div className={styles.items}>
 					{orders?.map((order, index) => (
-						<div
-							className={styles.item}
-							key={index}
-							onClick={() => {
-								console.log(order)
-							}}
-						>
+						<div className={styles.item} key={index}>
 							<span>{order.id.split('-')[0]}</span>
-							<span className={styles.comment} title={order.comment}>
-								{order.comment}
+							<span
+								className={cn(styles.comment, { [styles.empty]: !order.comment })}
+								title={order.comment}
+							>
+								{order.comment || 'no comment'}
 							</span>
 							<span>{`${order.cargo?.length} ${order.cargo?.length > 1 ? 'pcs' : 'pc'}`}</span>
 							<span className="truncate !text-sm" title={order.address.to}>
@@ -68,6 +65,7 @@ export const OrdersPage: FC<OrdersPageProps> = (props) => {
 									[styles.inTransit]:
 										order.status === OrderStatusEnum.PICKUP_DONE ||
 										order.status === OrderStatusEnum.IN_TRANSIT,
+									[styles.delivered]: order.status === OrderStatusEnum.DELIVERED,
 								})}
 								title={order?.status_text}
 							>
@@ -78,8 +76,7 @@ export const OrdersPage: FC<OrdersPageProps> = (props) => {
 									) : (
 										<Icon
 											type={order.status === OrderStatusEnum.DELIVERED ? 'check' : 'clock_1'}
-											size={16}
-											className="text-white"
+											size={order.status === OrderStatusEnum.DELIVERED ? 12 : 16}
 										/>
 									)}
 
