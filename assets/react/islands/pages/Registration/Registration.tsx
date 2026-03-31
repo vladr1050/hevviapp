@@ -49,8 +49,6 @@ export const RegistrationPage: FC<RegistrationProps> = ({ device }) => {
 
 		if (values.password !== values.repeat_password)
 			return setError('repeat_password', { message: 'Passwords do not match' })
-
-		console.log(values)
 	}
 
 	if (isMobile) return <MobilePage />

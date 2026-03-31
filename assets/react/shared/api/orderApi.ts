@@ -1,13 +1,12 @@
 const API_BASE = '/api/orders'
 
 export interface CreateOrderCargoPayload {
-	type: 1 | 2
+	name: string
 	quantity: number
 	weightKg: number
 	dimensionsCm: string | null
 }
 
-// FIXME PAVEL
 export interface CreateOrderPayload {
 	pickupAddress: string
 	dropoutAddress: string
@@ -34,6 +33,29 @@ export async function apiCreateOrder(
 ): Promise<CreateOrderResponse> {
 	const res = await fetch(API_BASE, {
 		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${accessToken}`,
+		},
+		body: JSON.stringify(payload),
+	})
+
+	const data = await res.json()
+
+	if (!res.ok) {
+		throw new Error((data as { error?: string }).error ?? 'Failed to create order')
+	}
+
+	return data as CreateOrderResponse
+}
+
+export async function apiUpdateOrder(
+	accessToken: string,
+	payload: CreateOrderPayload,
+	orderId: string
+): Promise<CreateOrderResponse> {
+	const res = await fetch(`${API_BASE}/${orderId}`, {
+		method: 'PATCH',
 		headers: {
 			'Content-Type': 'application/json',
 			Authorization: `Bearer ${accessToken}`,

@@ -25,6 +25,7 @@
 			order, 
 			title,
 			csrf_token: csrf_token("confirm_order"),
+			cancel_order_csrf_token: csrf_token("cancel_order"),
 		}|json_encode|e("html_attr") }}'
 	></div>
 {% endblock %}

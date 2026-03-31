@@ -79,8 +79,16 @@ export const LoginPage: FC<LoginProps> = ({ device }) => {
 
 	return (
 		<div className={cn('tw-container', styles.page)}>
-			<div className={styles.content}>
-				<div className={styles.left}></div>
+			<div className={cn(styles.content, { [styles.reset]: isReset })}>
+				<div className={styles.left}>
+					{!isReset && (
+						<h1>
+							Heavy cargo.
+							<br />
+							Delivered fast.
+						</h1>
+					)}
+				</div>
 
 				<form className={styles.right} onSubmit={handleSubmit(onSubmit)}>
 					<h1 className={styles.title}>{isReset ? 'Recover password' : 'Login'}</h1>
@@ -128,15 +136,28 @@ export const LoginPage: FC<LoginProps> = ({ device }) => {
 						</div>
 					)}
 
-					<Button
-						type={isReset ? 'button' : 'submit'}
-						name="login"
-						className="w-full"
-						disabled={isLoading}
-						onClick={!isReset ? undefined : () => setIsReset(false)}
-					>
-						{isLoading ? 'Loading...' : isReset ? 'Back to login' : 'Login'}
-					</Button>
+					{isReset ? (
+						<Button
+							key="back"
+							type="button"
+							name="login"
+							className="w-full h-12"
+							disabled={isLoading}
+							onClick={() => setIsReset(false)}
+						>
+							Back to login
+						</Button>
+					) : (
+						<Button
+							key="login"
+							type="submit"
+							name="login"
+							className="w-full h-12"
+							disabled={isLoading}
+						>
+							{isLoading ? 'Loading...' : 'Login'}
+						</Button>
+					)}
 				</form>
 			</div>
 		</div>

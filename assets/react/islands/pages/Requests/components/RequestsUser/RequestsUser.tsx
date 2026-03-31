@@ -2,7 +2,16 @@ import { type FC, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 import { apiCreateOrder, apiUploadOrderAttachments } from '@api/orderApi'
-import { CargoTypeEnum, EMPTY_STRING, ShortOrderType, YearsType } from '@config/constants'
+import { AddOrderModal } from '@components/AddOrderModal/AddOrderModal'
+import { CalculateModalType, FormValues } from '@components/AddOrderModal/types'
+import {
+	dimensionsCm,
+	formatDate,
+	whatLabel,
+	whenLabel,
+	whereLabel,
+} from '@components/AddOrderModal/utils'
+import { ShortOrderType, YearsType } from '@config/constants'
 import { useAuth } from '@hooks/useAuth'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
@@ -13,10 +22,6 @@ import { addDays } from 'date-fns'
 import styles from '../../Requests.module.css'
 
 import { InputButton } from '../InputButton/InputButton'
-import { ModalContent } from '../ModalContent/ModalContent'
-import { dimensionsCm, formatDate, whatLabel, whenLabel, whereLabel } from '../ModalContent/utils'
-
-import { CalculateModalType, FormValues } from './types'
 
 interface RequestsUserProps {
 	orders: ShortOrderType[]
@@ -37,6 +42,7 @@ export const RequestsUser: FC<RequestsUserProps> = ({ orders }) => {
 		defaultValues: {
 			// WHAT
 			cargo: [],
+			attachments: [],
 			// WHEN
 			pickupType: 'pickup_ready',
 			pickupMonth: currentMonthZeroBased,
@@ -62,29 +68,33 @@ export const RequestsUser: FC<RequestsUserProps> = ({ orders }) => {
 
 			const pickupDate = values.pickupType === 'pickup_later' ? formatDate(values.pickupDate) : null
 
-			const result = await apiCreateOrder(token, {
+			const payload = {
 				pickupAddress: values.from,
 				dropoutAddress: values.to,
 				pickupLatitude: values.pickupLatitude ?? null,
 				pickupLongitude: values.pickupLongitude ?? null,
 				dropoutLatitude: values.dropoutLatitude ?? null,
 				dropoutLongitude: values.dropoutLongitude ?? null,
-				notes: values.comments || null,
+				notes: values.comment || null,
 				pickupTimeFrom: values.pickupTime === 'anytime' ? null : values.pickupTime.split('-')[0],
 				pickupTimeTo: values.pickupTime === 'anytime' ? null : values.pickupTime.split('-')[1],
 				pickupDate,
 				cargo: values.cargo.map((item) => ({
-					type: CargoTypeEnum[item.type] ?? 1,
+					name: item.name,
 					quantity: item.quantity,
 					weightKg: item.weight,
 					dimensionsCm: dimensionsCm(item.width, item.length, item.height),
 				})),
 				stackable: values.stackable,
 				manipulatorNeeded: values.manipulatorNeeded,
-			})
+			}
 
-			if (values.documents && values.documents.length > 0) {
-				await apiUploadOrderAttachments(token, result.id, values.documents)
+			console.log(payload)
+
+			const result = await apiCreateOrder(token, payload)
+
+			if (!!values?.attachments?.length) {
+				await apiUploadOrderAttachments(token, result.id, values.attachments)
 			}
 
 			setTimeout(() => {
@@ -93,6 +103,7 @@ export const RequestsUser: FC<RequestsUserProps> = ({ orders }) => {
 		} catch (err) {
 			setSubmitError(err instanceof Error ? err.message : 'Something went wrong')
 			setActiveTab('what')
+			setValue('_step', 1)
 		}
 	}
 
@@ -285,7 +296,7 @@ export const RequestsUser: FC<RequestsUserProps> = ({ orders }) => {
 				disableCloseButton
 				maxWidth="1200px"
 			>
-				<ModalContent
+				<AddOrderModal
 					activeTab={activeTab}
 					setActiveTab={setActiveTab}
 					control={control}

@@ -1,5 +1,5 @@
 .content {
-	@apply overflow-visible;
+	@apply overflow-visible rounded-[30px];
 
 	& .close {
 		border-style: solid;

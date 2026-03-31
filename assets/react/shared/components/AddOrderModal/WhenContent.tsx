@@ -1,5 +1,5 @@
 import { type FC, useState } from 'react'
-import { Control, Controller } from 'react-hook-form'
+import { Control, Controller, UseFormWatch } from 'react-hook-form'
 
 import { PickupTypeEnum, months, years } from '@config/constants'
 import { Calendar } from '@ui/Calendar/Calendar'
@@ -14,14 +14,17 @@ import pickup_ready from './images/pickup_ready.png'
 
 import styles from './ModalContent.module.css'
 
-import { FormValues } from '../RequestsUser/types'
+import { FormValues } from './types'
 
 interface WhenContentProps {
 	control: Control<FormValues, any, FormValues>
+	watch: UseFormWatch<FormValues>
 }
 
-export const WhenContent: FC<WhenContentProps> = ({ control }) => {
-	const [tabItem, setTabItem] = useState<'pickup_ready' | 'pickup_later'>('pickup_ready')
+export const WhenContent: FC<WhenContentProps> = ({ control, watch }) => {
+	const [tabItem, setTabItem] = useState<'pickup_ready' | 'pickup_later'>(
+		watch('pickupType') || 'pickup_ready'
+	)
 
 	const createMonthDate = () => {
 		const d = new Date()

@@ -20,7 +20,10 @@ namespace App\Controller\Api;
 
 use App\Entity\Cargo;
 use App\Entity\Order;
+use App\Entity\OrderAttachment;
 use App\Entity\User;
+use App\Repository\OrderRepository;
+use App\Service\OrderAttachmentUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,7 +35,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class OrderController extends AbstractController
 {
     public function __construct(
-        private readonly EntityManagerInterface $em,
+        private readonly EntityManagerInterface  $em,
+        private readonly OrderRepository         $orderRepository,
+        private readonly OrderAttachmentUploader $attachmentUploader,
     ) {
     }
 
@@ -164,6 +169,174 @@ class OrderController extends AbstractController
             ],
             JsonResponse::HTTP_CREATED
         );
+    }
+
+    /**
+     * Обновляет заказ в статусе DRAFT.
+     *
+     * Разрешено только владельцу заказа. Заказ обязан быть в статусе DRAFT —
+     * только на этом этапе у него нет оффера и правки имеют смысл.
+     *
+     * После flush автоматически срабатывает OrderOfferAutoCreateListener::postUpdate,
+     * который пересчитывает и создаёт оффер при наличии координат.
+     *
+     * Expected JSON body (все поля опциональны кроме cargo и keepAttachments):
+     * {
+     *   "pickupAddress":    string,
+     *   "dropoutAddress":   string,
+     *   "pickupLatitude":   float|null,
+     *   "pickupLongitude":  float|null,
+     *   "dropoutLatitude":  float|null,
+     *   "dropoutLongitude": float|null,
+     *   "notes":            string|null,
+     *   "pickupTimeFrom":   string|null  (H:i),
+     *   "pickupTimeTo":     string|null  (H:i),
+     *   "pickupDate":       string|null  (Y-m-d),
+     *   "stackable":         bool,
+     *   "manipulatorNeeded": bool,
+     *   "cargo": [ { "type": int, "quantity": int, "weightKg": int, "dimensionsCm": string|null, "name": string }, ... ],
+     *   "keepAttachments":  string[]  (salts существующих вложений, которые нужно сохранить)
+     * }
+     */
+    #[Route('/{id}', name: 'update', methods: ['PATCH'])]
+    #[IsGranted('ROLE_USER')]
+    public function update(string $id, Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user  = $this->getUser();
+        $order = $this->orderRepository->find($id);
+
+        if (!$order || $order->getSender() !== $user) {
+            return $this->json(['error' => 'Order not found.'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        if ($order->getStatus() !== Order::STATUS['DRAFT']) {
+            return $this->json(
+                ['error' => 'Only DRAFT orders can be edited.'],
+                JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        if (!is_array($data)) {
+            return $this->json(['error' => 'Invalid JSON body.'], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        foreach (['pickupAddress', 'dropoutAddress', 'cargo'] as $field) {
+            if (empty($data[$field])) {
+                return $this->json(
+                    ['error' => sprintf('Field "%s" is required.', $field)],
+                    JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+                );
+            }
+        }
+
+        $cargoList = $data['cargo'];
+        if (!is_array($cargoList) || !array_is_list($cargoList) || empty($cargoList)) {
+            return $this->json(
+                ['error' => 'Field "cargo" must be a non-empty array.'],
+                JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        foreach ($cargoList as $index => $cargoData) {
+            foreach (['quantity', 'weightKg'] as $field) {
+                if (!isset($cargoData[$field]) || $cargoData[$field] === '' || $cargoData[$field] === null) {
+                    return $this->json(
+                        ['error' => sprintf('Field "cargo[%d].%s" is required.', $index, $field)],
+                        JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+                    );
+                }
+            }
+        }
+
+        // Обновляем поля заказа
+        $this->applyOrderFields($order, $data);
+
+        // Заменяем коллекцию груза целиком
+        foreach ($order->getCargo()->toArray() as $existingCargo) {
+            $order->removeCargo($existingCargo);
+            $this->em->remove($existingCargo);
+        }
+
+        foreach ($cargoList as $cargoData) {
+            $cargo = $this->buildCargoFromData($cargoData);
+            $order->addCargo($cargo);
+            $this->em->persist($cargo);
+        }
+
+        // Управление вложениями — только если поле явно передано в теле запроса.
+        // PATCH-семантика: отсутствие поля = «не трогать вложения».
+        //
+        // Сценарии:
+        //   keepAttachments: ['salt1']   → salt1 остаётся, остальные удаляются
+        //   keepAttachments: []          → все существующие вложения удаляются
+        //   поле не передано             → вложения не изменяются (безопасный дефолт)
+        if (array_key_exists('keepAttachments', $data)) {
+            $keepSalts = array_values(array_filter(
+                array_map('strval', (array) $data['keepAttachments']),
+                static fn(string $s): bool => $s !== ''
+            ));
+
+            foreach ($order->getAttachments()->toArray() as $attachment) {
+                /** @var OrderAttachment $attachment */
+                if (!in_array($attachment->getSalt(), $keepSalts, true)) {
+                    $this->attachmentUploader->delete($attachment);
+                }
+            }
+        }
+
+        // flush → OrderOfferAutoCreateListener::postUpdate попробует создать оффер
+        $this->em->flush();
+
+        return $this->json(
+            ['id' => $order->getId()?->toRfc4122()],
+            JsonResponse::HTTP_OK
+        );
+    }
+
+    /**
+     * Применяет скалярные поля из тела запроса к сущности Order.
+     *
+     * @param array<string, mixed> $data
+     */
+    private function applyOrderFields(Order $order, array $data): void
+    {
+        $order->setPickupAddress((string) $data['pickupAddress']);
+        $order->setDropoutAddress((string) $data['dropoutAddress']);
+
+        $order->setPickupLatitude(!empty($data['pickupLatitude']) ? (string) $data['pickupLatitude'] : null);
+        $order->setPickupLongitude(!empty($data['pickupLongitude']) ? (string) $data['pickupLongitude'] : null);
+        $order->setDropoutLatitude(!empty($data['dropoutLatitude']) ? (string) $data['dropoutLatitude'] : null);
+        $order->setDropoutLongitude(!empty($data['dropoutLongitude']) ? (string) $data['dropoutLongitude'] : null);
+
+        $order->setNotes(!empty($data['notes']) ? (string) $data['notes'] : null);
+        $order->setStackable((bool) ($data['stackable'] ?? false));
+        $order->setManipulatorNeeded((bool) ($data['manipulatorNeeded'] ?? false));
+
+        $order->setPickupTimeFrom(
+            !empty($data['pickupTimeFrom'])
+                ? (\DateTime::createFromFormat('H:i', $data['pickupTimeFrom']) ?: null)
+                : null
+        );
+        $order->setPickupTimeTo(
+            !empty($data['pickupTimeTo'])
+                ? (\DateTime::createFromFormat('H:i', $data['pickupTimeTo']) ?: null)
+                : null
+        );
+
+        if (!empty($data['pickupDate'])) {
+            $order->setPickupDate(\DateTime::createFromFormat('Y-m-d', $data['pickupDate']) ?: new \DateTime('today'));
+        }
+
+        if (array_key_exists('deliveryDate', $data)) {
+            $order->setDeliveryDate(
+                !empty($data['deliveryDate'])
+                    ? (\DateTime::createFromFormat('Y-m-d', $data['deliveryDate']) ?: null)
+                    : null
+            );
+        }
     }
 
     /**

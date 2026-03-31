@@ -37,7 +37,11 @@ export const Switch: FC<SwitchProps> = ({ disabled, checked, label, onChange }) 
 			{label && (
 				<span
 					className={cn(styles.label, { [styles.disabled]: disabled })}
-					onClick={() => !disabled && setIsChecked((v) => !v)}
+					onClick={() => {
+						if (disabled) return
+						onChange?.(!isChecked)
+						setIsChecked(!isChecked)
+					}}
 				>
 					{label}
 				</span>

@@ -24,8 +24,6 @@ export enum FormActions {
 	LOGIN = '/login',
 	REGISTRATION = '/registration',
 	CALCULATE = '/calculate',
-	CONFIRM_ORDER = '/user/confirmOrder',
-	CANCEL_ORDER = '/cancelOrder',
 	RATE_ORDER = '/rateOrder',
 	UPDATE_STATUS = '/updateStatus',
 }
@@ -38,6 +36,9 @@ export const carrierConfirmRequestUrl = (id: string): string =>
 
 export const carrierCancelOrderUrl = (id: string): string =>
 	`/carrier/orders/${id}/cancel`
+
+export const userConfirmOrderUrl = (id: string): string =>
+	`/user/orders/${id}/confirm`
 
 export const userCancelOrderUrl = (id: string): string =>
 	`/user/orders/${id}/cancel`
@@ -94,19 +95,19 @@ export enum CargoTypeEnum {
 	irregular_cargo = 2
 }
 
-// FIXME PAVEL
 type CargoType = {
-	type: 1 | 2
 	type_text?: string
 	dimensions?: string
 	weight?: number
 	quantity: number
+	name: string
 }
 
 export type OrderType = {
 	id: string
 	// 
 	cargo: CargoType[]
+	attachments: {filename: string, path: string}[]
 	stackable?: boolean
 	manipulator_needed?: boolean
 	comment?: string
@@ -138,6 +139,7 @@ export type OrderType = {
 	type?: string
 	vat?: string
 	brutto?: string
+	subtotal?: string
 	fee?: string
 	sender?: { 
 		first_name?: string

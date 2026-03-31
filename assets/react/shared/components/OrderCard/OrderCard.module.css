@@ -29,25 +29,43 @@
 		}
 
 		& .items {
-			@apply flex flex-col gap-2;
+			@apply flex flex-col gap-4;
 
 			@apply h-full overflow-auto;
 
-			/* & .cargoWrapper { */
-			/* @apply flex flex-col gap-1 max-h-[144px] overflow-auto; */
-			/* } */
+			& .itemsWrapper {
+				@apply flex flex-col gap-4;
+
+				& .label {
+					@apply text-black/40 text-xs;
+				}
+
+				& .itemsContent {
+					@apply flex flex-col gap-2 w-full overflow-hidden;
+
+					& .cargo {
+						@apply grid grid-cols-[20px,1fr,60px,130px,60px] gap-3 w-full;
+						& .index {
+							@apply text-xs font-medium flex items-center;
+						}
+					}
+					& .document {
+						@apply grid grid-cols-[20px,1fr,30px] gap-3 w-full items-center;
+
+						& .fileDownload {
+							border: none;
+
+							@apply flex items-center justify-center bg-transparent
+							text-black w-7 h-7 cursor-pointer rounded-full transition-colors
+							hover-hover:hover:bg-gray-100;
+						}
+					}
+				}
+			}
 		}
 
 		& .row {
 			@apply grid grid-cols-3 gap-4 items-center;
-
-			&.cargo {
-				@apply grid-cols-[1fr,1fr,1fr,50px] shrink-0;
-
-				& .item {
-					@apply gap-0;
-				}
-			}
 		}
 
 		& .routeItem {
@@ -57,7 +75,11 @@
 				@apply flex justify-center mt-7;
 
 				& .route {
-					@apply h-[calc(100%-62px)] w-[3px] bg-black relative;
+					@apply h-[calc(100%-68px)] w-[3px] bg-black relative;
+
+					&.delivered {
+						@apply h-[calc(100%-8px)];
+					}
 
 					&:before,
 					&:after {
@@ -139,8 +161,6 @@
 			@apply absolute bottom-3 left-3 right-3 p-7 bg-white rounded-[30px] shadow-md z-10 flex flex-col gap-4;
 
 			& .top {
-				@apply grid grid-cols-4 gap-4;
-
 				& .item {
 					@apply flex flex-col gap-1;
 

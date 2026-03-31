@@ -10,6 +10,7 @@
 			flex items-center justify-center cursor-pointer 
 			!text-black shadow-md mt-6 transition-colors
 			hover-hover:hover:bg-gray-100 hover-none:active:bg-gray-100;
+			border: none;
 		}
 	}
 }

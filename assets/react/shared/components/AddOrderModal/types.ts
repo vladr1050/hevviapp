@@ -2,10 +2,8 @@ import { YearsType } from '@config/constants'
 
 export type CalculateModalType = 'what' | 'where' | 'when' | 'calculate' | undefined
 
-export type CargoType = 'palette' | 'irregular_cargo'
-
 export type CargoItemType = {
-	type: CargoType
+	name: string
 	width: number
 	length: number
 	height: number
@@ -19,10 +17,12 @@ export type PickupTimeT = 'anytime' | '8:00-13:00' | '13:00-18:00'
 export type FormValues = {
 	// WHAT
 	cargo: CargoItemType[]
+	attachments?: File[]
+	keepAttachments?: { filename: string; path: string }[]
+
 	stackable: boolean
 	manipulatorNeeded: boolean
-	documents?: File[]
-	comments: string
+	comment: string
 	// WHERE
 	from: string
 	to: string
