@@ -22,6 +22,7 @@ interface OrderPageProps {
 	title: string
 	order: OrderType
 	csrf_token: string
+	cancel_order_csrf_token: string
 	update_status_csrf_token?: string
 	isCarrier?: boolean
 	device?: DeviceType
@@ -42,7 +43,7 @@ const getDefaultDate = (date?: string, time?: { from?: string; to?: string }) =>
 }
 
 export const OrderPage: FC<OrderPageProps> = (props) => {
-	const { title, order, csrf_token, update_status_csrf_token, isCarrier, device } = props
+	const { title, order, csrf_token, cancel_order_csrf_token, update_status_csrf_token, isCarrier, device } = props
 	console.log(props)
 
 	const { isMobile } = useDevice(device)
@@ -155,13 +156,14 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 						</a>
 					)}
 
-					<OrderCard
-						title={title}
-						order={order}
-						isCarrier={isCarrier}
-						csrfToken={csrf_token}
-						updateStatusCsrfToken={update_status_csrf_token}
-					/>
+				<OrderCard
+					title={title}
+					order={order}
+					isCarrier={isCarrier}
+					csrfToken={csrf_token}
+					cancelCsrfToken={cancel_order_csrf_token}
+					updateStatusCsrfToken={update_status_csrf_token}
+				/>
 				</div>
 			</div>
 

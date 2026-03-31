@@ -245,6 +245,61 @@ class UserController extends AbstractController
         return $this->redirectToRoute('user_public_order', ['id' => $id]);
     }
 
+    #[Route('/orders/{id}/cancel', name: 'cancel_order', methods: ['POST'])]
+    public function cancelOrder(string $id, Request $request, CsrfTokenManagerInterface $csrfTokenManager): Response
+    {
+        $token = new CsrfToken('cancel_order', (string) $request->request->get('_token'));
+        if (!$csrfTokenManager->isTokenValid($token)) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $order = $this->orderRepository->find($id);
+        if (!$order || $order->getSender() !== $user) {
+            return $this->redirectToRoute('user_public_orders');
+        }
+
+        $cancellableStatuses = [
+            Order::STATUS['DRAFT'],
+            Order::STATUS['OFFERED'],
+            Order::STATUS['ACCEPTED'],
+        ];
+        if (!in_array($order->getStatus(), $cancellableStatuses, true)) {
+            return $this->redirectToRoute('user_public_order', ['id' => $id]);
+        }
+
+        $order->setStatus(Order::STATUS['CANCELLED']);
+        $order->setCancelReason($this->resolveCancelReason($request, $user->getLocale()));
+
+        $this->em->flush();
+
+        return $this->redirectToRoute('user_public_orders');
+    }
+
+    /**
+     * Собирает переведённую причину отмены из полей формы CancelModal.
+     *
+     * Radio-варианты для отправителя (CancelModal.tsx, isCarrier=false):
+     *   1 → order.cancel_reason_1
+     *   2 → order.cancel_reason_2
+     *   3 → свободный текст из поля `text` (хранится как есть)
+     */
+    private function resolveCancelReason(Request $request, ?string $locale): ?string
+    {
+        $locale ??= 'en';
+        $radio = (string) $request->request->get('radio', '');
+        $text = trim((string) $request->request->get('text', ''));
+
+        return match ($radio) {
+            '1' => $this->translator->trans('order.cancel_reason_1', domain: 'AppBundle', locale: $locale),
+            '2' => $this->translator->trans('order.cancel_reason_2', domain: 'AppBundle', locale: $locale),
+            '3' => $text !== '' ? mb_substr($text, 0, 255) : $this->translator->trans('order.cancel_reason_other', domain: 'AppBundle', locale: $locale),
+            default => null,
+        };
+    }
+
     private function applyOrderStatus(Order $order, int $status): ?Response
     {
         if ($order->getStatus() !== Order::STATUS['OFFERED']) {

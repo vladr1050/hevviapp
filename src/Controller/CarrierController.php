@@ -155,8 +155,13 @@ class CarrierController extends AbstractController
     }
 
     #[Route('/orders/{id}/cancel', name: 'public_order_cancel', methods: ['POST'])]
-    public function cancelOrder(string $id, Request $request): Response
+    public function cancelOrder(string $id, Request $request, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
+        $token = new CsrfToken('cancel_order', (string) $request->request->get('_token'));
+        if (!$csrfTokenManager->isTokenValid($token)) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
         /** @var Carrier $user */
         $user = $this->getUser();
 

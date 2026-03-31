@@ -39,6 +39,7 @@ interface OrderCardProps {
 	isCarrier?: boolean
 	isRequest?: boolean
 	csrfToken?: string
+	cancelCsrfToken?: string
 	updateStatusCsrfToken?: string
 }
 
@@ -50,6 +51,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 	isCarrier,
 	isRequest,
 	csrfToken,
+	cancelCsrfToken,
 	updateStatusCsrfToken,
 }) => {
 	const [modalId, setModalId] = useState<ModalIdType>()
@@ -518,6 +520,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 					to={order.address.to}
 					isCarrier={isCarrier}
 					actionUrl={isCarrier ? carrierCancelOrderUrl(order.id) : userCancelOrderUrl(order.id)}
+					csrfToken={cancelCsrfToken}
 				/>
 			</Modal>
 

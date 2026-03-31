@@ -1,7 +1,6 @@
 import { type FC } from 'react'
 import { useForm } from 'react-hook-form'
 
-import { FormActions } from '@config/constants'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
 import { RadioButtons } from '@ui/RadioButtons/RadioButtons'
@@ -14,7 +13,7 @@ interface CancelModalProps {
 	from?: string
 	to?: string
 	isCarrier?: boolean
-	actionUrl?: string
+	actionUrl: string
 	csrfToken?: string
 }
 
@@ -29,7 +28,7 @@ export const CancelModal: FC<CancelModalProps> = ({ id, from, to, isCarrier, act
 	})
 
 	return (
-		<form className={styles.modal} method="POST" action={actionUrl ?? FormActions.CANCEL_ORDER}>
+		<form className={styles.modal} method="POST" action={actionUrl}>
 			{csrfToken && <input type="hidden" name="_token" value={csrfToken} />}
 			<input type="hidden" name="radio" value={watch('radio')} />
 			<div className={styles.icon}>

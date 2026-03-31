@@ -4,11 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="subtotal added">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="d205dbcd-6888-40d3-bd0a-36834e0169b6" name="Changes" comment="order confirm method fixed">
+      <change beforePath="$PROJECT_DIR$/assets/react/islands/pages/Order/Order.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/islands/pages/Order/Order.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/OrderCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/OrderCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/CancelModal/CancelModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/CancelModal/CancelModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/DeclineModal/DeclineModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/components/OrderCard/components/DeclineModal/DeclineModal.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/react/shared/config/constants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/assets/react/shared/config/constants.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/CarrierController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CarrierController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/public/carrier/pages/order.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/public/carrier/pages/order.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/public/user/pages/order.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/public/user/pages/order.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -324,7 +329,7 @@
       <workItem from="1774532556133" duration="9597000" />
       <workItem from="1774554052210" duration="18000" />
       <workItem from="1774799208479" duration="3546000" />
-      <workItem from="1774953395517" duration="1371000" />
+      <workItem from="1774953395517" duration="2149000" />
     </task>
     <task id="LOCAL-00001" summary="custom areas added to service areas">
       <option name="closed" value="true" />
@@ -662,7 +667,15 @@
       <option name="project" value="LOCAL" />
       <updated>1774867069357</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="order confirm method fixed">
+      <option name="closed" value="true" />
+      <created>1774955653209</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1774955653209</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -690,6 +703,7 @@
     <MESSAGE value="order number added" />
     <MESSAGE value="attachments added" />
     <MESSAGE value="subtotal added" />
-    <option name="LAST_COMMIT_MESSAGE" value="subtotal added" />
+    <MESSAGE value="order confirm method fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="order confirm method fixed" />
   </component>
 </project>

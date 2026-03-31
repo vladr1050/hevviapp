@@ -1,7 +1,6 @@
 import type { FC } from 'react'
 import { useForm } from 'react-hook-form'
 
-import { FormActions } from '@config/constants'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
 import { RadioButtons } from '@ui/RadioButtons/RadioButtons'
@@ -13,7 +12,7 @@ interface DeclineModalProps {
 	id: string
 	from?: string
 	to?: string
-	actionUrl?: string
+	actionUrl: string
 }
 
 type FormValues = {
@@ -27,7 +26,7 @@ export const DeclineModal: FC<DeclineModalProps> = ({ id, from, to, actionUrl })
 	})
 
 	return (
-		<form className={styles.modal} method="POST" action={actionUrl ?? FormActions.CANCEL_ORDER}>
+		<form className={styles.modal} method="POST" action={actionUrl}>
 			<div className={styles.icon}>
 				<Icon type="sad_box" size={60} />
 			</div>
