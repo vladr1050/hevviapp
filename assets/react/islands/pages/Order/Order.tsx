@@ -43,7 +43,15 @@ const getDefaultDate = (date?: string, time?: { from?: string; to?: string }) =>
 }
 
 export const OrderPage: FC<OrderPageProps> = (props) => {
-	const { title, order, csrf_token, cancel_order_csrf_token, update_status_csrf_token, isCarrier, device } = props
+	const {
+		title,
+		order,
+		csrf_token,
+		cancel_order_csrf_token,
+		update_status_csrf_token,
+		isCarrier,
+		device,
+	} = props
 	console.log(props)
 
 	const { isMobile } = useDevice(device)
@@ -58,7 +66,7 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 			...order,
 			// WHAT
 			attachments: [],
-			old_attachments: order.attachments,
+			keepAttachments: order.attachments,
 			manipulatorNeeded: order.manipulator_needed,
 			// WHERE
 			from: order.address.from,
@@ -114,7 +122,7 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 					weightKg: item.weight,
 					dimensionsCm: dimensionsCm(item.width, item.length, item.height),
 				})),
-				attachments: values.old_attachments,
+				keepAttachments: values.keepAttachments,
 			}
 
 			console.log(payload)
@@ -156,14 +164,14 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 						</a>
 					)}
 
-				<OrderCard
-					title={title}
-					order={order}
-					isCarrier={isCarrier}
-					csrfToken={csrf_token}
-					cancelCsrfToken={cancel_order_csrf_token}
-					updateStatusCsrfToken={update_status_csrf_token}
-				/>
+					<OrderCard
+						title={title}
+						order={order}
+						isCarrier={isCarrier}
+						csrfToken={csrf_token}
+						cancelCsrfToken={cancel_order_csrf_token}
+						updateStatusCsrfToken={update_status_csrf_token}
+					/>
 				</div>
 			</div>
 

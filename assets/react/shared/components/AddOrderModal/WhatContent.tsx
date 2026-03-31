@@ -445,7 +445,7 @@ const DocumentsSection: FC<{
 			{/* OLD ATTACHMENTS */}
 			<Controller
 				control={control}
-				name="old_attachments"
+				name="keepAttachments"
 				render={({ field: { value = [], onChange } }) => {
 					const removeFile = (index: number) => {
 						onChange((value ?? []).filter((_, i) => i !== index))

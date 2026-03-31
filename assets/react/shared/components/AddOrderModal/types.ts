@@ -18,7 +18,7 @@ export type FormValues = {
 	// WHAT
 	cargo: CargoItemType[]
 	attachments?: File[]
-	old_attachments?: { filename: string; path: string }[]
+	keepAttachments?: { filename: string; path: string }[]
 
 	stackable: boolean
 	manipulatorNeeded: boolean

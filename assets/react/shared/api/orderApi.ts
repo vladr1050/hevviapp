@@ -49,7 +49,6 @@ export async function apiCreateOrder(
 	return data as CreateOrderResponse
 }
 
-// FIXME PAVEL
 export async function apiUpdateOrder(
 	accessToken: string,
 	payload: CreateOrderPayload,
