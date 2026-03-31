@@ -24,7 +24,6 @@ export enum FormActions {
 	LOGIN = '/login',
 	REGISTRATION = '/registration',
 	CALCULATE = '/calculate',
-	CONFIRM_ORDER = '/user/confirmOrder',
 	CANCEL_ORDER = '/cancelOrder',
 	RATE_ORDER = '/rateOrder',
 	UPDATE_STATUS = '/updateStatus',
@@ -38,6 +37,9 @@ export const carrierConfirmRequestUrl = (id: string): string =>
 
 export const carrierCancelOrderUrl = (id: string): string =>
 	`/carrier/orders/${id}/cancel`
+
+export const userConfirmOrderUrl = (id: string): string =>
+	`/user/orders/${id}/confirm`
 
 export const userCancelOrderUrl = (id: string): string =>
 	`/user/orders/${id}/cancel`

@@ -10,6 +10,7 @@ import {
 	carrierConfirmRequestUrl,
 	carrierDeclineRequestUrl,
 	userCancelOrderUrl,
+	userConfirmOrderUrl,
 } from '@config/constants'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
@@ -377,14 +378,11 @@ export const OrderCard: FC<OrderCardProps> = ({
 									action={
 										isCarrier && isRequest
 											? carrierConfirmRequestUrl(order.id)
-											: FormActions.CONFIRM_ORDER
+											: userConfirmOrderUrl(order.id)
 									}
 								>
 									{!(isCarrier && isRequest) && (
-										<>
-											<input type="hidden" name="order_id" value={order.id} />
-											<input type="hidden" name="_token" value={csrfToken} />
-										</>
+										<input type="hidden" name="_token" value={csrfToken} />
 									)}
 
 									{isRequest && (

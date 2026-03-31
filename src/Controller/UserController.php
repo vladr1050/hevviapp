@@ -215,10 +215,10 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/confirmOrder', name: 'confirm_order', methods: ['POST'])]
-    public function confirmOrder(Request $request, CsrfTokenManagerInterface $csrfTokenManager): Response
+    #[Route('/orders/{id}/confirm', name: 'confirm_order', methods: ['POST'])]
+    public function confirmOrder(string $id, Request $request, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
-        $token = new CsrfToken('confirm_order', (string)$request->request->get('_token'));
+        $token = new CsrfToken('confirm_order', (string) $request->request->get('_token'));
         if (!$csrfTokenManager->isTokenValid($token)) {
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
@@ -226,27 +226,44 @@ class UserController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $orderId = (string)$request->request->get('order_id');
-        $order = $this->orderRepository->find($orderId);
-
+        $order = $this->orderRepository->find($id);
         if (!$order || $order->getSender() !== $user) {
             return $this->redirectToRoute('user_public_orders');
         }
 
-        if (!in_array($order->getStatus(), [Order::STATUS['DRAFT'], Order::STATUS['OFFERED']], true)) {
-            return $this->redirectToRoute('user_public_order', ['id' => $orderId]);
+        $offerResult = $this->applyOfferStatus($order, OrderOffer::STATUS['ACCEPTED']);
+        if (null !== $offerResult) {
+            return $offerResult;
         }
 
+        $orderResult = $this->applyOrderStatus($order, Order::STATUS['ACCEPTED']);
+        if (null !== $orderResult) {
+            return $orderResult;
+        }
+
+        $this->em->flush();
+        return $this->redirectToRoute('user_public_order', ['id' => $id]);
+    }
+
+    private function applyOrderStatus(Order $order, int $status): ?Response
+    {
+        if ($order->getStatus() !== Order::STATUS['OFFERED']) {
+            return $this->redirectToRoute('user_public_order', ['id' => $order->getId()]);
+        }
+
+        $order->setStatus($status);
+        return null;
+    }
+
+    private function applyOfferStatus(Order $order, int $status): ?Response
+    {
         $latestOffer = $order->getLatestOffer();
         if (!$latestOffer || $latestOffer->getStatus() !== OrderOffer::STATUS['DRAFT']) {
-            return $this->redirectToRoute('user_public_order', ['id' => $orderId]);
+            return $this->redirectToRoute('user_public_order', ['id' => $order->getId()]);
         }
 
-        $latestOffer->setStatus(OrderOffer::STATUS['ACCEPTED']);
-        $order->setStatus(Order::STATUS['ACCEPTED']);
-        $this->em->flush();
-
-        return $this->redirectToRoute('user_public_order', ['id' => $orderId]);
+        $latestOffer->setStatus($status);
+        return null;
     }
 
     private function buildAttachmentList(Order $order): array
