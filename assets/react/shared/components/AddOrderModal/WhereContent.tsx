@@ -26,15 +26,15 @@ interface WhereContentProps {
 	control: Control<FormValues, any, FormValues>
 	setValue: UseFormSetValue<FormValues>
 	register: UseFormRegister<FormValues>
-	defaultValues?: {
+	defaultPosition?: {
 		from: {
 			lat: number
 			lng: number
-		}
+		} | null
 		to: {
 			lat: number
 			lng: number
-		}
+		} | null
 	}
 }
 
@@ -43,13 +43,13 @@ export const WhereContent: FC<WhereContentProps> = ({
 	control,
 	setValue,
 	register,
-	defaultValues,
+	defaultPosition,
 }) => {
 	const [fromMarkerPos, setFromMarkerPos] = useState<{ lat: number; lng: number } | null>(
-		defaultValues?.from || null
+		defaultPosition?.from || null
 	)
 	const [toMarkerPos, setToMarkerPos] = useState<{ lat: number; lng: number } | null>(
-		defaultValues?.to || null
+		defaultPosition?.to || null
 	)
 
 	const myIcon = new L.Icon({

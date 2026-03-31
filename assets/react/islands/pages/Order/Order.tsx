@@ -190,6 +190,22 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 					watch={watch}
 					submitError={submitError}
 					onSubmit={handleSubmit(onSubmit)}
+					defaultPosition={{
+						from:
+							order?.pickup_latitude && order?.pickup_longitude
+								? {
+										lat: Number(order.pickup_latitude),
+										lng: Number(order.pickup_longitude),
+									}
+								: null,
+						to:
+							order?.dropout_latitude && order?.dropout_longitude
+								? {
+										lat: Number(order.dropout_latitude),
+										lng: Number(order.dropout_longitude),
+									}
+								: null,
+					}}
 				/>
 			</Modal>
 		</>

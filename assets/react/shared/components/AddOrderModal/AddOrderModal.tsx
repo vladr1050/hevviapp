@@ -24,6 +24,16 @@ interface AddOrderModalProps {
 	setValue: UseFormSetValue<FormValues>
 	onSubmit: () => Promise<void>
 	submitError?: string
+	defaultPosition?: {
+		from: {
+			lat: number
+			lng: number
+		} | null
+		to: {
+			lat: number
+			lng: number
+		} | null
+	}
 }
 
 export const AddOrderModal: FC<AddOrderModalProps> = ({
@@ -35,6 +45,7 @@ export const AddOrderModal: FC<AddOrderModalProps> = ({
 	setValue,
 	onSubmit,
 	submitError,
+	defaultPosition,
 }) => {
 	if (activeTab === 'calculate')
 		return (
@@ -193,16 +204,7 @@ export const AddOrderModal: FC<AddOrderModalProps> = ({
 					watch={watch}
 					setValue={setValue}
 					register={register}
-					defaultValues={{
-						from: {
-							lat: Number(watch('pickupLatitude')),
-							lng: Number(watch('pickupLongitude')),
-						},
-						to: {
-							lat: Number(watch('dropoutLatitude')),
-							lng: Number(watch('dropoutLongitude')),
-						},
-					}}
+					defaultPosition={defaultPosition}
 				/>
 			)}
 
