@@ -79,7 +79,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 
 	const isCanceled = order.status === OrderStatusEnum.CANCELLED
 	const isDelivered = order.status === OrderStatusEnum.DELIVERED
-	const isDraft = order.status === OrderStatusEnum.DRAFT
+	const isOffered = order.status <= OrderStatusEnum.OFFERED
 
 	const showInfo =
 		!isCanceled &&
@@ -464,7 +464,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 										</Button>
 									)}
 
-									{isDraft && (
+									{isOffered && (
 										<Button
 											type="submit"
 											name="action"

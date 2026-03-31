@@ -143,7 +143,7 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 		}
 	}
 
-	const isDraft = order.status === OrderStatusEnum.DRAFT
+	const isOffered = order.status <= OrderStatusEnum.OFFERED
 
 	if (isMobile) return <MobilePage />
 
@@ -151,7 +151,7 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 		<>
 			<div className={cn('tw-container', styles.page)}>
 				<div className={styles.content}>
-					{isDraft && !isCarrier ? (
+					{isOffered && !isCarrier ? (
 						<button type="button" className={styles.back} onClick={() => setActiveTab('what')}>
 							<Icon type="edit" size={18} />
 						</button>
@@ -190,6 +190,22 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 					watch={watch}
 					submitError={submitError}
 					onSubmit={handleSubmit(onSubmit)}
+					defaultPosition={{
+						from:
+							order?.pickup_latitude && order?.pickup_longitude
+								? {
+										lat: Number(order.pickup_latitude),
+										lng: Number(order.pickup_longitude),
+									}
+								: null,
+						to:
+							order?.dropout_latitude && order?.dropout_longitude
+								? {
+										lat: Number(order.dropout_latitude),
+										lng: Number(order.dropout_longitude),
+									}
+								: null,
+					}}
 				/>
 			</Modal>
 		</>
