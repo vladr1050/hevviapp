@@ -62,6 +62,15 @@
             "config/packages/lexik_jwt_authentication.yaml"
         ]
     },
+    "sentry/sentry-symfony": {
+        "version": "5.9",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "5.0",
+            "ref": "12f504985eb24e3b20a9e41e0ec7e398798d18f0"
+        }
+    },
     "sonata-project/admin-bundle": {
         "version": "4.42",
         "recipe": {

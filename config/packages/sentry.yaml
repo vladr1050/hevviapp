@@ -1,0 +1,14 @@
+sentry:
+    dsn: '%env(SENTRY_DSN)%'
+    options:
+        environment: '%kernel.environment%'
+        # Ошибки приложения без APM-трейсов (дешевле и проще на старте)
+        traces_sample_rate: 0
+        # Меньше шума от сканеров и отсутствующих маршрутов (sw.js и т.п.)
+        ignore_exceptions:
+            - Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+            - Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException
+
+when@test:
+    sentry:
+        dsn: null
