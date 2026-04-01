@@ -1,6 +1,9 @@
 # Override for production: APP_DEBUG=0, env from .env
 services:
   php:
+    # Иначе после deploy остаётся entrypoint из образа (старый schema:update на prod).
+    # С монтированием ./:/var/www/app актуальный entrypoint.sh с диска сервера.
+    entrypoint: ["bash", "/var/www/app/entrypoint.sh"]
     environment:
       APP_DEBUG: "0"
       APP_ENV: prod
