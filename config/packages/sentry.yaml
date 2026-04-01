@@ -1,3 +1,8 @@
+# Если SENTRY_DSN нет в .env (старый прод до Sentry, rsync не трогает .env) — иначе Symfony
+# падает на cache:warmup: "Environment variable not found: SENTRY_DSN".
+parameters:
+    env(SENTRY_DSN): ''
+
 sentry:
     dsn: '%env(SENTRY_DSN)%'
     options:
