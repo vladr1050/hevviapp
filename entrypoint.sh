@@ -31,8 +31,14 @@ psql "$DATABASE_URL" -c "CREATE EXTENSION IF NOT EXISTS postgis; CREATE EXTENSIO
 }
 echo "✅ PostGIS ready"
 
-# Установим все локальные зависимости и сущности
-php bin/console doctrine:schema:update --force || true
+# Схему на prod меняют только миграции. doctrine:schema:update --force на каждом старте
+# ломает объекты вне ORM (например PostgreSQL SEQUENCE order_number_seq для order_number).
+if [ "${APP_ENV:-dev}" = "dev" ]; then
+    echo "🛠️  APP_ENV=dev: doctrine:schema:update --force"
+    php bin/console doctrine:schema:update --force || true
+else
+    echo "ℹ️  APP_ENV=${APP_ENV:-}: пропуск schema:update (используйте doctrine:migrations:migrate)"
+fi
 
 # Загрузка GeoArea дампов (если существуют)
 GEO_AREAS_DUMP_DIR="/var/www/html/docker/dumps/geo_areas"
