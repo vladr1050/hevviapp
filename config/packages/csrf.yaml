@@ -9,3 +9,7 @@ framework:
             - submit
             - authenticate
             - logout
+            # JWT + stateless main firewall: без этого CSRF жил в session и ломался на POST (Invalid CSRF token).
+            - confirm_order
+            - cancel_order
+            - update_order_status
