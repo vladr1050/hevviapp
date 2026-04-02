@@ -10,7 +10,7 @@
 	}
 
 	& .left {
-		@apply flex flex-col gap-3 overflow-hidden;
+		@apply flex flex-col gap-3 h-full overflow-auto;
 
 		& .titleWrapper {
 			@apply flex items-center gap-10;
@@ -31,7 +31,7 @@
 		& .items {
 			@apply flex flex-col gap-4;
 
-			@apply h-full overflow-auto;
+			/* @apply h-full overflow-auto; */
 
 			& .itemsWrapper {
 				@apply flex flex-col gap-4;
@@ -179,8 +179,15 @@
 			}
 
 			& .bottom {
-				/* @apply flex items-center justify-between gap-5; */
 				@apply grid grid-cols-2 gap-5;
+
+				&.isOffered {
+					@apply grid grid-cols-[170px,1fr] gap-6;
+
+					& .bottomRight {
+						@apply grid grid-cols-[1fr,2fr] gap-3;
+					}
+				}
 
 				& .bottomLeft,
 				& .bottomRight {

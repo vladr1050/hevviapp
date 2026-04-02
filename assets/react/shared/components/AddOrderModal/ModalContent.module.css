@@ -673,7 +673,11 @@
 	animation: fade1 0.5s ease-in-out;
 
 	& .icon {
-		@apply w-[212px] h-[212px] rounded-full bg-primary flex items-center justify-center text-black;
+		@apply w-[212px] h-[212px] rounded-full bg-primary flex items-center justify-center text-black overflow-hidden;
+
+		& img {
+			@apply scale-125;
+		}
 	}
 
 	& .wrapper {

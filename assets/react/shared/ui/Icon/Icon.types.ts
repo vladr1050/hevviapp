@@ -27,6 +27,7 @@ export enum UIIconNames {
 	BLOCK_MAIL = 'BlockMail',
 	MARK_MAP = 'MarkMap',
 	CLOCK_1 = 'Clock1',
+	CLOCK_1_LIGHT = 'Clock1Light',
 	CLOCK_2 = 'Clock2',
 	CHECK_CIRCLE_1 = 'CheckCircle1',
 	CHECK_CIRCLE_2 = 'CheckCircle2',

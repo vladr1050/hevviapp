@@ -82,6 +82,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 
 	const isCanceled = order.status === OrderStatusEnum.CANCELLED
 	const isDelivered = order.status === OrderStatusEnum.DELIVERED
+	const isOffered = order.status <= OrderStatusEnum.OFFERED
 
 	const showInfo =
 		!isCanceled &&
@@ -419,7 +420,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 
 							<div className={styles.hr} />
 
-							<div className={styles.bottom}>
+							<div className={cn(styles.bottom, { [styles.isOffered]: isOffered })}>
 								<div className={styles.bottomLeft}>
 									{isCarrier && !!order?.sender?.first_name && !!order?.sender?.last_name && (
 										<>
@@ -437,6 +438,18 @@ export const OrderCard: FC<OrderCardProps> = ({
 													{order?.sender?.first_name} {order?.sender?.last_name}
 												</span>
 												{/* <span className={styles.subtitle}>Delivery time</span> */}
+											</div>
+										</>
+									)}
+
+									{isOffered && (
+										<>
+											<div className={styles.icon}>
+												<Icon type="clock_1_light" size={30} />
+											</div>
+											<div className={styles.text}>
+												<div className={styles.subtitle}>Delivery time</div>
+												<div className={styles.title}>~ 48 hours</div>
 											</div>
 										</>
 									)}

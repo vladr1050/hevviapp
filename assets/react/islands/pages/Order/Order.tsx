@@ -118,13 +118,13 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 				pickupDate,
 				stackable: values.stackable,
 				manipulatorNeeded: values.manipulatorNeeded,
-				cargo: values.cargo.map((item) => ({
+				cargo: (values.cargo || []).map((item) => ({
 					name: item.name,
 					quantity: item.quantity,
 					weightKg: item.weight,
 					dimensionsCm: dimensionsCm(item.width, item.length, item.height),
 				})),
-				keepAttachments: values.keepAttachments,
+				keepAttachments: values.keepAttachments || [],
 			}
 
 			console.log(payload)
