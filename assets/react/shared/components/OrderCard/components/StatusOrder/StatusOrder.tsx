@@ -223,7 +223,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 							isActive={order.status >= OrderStatusEnum.IN_TRANSIT}
 							isWaiting={order.status === OrderStatusEnum.PICKUP_DONE}
 							showInfo={order.status === OrderStatusEnum.PICKUP_DONE}
-							infoText="Delivered"
+							infoText="In transit"
 							onClick={() => setValueForm((v) => (v === 'IN_TRANSIT' ? undefined : 'IN_TRANSIT'))}
 						/>
 
