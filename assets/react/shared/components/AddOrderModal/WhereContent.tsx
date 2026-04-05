@@ -117,7 +117,6 @@ export const WhereContent: FC<WhereContentProps> = ({
 											setValue('dropoutLongitude', undefined)
 										}}
 										placeholder="To"
-										disabled={!fromMarkerPos}
 									/>
 								)}
 							/>
