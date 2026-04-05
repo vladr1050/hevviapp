@@ -40,6 +40,8 @@ export const carrierCancelOrderUrl = (id: string): string =>
 export const userConfirmOrderUrl = (id: string): string =>
 	`/user/orders/${id}/confirm`
 
+export const userAbandonOrderUrl = (id: string): string => `/user/orders/${id}/abandon`
+
 export const userCancelOrderUrl = (id: string): string =>
 	`/user/orders/${id}/cancel`
 

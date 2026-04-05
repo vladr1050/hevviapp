@@ -49,6 +49,46 @@ export async function apiCreateOrder(
 	return data as CreateOrderResponse
 }
 
+const VOID_QUOTE = (orderId: string) => `${API_BASE}/${orderId}/void-quote`
+
+/**
+ * Аннулирует котировку (OFFERED → DRAFT) перед редактированием; новый расчёт после PATCH.
+ */
+export async function apiVoidOrderQuote(accessToken: string, orderId: string): Promise<{
+	id: string
+	status: number
+	status_text: string
+	price: null
+	vat: null
+	brutto: null
+	fee: null
+	subtotal: null
+}> {
+	const res = await fetch(VOID_QUOTE(orderId), {
+		method: 'POST',
+		headers: {
+			Authorization: `Bearer ${accessToken}`,
+		},
+	})
+
+	const data = await res.json()
+
+	if (!res.ok) {
+		throw new Error((data as { error?: string }).error ?? 'Failed to void quote')
+	}
+
+	return data as {
+		id: string
+		status: number
+		status_text: string
+		price: null
+		vat: null
+		brutto: null
+		fee: null
+		subtotal: null
+	}
+}
+
 export async function apiUpdateOrder(
 	accessToken: string,
 	payload: CreateOrderPayload,

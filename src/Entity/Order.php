@@ -129,6 +129,12 @@ class Order extends BaseUUID
     #[ORM\Column(nullable: true, unique: true)]
     private ?int $orderNumber = null;
 
+    /**
+     * Не маппится в БД: один раз пропустить OrderOfferAutoCreateListener после flush
+     * (аннулирование котировки перед редактированием).
+     */
+    private bool $skipNextOfferAutoCreate = false;
+
     public function __construct()
     {
         $this->cargo = new ArrayCollection();
@@ -202,6 +208,27 @@ class Order extends BaseUUID
         $this->status = $status;
 
         return $this;
+    }
+
+    public function setSkipNextOfferAutoCreate(bool $skip): static
+    {
+        $this->skipNextOfferAutoCreate = $skip;
+
+        return $this;
+    }
+
+    /**
+     * Сбрасывает флаг и возвращает true, если нужно пропустить автосоздание оффера один раз.
+     */
+    public function consumeSkipNextOfferAutoCreate(): bool
+    {
+        if (!$this->skipNextOfferAutoCreate) {
+            return false;
+        }
+
+        $this->skipNextOfferAutoCreate = false;
+
+        return true;
     }
 
     public function getPickupAddress(): ?string

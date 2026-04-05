@@ -1,7 +1,7 @@
 import { type FC, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
-import { apiUpdateOrder, apiUploadOrderAttachments } from '@api/orderApi'
+import { apiUpdateOrder, apiUploadOrderAttachments, apiVoidOrderQuote } from '@api/orderApi'
 import { AddOrderModal } from '@components/AddOrderModal/AddOrderModal'
 import { CalculateModalType, FormValues } from '@components/AddOrderModal/types'
 import { dimensionsCm, formatDate } from '@components/AddOrderModal/utils'
@@ -23,6 +23,7 @@ interface OrderPageProps {
 	order: OrderType
 	csrf_token: string
 	cancel_order_csrf_token: string
+	abandon_order_csrf_token?: string
 	update_status_csrf_token?: string
 	isCarrier?: boolean
 	device?: DeviceType
@@ -48,16 +49,17 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 		order,
 		csrf_token,
 		cancel_order_csrf_token,
+		abandon_order_csrf_token,
 		update_status_csrf_token,
 		isCarrier,
 		device,
 	} = props
-	console.log(props)
 
 	const { isMobile } = useDevice(device)
 
 	const { getValidAccessToken } = useAuth()
 
+	const [orderData, setOrderData] = useState<OrderType>(order)
 	const [activeTab, setActiveTab] = useState<CalculateModalType>()
 	const [submitError, setSubmitError] = useState<string>()
 
@@ -143,7 +145,38 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 		}
 	}
 
-	const isOffered = order.status <= OrderStatusEnum.OFFERED
+	const isPreAcceptance = orderData.status <= OrderStatusEnum.OFFERED
+
+	const handleEditOfferClick = async () => {
+		if (isCarrier) {
+			return
+		}
+		setSubmitError(undefined)
+		try {
+			if (orderData.status === OrderStatusEnum.OFFERED) {
+				const token = await getValidAccessToken()
+				if (!token) {
+					setSubmitError('Session expired. Please log in again.')
+					return
+				}
+				const patch = await apiVoidOrderQuote(token, orderData.id)
+				setOrderData((prev) => ({
+					...prev,
+					status: patch.status as OrderStatusEnum,
+					status_text: patch.status_text,
+					price: undefined,
+					vat: undefined,
+					brutto: undefined,
+					fee: undefined,
+					subtotal: undefined,
+				}))
+			}
+			setValue('_step', 3)
+			setActiveTab('when')
+		} catch (err) {
+			setSubmitError(err instanceof Error ? err.message : 'Could not open editor')
+		}
+	}
 
 	if (isMobile) return <MobilePage />
 
@@ -151,8 +184,11 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 		<>
 			<div className={cn('tw-container', styles.page)}>
 				<div className={styles.content}>
-					{isOffered && !isCarrier ? (
-						<button type="button" className={styles.back} onClick={() => setActiveTab('what')}>
+					{submitError && !activeTab && (
+						<div className="text-red-600 text-sm mb-2 max-w-md">{submitError}</div>
+					)}
+					{isPreAcceptance && !isCarrier ? (
+						<button type="button" className={styles.back} onClick={handleEditOfferClick}>
 							<Icon type="edit" size={18} />
 						</button>
 					) : (
@@ -166,10 +202,11 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 
 					<OrderCard
 						title={title}
-						order={order}
+						order={orderData}
 						isCarrier={isCarrier}
 						csrfToken={csrf_token}
 						cancelCsrfToken={cancel_order_csrf_token}
+						abandonCsrfToken={abandon_order_csrf_token}
 						updateStatusCsrfToken={update_status_csrf_token}
 					/>
 				</div>
@@ -192,17 +229,17 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 					onSubmit={handleSubmit(onSubmit)}
 					defaultPosition={{
 						from:
-							order?.pickup_latitude && order?.pickup_longitude
+							orderData?.pickup_latitude && orderData?.pickup_longitude
 								? {
-										lat: Number(order.pickup_latitude),
-										lng: Number(order.pickup_longitude),
+										lat: Number(orderData.pickup_latitude),
+										lng: Number(orderData.pickup_longitude),
 									}
 								: null,
 						to:
-							order?.dropout_latitude && order?.dropout_longitude
+							orderData?.dropout_latitude && orderData?.dropout_longitude
 								? {
-										lat: Number(order.dropout_latitude),
-										lng: Number(order.dropout_longitude),
+										lat: Number(orderData.dropout_latitude),
+										lng: Number(orderData.dropout_longitude),
 									}
 								: null,
 					}}

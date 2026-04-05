@@ -9,6 +9,7 @@ use App\Entity\OrderHistory;
 use App\Entity\OrderOffer;
 use App\Entity\User;
 use App\Repository\OrderRepository;
+use App\Service\OrderAttachmentUploader;
 use App\Twig\Extension\Filter\MoneyExtension;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,10 +26,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class UserController extends AbstractController
 {
     public function __construct(
-        private readonly OrderRepository        $orderRepository,
-        private readonly MoneyExtension         $moneyExtension,
-        private readonly TranslatorInterface    $translator,
-        private readonly EntityManagerInterface $em,
+        private readonly OrderRepository           $orderRepository,
+        private readonly MoneyExtension            $moneyExtension,
+        private readonly TranslatorInterface       $translator,
+        private readonly EntityManagerInterface    $em,
+        private readonly OrderAttachmentUploader   $attachmentUploader,
     )
     {
     }
@@ -231,6 +233,10 @@ class UserController extends AbstractController
             return $this->redirectToRoute('user_public_orders');
         }
 
+        if ($order->getStatus() !== Order::STATUS['OFFERED']) {
+            return $this->redirectToRoute('user_public_order', ['id' => $id]);
+        }
+
         $offerResult = $this->applyOfferStatus($order, OrderOffer::STATUS['ACCEPTED']);
         if (null !== $offerResult) {
             return $offerResult;
@@ -276,6 +282,39 @@ class UserController extends AbstractController
         $this->em->flush();
 
         return $this->redirectToRoute('user_public_orders');
+    }
+
+    /**
+     * Отмена черновика / котировки до оплаты: полное удаление заказа и редирект на Requests.
+     */
+    #[Route('/orders/{id}/abandon', name: 'abandon_order', methods: ['POST'])]
+    public function abandonOrder(string $id, Request $request, CsrfTokenManagerInterface $csrfTokenManager): Response
+    {
+        $token = new CsrfToken('abandon_order', (string) $request->request->get('_token'));
+        if (!$csrfTokenManager->isTokenValid($token)) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $order = $this->orderRepository->find($id);
+        if (!$order || $order->getSender() !== $user) {
+            return $this->redirectToRoute('user_public_requests');
+        }
+
+        if (!in_array($order->getStatus(), [Order::STATUS['DRAFT'], Order::STATUS['OFFERED']], true)) {
+            return $this->redirectToRoute('user_public_order', ['id' => $id]);
+        }
+
+        foreach ($order->getAttachments()->toArray() as $attachment) {
+            $this->attachmentUploader->delete($attachment);
+        }
+
+        $this->em->remove($order);
+        $this->em->flush();
+
+        return $this->redirectToRoute('user_public_requests');
     }
 
     /**

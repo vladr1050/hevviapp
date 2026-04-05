@@ -22,6 +22,7 @@ use App\Entity\Cargo;
 use App\Entity\Order;
 use App\Entity\OrderAttachment;
 use App\Entity\User;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Repository\OrderRepository;
 use App\Service\OrderAttachmentUploader;
 use Doctrine\ORM\EntityManagerInterface;
@@ -38,6 +39,7 @@ class OrderController extends AbstractController
         private readonly EntityManagerInterface  $em,
         private readonly OrderRepository         $orderRepository,
         private readonly OrderAttachmentUploader $attachmentUploader,
+        private readonly TranslatorInterface     $translator,
     ) {
     }
 
@@ -294,6 +296,57 @@ class OrderController extends AbstractController
             ['id' => $order->getId()?->toRfc4122()],
             JsonResponse::HTTP_OK
         );
+    }
+
+    /**
+     * Аннулирует текущую котировку (OFFERED → DRAFT, офферы удаляются).
+     * Следующий flush не создаёт оффер автоматически; новый расчёт — после PATCH с данными заказа.
+     */
+    #[Route('/{id}/void-quote', name: 'void_quote', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function voidQuote(string $id): JsonResponse
+    {
+        /** @var User $user */
+        $user  = $this->getUser();
+        $order = $this->orderRepository->find($id);
+
+        if (!$order || $order->getSender() !== $user) {
+            return $this->json(['error' => 'Order not found.'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        if ($order->getStatus() !== Order::STATUS['OFFERED']) {
+            return $this->json(
+                ['error' => 'Quote can only be voided for orders awaiting confirmation (OFFERED).'],
+                JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        foreach ($order->getOffers()->toArray() as $offer) {
+            $order->removeOffer($offer);
+            $this->em->remove($offer);
+        }
+
+        $order->setStatus(Order::STATUS['DRAFT']);
+        $order->setSkipNextOfferAutoCreate(true);
+        $this->em->flush();
+
+        $locale = $user->getLocale() ?? 'en';
+
+        return $this->json([
+            'id'           => $order->getId()?->toRfc4122(),
+            'status'       => $order->getStatus(),
+            'status_text'  => $this->translator->trans(
+                'order.status_' . $order->getStatus(),
+                [],
+                'AppBundle',
+                $locale
+            ),
+            'price'    => null,
+            'vat'      => null,
+            'brutto'   => null,
+            'fee'      => null,
+            'subtotal' => null,
+        ]);
     }
 
     /**

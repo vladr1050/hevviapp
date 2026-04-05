@@ -76,6 +76,12 @@ class OrderOfferAutoCreateListener
             'longitude' => $order->getDropoutLongitude(),
         ]);
 
+        if ($order->consumeSkipNextOfferAutoCreate()) {
+            $this->logger->info('⏭️ Skip offer auto-create flag (quote void / edit flow)');
+
+            return;
+        }
+
         // Если статус уже OFFERED или выше - значит уже обработали
         if ($order->getStatus() >= Order::STATUS['OFFERED']) {
             $this->logger->info('⏭️ Order status is OFFERED or higher, skipping');

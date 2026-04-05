@@ -9,6 +9,7 @@ import {
 	carrierCancelOrderUrl,
 	carrierConfirmRequestUrl,
 	carrierDeclineRequestUrl,
+	userAbandonOrderUrl,
 	userCancelOrderUrl,
 	userConfirmOrderUrl,
 } from '@config/constants'
@@ -40,6 +41,7 @@ interface OrderCardProps {
 	isRequest?: boolean
 	csrfToken?: string
 	cancelCsrfToken?: string
+	abandonCsrfToken?: string
 	updateStatusCsrfToken?: string
 }
 
@@ -52,6 +54,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 	isRequest,
 	csrfToken,
 	cancelCsrfToken,
+	abandonCsrfToken,
 	updateStatusCsrfToken,
 }) => {
 	const [modalId, setModalId] = useState<ModalIdType>()
@@ -79,7 +82,6 @@ export const OrderCard: FC<OrderCardProps> = ({
 
 	const isCanceled = order.status === OrderStatusEnum.CANCELLED
 	const isDelivered = order.status === OrderStatusEnum.DELIVERED
-	const isOffered = order.status <= OrderStatusEnum.OFFERED
 
 	const showInfo =
 		!isCanceled &&
@@ -440,46 +442,55 @@ export const OrderCard: FC<OrderCardProps> = ({
 									)}
 								</div>
 
-								<form
-									method="POST"
-									className={styles.bottomRight}
-									action={
-										isCarrier && isRequest
-											? carrierConfirmRequestUrl(order.id)
-											: userConfirmOrderUrl(order.id)
-									}
-								>
-									{!(isCarrier && isRequest) && (
-										<input type="hidden" name="_token" value={csrfToken} />
-									)}
-
-									{isRequest && (
-										<Button
-											type="button"
-											className="w-full"
-											variant="transparent"
-											onClick={() => setModalId('declineCarrier')}
+								<div className={styles.bottomRight}>
+									{isCarrier && isRequest ? (
+										<form
+											method="POST"
+											className="contents"
+											action={carrierConfirmRequestUrl(order.id)}
 										>
-											Decline
-										</Button>
-									)}
+											<Button
+												type="button"
+												className="w-full"
+												variant="transparent"
+												onClick={() => setModalId('declineCarrier')}
+											>
+												Decline
+											</Button>
 
-									{isOffered && (
-										<Button
-											type="submit"
-											name="action"
-											value="cancel"
-											className="w-full"
-											variant="outline"
-										>
-											Cancel
-										</Button>
-									)}
-
-									<Button type="submit" name="action" value="confirm" className="w-full">
-										Confirm
-									</Button>
-								</form>
+											<Button type="submit" name="action" value="confirm" className="w-full">
+												Confirm
+											</Button>
+										</form>
+									) : !isCarrier ? (
+										<>
+											{order.status <= OrderStatusEnum.OFFERED && abandonCsrfToken && (
+												<form
+													method="POST"
+													className="contents"
+													action={userAbandonOrderUrl(order.id)}
+												>
+													<input type="hidden" name="_token" value={abandonCsrfToken} />
+													<Button type="submit" className="w-full" variant="outline">
+														Cancel
+													</Button>
+												</form>
+											)}
+											{order.status === OrderStatusEnum.OFFERED && csrfToken && (
+												<form
+													method="POST"
+													className="contents"
+													action={userConfirmOrderUrl(order.id)}
+												>
+													<input type="hidden" name="_token" value={csrfToken} />
+													<Button type="submit" className="w-full">
+														Confirm
+													</Button>
+												</form>
+											)}
+										</>
+									) : null}
+								</div>
 							</div>
 						</div>
 					)}
