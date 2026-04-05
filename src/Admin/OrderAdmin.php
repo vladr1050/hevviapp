@@ -19,6 +19,7 @@ namespace App\Admin;
 
 use App\Entity\Order;
 use App\Entity\OrderAssignment;
+use App\Entity\OrderHistory;
 use App\Entity\OrderOffer;
 use App\Entity\ServiceArea;
 use App\Form\Type\AddressWithMapType;
@@ -72,6 +73,9 @@ class OrderAdmin extends BaseAdmin
     protected function prePersist(object $object): void
     {
         $this->handleUploadedFiles($object);
+        if ($object instanceof Order) {
+            $this->ensureDeliveredHistoryIfMissing($object);
+        }
     }
 
     /**
@@ -80,6 +84,32 @@ class OrderAdmin extends BaseAdmin
     protected function preUpdate(object $object): void
     {
         $this->handleUploadedFiles($object);
+        if ($object instanceof Order) {
+            $this->ensureDeliveredHistoryIfMissing($object);
+        }
+    }
+
+    /**
+     * When status is DELIVERED (set in admin), ensure a history row exists so
+     * carrier/sender timelines and delivered_date resolve correctly.
+     */
+    private function ensureDeliveredHistoryIfMissing(Order $order): void
+    {
+        if ($order->getStatus() !== Order::STATUS['DELIVERED']) {
+            return;
+        }
+
+        foreach ($order->getHistories() as $history) {
+            if ($history->getStatus() === Order::STATUS['DELIVERED']) {
+                return;
+            }
+        }
+
+        $history = new OrderHistory();
+        $history->setRelatedOrder($order);
+        $history->setStatus(Order::STATUS['DELIVERED']);
+        $history->setChangedBy(OrderHistory::CHANGED_BY['MANUAL']);
+        $order->addHistory($history);
     }
 
     private function handleUploadedFiles(Order $order): void

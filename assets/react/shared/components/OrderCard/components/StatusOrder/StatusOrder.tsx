@@ -59,7 +59,7 @@ const useDeliveryCountdown = (paidDate: string | undefined, deliveredDate: strin
 }
 
 export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId, csrfToken }) => {
-	const [valueForm, setValueForm] = useState<'PICKUP_DONE' | 'IN_TRANSIT' | 'DELIVERED'>()
+	const [valueForm, setValueForm] = useState<'PICKUP_DONE' | 'IN_TRANSIT'>()
 	const countdown = useDeliveryCountdown(order.paid_date, order.delivered_date)
 
 	return (
@@ -235,13 +235,12 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 
 						<ItemCarrier
 							iconType="check_circle_1"
-							label={<>Delivered</>}
-							checked={order.status === OrderStatusEnum.DELIVERED || valueForm === 'DELIVERED'}
+							label={<>Approved</>}
+							hideCheckbox
 							isActive={order.status === OrderStatusEnum.DELIVERED}
-							isWaiting={order.status === OrderStatusEnum.IN_TRANSIT}
+							isWaiting={false}
 							showInfo={order.status === OrderStatusEnum.IN_TRANSIT}
 							infoText="Pending approval"
-							onClick={() => setValueForm((v) => (v === 'DELIVERED' ? undefined : 'DELIVERED'))}
 						/>
 					</div>
 				</div>

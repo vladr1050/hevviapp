@@ -219,10 +219,10 @@ class CarrierController extends AbstractController
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
 
+        // Final DELIVERED is set in Sonata admin only; carrier stops at IN_TRANSIT.
         $allowedTransitions = [
             Order::STATUS['AWAITING_PICKUP'] => ['PICKUP_DONE' => Order::STATUS['PICKUP_DONE']],
             Order::STATUS['PICKUP_DONE'] => ['IN_TRANSIT' => Order::STATUS['IN_TRANSIT']],
-            Order::STATUS['IN_TRANSIT'] => ['DELIVERED' => Order::STATUS['DELIVERED']],
         ];
 
         $action = (string)$request->request->get('action');
