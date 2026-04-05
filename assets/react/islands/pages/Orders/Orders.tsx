@@ -18,7 +18,6 @@ interface OrdersPageProps {
 
 export const OrdersPage: FC<OrdersPageProps> = (props) => {
 	const { title, orders, isCarrier, device } = props
-	console.log(props)
 
 	const { isMobile } = useDevice(device)
 
