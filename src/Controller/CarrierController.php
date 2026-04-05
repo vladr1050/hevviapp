@@ -151,7 +151,7 @@ class CarrierController extends AbstractController
 
         $this->em->flush();
 
-        return $this->redirectToRoute('carrier_public_requests');
+        return $this->redirectToRoute('carrier_public_order', ['id' => $id]);
     }
 
     #[Route('/orders/{id}/cancel', name: 'public_order_cancel', methods: ['POST'])]
