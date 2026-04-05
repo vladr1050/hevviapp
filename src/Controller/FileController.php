@@ -9,7 +9,9 @@
 namespace App\Controller;
 
 use App\Entity\Carrier;
+use App\Entity\Order;
 use App\Entity\User;
+use App\Repository\OrderAssignmentRepository;
 use App\Repository\OrderAttachmentRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -30,6 +32,7 @@ class FileController extends AbstractController
 {
     public function __construct(
         private readonly OrderAttachmentRepository $attachmentRepository,
+        private readonly OrderAssignmentRepository $orderAssignmentRepository,
         #[Autowire('%kernel.project_dir%/public')]
         private readonly string $publicDir,
     ) {
@@ -48,9 +51,9 @@ class FileController extends AbstractController
         $user  = $this->getUser();
 
         $hasAccess = match (true) {
-            $user instanceof User    => $order?->getSender() === $user,
-            $user instanceof Carrier => $order?->getCarrier() === $user,
-            default                  => false,
+            $user instanceof User => $order?->getSender() === $user,
+            $user instanceof Carrier => $this->carrierCanDownloadAttachment($order, $user),
+            default => false,
         };
 
         if (!$hasAccess) {
@@ -81,5 +84,22 @@ class FileController extends AbstractController
                 'X-Content-Type-Options' => 'nosniff',
             ]
         );
+    }
+
+    /**
+     * Подтверждённый заказ: order.carrier. Входящий запрос (ещё без подтверждения):
+     * назначение ASSIGNED — как в OrderRepository::findRequestsByCarrier.
+     */
+    private function carrierCanDownloadAttachment(?Order $order, Carrier $carrier): bool
+    {
+        if (null === $order) {
+            return false;
+        }
+
+        if ($order->getCarrier() === $carrier) {
+            return true;
+        }
+
+        return null !== $this->orderAssignmentRepository->findAssignedByOrderAndCarrier($order, $carrier);
     }
 }
