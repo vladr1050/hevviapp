@@ -8,6 +8,8 @@ RUN apk add --no-cache \
     bash \
     git \
     curl \
+    chromium \
+    ttf-dejavu \
     icu-dev \
     libzip-dev \
     oniguruma-dev \
@@ -157,7 +159,7 @@ RUN if [ "$APP_MODE" = "dev" ]; then \
 RUN php bin/console assets:install --symlink --relative public --env=${APP_ENV} --no-debug
 
 # Создаем необходимые директории с правильными правами
-RUN mkdir -p var/cache var/log public/build && \
+RUN mkdir -p var/cache var/log var/invoices public/build && \
     chown -R www-data:www-data var public
 
 # Копируем entrypoint.sh в контейнер
