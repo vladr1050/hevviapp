@@ -58,6 +58,7 @@ jobs:
           ssh -i "$HOME/.ssh/deploy_key" -o IdentitiesOnly=yes \
             "${DEPLOY_USER}@${DEPLOY_HOST}" \
             "cd ${DEPLOY_PATH} && export COMPOSE_FILE=compose.yaml:compose.prod.yaml && \
+              docker compose build php && \
               docker compose up -d --force-recreate php && \
               docker compose exec -T php composer install --no-dev --optimize-autoloader --no-interaction && \
               docker compose exec -T php sh -c 'cd /var/www/app && npm install && npm run build' && \
