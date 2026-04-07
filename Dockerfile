@@ -34,6 +34,9 @@ RUN apk add --no-cache \
     rabbitmq-c-dev \
     openssl-dev
 
+# Сборка падает, если пакет chromium не попал в образ (иначе на проде тихий сбой PDF).
+RUN chromium --version
+
 # Установка PHP-расширений
 RUN docker-php-ext-install \
     intl \
