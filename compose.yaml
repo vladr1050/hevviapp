@@ -23,10 +23,10 @@ services:
       - hevii
 ###< doctrine/doctrine-bundle ###
   php:
+    # Для приватных Composer-репозиториев локально добавьте в compose.override.yaml:
+    #   build: { dockerfile: ./Dockerfile, ssh: [default] }  (+ запущенный ssh-agent)
     build:
       dockerfile: ./Dockerfile
-      ssh:
-        - default
     volumes:
       # Монтируем весь проект для живой разработки
       - ./:/var/www/app:cached
