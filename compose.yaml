@@ -39,8 +39,8 @@ services:
     ports:
       - "9020:9000"
     environment:
-      # Убеждаемся что APP_DEBUG=1 для автоинвалидации кеша
-      DATABASE_URL: "postgresql://app:!ChangeMe!@database:5432/app?serverVersion=16&charset=utf8"
+      # Берётся из .env на сервере; иначе локальный дефолт (должен совпадать с POSTGRES_PASSWORD)
+      DATABASE_URL: "${DATABASE_URL:-postgresql://app:!ChangeMe!@database:5432/app?serverVersion=16&charset=utf8}"
       APP_DEBUG: 1
       APP_SECRET: ${APP_SECRET}
     networks:
