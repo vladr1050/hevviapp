@@ -33,6 +33,13 @@ sonata_admin:
                         label: menu.orders
                     -   route: admin_app_cargo_list
                         label: menu.cargo
+            settings:
+                label:           menu.settings
+                label_catalogue: AppBundle
+                icon:            '<i class="fas fa-cog"></i>'
+                items:
+                    -   route: admin_app_billingcompany_list
+                        label: menu.companies
             service_areas:
                 on_top:          true
                 label:           menu.service_areas
@@ -189,6 +196,19 @@ services:
                 label:                     menu.matrix_items
                 label_translator_strategy: sonata.admin.label.strategy.underscore
                 show_in_dashboard:         false
+                show_in_roles_matrix:      false
+        calls:
+            - [ setTranslationDomain, [ 'AppBundle' ] ]
+
+    App\Admin\BillingCompanyAdmin:
+        tags:
+            -   name:                      sonata.admin
+                code:                      ~
+                model_class:               App\Entity\BillingCompany
+                controller:                ~
+                manager_type:              orm
+                label:                     menu.companies
+                label_translator_strategy: sonata.admin.label.strategy.underscore
                 show_in_roles_matrix:      false
         calls:
             - [ setTranslationDomain, [ 'AppBundle' ] ]

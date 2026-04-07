@@ -10,6 +10,8 @@ menu:
     offers:            Offers
     order_history:     Order History
     order_assignments: Order Assignments
+    settings:          Settings
+    companies:         Companies
     service_areas:     Service Areas
     matrix_items:      Matrix Items
 
@@ -28,6 +30,10 @@ breadcrumb:
     link_matrixitem_create:   Create Matrix Item
     link_service_area_list:   List of Service Areas
     link_service_area_create: Create Service Area
+    link_billingcompany_list:   Companies
+    link_billingcompany_create: Create Company
+    link_billingcompany_edit:   Edit Company
+    link_billingcompany_show:   Company
 
 filter:
     label_order_number:           Order №
@@ -78,6 +84,8 @@ list:
     label_state:                State
     label_geo_areas_count:      Geo Areas Count
     label_matrix_items_count:   Matrix Items Count
+    label_vat_rate_percent:     VAT rate (%)
+    label_issues_invoices:      Issues invoices
     label_weight_from:          Weight From
     label_weight_to:            Weight To
     label_price:                Price
@@ -188,6 +196,16 @@ form:
     group_service_area_info:           Service Area Information
     group_geo_areas_selection:         Geo Areas Selection
     group_matrix_items_list:           Matrix Items List
+    group_tabs_address:                Address
+    group_tabs_contacts:               Contacts
+    group_tabs_invoicing:              Invoicing
+    group_billing_company_identity:    Company & VAT
+    group_billing_company_address:     Legal address
+    group_billing_company_contacts:    Bank & contacts
+    group_billing_company_invoicing:   Invoice terms
+    help_billing_company_vat_rate:     Percent used for VAT on invoices from this company (e.g. 21 for 21%).
+    help_billing_company_payment_due_days: Leave empty so the due date equals the invoice date; otherwise enter days after the issue date (e.g. 5).
+    help_billing_company_issues_invoices: Only one company can issue invoices at a time; checking this clears the flag on others.
     label_first_name:                  First Name
     label_last_name:                   Last Name
     label_phone:                       Phone Number

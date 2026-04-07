@@ -10,6 +10,8 @@ menu:
     offers:            Коммерческие предложения
     order_history:     История заказов
     order_assignments: Назначения заказов
+    settings:          Настройки
+    companies:         Компании
     service_areas:     Зоны обслуживания
     matrix_items:      Элементы матрицы
 
@@ -24,6 +26,10 @@ breadcrumb:
     link_servicearea_create: Создать зону обслуживания
     link_matrixitem_list:    Список элементов матрицы
     link_matrixitem_create:  Создать элемент матрицы
+    link_billingcompany_list:   Компании
+    link_billingcompany_create: Создать компанию
+    link_billingcompany_edit:   Редактировать компанию
+    link_billingcompany_show:   Компания
 
 filter:
     label_order_number:           Номер заказа
@@ -69,6 +75,8 @@ list:
     label_changed_at:           Дата изменения
     label_geo_areas_count:      Количество гео-зон
     label_matrix_items_count:   Количество элементов матрицы
+    label_vat_rate_percent:     Ставка НДС (%)
+    label_issues_invoices:      Выставляет счета
     label_mileage_from:         Километраж от
     label_mileage_to:           Километраж до
     label_price:                Цена
@@ -165,6 +173,16 @@ form:
     group_service_area_info:   Информация о зоне обслуживания
     group_geo_areas_selection: Выбор гео-зон
     group_matrix_items_list:   Список элементов матрицы
+    group_tabs_address:        Адрес
+    group_tabs_contacts:       Контакты
+    group_tabs_invoicing:      Счета
+    group_billing_company_identity:    Компания и НДС
+    group_billing_company_address:     Юридический адрес
+    group_billing_company_contacts:    Банк и контакты
+    group_billing_company_invoicing:   Условия счёта
+    help_billing_company_vat_rate:     Процент НДС для расчётов по счетам от этой компании (например, 21 для 21%).
+    help_billing_company_payment_due_days: Оставьте пустым — срок оплаты совпадает с датой счёта; иначе укажите число дней после даты выставления (например, 5).
+    help_billing_company_issues_invoices: Одновременно только одна компания выставляет счета; включение снимает флаг с остальных.
     label_first_name:          Имя
     label_last_name:           Фамилия
     label_phone:               Телефон
