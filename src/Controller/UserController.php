@@ -188,7 +188,8 @@ class UserController extends AbstractController
             'vat' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getVat(), $order->getCurrency()),
             'brutto' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
             'fee' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getFee(), $order->getCurrency()),
-            'subtotal' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getNetto() + $order->getLatestOffer()?->getFee(), $order->getCurrency()),
+            // netto в OrderOffer = base + platform fee (до НДС), см. OrderOfferCalculatorService; не суммировать с fee повторно
+            'subtotal' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getNetto(), $order->getCurrency()),
             'address' => [
                 'from' => $order->getPickupAddress(),
                 'to' => $order->getDropoutAddress(),
