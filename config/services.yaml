@@ -70,6 +70,11 @@ services:
     App\Service\Order\Contract\OrderNumberGeneratorInterface:
         class: App\Service\Order\PostgresOrderNumberGenerator
 
+    ### INVOICE PDF ###
+    App\Service\Invoice\ChromiumInvoicePdfRenderer:
+        arguments:
+            $chromeBinary: '%env(INVOICE_CHROME_BINARY)%'
+
     ### ORDER OFFER SERVICES ###
     # Interface binding for OrderOffer calculator
     App\Service\OrderOffer\Contract\OrderOfferCalculatorInterface:

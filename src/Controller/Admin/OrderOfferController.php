@@ -98,6 +98,7 @@ class OrderOfferController extends AbstractController
                 'fee' => $orderOffer->getFee(),
                 'vat' => $orderOffer->getVat(),
                 'vatPercent' => $result->vatPercent,
+                'feePercent' => $result->feePercent,
                 'status' => $orderOffer->getStatus(),
             ],
         ]);

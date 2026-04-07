@@ -1,0 +1,3 @@
+parameters:
+    # Default when INVOICE_CHROME_BINARY is unset (override in .env / deployment).
+    env(INVOICE_CHROME_BINARY): 'chromium'

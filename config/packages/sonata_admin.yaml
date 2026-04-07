@@ -31,6 +31,8 @@ sonata_admin:
                 items:
                     -   route: admin_app_order_list
                         label: menu.orders
+                    -   route: admin_app_invoice_list
+                        label: menu.invoices
                     -   route: admin_app_cargo_list
                         label: menu.cargo
             settings:
@@ -208,6 +210,19 @@ services:
                 controller:                ~
                 manager_type:              orm
                 label:                     menu.companies
+                label_translator_strategy: sonata.admin.label.strategy.underscore
+                show_in_roles_matrix:      false
+        calls:
+            - [ setTranslationDomain, [ 'AppBundle' ] ]
+
+    App\Admin\InvoiceAdmin:
+        tags:
+            -   name:                      sonata.admin
+                code:                      ~
+                model_class:               App\Entity\Invoice
+                controller:                ~
+                manager_type:              orm
+                label:                     menu.invoices
                 label_translator_strategy: sonata.admin.label.strategy.underscore
                 show_in_roles_matrix:      false
         calls:

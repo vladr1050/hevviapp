@@ -91,6 +91,7 @@ class CreateOrderOfferCommand extends Command
                 ['Brutto', $result->bruttoPrice . ' cents = ' . ($result->bruttoPrice / 100) . ' EUR'],
                 ['Netto', $result->nettoPrice . ' cents = ' . ($result->nettoPrice / 100) . ' EUR'],
                 ['Fee', $result->feeAmount . ' cents'],
+                ['Fee rate %', (string) $result->feePercent],
                 ['VAT rate %', (string) $result->vatPercent],
                 ['VAT amount', $result->vatAmount . ' cents'],
             ]

@@ -34,6 +34,13 @@ class BillingCompany extends BaseUUID
     #[Assert\Range(min: 0, max: 100)]
     private ?string $vatRate = null;
 
+    /**
+     * Platform commission percent on base freight (matrix net), before VAT. Null = use env PLATFORM_FEE_PERCENT.
+     */
+    #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 4, nullable: true)]
+    #[Assert\Range(min: 0, max: 100)]
+    private ?string $platformFeePercent = null;
+
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     private ?string $addressStreet = null;
@@ -124,6 +131,18 @@ class BillingCompany extends BaseUUID
     public function setVatRate(string $vatRate): static
     {
         $this->vatRate = $vatRate;
+
+        return $this;
+    }
+
+    public function getPlatformFeePercent(): ?string
+    {
+        return $this->platformFeePercent;
+    }
+
+    public function setPlatformFeePercent(?string $platformFeePercent): static
+    {
+        $this->platformFeePercent = $platformFeePercent;
 
         return $this;
     }

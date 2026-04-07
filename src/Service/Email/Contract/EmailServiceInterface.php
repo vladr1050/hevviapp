@@ -38,4 +38,16 @@ interface EmailServiceInterface
         string $htmlContent,
         ?string $textContent = null
     ): bool;
+
+    /**
+     * @param non-empty-string $pdfBinary Raw PDF bytes
+     */
+    public function sendWithPdfAttachment(
+        string $to,
+        string $subject,
+        string $htmlContent,
+        ?string $textContent,
+        string $attachmentFilename,
+        string $pdfBinary,
+    ): bool;
 }

@@ -1,0 +1,16 @@
+{% extends '@SonataAdmin/CRUD/base_list_field.html.twig' %}
+{% block field %}
+    {# Keys match App\Entity\Invoice status constants #}
+    {% set labels = {
+        1: 'invoice.status_pdf_failed',
+        2: 'invoice.status_email_not_sent',
+        3: 'invoice.status_email_sent',
+        4: 'invoice.status_email_failed',
+    } %}
+    {% set key = labels[object.status] ?? null %}
+    {% if key %}
+        {{ key|trans({}, 'AppBundle') }}
+    {% else %}
+        {{ object.status }}
+    {% endif %}
+{% endblock %}

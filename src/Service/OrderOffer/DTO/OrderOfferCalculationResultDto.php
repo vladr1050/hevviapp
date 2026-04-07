@@ -34,6 +34,7 @@ final readonly class OrderOfferCalculationResultDto
         public ?int    $nettoPrice = null,
         public ?float  $vatPercent = null,
         public ?int    $vatAmount = null,
+        public ?float  $feePercent = null,
         public ?int    $feeAmount = null,
         public ?string $errorMessage = null,
         public ?string $errorCode = null,
@@ -50,6 +51,7 @@ final readonly class OrderOfferCalculationResultDto
         int    $nettoPrice,
         float  $vatPercent,
         int    $vatAmount,
+        float  $feePercent,
         int    $feeAmount,
     ): self {
         return new self(
@@ -59,6 +61,7 @@ final readonly class OrderOfferCalculationResultDto
             nettoPrice: $nettoPrice,
             vatPercent: $vatPercent,
             vatAmount: $vatAmount,
+            feePercent: $feePercent,
             feeAmount: $feeAmount,
         );
     }

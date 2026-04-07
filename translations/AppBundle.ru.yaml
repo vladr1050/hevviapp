@@ -1,3 +1,9 @@
+invoice:
+    status_pdf_failed:      Ошибка генерации PDF
+    status_email_not_sent: Не отправлено (нет email покупателя)
+    status_email_sent:      Письмо отправлено
+    status_email_failed:    Ошибка отправки email
+
 # Заголовок вкладки браузера (публичный сайт)
 public_site:
     browser_title: hevvi
@@ -14,6 +20,7 @@ menu:
     companies:         Компании
     service_areas:     Зоны обслуживания
     matrix_items:      Элементы матрицы
+    invoices:          Счета
 
 breadcrumb:
     link_user_list:          Список пользователей
@@ -30,6 +37,7 @@ breadcrumb:
     link_billingcompany_create: Создать компанию
     link_billingcompany_edit:   Редактировать компанию
     link_billingcompany_show:   Компания
+    link_invoice_list:          Счета
 
 filter:
     label_order_number:           Номер заказа
@@ -76,6 +84,7 @@ list:
     label_geo_areas_count:      Количество гео-зон
     label_matrix_items_count:   Количество элементов матрицы
     label_vat_rate_percent:     Ставка НДС (%)
+    label_platform_fee_percent: Комиссия платформы (%)
     label_issues_invoices:      Выставляет счета
     label_mileage_from:         Километраж от
     label_mileage_to:           Километраж до
@@ -84,6 +93,9 @@ list:
     label_registration_number:  Регистрационный номер
     label_legal_name:           Юридическое название
     label_vat_number:           Номер НДС (VAT)
+    label_invoice_number:       № счёта
+    label_invoice_status:       Статус счёта
+    label_invoice_issue_date:   Дата выставления
 
 show:
     label_order_number:       Номер заказа
@@ -192,7 +204,8 @@ form:
     group_billing_company_contacts:    Банк и контакты
     group_billing_company_invoicing:   Условия счёта
     help_billing_company_vat_rate:     Процент НДС для расчётов по счетам от этой компании (например, 21 для 21%).
-    help_billing_company_payment_due_days: Оставьте пустым — срок оплаты совпадает с датой счёта; иначе укажите число дней после даты выставления (например, 5).
+    help_billing_company_platform_fee_percent: Комиссия от базовой стоимости доставки (цена из матрицы), до НДС. Пусто — берётся PLATFORM_FEE_PERCENT из окружения.
+    help_billing_company_payment_due_days: Оставьте пустым — срок оплаты совпадает с датой выставления счёта; иначе укажите число дней после даты выставления (например, 5).
     help_billing_company_issues_invoices: Одновременно только одна компания выставляет счета; включение снимает флаг с остальных.
     label_first_name:          Имя
     label_last_name:           Фамилия
@@ -237,6 +250,24 @@ form:
     label_fee:                 Сумма комиссии
     label_vat:                 Сумма НДС
     label_vat_number:          Номер НДС (VAT)
+    label_platform_fee_percent: Комиссия платформы (%)
+    label_invoice_number:       № счёта
+    label_invoice_status:       Статус счёта
+    label_invoice_issue_date:   Дата выставления
+    label_invoice_due_date:     Срок оплаты
+    label_invoice_amount_freight:   Доставка (центы)
+    label_invoice_amount_commission: Комиссия (центы)
+    label_invoice_amount_subtotal:   Промежуточно (центы)
+    label_invoice_amount_vat:        НДС (центы)
+    label_invoice_amount_gross:      Итого (центы)
+    label_invoice_seller_name:       Продавец
+    label_invoice_seller_address:    Адрес продавца (стр. 1)
+    label_invoice_seller_address_2:  Адрес продавца (стр. 2)
+    label_invoice_buyer_email:       Email покупателя (снимок)
+    label_invoice_pdf_path:          Путь к PDF
+    label_invoice_pdf_error:         Ошибка PDF
+    label_invoice_email_error:       Ошибка email
+    label_currency:              Валюта
     label_offer_status:        Статус предложения
     label_add_offer:           Добавить предложение
     label_upload_files:        PDF-документы

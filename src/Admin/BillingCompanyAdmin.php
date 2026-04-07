@@ -38,6 +38,9 @@ class BillingCompanyAdmin extends BaseAdmin
             ->add('vatRate', null, [
                 'label' => 'list.label_vat_rate_percent',
             ])
+            ->add('platformFeePercent', null, [
+                'label' => 'list.label_platform_fee_percent',
+            ])
             ->add('issuesInvoices', null, [
                 'label' => 'list.label_issues_invoices',
             ])
@@ -55,6 +58,9 @@ class BillingCompanyAdmin extends BaseAdmin
             ->add('registrationNumber')
             ->add('vatNumber')
             ->add('vatRate')
+            ->add('platformFeePercent', null, [
+                'label' => 'show.label_platform_fee_percent',
+            ])
             ->add('addressStreet')
             ->add('addressNumber')
             ->add('addressCity')
@@ -84,6 +90,13 @@ class BillingCompanyAdmin extends BaseAdmin
                 'html5' => true,
                 'attr' => ['step' => 'any', 'min' => 0],
                 'help' => 'form.help_billing_company_vat_rate',
+            ])
+            ->add('platformFeePercent', NumberType::class, [
+                'required' => false,
+                'scale' => 4,
+                'html5' => true,
+                'attr' => ['step' => 'any', 'min' => 0],
+                'help' => 'form.help_billing_company_platform_fee_percent',
             ])
             ->end()
             ->end()

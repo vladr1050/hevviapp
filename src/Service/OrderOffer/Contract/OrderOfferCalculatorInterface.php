@@ -39,7 +39,7 @@ interface OrderOfferCalculatorInterface
      * 3. Вычислить общий вес всех Cargo в заказе
      * 4. Найти подходящий MatrixItem по весу в найденной ServiceArea
      * 5. Получить базовую цену (price) из MatrixItem
-     * 6. Рассчитать комиссию, нетто, НДС (ставка из компании «Issues invoices», иначе TAX_VAT) и брутто
+     * 6. Рассчитать комиссию (процент из компании «Issues invoices», иначе PLATFORM_FEE_PERCENT), нетто, НДС (ставка из той же компании, иначе TAX_VAT) и брутто
      * 
      * @param Order $order Заказ для расчета стоимости
      * 

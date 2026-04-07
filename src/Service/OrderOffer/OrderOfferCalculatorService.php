@@ -48,7 +48,7 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
         #[Autowire('%env(int:TAX_VAT)%')]
         private readonly int                   $defaultVatPercent,
         #[Autowire('%env(int:PLATFORM_FEE_PERCENT)%')]
-        private readonly int                   $platformFeePercent,
+        private readonly int                   $defaultPlatformFeePercent,
     )
     {
     }
@@ -126,9 +126,11 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
             // Шаг 5: Получить базовый фрахт из матрицы (цена уже без НДС и без комиссии)
             $baseNetto = $matrixItem->getPrice();
 
-            // Шаг 6: Рассчитать комиссию платформы от базового нетто
+            // Шаг 6: Процент комиссии — из компании «Issues invoices», иначе PLATFORM_FEE_PERCENT
+            $feePercent = $this->resolvePlatformFeePercent();
+
             // fee = baseNetto × FEE%
-            $feeAmount = $this->calculateFeeAmount($baseNetto, $this->platformFeePercent);
+            $feeAmount = $this->calculateFeeAmount($baseNetto, $feePercent);
 
             // Шаг 7: Нетто с комиссией (Subtotal no VAT)
             // netto = baseNetto + fee
@@ -148,7 +150,7 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
                 'service_area' => $serviceArea->getName(),
                 'total_weight' => $totalWeight,
                 'base_netto' => $baseNetto,
-                'fee_percent' => $this->platformFeePercent,
+                'fee_percent' => $feePercent,
                 'fee_amount' => $feeAmount,
                 'netto_price' => $nettoPrice,
                 'vat_percent' => $vatRatePercent,
@@ -162,6 +164,7 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
                 nettoPrice: $nettoPrice,
                 vatPercent: $vatRatePercent,
                 vatAmount: $vatAmount,
+                feePercent: $feePercent,
                 feeAmount: $feeAmount,
             );
         } catch (\Throwable $e) {
@@ -230,13 +233,29 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
      * Формула: fee = round(baseNetto * feePercent / 100)
      *
      * @param int $baseNetto   Базовая нетто-цена (без VAT)
-     * @param int $feePercent  Процент комиссии платформы
+     * @param float $feePercent Процент комиссии платформы
      *
      * @return int Сумма комиссии, округлённая до целого
      */
-    private function calculateFeeAmount(int $baseNetto, int $feePercent): int
+    private function calculateFeeAmount(int $baseNetto, float $feePercent): int
     {
-        return (int)round($baseNetto * $feePercent / 100);
+        return (int) round($baseNetto * $feePercent / 100);
+    }
+
+    /**
+     * Процент комиссии из BillingCompany с «Issues invoices», иначе env PLATFORM_FEE_PERCENT.
+     */
+    private function resolvePlatformFeePercent(): float
+    {
+        $issuer = $this->issuingCompanyResolver->getIssuingCompany();
+        if ($issuer !== null) {
+            $p = $issuer->getPlatformFeePercent();
+            if ($p !== null && $p !== '') {
+                return (float) $p;
+            }
+        }
+
+        return (float) $this->defaultPlatformFeePercent;
     }
 
     /**

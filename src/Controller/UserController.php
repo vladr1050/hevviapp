@@ -9,6 +9,7 @@ use App\Entity\OrderHistory;
 use App\Entity\OrderOffer;
 use App\Entity\User;
 use App\Repository\OrderRepository;
+use App\Service\Invoice\InvoiceIssuingService;
 use App\Service\OrderAttachmentUploader;
 use App\Twig\Extension\Filter\MoneyExtension;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,6 +32,7 @@ class UserController extends AbstractController
         private readonly TranslatorInterface       $translator,
         private readonly EntityManagerInterface    $em,
         private readonly OrderAttachmentUploader   $attachmentUploader,
+        private readonly InvoiceIssuingService     $invoiceIssuingService,
     )
     {
     }
@@ -248,6 +250,9 @@ class UserController extends AbstractController
         }
 
         $this->em->flush();
+
+        $this->invoiceIssuingService->issueForAcceptedOrder($order);
+
         return $this->redirectToRoute('user_public_order', ['id' => $id]);
     }
 

@@ -29,6 +29,16 @@ class BillingCompanyRepository extends ServiceEntityRepository
         return $this->findOneBy(['issuesInvoices' => true]);
     }
 
+    public function countIssuingCompanies(): int
+    {
+        return (int) $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->where('c.issuesInvoices = :true')
+            ->setParameter('true', true)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     /**
      * Clears the "issues invoices" flag on all rows except the given id (if any).
      */

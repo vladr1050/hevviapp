@@ -114,4 +114,74 @@ class MailjetEmailService implements EmailServiceInterface
             return false;
         }
     }
+
+    public function sendWithPdfAttachment(
+        string $to,
+        string $subject,
+        string $htmlContent,
+        ?string $textContent,
+        string $attachmentFilename,
+        string $pdfBinary,
+    ): bool {
+        if (!$this->enabled) {
+            $this->logger->info('Email sending is disabled (attachment skipped)', [
+                'to' => $to,
+                'subject' => $subject,
+            ]);
+
+            return true;
+        }
+
+        try {
+            $message = [
+                'From' => [
+                    'Email' => $this->senderEmail,
+                    'Name' => $this->senderName,
+                ],
+                'To' => [
+                    ['Email' => $to],
+                ],
+                'Subject' => $subject,
+                'HTMLPart' => $htmlContent,
+                'Attachments' => [
+                    [
+                        'ContentType' => 'application/pdf',
+                        'Filename' => $attachmentFilename,
+                        'Base64Content' => base64_encode($pdfBinary),
+                    ],
+                ],
+            ];
+
+            if ($textContent !== null) {
+                $message['TextPart'] = $textContent;
+            }
+
+            $body = ['Messages' => [$message]];
+
+            $response = $this->mailjetClient->post(Resources::$Email, ['body' => $body]);
+
+            if ($response->success()) {
+                $this->logger->info('Email with PDF sent via Mailjet', [
+                    'to' => $to,
+                    'subject' => $subject,
+                ]);
+
+                return true;
+            }
+
+            $this->logger->error('Mailjet PDF email failed', [
+                'to' => $to,
+                'status' => $response->getStatus(),
+            ]);
+
+            return false;
+        } catch (\Exception $e) {
+            $this->logger->error('Mailjet PDF email exception', [
+                'to' => $to,
+                'exception' => $e->getMessage(),
+            ]);
+
+            return false;
+        }
+    }
 }

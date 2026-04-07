@@ -171,7 +171,8 @@ class OrderOfferAutoCreateListener
             'brutto' => $result->bruttoPrice,
             'netto' => $result->nettoPrice,
             'fee' => $result->feeAmount,
-            'vat' => $result->vatPercent,
+            'fee_percent' => $result->feePercent,
+            'vat_percent' => $result->vatPercent,
         ]);
     }
 

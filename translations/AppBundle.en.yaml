@@ -1,3 +1,9 @@
+invoice:
+    status_pdf_failed:      PDF generation failed
+    status_email_not_sent: Not sent (no buyer email)
+    status_email_sent:      Email sent
+    status_email_failed:    Email delivery failed
+
 # Browser tab / PWA short name (public site)
 public_site:
     browser_title: hevvi
@@ -14,6 +20,7 @@ menu:
     companies:         Companies
     service_areas:     Service Areas
     matrix_items:      Matrix Items
+    invoices:          Invoices
 
 breadcrumb:
     link_user_list:           List of Users
@@ -34,6 +41,7 @@ breadcrumb:
     link_billingcompany_create: Create Company
     link_billingcompany_edit:   Edit Company
     link_billingcompany_show:   Company
+    link_invoice_list:          Invoices
 
 filter:
     label_order_number:           Order №
@@ -86,6 +94,7 @@ list:
     label_geo_areas_count:      Geo Areas Count
     label_matrix_items_count:   Matrix Items Count
     label_vat_rate_percent:     VAT rate (%)
+    label_platform_fee_percent: Platform fee (%)
     label_issues_invoices:      Issues invoices
     label_weight_from:          Weight From
     label_weight_to:            Weight To
@@ -93,6 +102,9 @@ list:
     label_service_area:         Service Area
     label_currency:             Currency
     label_offers:               Offers
+    label_invoice_number:       Invoice №
+    label_invoice_status:       Invoice status
+    label_invoice_issue_date:   Issue date
 
 show:
     label_order_number:                Order №
@@ -206,7 +218,8 @@ form:
     group_billing_company_contacts:    Bank & contacts
     group_billing_company_invoicing:   Invoice terms
     help_billing_company_vat_rate:     Percent used for VAT on invoices from this company (e.g. 21 for 21%).
-    help_billing_company_payment_due_days: Leave empty so the due date equals the invoice date; otherwise enter days after the issue date (e.g. 5).
+    help_billing_company_platform_fee_percent: Commission on base freight (matrix price), before VAT. Leave empty to use PLATFORM_FEE_PERCENT from environment.
+    help_billing_company_payment_due_days: Leave empty so the due date equals the invoice issue date; otherwise enter days after the issue date (e.g. 5).
     help_billing_company_issues_invoices: Only one company can issue invoices at a time; checking this clears the flag on others.
     label_first_name:                  First Name
     label_last_name:                   Last Name
@@ -264,6 +277,23 @@ form:
     label_company_registration_number: Company Registration Number
     label_company_address:             Company Address
     label_vat_number:                  VAT number
+    label_platform_fee_percent:        Platform fee (%)
+    label_invoice_number:              Invoice №
+    label_invoice_status:              Invoice status
+    label_invoice_issue_date:          Issue date
+    label_invoice_due_date:            Due date
+    label_invoice_amount_freight:      Freight (cents)
+    label_invoice_amount_commission:   Commission (cents)
+    label_invoice_amount_subtotal:     Subtotal (cents)
+    label_invoice_amount_vat:          VAT (cents)
+    label_invoice_amount_gross:        Gross (cents)
+    label_invoice_seller_name:         Seller name
+    label_invoice_seller_address:      Seller address line 1
+    label_invoice_seller_address_2:    Seller address line 2
+    label_invoice_buyer_email:         Buyer email (snapshot)
+    label_invoice_pdf_path:            PDF path (storage)
+    label_invoice_pdf_error:           PDF error
+    label_invoice_email_error:         Email error
     label_upload_files:                PDF Documents
     label_help_upload_pdf:             "Only PDF files accepted. Multiple files allowed. Files are compressed automatically on save."
 
