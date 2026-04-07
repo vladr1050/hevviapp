@@ -76,7 +76,8 @@ class CreateOrderOfferCommand extends Command
         $orderOffer->setRelatedOrder($order);
         $orderOffer->setBrutto($result->bruttoPrice);
         $orderOffer->setNetto($result->nettoPrice);
-        $orderOffer->setVat($result->vatPercent);
+        $orderOffer->setVat($result->vatAmount);
+        $orderOffer->setFee($result->feeAmount);
         $orderOffer->setStatus(OrderOffer::STATUS['ACCEPTED']);
         
         $this->entityManager->persist($orderOffer);
@@ -89,7 +90,9 @@ class CreateOrderOfferCommand extends Command
                 ['ID', $orderOffer->getId()->toRfc4122()],
                 ['Brutto', $result->bruttoPrice . ' cents = ' . ($result->bruttoPrice / 100) . ' EUR'],
                 ['Netto', $result->nettoPrice . ' cents = ' . ($result->nettoPrice / 100) . ' EUR'],
-                ['VAT', $result->vatPercent . '%'],
+                ['Fee', $result->feeAmount . ' cents'],
+                ['VAT rate %', (string) $result->vatPercent],
+                ['VAT amount', $result->vatAmount . ' cents'],
             ]
         );
         

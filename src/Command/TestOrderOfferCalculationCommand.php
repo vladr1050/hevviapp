@@ -68,7 +68,9 @@ class TestOrderOfferCalculationCommand extends Command
                 [
                     ['Brutto Price', $result->bruttoPrice . ' cents (' . ($result->bruttoPrice / 100) . ' EUR)'],
                     ['Netto Price', $result->nettoPrice . ' cents (' . ($result->nettoPrice / 100) . ' EUR)'],
-                    ['VAT %', $result->vatPercent . '%'],
+                    ['Fee', $result->feeAmount . ' cents'],
+                    ['VAT rate %', (string) $result->vatPercent],
+                    ['VAT amount', $result->vatAmount . ' cents'],
                 ]
             );
         } else {

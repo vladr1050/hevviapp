@@ -77,7 +77,8 @@ class OrderOfferController extends AbstractController
         $orderOffer->setRelatedOrder($order);
         $orderOffer->setBrutto($result->bruttoPrice);
         $orderOffer->setNetto($result->nettoPrice);
-        $orderOffer->setVat($result->vatPercent);
+        $orderOffer->setVat($result->vatAmount);
+        $orderOffer->setFee($result->feeAmount);
         $orderOffer->setStatus(OrderOffer::STATUS['ACCEPTED']); // По умолчанию accepted
 
         $this->entityManager->persist($orderOffer);
@@ -94,7 +95,9 @@ class OrderOfferController extends AbstractController
                 'id' => $orderOffer->getId()?->toRfc4122(),
                 'brutto' => $orderOffer->getBrutto(),
                 'netto' => $orderOffer->getNetto(),
+                'fee' => $orderOffer->getFee(),
                 'vat' => $orderOffer->getVat(),
+                'vatPercent' => $result->vatPercent,
                 'status' => $orderOffer->getStatus(),
             ],
         ]);

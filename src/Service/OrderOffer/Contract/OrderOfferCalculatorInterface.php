@@ -38,8 +38,8 @@ interface OrderOfferCalculatorInterface
      * 2. Найти ServiceArea, которая содержит эту точку (через PostGIS)
      * 3. Вычислить общий вес всех Cargo в заказе
      * 4. Найти подходящий MatrixItem по весу в найденной ServiceArea
-     * 5. Получить базовую цену (price) из MatrixItem - это брутто цена
-     * 6. Рассчитать нетто цену с учетом VAT из конфигурации
+     * 5. Получить базовую цену (price) из MatrixItem
+     * 6. Рассчитать комиссию, нетто, НДС (ставка из компании «Issues invoices», иначе TAX_VAT) и брутто
      * 
      * @param Order $order Заказ для расчета стоимости
      * 

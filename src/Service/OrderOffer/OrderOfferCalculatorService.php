@@ -22,6 +22,7 @@ use App\Entity\MatrixItem;
 use App\Entity\Order;
 use App\Entity\ServiceArea;
 use App\Repository\ServiceAreaRepository;
+use App\Service\Billing\IssuingCompanyResolver;
 use App\Service\OrderOffer\Contract\OrderOfferCalculatorInterface;
 use App\Service\OrderOffer\DTO\OrderOfferCalculationResultDto;
 use Psr\Log\LoggerInterface;
@@ -43,8 +44,9 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
     public function __construct(
         private readonly ServiceAreaRepository $serviceAreaRepository,
         private readonly LoggerInterface       $logger,
+        private readonly IssuingCompanyResolver $issuingCompanyResolver,
         #[Autowire('%env(int:TAX_VAT)%')]
-        private readonly int                   $vatPercent,
+        private readonly int                   $defaultVatPercent,
         #[Autowire('%env(int:PLATFORM_FEE_PERCENT)%')]
         private readonly int                   $platformFeePercent,
     )
@@ -132,11 +134,13 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
             // netto = baseNetto + fee
             $nettoPrice = $baseNetto + $feeAmount;
 
-            // Шаг 8: Сумма НДС от нетто с комиссией
-            // vat = netto × VAT%
-            $vatAmount = (int)round($nettoPrice * $this->vatPercent / 100);
+            // Шаг 8: Ставка НДС — из компании, помеченной как выставляющая счета, иначе из TAX_VAT
+            $vatRatePercent = $this->resolveVatRatePercent();
 
-            // Шаг 9: Брутто = нетто + НДС
+            // Шаг 9: Сумма НДС от нетто с комиссией
+            $vatAmount = (int) round($nettoPrice * $vatRatePercent / 100);
+
+            // Шаг 10: Брутто = нетто + НДС
             $bruttoPrice = $nettoPrice + $vatAmount;
 
             $this->logger->info('Successfully calculated order offer', [
@@ -147,7 +151,7 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
                 'fee_percent' => $this->platformFeePercent,
                 'fee_amount' => $feeAmount,
                 'netto_price' => $nettoPrice,
-                'vat_percent' => $this->vatPercent,
+                'vat_percent' => $vatRatePercent,
                 'vat_amount' => $vatAmount,
                 'brutto_price' => $bruttoPrice,
             ]);
@@ -156,7 +160,7 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
                 currency: $serviceArea->getCurrency(),
                 bruttoPrice: $bruttoPrice,
                 nettoPrice: $nettoPrice,
-                vatPercent: $this->vatPercent,
+                vatPercent: $vatRatePercent,
                 vatAmount: $vatAmount,
                 feeAmount: $feeAmount,
             );
@@ -233,5 +237,21 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
     private function calculateFeeAmount(int $baseNetto, int $feePercent): int
     {
         return (int)round($baseNetto * $feePercent / 100);
+    }
+
+    /**
+     * Процент НДС из BillingCompany с «Issues invoices», иначе значение env TAX_VAT.
+     */
+    private function resolveVatRatePercent(): float
+    {
+        $issuer = $this->issuingCompanyResolver->getIssuingCompany();
+        if ($issuer !== null) {
+            $rate = $issuer->getVatRate();
+            if ($rate !== null && $rate !== '') {
+                return (float) $rate;
+            }
+        }
+
+        return (float) $this->defaultVatPercent;
     }
 }

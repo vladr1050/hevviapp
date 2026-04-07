@@ -32,7 +32,7 @@ final readonly class OrderOfferCalculationResultDto
         public ?string $currency = null,
         public ?int    $bruttoPrice = null,
         public ?int    $nettoPrice = null,
-        public ?int    $vatPercent = null,
+        public ?float  $vatPercent = null,
         public ?int    $vatAmount = null,
         public ?int    $feeAmount = null,
         public ?string $errorMessage = null,
@@ -48,7 +48,7 @@ final readonly class OrderOfferCalculationResultDto
         string $currency,
         int    $bruttoPrice,
         int    $nettoPrice,
-        int    $vatPercent,
+        float  $vatPercent,
         int    $vatAmount,
         int    $feeAmount,
     ): self {

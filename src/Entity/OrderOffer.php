@@ -96,14 +96,16 @@ class OrderOffer extends BaseUUID
     public function __toString(): string
     {
         $money = new MoneyExtension();
-        $gross = $money->currencyConvert($this->brutto ?? 0, $this->getRelatedOrder()?->getCurrency() ?? 'EUR');
-        $net = $money->currencyConvert($this->netto ?? 0, $this->getRelatedOrder()?->getCurrency() ?? 'EUR');
+        $currency = $this->getRelatedOrder()?->getCurrency() ?? 'EUR';
+        $gross = $money->currencyConvert($this->brutto ?? 0, $currency);
+        $net = $money->currencyConvert($this->netto ?? 0, $currency);
+        $vat = $money->currencyConvert($this->vat ?? 0, $currency);
 
         return sprintf(
-            'Gross: %s | Net: %s | VAT: %d%%',
+            'Gross: %s | Net: %s | VAT: %s',
             $gross,
             $net,
-            $this->vat ?? 0,
+            $vat,
         );
     }
 
