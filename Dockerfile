@@ -8,6 +8,7 @@ RUN apk add --no-cache \
     bash \
     git \
     curl \
+    openssl \
     chromium \
     ttf-dejavu \
     icu-dev \
@@ -158,8 +159,19 @@ RUN if [ "$APP_MODE" = "dev" ]; then \
         composer dump-autoload --optimize --classmap-authoritative --no-dev; \
     fi
 
-# Symfony assets:install (важно — после копирования кода и composer)
-RUN php bin/console assets:install --symlink --relative public --env=${APP_ENV} --no-debug
+# Symfony assets:install (после копирования кода и composer).
+# config/jwt/*.pem в .gitignore — на CI/VPS их нет, без ключей Lexik JWT и консоль падают (exit 255).
+# Сгенерированные ключи только для прохождения build; в проде замените volume/секретами.
+RUN set -eux; \
+    if [ ! -s config/jwt/private.pem ]; then \
+      BUILD_PASS="$(openssl rand -hex 32)"; \
+      openssl genrsa -aes256 -passout pass:"${BUILD_PASS}" -out config/jwt/private.pem 4096; \
+      openssl rsa -pubout -passin pass:"${BUILD_PASS}" -in config/jwt/private.pem -out config/jwt/public.pem; \
+      export JWT_PASSPHRASE="${BUILD_PASS}"; \
+    fi; \
+    APP_SECRET="${APP_SECRET:-0123456789abcdef0123456789abcdef}" \
+    DATABASE_URL="${DATABASE_URL:-postgresql://app:build@127.0.0.1:5432/app?serverVersion=16&charset=utf8}" \
+    php bin/console assets:install --symlink --relative public --no-interaction --env="${APP_ENV}" --no-debug
 
 # Создаем необходимые директории с правильными правами
 RUN mkdir -p var/cache var/log var/invoices public/build && \
