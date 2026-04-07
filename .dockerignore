@@ -1,0 +1,20 @@
+# Host often has vendor/ and node_modules/ from bind-mounted composer/npm — COPY must not replace image layers.
+/vendor/
+/node_modules/
+
+/var/
+.git
+.github
+
+# Generated; keep output from Dockerfile npm/webpack layers
+/public/bundles/
+/public/build/
+
+# Local overrides (optional)
+/.env.local
+/.env.*.local
+
+# Host JWT files would bypass Dockerfile generation and mismatch JWT_PASSPHRASE
+/config/jwt/*.pem
+
+**/.DS_Store

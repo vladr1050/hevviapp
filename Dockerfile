@@ -159,6 +159,9 @@ RUN if [ "$APP_MODE" = "dev" ]; then \
         composer dump-autoload --optimize --classmap-authoritative --no-dev; \
     fi
 
+# COPY . . must not replace vendor/ (see .dockerignore); otherwise autoload_runtime.php disappears.
+RUN test -f vendor/autoload_runtime.php
+
 # Symfony assets:install (после копирования кода и composer).
 # config/jwt/*.pem в .gitignore — на CI/VPS их нет, без ключей Lexik JWT и консоль падают (exit 255).
 # Сгенерированные ключи только для прохождения build; в проде замените volume/секретами.
