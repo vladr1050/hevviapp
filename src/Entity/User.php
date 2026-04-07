@@ -48,6 +48,9 @@ class User extends BaseSecurityDBO
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $companyAddress = null;
 
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $vatNumber = null;
+
     public function __construct()
     {
         $this->orders = new ArrayCollection();
@@ -199,6 +202,18 @@ class User extends BaseSecurityDBO
     public function setCompanyAddress(?string $companyAddress): static
     {
         $this->companyAddress = $companyAddress;
+
+        return $this;
+    }
+
+    public function getVatNumber(): ?string
+    {
+        return $this->vatNumber;
+    }
+
+    public function setVatNumber(?string $vatNumber): static
+    {
+        $this->vatNumber = $vatNumber;
 
         return $this;
     }

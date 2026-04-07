@@ -51,6 +51,9 @@ class CarrierAdmin extends BaseAdmin
             ->add('email')
             ->add('phone')
             ->add('registrationNumber')
+            ->add('vatNumber', null, [
+                'label' => 'list.label_vat_number',
+            ])
             ->add('state', TextType::class, [
                 'sortable' => false,
                 'mapped' => false,
@@ -71,6 +74,7 @@ class CarrierAdmin extends BaseAdmin
             ->add('phone')
             ->add('address')
             ->add('registrationNumber')
+            ->add('vatNumber')
             ->add('locale')
             ->add('state', TextType::class, [
                 'sortable' => false,
@@ -100,6 +104,9 @@ class CarrierAdmin extends BaseAdmin
             ->add('email')
             ->add('address')
             ->add('registrationNumber')
+            ->add('vatNumber', null, [
+                'required' => false,
+            ])
             ->end()
             ->with('general', [
                 'class' => 'col-md-12',

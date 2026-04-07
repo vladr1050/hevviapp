@@ -81,6 +81,9 @@ list:
     label_mileage_to:           Километраж до
     label_price:                Цена
     label_service_area:         Зона обслуживания
+    label_registration_number:  Регистрационный номер
+    label_legal_name:           Юридическое название
+    label_vat_number:           Номер НДС (VAT)
 
 show:
     label_order_number:       Номер заказа
@@ -146,6 +149,14 @@ show:
     label_mileage_to:         Километраж до
     label_price:              Цена
     label_service_area:       Зона обслуживания
+    label_address:            Адрес
+    label_registration_number: Регистрационный номер
+    label_legal_name:         Юридическое название
+    label_state:              Состояние
+    label_company_name:       Название компании
+    label_company_registration_number: Рег. номер компании
+    label_company_address:    Адрес компании
+    label_vat_number:         Номер НДС (VAT)
 
 form:
     label_order_number:        Номер заказа
@@ -225,6 +236,7 @@ form:
     label_netto:               Нетто цена
     label_fee:                 Сумма комиссии
     label_vat:                 Сумма НДС
+    label_vat_number:          Номер НДС (VAT)
     label_offer_status:        Статус предложения
     label_add_offer:           Добавить предложение
     label_upload_files:        PDF-документы

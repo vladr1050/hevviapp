@@ -79,6 +79,7 @@ list:
     label_changed_by:           Changed By
     label_changed_at:           Changed At
     label_registration_number:  Registration Number
+    label_vat_number:           VAT number
     label_phone:                Phone number
     label_legal_name:           Legal Name
     label_state:                State
@@ -168,6 +169,7 @@ show:
     label_company_name:                Company Name
     label_company_registration_number: Company Registration Number
     label_company_address:             Company Address
+    label_vat_number:                  VAT number
 
 
 form:
@@ -261,6 +263,7 @@ form:
     label_company_name:                Company Name
     label_company_registration_number: Company Registration Number
     label_company_address:             Company Address
+    label_vat_number:                  VAT number
     label_upload_files:                PDF Documents
     label_help_upload_pdf:             "Only PDF files accepted. Multiple files allowed. Files are compressed automatically on save."
 

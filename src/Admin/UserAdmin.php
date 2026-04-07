@@ -42,6 +42,9 @@ class UserAdmin extends BaseAdmin
             ])
             ->add('email')
             ->add('phone')
+            ->add('vatNumber', null, [
+                'label' => 'list.label_vat_number',
+            ])
             ->add('state', TextType::class, [
                 'sortable' => false,
                 'mapped' => false,
@@ -64,6 +67,7 @@ class UserAdmin extends BaseAdmin
             ->add('companyName')
             ->add('companyRegistrationNumber')
             ->add('companyAddress')
+            ->add('vatNumber')
             ->add('locale')
             ->add('state', TextType::class, [
                 'sortable' => false,
@@ -97,6 +101,9 @@ class UserAdmin extends BaseAdmin
             ->add('companyName')
             ->add('companyRegistrationNumber')
             ->add('companyAddress')
+            ->add('vatNumber', null, [
+                'required' => false,
+            ])
             ->end()
             ->with('general', [
                 'class' => 'col-md-12',

@@ -49,6 +49,9 @@ class Carrier extends BaseSecurityDBO
     #[ORM\Column(length: 255)]
     private ?string $address = null;
 
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $vatNumber = null;
+
     /**
      * @var Collection<int, OrderAssignment>
      */
@@ -183,6 +186,18 @@ class Carrier extends BaseSecurityDBO
     public function setAddress(string $address): static
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    public function getVatNumber(): ?string
+    {
+        return $this->vatNumber;
+    }
+
+    public function setVatNumber(?string $vatNumber): static
+    {
+        $this->vatNumber = $vatNumber;
 
         return $this;
     }
