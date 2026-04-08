@@ -76,25 +76,45 @@
             padding: 0;
             width: 595px;
             height: 842px;
-            font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
-            background: #FFFFFF;
+            background: #fff;
             color: #000;
         }
 
         .page {
-            position: relative;
             width: 595px;
             height: 842px;
-            background: #FFFFFF;
+            background: #fff;
+            position: relative;
+            box-sizing: border-box;
             overflow: hidden;
+            font-family: 'Instrument Sans', sans-serif;
         }
 
-        /* --- Header (fixed anchors) --- */
-        .hdr-title {
-            position: absolute;
-            left: 33px;
-            top: 33px;
-            font-family: 'Instrument Sans', sans-serif;
+        .page-inner {
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            padding: 33px 33px 22px 33px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Header --- */
+        .invoice-header {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .invoice-header-row {
+            display: grid;
+            grid-template-columns: 1fr 196px 112px;
+            align-items: start;
+            column-gap: 18px;
+        }
+
+        .invoice-title {
             font-weight: 600;
             font-size: 18.2439px;
             line-height: 22px;
@@ -103,14 +123,20 @@
             padding: 0;
         }
 
-        .hdr-meta {
-            position: absolute;
-            top: 33px;
+        .invoice-meta {
+            display: flex;
+            gap: 28px;
+            min-width: 0;
         }
-        .hdr-meta--1 { left: 125px; width: 87px; }
-        .hdr-meta--2 { left: 240px; width: 81.53px; }
 
-        .hdr-meta .hdr-lbl {
+        .invoice-meta-block {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            min-width: 0;
+        }
+
+        .invoice-meta-label {
             font-weight: 400;
             font-size: 7px;
             line-height: 9px;
@@ -118,7 +144,8 @@
             margin: 0;
             padding: 0;
         }
-        .hdr-meta .hdr-val {
+
+        .invoice-meta-value {
             font-weight: 500;
             font-size: 9px;
             line-height: 11px;
@@ -129,52 +156,56 @@
             word-wrap: break-word;
         }
 
-        .hdr-logo {
-            position: absolute;
-            left: 450px;
-            top: 34.78px;
-            width: 112.32px;
-            height: 15.97px;
+        .invoice-brand {
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-end;
+            gap: 10px;
         }
-        .hdr-logo img {
+
+        .invoice-brand img {
             display: block;
             width: 112.32px;
             height: 15.97px;
             object-fit: contain;
-            object-position: left center;
+            object-position: right center;
         }
 
-        .page-divider--top {
-            position: absolute;
-            left: 32.5px;
-            top: 63px;
-            width: 530px;
+        .invoice-header-divider {
             height: 0.5px;
             background: #CCCCCC;
+            border-radius: 3.42073px;
+            border: none;
             margin: 0;
             padding: 0;
-            border: 0;
-            outline: none;
         }
 
-        /* --- Main column --- */
-        .main-column {
-            position: absolute;
-            left: 48px;
-            top: 120px;
-            width: 500px;
-        }
-
-        .main-stack {
+        /* --- Main --- */
+        .invoice-main {
+            margin-top: 56px;
             display: flex;
             flex-direction: column;
             gap: 46px;
-            width: 500px;
+            flex: 1 1 auto;
+            min-height: 0;
         }
 
-        /* Section titles (party + inline sections) */
-        .sec-title-plain {
-            height: 11px;
+        /* --- Party --- */
+        .party-section {
+            display: grid;
+            grid-template-columns: 240px 240px;
+            column-gap: 20px;
+            flex-shrink: 0;
+        }
+
+        .party-column {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            min-width: 0;
+        }
+
+        .party-title {
             font-weight: 600;
             font-size: 9px;
             line-height: 11px;
@@ -183,174 +214,200 @@
             padding: 0;
         }
 
-        .divider-240 {
-            width: 240px;
+        .party-divider {
             height: 0.47px;
             background: #CCCCCC;
+            border-radius: 3.42073px;
             border: none;
             margin: 0;
             padding: 0;
-            flex-shrink: 0;
+            width: 100%;
         }
 
-        .divider-500 {
-            width: 500px;
-            height: 0.5px;
-            background: #CCCCCC;
-            border: none;
-            margin: 0;
-            padding: 0;
-            flex-shrink: 0;
-        }
-
-        /* Field typography */
-        .fld-lbl {
-            font-weight: 400;
-            font-size: 6.84145px;
-            line-height: 8px;
-            color: rgba(0, 0, 0, 0.4);
-            margin: 0;
-            padding: 0;
-        }
-        .fld-val {
-            font-weight: 500;
-            font-size: 9.12193px;
-            line-height: 11px;
-            color: #000;
-            margin: 0;
-            padding: 0;
-        }
-        .fld-lbl + .fld-val { margin-top: 2.28px; }
-
-        /* --- 5) Parties --- */
-        .parties-row {
-            display: flex;
-            flex-direction: row;
-            gap: 20px;
-            width: 500px;
-        }
-
-        .party-col {
-            width: 240px;
-            flex: 0 0 240px;
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0;
-        }
-
-        .party-col .sec-title-plain { margin-bottom: 0; }
-        .party-col .divider-240 { margin-top: 0; margin-bottom: 0; }
-
-        .party-body {
+        .party-content {
             display: flex;
             flex-direction: column;
             gap: 11.33px;
-            width: 240px;
-            margin-top: 0;
         }
 
-        .pair-row-25 {
+        .field-stack {
             display: flex;
-            flex-direction: row;
-            gap: 25.09px;
-            width: 100%;
+            flex-direction: column;
+            gap: 2.28px;
         }
-        .pair-row-25 .pair-cell {
+
+        .field-row {
+            display: flex;
+            gap: 25.09px;
+        }
+
+        .field-row .field-stack {
             flex: 1;
             min-width: 0;
         }
 
-        /* --- 6) Route + map row --- */
-        .route-map-row {
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            gap: 20px;
-            width: 500px;
-            min-height: 118.51px;
-        }
-
-        .route-col {
-            width: 240px;
-            flex: 0 0 240px;
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .route-sec-head {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 4.56px;
-            height: 23.84px;
+        .field-label {
+            font-weight: 400;
+            font-size: 7px;
+            line-height: 9px;
+            color: rgba(0, 0, 0, 0.4);
             margin: 0;
             padding: 0;
         }
-        .route-sec-head .route-sec-title {
-            font-weight: 600;
+
+        .field-value {
+            font-weight: 500;
             font-size: 9px;
             line-height: 11px;
             color: #000;
+            margin: 0;
+            padding: 0;
+            word-wrap: break-word;
         }
 
-        .bubble-route {
+        /* --- Route + service --- */
+        .route-service-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            flex-shrink: 0;
+        }
+
+        .route-map-row {
+            display: grid;
+            grid-template-columns: 240px 240px;
+            column-gap: 20px;
+            align-items: start;
+        }
+
+        .route-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .route-title-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon-bubble {
             width: 23.84px;
             height: 23.84px;
-            min-width: 23.84px;
-            min-height: 23.84px;
-            border-radius: 11.9207px;
+            border-radius: 50%;
             background: #D7FF01;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
+            flex: 0 0 auto;
             padding: 4.77px;
             box-sizing: border-box;
         }
-        .bubble-route img {
+
+        .icon-bubble img {
             width: 13.11px;
             height: 13.11px;
             display: block;
             object-fit: contain;
         }
 
-        .route-col .divider-240 {
-            margin-top: 0;
-            margin-bottom: 0;
+        .icon-bubble--service {
+            width: 22.56px;
+            height: 22.56px;
+            padding: 0;
+        }
+
+        .icon-bubble--service img {
+            width: 11.28px;
+            height: 11.28px;
+        }
+
+        .icon-bubble--pay {
+            width: 22.8px;
+            height: 22.8px;
+            padding: 4.56px;
+        }
+
+        .icon-bubble--pay img {
+            width: 9px;
+            height: 9px;
+        }
+
+        .route-title-text,
+        .service-title-text,
+        .payment-title-text {
+            font-weight: 600;
+            font-size: 9px;
+            line-height: 11px;
+            color: #000;
+        }
+
+        .route-divider,
+        .service-divider,
+        .payment-divider {
             height: 0.5px;
+            background: #CCCCCC;
+            border: none;
+            margin: 0;
+            padding: 0;
+            width: 100%;
         }
 
-        .route-flow {
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            gap: 9.12px;
-            margin-top: 4px;
-            flex: 1;
-            min-height: 0;
+        .route-stops-layout {
+            display: grid;
+            grid-template-columns: 19px 1fr;
+            column-gap: 9.12px;
+            align-items: stretch;
         }
 
-        .route-rail {
+        .route-marker-column {
+            position: relative;
+            width: 19px;
+            min-height: 56px;
+        }
+
+        .route-marker-column::before {
+            content: '';
+            position: absolute;
+            left: 8.5px;
+            top: 9.12px;
+            bottom: 9.12px;
+            width: 1.14px;
+            background: #000;
+            border-radius: 3.42073px;
+        }
+
+        .route-marker-top,
+        .route-marker-bottom {
             width: 9.12px;
-            height: 51.31px;
-            flex-shrink: 0;
-            display: block;
-            object-fit: fill;
+            height: 9.12px;
+            border: 1.14024px solid #000;
+            border-radius: 50%;
+            background: #fff;
+            position: absolute;
+            left: 4px;
+            box-sizing: border-box;
         }
 
-        .route-text-col {
-            flex: 1;
+        .route-marker-top { top: 0; }
+        .route-marker-bottom { bottom: 0; }
+
+        .route-text-side {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
             min-width: 0;
-            padding-left: 0;
         }
 
-        .route-stop + .route-stop {
-            margin-top: 8px;
+        .route-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2.28px;
         }
 
-        .route-stop .route-lbl {
+        .route-small-label {
             font-weight: 400;
             font-size: 6.84145px;
             line-height: 8px;
@@ -358,44 +415,37 @@
             margin: 0;
             padding: 0;
         }
-        .route-stop .route-val {
+
+        .route-value {
             font-weight: 500;
             font-size: 9.12193px;
             line-height: 11px;
             color: #000;
             margin: 0;
-            margin-top: 2.28px;
             padding: 0;
             word-wrap: break-word;
         }
 
-        .route-inner-rule {
-            width: 100%;
-            height: 0.47px;
-            background: #CCCCCC;
-            border: none;
-            margin: 6px 0;
-            padding: 0;
-        }
-
-        .route-bottom-rule {
-            width: 240px;
+        .route-inner-divider {
+            margin: 8px 0 8px 28.506px;
             height: 0.5px;
             background: #CCCCCC;
             border: none;
-            margin: 6px 0 0 0;
             padding: 0;
-            flex-shrink: 0;
         }
 
-        .map-box {
+        .map-column {
+            width: 240px;
+        }
+
+        .map-preview {
             width: 240px;
             height: 118px;
-            flex: 0 0 240px;
             border-radius: 7.98169px;
             overflow: hidden;
-            background: #e8e8e8;
+            display: block;
             position: relative;
+            background: #e8e8e8;
         }
 
         .map-box-inner {
@@ -413,6 +463,7 @@
             padding: 0;
             border: 0;
         }
+
         .map-box-inner img.map-fill {
             width: 100%;
             height: 100%;
@@ -442,90 +493,62 @@
             z-index: 2;
             pointer-events: none;
         }
+
         .map-pin-pickup { background: #ffffff; }
         .map-pin-drop { background: #DEDEDE; }
 
-        /* --- 7) Service + pricing (inside block 2) --- */
-        .route-service-block {
+        /* --- Service --- */
+        .service-block {
+            margin-top: 9px;
             display: flex;
             flex-direction: column;
             gap: 9px;
-            width: 500px;
         }
 
-        .service-stack {
+        .service-header-row {
             display: flex;
-            flex-direction: column;
-            gap: 9px;
-            width: 500px;
-            min-height: 70.34px;
-        }
-
-        .service-top-row {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
             justify-content: space-between;
-            width: 500px;
-            height: 22.56px;
+            align-items: center;
+            gap: 12px;
         }
 
-        .svc-left-group {
+        .service-title-row {
             display: flex;
-            flex-direction: row;
             align-items: center;
             gap: 4.56px;
-            width: 261.12px;
-            flex: 0 0 261.12px;
+            min-width: 0;
         }
 
-        .bubble-svc {
-            width: 22.56px;
-            height: 22.56px;
-            min-width: 22.56px;
-            min-height: 22.56px;
-            border-radius: 11.28px;
-            background: #D7FF01;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        .bubble-svc img {
-            width: 11.28px;
-            height: 11.28px;
-            display: block;
-            object-fit: contain;
-        }
-
-        .svc-left-group .svc-title-txt {
+        .service-date {
             font-weight: 600;
             font-size: 9px;
             line-height: 11px;
             color: #000;
-        }
-
-        .svc-date-txt {
-            width: 207px;
-            flex: 0 0 207px;
             text-align: right;
-            font-weight: 600;
-            font-size: 9px;
-            line-height: 11px;
-            color: #000;
+            flex-shrink: 0;
+            max-width: 55%;
         }
 
-        .price-row {
+        .service-grid {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            width: 500px;
-            min-height: 29.28px;
+            grid-template-columns: 53px 53px 61px 53px 53px 58px;
+            column-gap: 28px;
             align-items: start;
-            column-gap: 4px;
         }
 
-        .price-col .p-lbl {
+        .service-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 2.28px;
+            min-width: 0;
+        }
+
+        .service-cell:last-child {
+            align-items: flex-end;
+            text-align: right;
+        }
+
+        .service-label {
             font-weight: 400;
             font-size: 6.84145px;
             line-height: 8px;
@@ -534,369 +557,350 @@
             padding: 0;
             white-space: normal;
         }
-        .price-col .p-val {
+
+        .service-value {
             font-weight: 500;
             font-size: 9.12193px;
             line-height: 11px;
             color: #000;
             margin: 0;
-            margin-top: 4px;
             padding: 0;
             white-space: nowrap;
         }
 
-        .price-col--last {
-            text-align: right;
-        }
-        .price-col--last .p-lbl { text-align: right; }
-        .price-col--last .p-val {
+        .service-cell:last-child .service-value {
             font-weight: 600;
-            text-align: right;
         }
 
-        /* --- 8) Payment --- */
-        .pay-block {
+        /* --- Payment --- */
+        .payment-section {
             display: flex;
             flex-direction: column;
-            gap: 0;
-            width: 500px;
-            margin-top: 0;
-        }
-
-        .pay-head {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 4.56px;
-            margin: 0;
-            padding: 0;
-        }
-
-        .bubble-pay {
-            width: 22.8px;
-            height: 22.8px;
-            min-width: 22.8px;
-            min-height: 22.8px;
-            border-radius: 11.4px;
-            background: #D7FF01;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 4.56px;
-            box-sizing: border-box;
-        }
-        .bubble-pay img {
-            width: 9px;
-            height: 9px;
-            display: block;
-            object-fit: contain;
-        }
-
-        .pay-head .pay-title-txt {
-            font-weight: 600;
-            font-size: 9px;
-            line-height: 11px;
-            color: #000;
-        }
-
-        .pay-block .divider-500 {
-            margin-top: 6px;
-            margin-bottom: 8px;
-        }
-
-        .pay-row-spec {
-            display: flex;
-            flex-direction: row;
-            gap: 59px;
-            width: 289px;
-            min-height: 21.28px;
-        }
-        .pay-row-spec .pay-cell {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .legal-lines {
-            margin-top: 10px;
-            font-family: 'Inter', sans-serif;
-            font-weight: 400;
-            font-size: 6px;
-            line-height: 9px;
-            color: rgba(0, 0, 0, 0.4);
-        }
-        .legal-lines p {
-            margin: 0;
-            padding: 0;
-        }
-        .legal-lines p + p {
-            margin-top: 2px;
-        }
-
-        /* --- 9) Footer --- */
-        .footer-legal {
-            position: absolute;
-            left: 32.5px;
-            top: 796px;
-            width: 530px;
-            height: 24.5px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .footer-legal .footer-rule {
-            width: 530px;
-            height: 0.5px;
-            background: #CCCCCC;
-            border: none;
-            margin: 0;
-            padding: 0;
+            gap: 19px;
             flex-shrink: 0;
         }
 
-        .footer-legal .footer-row {
+        .payment-head {
             display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: flex-start;
-            height: 14px;
-            gap: 12px;
+            flex-direction: column;
+            gap: 9px;
         }
 
-        .footer-left-g {
+        .payment-title-row {
             display: flex;
-            flex-direction: row;
             align-items: center;
-            gap: 6px;
-            max-width: 48%;
-            font-family: 'Inter', sans-serif;
-            font-size: 6px;
-            line-height: 7px;
-            font-weight: 400;
-            color: rgba(34, 32, 31, 0.35);
+            gap: 4.56px;
         }
-        .footer-left-g img {
+
+        .payment-content {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .payment-info-row {
+            display: flex;
+            gap: 59px;
+            flex-wrap: wrap;
+        }
+
+        .payment-info-col {
+            display: flex;
+            flex-direction: column;
+            gap: 2.28px;
+            min-width: 0;
+        }
+
+        .payment-legal {
+            font-weight: 400;
+            font-size: 7px;
+            line-height: 9px;
+            color: rgba(0, 0, 0, 0.4);
+            max-width: 213px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .payment-legal p {
+            margin: 0;
+            padding: 0;
+        }
+
+        .payment-legal p + p {
+            margin-top: 2px;
+        }
+
+        /* --- Footer --- */
+        .invoice-footer {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-top: 18px;
+            flex-shrink: 0;
+        }
+
+        .invoice-footer-divider {
+            height: 0.5px;
+            background: #CCCCCC;
+            border-radius: 3.42073px;
+            border: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .invoice-footer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 9.44px;
+        }
+
+        .invoice-footer-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .invoice-footer-left img {
             height: 10px;
             width: auto;
             display: block;
             flex-shrink: 0;
         }
 
-        .footer-right-g {
-            max-width: 52%;
+        .invoice-footer-right {
+            max-width: 310.15px;
             text-align: right;
+            min-width: 0;
+        }
+
+        .footer-small {
             font-family: 'Inter', sans-serif;
+            font-weight: 400;
             font-size: 6px;
             line-height: 7px;
-            font-weight: 400;
-            color: rgba(34, 32, 31, 0.35);
+            color: #22201F;
+            opacity: 0.3;
         }
     </style>
 </head>
 <body>
 <div class="page">
-    <h1 class="hdr-title">Rēķins</h1>
+    <div class="page-inner">
+        <header class="invoice-header">
+            <div class="invoice-header-row">
+                <h1 class="invoice-title">Rēķins</h1>
+                <div class="invoice-meta">
+                    <div class="invoice-meta-block">
+                        <div class="invoice-meta-label">Rēķina Nr / Pasūtījuma Nr</div>
+                        <div class="invoice-meta-value">{{ invoice_number }}</div>
+                    </div>
+                    <div class="invoice-meta-block">
+                        <div class="invoice-meta-label">Rēķina datums:</div>
+                        <div class="invoice-meta-value">{{ issue_date }}</div>
+                    </div>
+                </div>
+                <div class="invoice-brand">
+                    <img src="invoice-assets/group-1122.svg" width="112" height="16" alt="hevvi">
+                </div>
+            </div>
+            <hr class="invoice-header-divider" />
+        </header>
 
-    <div class="hdr-meta hdr-meta--1">
-        <div class="hdr-lbl">Rēķina Nr / Pasūtījuma Nr</div>
-        <div class="hdr-val">{{ invoice_number }}</div>
-    </div>
-    <div class="hdr-meta hdr-meta--2">
-        <div class="hdr-lbl">Rēķina datums:</div>
-        <div class="hdr-val">{{ issue_date }}</div>
-    </div>
-
-    <div class="hdr-logo">
-        <img src="invoice-assets/group-1122.svg" width="112" height="16" alt="hevvi" style="width:112.32px;height:15.97px;">
-    </div>
-
-    <hr class="page-divider--top" />
-
-    <div class="main-column">
-        <div class="main-stack">
-            {# 1) Supplier / customer #}
-            <section class="parties-row">
-                <div class="party-col">
-                    <div class="sec-title-plain">Pakalpojuma sniedzējs</div>
-                    <hr class="divider-240" />
-                    <div class="party-body">
-                        <div class="field">
-                            <div class="fld-lbl">Pārdevējs (Pakalpojuma sniedzējs):</div>
-                            <div class="fld-val">{{ seller_name }}</div>
+        <main class="invoice-main">
+            <section class="party-section">
+                <div class="party-column">
+                    <div class="party-title">Pakalpojuma sniedzējs</div>
+                    <hr class="party-divider" />
+                    <div class="party-content">
+                        <div class="field-stack">
+                            <div class="field-label">Pārdevējs (Pakalpojuma sniedzējs):</div>
+                            <div class="field-value">{{ seller_name }}</div>
                         </div>
-                        <div class="pair-row-25">
-                            <div class="pair-cell">
-                                <div class="fld-lbl">Reģ. Nr.</div>
-                                <div class="fld-val">{{ seller_reg }}</div>
+                        <div class="field-row">
+                            <div class="field-stack">
+                                <div class="field-label">Reģ. Nr.</div>
+                                <div class="field-value">{{ seller_reg }}</div>
                             </div>
-                            <div class="pair-cell">
-                                <div class="fld-lbl">PVN reģ. Nr.</div>
-                                <div class="fld-val">{{ seller_vat }}</div>
+                            <div class="field-stack">
+                                <div class="field-label">PVN reģ. Nr.</div>
+                                <div class="field-value">{{ seller_vat }}</div>
                             </div>
                         </div>
-                        <div class="field">
-                            <div class="fld-lbl">Juridiskā adrese:</div>
-                            <div class="fld-val">{{ seller_line1 }}</div>
-                            {% if seller_line2 %}<div class="fld-val" style="margin-top: 4px;">{{ seller_line2 }}</div>{% endif %}
+                        <div class="field-stack">
+                            <div class="field-label">Juridiskā adrese:</div>
+                            <div class="field-value">{{ seller_line1 }}</div>
+                            {% if seller_line2 %}<div class="field-value" style="margin-top: 4px;">{{ seller_line2 }}</div>{% endif %}
                         </div>
-                        <div class="pair-row-25">
-                            <div class="pair-cell">
-                                <div class="fld-lbl">E-pasts:</div>
-                                <div class="fld-val">{{ seller_email }}</div>
+                        <div class="field-row">
+                            <div class="field-stack">
+                                <div class="field-label">E-pasts:</div>
+                                <div class="field-value">{{ seller_email }}</div>
                             </div>
-                            <div class="pair-cell">
-                                <div class="fld-lbl">Tālrunis:</div>
-                                <div class="fld-val">{{ seller_phone }}</div>
+                            <div class="field-stack">
+                                <div class="field-label">Tālrunis:</div>
+                                <div class="field-value">{{ seller_phone }}</div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="party-col">
-                    <div class="sec-title-plain">Pakalpojumu saņēmējs</div>
-                    <hr class="divider-240" />
-                    <div class="party-body">
-                        <div class="field">
-                            <div class="fld-lbl">Pircējs (Klients):</div>
-                            <div class="fld-val">{{ buyer_company }}</div>
+                <div class="party-column">
+                    <div class="party-title">Pakalpojumu saņēmējs</div>
+                    <hr class="party-divider" />
+                    <div class="party-content">
+                        <div class="field-stack">
+                            <div class="field-label">Pircējs (Klients):</div>
+                            <div class="field-value">{{ buyer_company }}</div>
                         </div>
-                        <div class="pair-row-25">
-                            <div class="pair-cell">
-                                <div class="fld-lbl">Reģ. Nr.</div>
-                                <div class="fld-val">{{ buyer_reg }}</div>
+                        <div class="field-row">
+                            <div class="field-stack">
+                                <div class="field-label">Reģ. Nr.</div>
+                                <div class="field-value">{{ buyer_reg }}</div>
                             </div>
-                            <div class="pair-cell">
-                                <div class="fld-lbl">PVN reģ. Nr.</div>
-                                <div class="fld-val">{{ buyer_vat }}</div>
+                            <div class="field-stack">
+                                <div class="field-label">PVN reģ. Nr.</div>
+                                <div class="field-value">{{ buyer_vat }}</div>
                             </div>
                         </div>
-                        <div class="field">
-                            <div class="fld-lbl">Adrese:</div>
+                        <div class="field-stack">
+                            <div class="field-label">Adrese:</div>
                             {% for line in buyer_address_lines %}
-                                <div class="fld-val"{% if not loop.first %} style="margin-top: 4px;"{% endif %}>{{ line }}</div>
+                                <div class="field-value"{% if not loop.first %} style="margin-top: 4px;"{% endif %}>{{ line }}</div>
                             {% endfor %}
                         </div>
                     </div>
                 </div>
             </section>
 
-            {# 2) Route + map + service + pricing #}
-            <section class="route-service-block">
+            <section class="route-service-section">
                 <div class="route-map-row">
-                    <div class="route-col">
-                        <div class="route-sec-head">
-                            <span class="bubble-route" aria-hidden="true"><img src="invoice-assets/fi-446075.svg" alt=""></span>
-                            <span class="route-sec-title">Maršruts</span>
+                    <div class="route-column">
+                        <div class="route-title-row">
+                            <span class="icon-bubble" aria-hidden="true"><img src="invoice-assets/fi-446075.svg" alt=""></span>
+                            <span class="route-title-text">Maršruts</span>
                         </div>
-                        <hr class="divider-240" />
-                        <div class="route-flow">
-                            <img src="invoice-assets/group-1059.svg" class="route-rail" width="9.12" height="51.31" alt="">
-                            <div class="route-text-col">
-                                <div class="route-stop">
-                                    <div class="route-lbl">Pickup</div>
-                                    <div class="route-val">{{ pickup }}</div>
+                        <hr class="route-divider" />
+                        <div class="route-stops-layout">
+                            <div class="route-marker-column">
+                                <span class="route-marker-top" aria-hidden="true"></span>
+                                <span class="route-marker-bottom" aria-hidden="true"></span>
+                            </div>
+                            <div class="route-text-side">
+                                <div class="route-text">
+                                    <div class="route-small-label">Pickup</div>
+                                    <div class="route-value">{{ pickup }}</div>
                                 </div>
-                                <hr class="route-inner-rule" />
-                                <div class="route-stop">
-                                    <div class="route-lbl">Delivery</div>
-                                    <div class="route-val">{{ delivery }}</div>
+                                <hr class="route-inner-divider" />
+                                <div class="route-text">
+                                    <div class="route-small-label">Delivery</div>
+                                    <div class="route-value">{{ delivery }}</div>
                                 </div>
                             </div>
                         </div>
-                        <hr class="route-bottom-rule" />
+                        <hr class="route-divider" />
                     </div>
-                    <div class="map-box">
-                        <div class="map-box-inner">
-                            {% if map_show_pins and map_inner_w and map_inner_h and map_img_w %}
-                                <img class="map-tile-img" src="{{ map_data_uri|raw }}" alt=""
-                                     style="left: {{ map_img_left }}px; top: {{ map_img_top }}px; width: {{ map_img_w }}px; height: {{ map_img_h }}px;">
-                            {% else %}
-                                <img class="map-fill" src="{{ map_data_uri|raw }}" alt="">
-                            {% endif %}
-                            {% if map_show_pins and map_inner_w and map_inner_h %}
-                                <svg class="map-route-svg" viewBox="0 0 {{ map_inner_w }} {{ map_inner_h }}" preserveAspectRatio="none" aria-hidden="true">
-                                    <line x1="{{ map_pickup_left }}" y1="{{ map_pickup_top }}" x2="{{ map_drop_left }}" y2="{{ map_drop_top }}"
-                                          stroke="#000000" stroke-width="2.5" stroke-linecap="round"/>
-                                </svg>
-                                <span class="map-pin map-pin-pickup" style="left: {{ map_pickup_left }}px; top: {{ map_pickup_top }}px;"></span>
-                                <span class="map-pin map-pin-drop" style="left: {{ map_drop_left }}px; top: {{ map_drop_top }}px;"></span>
-                            {% endif %}
+                    <div class="map-column">
+                        <div class="map-preview">
+                            <div class="map-box-inner">
+                                {% if map_show_pins and map_inner_w and map_inner_h and map_img_w %}
+                                    <img class="map-tile-img" src="{{ map_data_uri|raw }}" alt=""
+                                         style="left: {{ map_img_left }}px; top: {{ map_img_top }}px; width: {{ map_img_w }}px; height: {{ map_img_h }}px;">
+                                {% else %}
+                                    <img class="map-fill" src="{{ map_data_uri|raw }}" alt="">
+                                {% endif %}
+                                {% if map_show_pins and map_inner_w and map_inner_h %}
+                                    <svg class="map-route-svg" viewBox="0 0 {{ map_inner_w }} {{ map_inner_h }}" preserveAspectRatio="none" aria-hidden="true">
+                                        <line x1="{{ map_pickup_left }}" y1="{{ map_pickup_top }}" x2="{{ map_drop_left }}" y2="{{ map_drop_top }}"
+                                              stroke="#000000" stroke-width="2.5" stroke-linecap="round"/>
+                                    </svg>
+                                    <span class="map-pin map-pin-pickup" style="left: {{ map_pickup_left }}px; top: {{ map_pickup_top }}px;"></span>
+                                    <span class="map-pin map-pin-drop" style="left: {{ map_drop_left }}px; top: {{ map_drop_top }}px;"></span>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="service-stack">
-                    <div class="service-top-row">
-                        <div class="svc-left-group">
-                            <span class="bubble-svc" aria-hidden="true"><img src="invoice-assets/delivered-1.svg" alt=""></span>
-                            <span class="svc-title-txt">Pakalpojums</span>
+                <div class="service-block">
+                    <div class="service-header-row">
+                        <div class="service-title-row">
+                            <span class="icon-bubble icon-bubble--service" aria-hidden="true"><img src="invoice-assets/delivered-1.svg" alt=""></span>
+                            <span class="service-title-text">Pakalpojums</span>
                         </div>
-                        <div class="svc-date-txt">Pakalpojuma sniegšanas datums: {{ service_date }}</div>
+                        <div class="service-date">Pakalpojuma sniegšanas datums: {{ service_date }}</div>
                     </div>
-                    <hr class="divider-500" />
-                    <div class="price-row">
-                        <div class="price-col">
-                            <div class="p-lbl">Kravas piegādes maksa</div>
-                            <div class="p-val">{{ amount_freight }}</div>
+                    <hr class="service-divider" />
+                    <div class="service-grid">
+                        <div class="service-cell">
+                            <div class="service-label">Kravas piegādes maksa</div>
+                            <div class="service-value">{{ amount_freight }}</div>
                         </div>
-                        <div class="price-col">
-                            <div class="p-lbl">Cena bez PVN</div>
-                            <div class="p-val">{{ amount_cena_bez_pvn }}</div>
+                        <div class="service-cell">
+                            <div class="service-label">Cena bez PVN</div>
+                            <div class="service-value">{{ amount_cena_bez_pvn }}</div>
                         </div>
-                        <div class="price-col">
-                            <div class="p-lbl">{{ commission_label }}</div>
-                            <div class="p-val">{{ amount_commission }}</div>
+                        <div class="service-cell">
+                            <div class="service-label">{{ commission_label }}</div>
+                            <div class="service-value">{{ amount_commission }}</div>
                         </div>
-                        <div class="price-col">
-                            <div class="p-lbl">Starpsumma (bez PVN)</div>
-                            <div class="p-val">{{ amount_subtotal }}</div>
+                        <div class="service-cell">
+                            <div class="service-label">Starpsumma (bez PVN)</div>
+                            <div class="service-value">{{ amount_subtotal }}</div>
                         </div>
-                        <div class="price-col">
-                            <div class="p-lbl">{{ vat_label }}</div>
-                            <div class="p-val">{{ amount_vat }}</div>
+                        <div class="service-cell">
+                            <div class="service-label">{{ vat_label }}</div>
+                            <div class="service-value">{{ amount_vat }}</div>
                         </div>
-                        <div class="price-col price-col--last">
-                            <div class="p-lbl">KOPĀ APMAKSAI (ar PVN)</div>
-                            <div class="p-val">{{ amount_gross }}</div>
+                        <div class="service-cell">
+                            <div class="service-label">KOPĀ APMAKSAI (ar PVN)</div>
+                            <div class="service-value">{{ amount_gross }}</div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {# 3) Payment #}
-            <section class="pay-block">
-                <div class="pay-head">
-                    <span class="bubble-pay" aria-hidden="true"><img src="invoice-assets/fi-157977.svg" alt=""></span>
-                    <span class="pay-title-txt">Maksājuma informācija</span>
-                </div>
-                <hr class="divider-500" />
-                <div class="pay-row-spec">
-                    <div class="pay-cell">
-                        <div class="fld-lbl">Maksājuma veids:</div>
-                        <div class="fld-val">{{ payment_method }}</div>
+            <section class="payment-section">
+                <div class="payment-head">
+                    <div class="payment-title-row">
+                        <span class="icon-bubble icon-bubble--pay" aria-hidden="true"><img src="invoice-assets/fi-157977.svg" alt=""></span>
+                        <span class="payment-title-text">Maksājuma informācija</span>
                     </div>
-                    <div class="pay-cell">
-                        <div class="fld-lbl">Maksājuma statuss:</div>
-                        <div class="fld-val">{{ payment_status }}</div>
-                    </div>
+                    <hr class="payment-divider" />
                 </div>
-                <div class="legal-lines">
-                    <p>Rēķins sagatavots elektroniski un ir derīgs bez paraksta</p>
-                    <p>PVN piemērots saskaņā ar Pievienotās vērtības nodokļa likumu</p>
+                <div class="payment-content">
+                    <div class="payment-info-row">
+                        <div class="payment-info-col">
+                            <div class="field-label">Maksājuma veids:</div>
+                            <div class="field-value">{{ payment_method }}</div>
+                        </div>
+                        <div class="payment-info-col">
+                            <div class="field-label">Maksājuma statuss:</div>
+                            <div class="field-value">{{ payment_status }}</div>
+                        </div>
+                    </div>
+                    <div class="payment-legal">
+                        <p>Rēķins sagatavots elektroniski un ir derīgs bez paraksta</p>
+                        <p>PVN piemērots saskaņā ar Pievienotās vērtības nodokļa likumu</p>
+                    </div>
                 </div>
             </section>
-        </div>
-    </div>
+        </main>
 
-    <footer class="footer-legal">
-        <hr class="footer-rule" />
-        <div class="footer-row">
-            <div class="footer-left-g">
-                <img src="invoice-assets/group-1123.svg" alt="" aria-hidden="true">
-                <span>Pakalpojums sniegts caur Hevvi digitālo platformu</span>
+        <footer class="invoice-footer">
+            <hr class="invoice-footer-divider" />
+            <div class="invoice-footer-row">
+                <div class="invoice-footer-left">
+                    <img src="invoice-assets/group-1123.svg" alt="" aria-hidden="true">
+                    <span class="footer-small">Pakalpojums sniegts caur Hevvi digitālo platformu</span>
+                </div>
+                <div class="invoice-footer-right">
+                    <span class="footer-small">Hevvi App nodrošina digitālu platformu transporta pakalpojumu organizēšanai. Komisijas maksa tiek ieturēta par platformas izmantošanu un administrēšanu.</span>
+                </div>
             </div>
-            <div class="footer-right-g">Hevvi App nodrošina digitālu platformu transporta pakalpojumu organizēšanai. Komisijas maksa tiek ieturēta par platformas izmantošanu un administrēšanu.</div>
-        </div>
-    </footer>
+        </footer>
+    </div>
 </div>
 </body>
 </html>
