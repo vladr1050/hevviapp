@@ -81,22 +81,48 @@
         }
 
         .page {
+            position: relative;
             width: 595px;
             height: 842px;
             background: #fff;
-            position: relative;
-            box-sizing: border-box;
             overflow: hidden;
+            box-sizing: border-box;
             font-family: 'Instrument Sans', sans-serif;
         }
 
-        .page-inner {
-            width: 100%;
-            height: 100%;
+        .page-box {
+            position: absolute;
+            inset: 33px;
             box-sizing: border-box;
-            padding: 33px 33px 22px 33px;
             display: flex;
             flex-direction: column;
+        }
+
+        .header-region {
+            flex: 0 0 auto;
+        }
+
+        .body-region {
+            flex: 1 1 auto;
+            margin-top: 57px;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .footer-region {
+            flex: 0 0 auto;
+            margin-top: auto;
+        }
+
+        /* Center 530px rules inside symmetric box; cap at available width */
+        .page-rail-530 {
+            width: 100%;
+            max-width: 530px;
+            margin-left: auto;
+            margin-right: auto;
+            box-sizing: border-box;
         }
 
         /* --- Header --- */
@@ -172,6 +198,7 @@
         }
 
         .invoice-header-divider {
+            width: 100%;
             height: 0.5px;
             background: #CCCCCC;
             border-radius: 3.42073px;
@@ -182,12 +209,12 @@
 
         /* --- Main --- */
         .invoice-main {
-            margin-top: 56px;
+            width: 500px;
+            max-width: 100%;
             display: flex;
             flex-direction: column;
             gap: 46px;
-            flex: 1 1 auto;
-            min-height: 0;
+            flex-shrink: 0;
         }
 
         /* --- Party --- */
@@ -632,7 +659,6 @@
 
         /* --- Footer --- */
         .invoice-footer {
-            margin-top: auto;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -641,6 +667,7 @@
         }
 
         .invoice-footer-divider {
+            width: 100%;
             height: 0.5px;
             background: #CCCCCC;
             border-radius: 3.42073px;
@@ -688,27 +715,32 @@
 </head>
 <body>
 <div class="page">
-    <div class="page-inner">
-        <header class="invoice-header">
-            <div class="invoice-header-row">
-                <h1 class="invoice-title">Rēķins</h1>
-                <div class="invoice-meta">
-                    <div class="invoice-meta-block">
-                        <div class="invoice-meta-label">Rēķina Nr / Pasūtījuma Nr</div>
-                        <div class="invoice-meta-value">{{ invoice_number }}</div>
+    <div class="page-box">
+        <div class="header-region">
+            <div class="page-rail-530">
+                <header class="invoice-header">
+                    <div class="invoice-header-row">
+                        <h1 class="invoice-title">Rēķins</h1>
+                        <div class="invoice-meta">
+                            <div class="invoice-meta-block">
+                                <div class="invoice-meta-label">Rēķina Nr / Pasūtījuma Nr</div>
+                                <div class="invoice-meta-value">{{ invoice_number }}</div>
+                            </div>
+                            <div class="invoice-meta-block">
+                                <div class="invoice-meta-label">Rēķina datums:</div>
+                                <div class="invoice-meta-value">{{ issue_date }}</div>
+                            </div>
+                        </div>
+                        <div class="invoice-brand">
+                            <img src="invoice-assets/group-1122.svg" width="112" height="16" alt="hevvi">
+                        </div>
                     </div>
-                    <div class="invoice-meta-block">
-                        <div class="invoice-meta-label">Rēķina datums:</div>
-                        <div class="invoice-meta-value">{{ issue_date }}</div>
-                    </div>
-                </div>
-                <div class="invoice-brand">
-                    <img src="invoice-assets/group-1122.svg" width="112" height="16" alt="hevvi">
-                </div>
+                    <hr class="invoice-header-divider" />
+                </header>
             </div>
-            <hr class="invoice-header-divider" />
-        </header>
+        </div>
 
+        <div class="body-region">
         <main class="invoice-main">
             <section class="party-section">
                 <div class="party-column">
@@ -887,19 +919,24 @@
                 </div>
             </section>
         </main>
+        </div>
 
-        <footer class="invoice-footer">
-            <hr class="invoice-footer-divider" />
-            <div class="invoice-footer-row">
-                <div class="invoice-footer-left">
-                    <img src="invoice-assets/group-1123.svg" alt="" aria-hidden="true">
-                    <span class="footer-small">Pakalpojums sniegts caur Hevvi digitālo platformu</span>
-                </div>
-                <div class="invoice-footer-right">
-                    <span class="footer-small">Hevvi App nodrošina digitālu platformu transporta pakalpojumu organizēšanai. Komisijas maksa tiek ieturēta par platformas izmantošanu un administrēšanu.</span>
-                </div>
+        <div class="footer-region">
+            <div class="page-rail-530">
+                <footer class="invoice-footer">
+                    <hr class="invoice-footer-divider" />
+                    <div class="invoice-footer-row">
+                        <div class="invoice-footer-left">
+                            <img src="invoice-assets/group-1123.svg" alt="" aria-hidden="true">
+                            <span class="footer-small">Pakalpojums sniegts caur Hevvi digitālo platformu</span>
+                        </div>
+                        <div class="invoice-footer-right">
+                            <span class="footer-small">Hevvi App nodrošina digitālu platformu transporta pakalpojumu organizēšanai. Komisijas maksa tiek ieturēta par platformas izmantošanu un administrēšanu.</span>
+                        </div>
+                    </div>
+                </footer>
             </div>
-        </footer>
+        </div>
     </div>
 </div>
 </body>
