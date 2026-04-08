@@ -17,13 +17,15 @@ final class InvoiceStaticMapFetcher
 {
     private const OSM_TILE_BASE = 'https://tile.openstreetmap.org';
 
-    /** Must match pdf.html.twig .map-box outer width (wider than tall tile → use cover + pin math). */
-    private const MAP_BOX_W_PX = 320.0;
+    /**
+     * Outer map frame in CSS px (Twig uses pt; 1pt = 96/72 px in browsers).
+     * Figma 773-5893: 240×118 pt, border 2.85 pt.
+     */
+    private const MAP_BOX_W_PX = 240.0 * 96.0 / 72.0;
 
-    private const MAP_BOX_H_PX = 118.0;
+    private const MAP_BOX_H_PX = 118.0 * 96.0 / 72.0;
 
-    /** Must match pdf.html.twig border on .map-box. */
-    private const MAP_BORDER_PX = 2.85;
+    private const MAP_BORDER_PX = 2.85 * 96.0 / 72.0;
 
     private const TILE_PX = 256.0;
 
@@ -99,7 +101,7 @@ final class InvoiceStaticMapFetcher
     }
 
     /**
-     * Pixel position of each point inside the map inner rect (object-fit: contain for 256 tile).
+     * CSS pixel position inside the map inner rect (object-fit: cover for 256 tile).
      *
      * @return array{0: float, 1: float, 2: float, 3: float} pickup left, top, drop left, top
      */

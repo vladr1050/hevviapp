@@ -74,6 +74,7 @@ services:
     App\Service\Invoice\ChromiumInvoicePdfRenderer:
         arguments:
             $chromeBinary: '%env(INVOICE_CHROME_BINARY)%'
+            $invoiceFontsSourceDir: '%kernel.project_dir%/public/fonts/invoice'
 
     ### ORDER OFFER SERVICES ###
     # Interface binding for OrderOffer calculator
