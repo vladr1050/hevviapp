@@ -67,15 +67,47 @@
             border-radius: 50%;
             background: #fff;
         }
+        /* Outer frame 240×118 including border (Figma). */
         .map-box {
             width: 240px;
             height: 118px;
+            box-sizing: border-box;
+            border: 2.85px solid #000000;
             border-radius: 6px;
-            overflow: hidden;
+            position: relative;
             flex-shrink: 0;
             background: #e8e8e8;
+            overflow: hidden;
         }
-        .map-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .map-box-inner {
+            position: absolute;
+            left: 2.85px;
+            top: 2.85px;
+            width: calc(240px - 5.7px);
+            height: calc(118px - 5.7px);
+        }
+        .map-box-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            display: block;
+        }
+        /* Pins: круги с обводкой 2.85px как в макете (Pickup — белый, Delivery — #DEDEDE). */
+        .map-pin {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            box-sizing: content-box;
+            border: 2.85px solid #000000;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+        }
+        .map-pin-pickup { background: #ffffff; }
+        .map-pin-drop { background: #DEDEDE; }
         .svc-head { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
         .price-grid {
             display: flex;
@@ -200,7 +232,13 @@
             </div>
         </div>
         <div class="map-box">
-            <img src="{{ map_data_uri|raw }}" alt="">
+            <div class="map-box-inner">
+                <img src="{{ map_data_uri|raw }}" alt="">
+                {% if map_show_pins %}
+                    <span class="map-pin map-pin-pickup" style="left: {{ map_pickup_left }}px; top: {{ map_pickup_top }}px;"></span>
+                    <span class="map-pin map-pin-drop" style="left: {{ map_drop_left }}px; top: {{ map_drop_top }}px;"></span>
+                {% endif %}
+            </div>
         </div>
     </div>
 

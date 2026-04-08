@@ -12,6 +12,7 @@ use App\Entity\User;
 use App\Repository\BillingCompanyRepository;
 use App\Repository\InvoiceRepository;
 use App\Service\Email\Contract\EmailServiceInterface;
+use App\Service\Invoice\DTO\InvoiceMapPayload;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -155,14 +156,14 @@ final class InvoiceIssuingService
             $this->em->flush();
         });
 
-        $mapDataUri = $this->staticMapFetcher->fetchMapDataUri(
+        $mapPayload = $this->staticMapFetcher->fetchMapPayload(
             $order->getPickupLatitude(),
             $order->getPickupLongitude(),
             $order->getDropoutLatitude(),
             $order->getDropoutLongitude()
         );
 
-        $ctx = $this->buildTwigContext($invoice, $mapDataUri);
+        $ctx = $this->buildTwigContext($invoice, $mapPayload);
 
         try {
             $html = $this->twig->render('invoice/pdf.html.twig', $ctx);
@@ -241,7 +242,7 @@ final class InvoiceIssuingService
     /**
      * @return array<string, mixed>
      */
-    private function buildTwigContext(Invoice $invoice, string $mapDataUri): array
+    private function buildTwigContext(Invoice $invoice, InvoiceMapPayload $map): array
     {
         $c = $invoice->getCurrency() ?? 'EUR';
 
@@ -264,7 +265,12 @@ final class InvoiceIssuingService
             'order_reference' => $invoice->getOrderReference(),
             'pickup' => $invoice->getPickupAddress(),
             'delivery' => $invoice->getDeliveryAddress(),
-            'map_data_uri' => $mapDataUri,
+            'map_data_uri' => $map->imageDataUri,
+            'map_show_pins' => $map->showPins,
+            'map_pickup_left' => $map->pickupLeftPx,
+            'map_pickup_top' => $map->pickupTopPx,
+            'map_drop_left' => $map->dropLeftPx,
+            'map_drop_top' => $map->dropTopPx,
             'amount_freight' => $this->moneyFormatter->formatCents((int) $invoice->getAmountFreight(), $c),
             'amount_commission' => $this->moneyFormatter->formatCents((int) $invoice->getAmountCommission(), $c),
             'amount_subtotal' => $this->moneyFormatter->formatCents((int) $invoice->getAmountSubtotal(), $c),

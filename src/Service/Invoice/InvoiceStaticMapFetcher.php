@@ -4,20 +4,28 @@ declare(strict_types=1);
 
 namespace App\Service\Invoice;
 
+use App\Service\Invoice\DTO\InvoiceMapPayload;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
- * Static map for invoice PDF: one OSM raster tile (PNG), embedded as data URI.
- *
- * Previously used staticmap.openstreetmap.de — often down, blocked, or returns HTML;
- * Chromium then showed a broken image. Official tile CDN + PNG validation is reliable.
+ * Static map for invoice PDF: one OSM raster tile (PNG) + pickup/delivery pin positions.
  *
  * @see https://operations.osmfoundation.org/policies/tiles/
  */
 final class InvoiceStaticMapFetcher
 {
     private const OSM_TILE_BASE = 'https://tile.openstreetmap.org';
+
+    /** Must match pdf.html.twig .map-box outer size. */
+    private const MAP_BOX_W_PX = 240.0;
+
+    private const MAP_BOX_H_PX = 118.0;
+
+    /** Must match pdf.html.twig border on .map-box. */
+    private const MAP_BORDER_PX = 2.85;
+
+    private const TILE_PX = 256.0;
 
     public function __construct(
         private readonly HttpClientInterface $httpClient,
@@ -26,14 +34,14 @@ final class InvoiceStaticMapFetcher
     }
 
     /**
-     * PNG data URI or tiny transparent placeholder if coordinates missing / request fails.
+     * Map image (data URI) and pin coordinates in the inner area below the black border.
      */
-    public function fetchMapDataUri(?string $pickLat, ?string $pickLon, ?string $dropLat, ?string $dropLon): string
+    public function fetchMapPayload(?string $pickLat, ?string $pickLon, ?string $dropLat, ?string $dropLon): InvoiceMapPayload
     {
         $a = $this->toFloat($pickLat, $pickLon);
         $b = $this->toFloat($dropLat, $dropLon);
         if ($a === null || $b === null) {
-            return $this->emptyPngDataUri();
+            return new InvoiceMapPayload($this->emptyPngDataUri(), false);
         }
 
         [$lat1, $lon1] = $a;
@@ -57,7 +65,7 @@ final class InvoiceStaticMapFetcher
                     'status' => $response->getStatusCode(),
                 ]);
 
-                return $this->emptyPngDataUri();
+                return new InvoiceMapPayload($this->emptyPngDataUri(), false);
             }
             $bytes = $response->getContent();
             if (!$this->isPng($bytes)) {
@@ -66,23 +74,70 @@ final class InvoiceStaticMapFetcher
                     'bytes' => strlen($bytes),
                 ]);
 
-                return $this->emptyPngDataUri();
+                return new InvoiceMapPayload($this->emptyPngDataUri(), false);
             }
 
-            return 'data:image/png;base64,' . base64_encode($bytes);
+            $dataUri = 'data:image/png;base64,' . base64_encode($bytes);
+            [$pL, $pT, $dL, $dT] = $this->pinPositionsInInnerBox($lat1, $lon1, $lat2, $lon2, $z, $tileX, $tileY);
+
+            return new InvoiceMapPayload(
+                $dataUri,
+                true,
+                sprintf('%.2f', $pL),
+                sprintf('%.2f', $pT),
+                sprintf('%.2f', $dL),
+                sprintf('%.2f', $dT),
+            );
         } catch (\Throwable $e) {
             $this->logger->warning('Invoice map tile fetch failed', [
                 'url' => $url,
                 'error' => $e->getMessage(),
             ]);
 
-            return $this->emptyPngDataUri();
+            return new InvoiceMapPayload($this->emptyPngDataUri(), false);
         }
     }
 
     /**
-     * Pick zoom and tile indices so both points fall in the same standard map tile (if possible).
+     * Pixel position of each point inside the map inner rect (object-fit: contain for 256 tile).
      *
+     * @return array{0: float, 1: float, 2: float, 3: float} pickup left, top, drop left, top
+     */
+    private function pinPositionsInInnerBox(
+        float $lat1,
+        float $lon1,
+        float $lat2,
+        float $lon2,
+        int $z,
+        int $tileX,
+        int $tileY,
+    ): array {
+        $innerW = self::MAP_BOX_W_PX - 2 * self::MAP_BORDER_PX;
+        $innerH = self::MAP_BOX_H_PX - 2 * self::MAP_BORDER_PX;
+
+        [$xf1, $yf1] = $this->projectToTileFractional($lat1, $lon1, $z);
+        [$xf2, $yf2] = $this->projectToTileFractional($lat2, $lon2, $z);
+
+        $px1 = max(0.0, min(self::TILE_PX, ($xf1 - $tileX) * self::TILE_PX));
+        $py1 = max(0.0, min(self::TILE_PX, ($yf1 - $tileY) * self::TILE_PX));
+        $px2 = max(0.0, min(self::TILE_PX, ($xf2 - $tileX) * self::TILE_PX));
+        $py2 = max(0.0, min(self::TILE_PX, ($yf2 - $tileY) * self::TILE_PX));
+
+        $scale = min($innerW / self::TILE_PX, $innerH / self::TILE_PX);
+        $dispW = self::TILE_PX * $scale;
+        $dispH = self::TILE_PX * $scale;
+        $offX = ($innerW - $dispW) / 2;
+        $offY = ($innerH - $dispH) / 2;
+
+        return [
+            $offX + $px1 * $scale,
+            $offY + $py1 * $scale,
+            $offX + $px2 * $scale,
+            $offY + $py2 * $scale,
+        ];
+    }
+
+    /**
      * @return array{0: int, 1: int, 2: int} z, tileX, tileY
      */
     private function resolveTileCoveringBoth(float $lat1, float $lon1, float $lat2, float $lon2): array
@@ -111,7 +166,7 @@ final class InvoiceStaticMapFetcher
     }
 
     /**
-     * @return array{0: float, 1: float} fractional tile X, Y (Web Mercator / OSM).
+     * @return array{0: float, 1: float}
      */
     private function projectToTileFractional(float $lat, float $lon, int $zoom): array
     {
