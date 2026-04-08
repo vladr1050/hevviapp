@@ -17,8 +17,8 @@ final class InvoiceStaticMapFetcher
 {
     private const OSM_TILE_BASE = 'https://tile.openstreetmap.org';
 
-    /** Must match pdf.html.twig .map-box outer size. */
-    private const MAP_BOX_W_PX = 240.0;
+    /** Must match pdf.html.twig .map-box outer width (wider than tall tile → use cover + pin math). */
+    private const MAP_BOX_W_PX = 320.0;
 
     private const MAP_BOX_H_PX = 118.0;
 
@@ -123,11 +123,10 @@ final class InvoiceStaticMapFetcher
         $px2 = max(0.0, min(self::TILE_PX, ($xf2 - $tileX) * self::TILE_PX));
         $py2 = max(0.0, min(self::TILE_PX, ($yf2 - $tileY) * self::TILE_PX));
 
-        $scale = min($innerW / self::TILE_PX, $innerH / self::TILE_PX);
-        $dispW = self::TILE_PX * $scale;
-        $dispH = self::TILE_PX * $scale;
-        $offX = ($innerW - $dispW) / 2;
-        $offY = ($innerH - $dispH) / 2;
+        // Match CSS object-fit: cover — tile fills inner box, overflow cropped (center).
+        $scale = max($innerW / self::TILE_PX, $innerH / self::TILE_PX);
+        $offX = ($innerW - self::TILE_PX * $scale) / 2;
+        $offY = ($innerH - self::TILE_PX * $scale) / 2;
 
         return [
             $offX + $px1 * $scale,

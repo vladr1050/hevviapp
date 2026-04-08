@@ -44,7 +44,7 @@
         .pair { flex: 1; }
         .addr-block { margin-top: 8px; }
         .route-wrap { display: flex; justify-content: space-between; align-items: flex-start; margin-top: 10px; gap: 12px; }
-        .route-left { width: 48%; }
+        .route-left { width: 44%; min-width: 0; }
         .timeline { padding-left: 22px; position: relative; }
         .timeline::before {
             content: '';
@@ -67,9 +67,9 @@
             border-radius: 50%;
             background: #fff;
         }
-        /* Outer frame 240×118 including border (Figma). */
+        /* Outer frame: шире высоты тайла → object-fit: cover заполняет ширину (см. InvoiceStaticMapFetcher). */
         .map-box {
-            width: 240px;
+            width: 320px;
             height: 118px;
             box-sizing: border-box;
             border: 2.85px solid #000000;
@@ -83,13 +83,13 @@
             position: absolute;
             left: 2.85px;
             top: 2.85px;
-            width: calc(240px - 5.7px);
+            width: calc(320px - 5.7px);
             height: calc(118px - 5.7px);
         }
         .map-box-inner img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
             object-position: center;
             display: block;
         }
