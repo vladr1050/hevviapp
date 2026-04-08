@@ -141,6 +141,108 @@
         /* Figma: поставщик/покупатель — только заголовок 9px; Maršruts/Pakalpojums/оплата — зелёный круг + иконка */
         .sec-title { font-weight: 600; font-size: 9px; line-height: 11px; margin-bottom: 6px; }
         .sec-title--plain { display: block; }
+
+        /* --- Только шапка + линия 530 + блок поставщик/покупатель (эталон A4, ~530px контент) --- */
+        .invoice-lead {
+            font-size: 11px;
+            line-height: 1.4;
+            padding-top: 10pt;
+        }
+        .invoice-lead .hdr-row {
+            width: 530pt;
+            max-width: none;
+            margin-left: -16pt;
+            margin-bottom: 19pt;
+            align-items: flex-start;
+        }
+        .invoice-lead .title {
+            font-size: 23px;
+            font-weight: 600;
+            line-height: 28px;
+            letter-spacing: -0.02em;
+        }
+        .invoice-lead .meta {
+            gap: 28px;
+            flex-shrink: 0;
+        }
+        .invoice-lead .meta-block .lbl {
+            font-size: 8px;
+            line-height: 10px;
+            color: rgba(0, 0, 0, 0.4);
+        }
+        .invoice-lead .meta-block .val {
+            font-size: 11px;
+            font-weight: 500;
+            line-height: 13px;
+            margin-top: 5px;
+        }
+        .invoice-lead .logo-block {
+            max-width: 132pt;
+            flex-shrink: 0;
+        }
+        .invoice-lead .logo-mark {
+            height: 21pt;
+            max-width: 118pt;
+        }
+        .invoice-lead__divider {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+        .invoice-lead .two-col--lead {
+            width: 530pt;
+            max-width: none;
+            margin-left: -16pt;
+            margin-top: 22pt;
+            gap: 20pt;
+            align-items: flex-start;
+        }
+        .invoice-lead .two-col--lead .col {
+            width: 255pt;
+            flex: 0 0 255pt;
+            min-width: 0;
+        }
+        .invoice-lead .sec-title--plain {
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 14px;
+            margin-bottom: 10px;
+        }
+        .invoice-lead .col > hr.line {
+            margin-top: 0;
+            margin-bottom: 10pt;
+        }
+        .invoice-lead .lbl-sm {
+            font-size: 8px;
+            line-height: 10px;
+            color: rgba(0, 0, 0, 0.4);
+        }
+        .invoice-lead .val-sm {
+            font-size: 11px;
+            font-weight: 500;
+            line-height: 13px;
+        }
+        .invoice-lead .lbl-sm + .val-sm {
+            margin-top: 4px;
+        }
+        .invoice-lead .pair-row {
+            margin-top: 12pt;
+        }
+        .invoice-lead .addr-block {
+            margin-top: 12pt;
+        }
+        .invoice-lead .addr-block .val-sm {
+            line-height: 1.5;
+        }
+        .invoice-lead .addr-block .lbl-sm + .val-sm {
+            margin-top: 5px;
+        }
+        .invoice-lead .addr-block .val-sm + .val-sm {
+            margin-top: 4px;
+        }
+        /* Ряд e-pasts / tālrunis после адреса — заметный отступ сверху */
+        .invoice-lead .addr-block + .pair-row {
+            margin-top: 20pt;
+        }
         .sec-title--icon {
             display: flex;
             flex-direction: row;
@@ -303,6 +405,7 @@
 </head>
 <body>
 <div class="page">
+    <div class="invoice-lead">
     <div class="hdr-row">
         <div class="title">Rēķins</div>
         <div class="meta">
@@ -319,9 +422,9 @@
             <img src="invoice-assets/group-1122.svg" class="logo-mark" alt="hevvi">
         </div>
     </div>
-    <hr class="line line--bleed530">
+    <hr class="line line--bleed530 invoice-lead__divider">
 
-    <div class="two-col">
+    <div class="two-col two-col--lead">
         <div class="col">
             <div class="sec-title sec-title--plain">Pakalpojuma sniedzējs</div>
             <hr class="line">
@@ -375,6 +478,7 @@
                 {% endfor %}
             </div>
         </div>
+    </div>
     </div>
 
     <div class="route-wrap">
