@@ -90,9 +90,13 @@
             font-family: 'Instrument Sans', sans-serif;
         }
 
+        /* Chromium PDF: explicit height so flex + footer margin-top:auto fill the page. */
         .page-box {
             position: absolute;
-            inset: 33px;
+            left: 33px;
+            top: 33px;
+            width: calc(595px - 66px);
+            height: calc(842px - 66px);
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
@@ -103,7 +107,7 @@
         }
 
         .body-region {
-            flex: 1 1 auto;
+            flex: 1 1 0;
             margin-top: 57px;
             min-height: 0;
             display: flex;
