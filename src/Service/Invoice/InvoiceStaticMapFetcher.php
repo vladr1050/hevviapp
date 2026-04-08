@@ -9,7 +9,9 @@ use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
- * Static map for invoice PDF: one OSM raster tile (PNG) + pickup/delivery pin positions.
+ * Static map for invoice PDF: one OSM raster tile (PNG) + pickup/delivery pins + straight route line.
+ * Zoom/tile choice follows fitBounds-style logic: padded geographic bbox, highest zoom where the bbox
+ * fits one tile and both stops fit in the inner frame with margin (transport preview, not a cropped city tile).
  *
  * @see https://operations.osmfoundation.org/policies/tiles/
  */
@@ -17,21 +19,31 @@ final class InvoiceStaticMapFetcher
 {
     private const OSM_TILE_BASE = 'https://tile.openstreetmap.org';
 
-    /**
-     * Route row: same width as invoice lead (530pt), grid 1fr 1.2fr, gap 32px.
-     * Map column outer size in CSS px; height 220px, border 2px (Twig must match).
-     */
+    /** Same width as invoice lead (530pt). */
     private const ROUTE_SECTION_W_PT = 530.0;
 
     private const ROUTE_GRID_GAP_PX = 32.0;
 
-    private const MAP_BOX_H_PX = 220.0;
+    /** Left column narrower, map column dominant (must match Twig grid). */
+    private const ROUTE_COL_LEFT_FR = 0.95;
 
-    private const MAP_BORDER_PX = 2.0;
+    private const ROUTE_COL_RIGHT_FR = 1.35;
 
-    private const BBOX_PAD_LATLON = 0.15;
+    /** Outer map frame height in CSS px (Twig must match). */
+    private const MAP_BOX_H_PX = 280.0;
+
+    private const MAP_BORDER_PX = 3.0;
+
+    /** ~Leaflet fitBounds padding in CSS px inside the inner map box. */
+    private const INNER_ROUTE_PAD_PX = 40.0;
+
+    private const BBOX_PAD_LATLON = 0.18;
 
     private const TILE_PX = 256.0;
+
+    private const MIN_ZOOM = 4;
+
+    private const MAX_ZOOM = 16;
 
     public function __construct(
         private readonly HttpClientInterface $httpClient,
@@ -39,16 +51,18 @@ final class InvoiceStaticMapFetcher
     ) {
     }
 
-    /** Map column outer width in CSS px (1.2 / (1 + 1.2) of grid minus gap). */
+    /** Map column outer width in CSS px. */
     private function mapOuterWidthPx(): float
     {
         $sectionPx = self::ROUTE_SECTION_W_PT * 96.0 / 72.0;
+        $innerGrid = max(0.0, $sectionPx - self::ROUTE_GRID_GAP_PX);
+        $den = self::ROUTE_COL_LEFT_FR + self::ROUTE_COL_RIGHT_FR;
 
-        return (max(0.0, $sectionPx - self::ROUTE_GRID_GAP_PX)) * (1.2 / 2.2);
+        return $innerGrid * (self::ROUTE_COL_RIGHT_FR / $den);
     }
 
     /**
-     * Map image (data URI) and pin coordinates in the inner area below the black border.
+     * Map image (data URI) and pin coordinates in the inner area below the border.
      */
     public function fetchMapPayload(?string $pickLat, ?string $pickLon, ?string $dropLat, ?string $dropLon): InvoiceMapPayload
     {
@@ -61,7 +75,10 @@ final class InvoiceStaticMapFetcher
         [$lat1, $lon1] = $a;
         [$lat2, $lon2] = $b;
 
-        [$z, $tileX, $tileY] = $this->resolveTileCoveringBothPadded($lat1, $lon1, $lat2, $lon2);
+        $innerW = $this->mapOuterWidthPx() - 2 * self::MAP_BORDER_PX;
+        $innerH = self::MAP_BOX_H_PX - 2 * self::MAP_BORDER_PX;
+
+        [$z, $tileX, $tileY, $layout] = $this->resolveTileLayout($lat1, $lon1, $lat2, $lon2, $innerW, $innerH);
 
         $url = sprintf('%s/%d/%d/%d.png', self::OSM_TILE_BASE, $z, $tileX, $tileY);
 
@@ -92,9 +109,9 @@ final class InvoiceStaticMapFetcher
             }
 
             $dataUri = 'data:image/png;base64,' . base64_encode($bytes);
-            [$pL, $pT, $dL, $dT] = $this->pinPositionsInInnerBox($lat1, $lon1, $lat2, $lon2, $z, $tileX, $tileY);
-            $innerW = $this->mapOuterWidthPx() - 2 * self::MAP_BORDER_PX;
-            $innerH = self::MAP_BOX_H_PX - 2 * self::MAP_BORDER_PX;
+            [$pL, $pT, $dL, $dT, $ox, $oy, $scale] = $layout;
+            $imgW = self::TILE_PX * $scale;
+            $imgH = self::TILE_PX * $scale;
 
             return new InvoiceMapPayload(
                 $dataUri,
@@ -105,6 +122,10 @@ final class InvoiceStaticMapFetcher
                 sprintf('%.2f', $dT),
                 sprintf('%.2f', $innerW),
                 sprintf('%.2f', $innerH),
+                sprintf('%.2f', $ox),
+                sprintf('%.2f', $oy),
+                sprintf('%.2f', $imgW),
+                sprintf('%.2f', $imgH),
             );
         } catch (\Throwable $e) {
             $this->logger->warning('Invoice map tile fetch failed', [
@@ -117,49 +138,55 @@ final class InvoiceStaticMapFetcher
     }
 
     /**
-     * CSS pixel position inside the map inner rect (object-fit: cover for 256 tile).
-     *
-     * @return array{0: float, 1: float, 2: float, 3: float} pickup left, top, drop left, top
+     * @return array{0: int, 1: int, 2: int, 3: array{0: float, 1: float, 2: float, 3: float, 4: float, 5: float, 6: float}} z, tileX, tileY, layout
      */
-    private function pinPositionsInInnerBox(
+    private function resolveTileLayout(
         float $lat1,
         float $lon1,
         float $lat2,
         float $lon2,
-        int $z,
-        int $tileX,
-        int $tileY,
+        float $innerW,
+        float $innerH,
     ): array {
-        $innerW = $this->mapOuterWidthPx() - 2 * self::MAP_BORDER_PX;
-        $innerH = self::MAP_BOX_H_PX - 2 * self::MAP_BORDER_PX;
+        [$minLat, $minLon, $maxLat, $maxLon] = $this->paddedLatLonBBox($lat1, $lon1, $lat2, $lon2);
 
-        [$xf1, $yf1] = $this->projectToTileFractional($lat1, $lon1, $z);
-        [$xf2, $yf2] = $this->projectToTileFractional($lat2, $lon2, $z);
+        for ($z = self::MAX_ZOOM; $z >= self::MIN_ZOOM; --$z) {
+            if (!$this->latLonBBoxFitsSingleTile($minLat, $minLon, $maxLat, $maxLon, $z)) {
+                continue;
+            }
+            $centerLat = ($minLat + $maxLat) / 2;
+            $centerLon = ($minLon + $maxLon) / 2;
+            [$xf, $yf] = $this->projectToTileFractional($centerLat, $centerLon, $z);
+            $tileX = (int) floor($xf);
+            $tileY = (int) floor($yf);
+            if (!$this->pointsInTile($lat1, $lon1, $lat2, $lon2, $z, $tileX, $tileY)) {
+                continue;
+            }
+            $layout = $this->layoutInInnerBox(
+                $lat1,
+                $lon1,
+                $lat2,
+                $lon2,
+                $z,
+                $tileX,
+                $tileY,
+                $innerW,
+                $innerH,
+                self::INNER_ROUTE_PAD_PX,
+                true,
+            );
+            if ($layout !== null) {
+                return [$z, $tileX, $tileY, $layout];
+            }
+        }
 
-        $px1 = max(0.0, min(self::TILE_PX, ($xf1 - $tileX) * self::TILE_PX));
-        $py1 = max(0.0, min(self::TILE_PX, ($yf1 - $tileY) * self::TILE_PX));
-        $px2 = max(0.0, min(self::TILE_PX, ($xf2 - $tileX) * self::TILE_PX));
-        $py2 = max(0.0, min(self::TILE_PX, ($yf2 - $tileY) * self::TILE_PX));
-
-        // Match CSS object-fit: cover — tile fills inner box, overflow cropped (center).
-        $scale = max($innerW / self::TILE_PX, $innerH / self::TILE_PX);
-        $offX = ($innerW - self::TILE_PX * $scale) / 2;
-        $offY = ($innerH - self::TILE_PX * $scale) / 2;
-
-        return [
-            $offX + $px1 * $scale,
-            $offY + $py1 * $scale,
-            $offX + $px2 * $scale,
-            $offY + $py2 * $scale,
-        ];
+        return $this->fallbackLegacyTileLayout($lat1, $lon1, $lat2, $lon2, $innerW, $innerH);
     }
 
     /**
-     * Inflate geographic bounds (~Leaflet fitBounds padding) before tile pick.
-     *
-     * @return array{0: int, 1: int, 2: int} z, tileX, tileY
+     * @return array{0: float, 1: float, 2: float, 3: float} minLat, minLon, maxLat, maxLon
      */
-    private function resolveTileCoveringBothPadded(float $lat1, float $lon1, float $lat2, float $lon2): array
+    private function paddedLatLonBBox(float $lat1, float $lon1, float $lat2, float $lon2): array
     {
         $minLat = min($lat1, $lat2);
         $maxLat = max($lat1, $lat2);
@@ -167,43 +194,175 @@ final class InvoiceStaticMapFetcher
         $maxLon = max($lon1, $lon2);
         $dLat = $maxLat - $minLat;
         $dLon = $maxLon - $minLon;
-        $padLat = max(0.0008, $dLat * self::BBOX_PAD_LATLON + 0.002);
-        $padLon = max(0.0008, $dLon * self::BBOX_PAD_LATLON + 0.002);
+        $padLat = max(0.001, $dLat * self::BBOX_PAD_LATLON + 0.003);
+        $padLon = max(0.001, $dLon * self::BBOX_PAD_LATLON + 0.003);
 
-        return $this->resolveTileCoveringBoth(
-            $minLat - $padLat,
-            $minLon - $padLon,
-            $maxLat + $padLat,
-            $maxLon + $padLon,
-        );
+        return [$minLat - $padLat, $minLon - $padLon, $maxLat + $padLat, $maxLon + $padLon];
     }
 
-    /**
-     * @return array{0: int, 1: int, 2: int} z, tileX, tileY
-     */
-    private function resolveTileCoveringBoth(float $lat1, float $lon1, float $lat2, float $lon2): array
+    private function latLonBBoxFitsSingleTile(float $minLat, float $minLon, float $maxLat, float $maxLon, int $z): bool
     {
-        $centerLat = ($lat1 + $lat2) / 2;
-        $centerLon = ($lon1 + $lon2) / 2;
-
-        $minZoom = 5;
-        $maxZoom = 16;
-
-        for ($z = $maxZoom; $z >= $minZoom; --$z) {
-            [$xf1, $yf1] = $this->projectToTileFractional($lat1, $lon1, $z);
-            [$xf2, $yf2] = $this->projectToTileFractional($lat2, $lon2, $z);
-            $tx1 = (int) floor($xf1);
-            $ty1 = (int) floor($yf1);
-            $tx2 = (int) floor($xf2);
-            $ty2 = (int) floor($yf2);
-            if ($tx1 === $tx2 && $ty1 === $ty2) {
-                return [$z, $tx1, $ty1];
+        $corners = [
+            [$minLat, $minLon],
+            [$minLat, $maxLon],
+            [$maxLat, $minLon],
+            [$maxLat, $maxLon],
+        ];
+        $tx = null;
+        $ty = null;
+        foreach ($corners as [$la, $lo]) {
+            [$xf, $yf] = $this->projectToTileFractional($la, $lo, $z);
+            $ftx = (int) floor($xf);
+            $fty = (int) floor($yf);
+            if ($tx === null) {
+                $tx = $ftx;
+                $ty = $fty;
+            } elseif ($tx !== $ftx || $ty !== $fty) {
+                return false;
             }
         }
 
-        [$xf, $yf] = $this->projectToTileFractional($centerLat, $centerLon, $minZoom);
+        return true;
+    }
 
-        return [$minZoom, (int) floor($xf), (int) floor($yf)];
+    private function pointsInTile(float $lat1, float $lon1, float $lat2, float $lon2, int $z, int $tileX, int $tileY): bool
+    {
+        foreach ([[$lat1, $lon1], [$lat2, $lon2]] as [$la, $lo]) {
+            [$xf, $yf] = $this->projectToTileFractional($la, $lo, $z);
+            if ((int) floor($xf) !== $tileX || (int) floor($yf) !== $tileY) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @return array{0: float, 1: float, 2: float, 3: float, 4: float, 5: float, 6: float}|null pickup L, T, drop L, T, img ox, oy, scale
+     */
+    private function layoutInInnerBox(
+        float $lat1,
+        float $lon1,
+        float $lat2,
+        float $lon2,
+        int $z,
+        int $tileX,
+        int $tileY,
+        float $innerW,
+        float $innerH,
+        float $padPx,
+        bool $requirePaddingSpan,
+    ): ?array {
+        [$xf1, $yf1] = $this->projectToTileFractional($lat1, $lon1, $z);
+        [$xf2, $yf2] = $this->projectToTileFractional($lat2, $lon2, $z);
+
+        $px1 = ($xf1 - $tileX) * self::TILE_PX;
+        $py1 = ($yf1 - $tileY) * self::TILE_PX;
+        $px2 = ($xf2 - $tileX) * self::TILE_PX;
+        $py2 = ($yf2 - $tileY) * self::TILE_PX;
+
+        $scale = max($innerW / self::TILE_PX, $innerH / self::TILE_PX);
+        $sw = self::TILE_PX * $scale;
+        $sh = self::TILE_PX * $scale;
+
+        $minPx = min($px1, $px2);
+        $maxPx = max($px1, $px2);
+        $minPy = min($py1, $py2);
+        $maxPy = max($py1, $py2);
+
+        $spanX = ($maxPx - $minPx) * $scale;
+        $spanY = ($maxPy - $minPy) * $scale;
+
+        if ($requirePaddingSpan && ($spanX + 2 * $padPx > $innerW + 0.5 || $spanY + 2 * $padPx > $innerH + 0.5)) {
+            return null;
+        }
+
+        $midPx = ($minPx + $maxPx) / 2;
+        $midPy = ($minPy + $maxPy) / 2;
+
+        $oxIdeal = $innerW / 2 - $midPx * $scale;
+        $oyIdeal = $innerH / 2 - $midPy * $scale;
+
+        $oxMin = $innerW - $sw;
+        $oxMax = 0.0;
+        $oyMin = $innerH - $sh;
+        $oyMax = 0.0;
+
+        $ox = min($oxMax, max($oxMin, $oxIdeal));
+        $oy = min($oyMax, max($oyMin, $oyIdeal));
+
+        $pL = $ox + $px1 * $scale;
+        $pT = $oy + $py1 * $scale;
+        $dL = $ox + $px2 * $scale;
+        $dT = $oy + $py2 * $scale;
+
+        return [$pL, $pT, $dL, $dT, $ox, $oy, $scale];
+    }
+
+    /**
+     * @return array{0: int, 1: int, 2: int, 3: array{0: float, 1: float, 2: float, 3: float, 4: float, 5: float, 6: float}}
+     */
+    private function fallbackLegacyTileLayout(
+        float $lat1,
+        float $lon1,
+        float $lat2,
+        float $lon2,
+        float $innerW,
+        float $innerH,
+    ): array {
+        [$minLat, $minLon, $maxLat, $maxLon] = $this->paddedLatLonBBox($lat1, $lon1, $lat2, $lon2);
+
+        for ($z = self::MAX_ZOOM; $z >= self::MIN_ZOOM; --$z) {
+            if (!$this->latLonBBoxFitsSingleTile($minLat, $minLon, $maxLat, $maxLon, $z)) {
+                continue;
+            }
+            $centerLat = ($minLat + $maxLat) / 2;
+            $centerLon = ($minLon + $maxLon) / 2;
+            [$xf, $yf] = $this->projectToTileFractional($centerLat, $centerLon, $z);
+            $tileX = (int) floor($xf);
+            $tileY = (int) floor($yf);
+            if (!$this->pointsInTile($lat1, $lon1, $lat2, $lon2, $z, $tileX, $tileY)) {
+                continue;
+            }
+            $layout = $this->layoutInInnerBox(
+                $lat1,
+                $lon1,
+                $lat2,
+                $lon2,
+                $z,
+                $tileX,
+                $tileY,
+                $innerW,
+                $innerH,
+                self::INNER_ROUTE_PAD_PX,
+                false,
+            );
+            if ($layout !== null) {
+                return [$z, $tileX, $tileY, $layout];
+            }
+        }
+
+        $centerLat = ($lat1 + $lat2) / 2;
+        $centerLon = ($lon1 + $lon2) / 2;
+        $z = self::MIN_ZOOM;
+        [$xf, $yf] = $this->projectToTileFractional($centerLat, $centerLon, $z);
+        $tileX = (int) floor($xf);
+        $tileY = (int) floor($yf);
+        $layout = $this->layoutInInnerBox(
+            $lat1,
+            $lon1,
+            $lat2,
+            $lon2,
+            $z,
+            $tileX,
+            $tileY,
+            $innerW,
+            $innerH,
+            self::INNER_ROUTE_PAD_PX,
+            false,
+        );
+
+        return [$z, $tileX, $tileY, $layout];
     }
 
     /**

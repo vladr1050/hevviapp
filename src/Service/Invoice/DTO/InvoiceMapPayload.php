@@ -19,6 +19,11 @@ final readonly class InvoiceMapPayload
         /** Inner map box size in CSS px (matches .map-box-inner; SVG viewBox). */
         public ?string $innerWidthPx = null,
         public ?string $innerHeightPx = null,
+        /** Scaled tile position (object-fit cover + pan so both stops stay inside with padding). */
+        public ?string $mapImgLeftPx = null,
+        public ?string $mapImgTopPx = null,
+        public ?string $mapImgWidthPx = null,
+        public ?string $mapImgHeightPx = null,
     ) {
     }
 }

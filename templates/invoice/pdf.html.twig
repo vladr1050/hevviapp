@@ -142,106 +142,108 @@
         .sec-title { font-weight: 600; font-size: 9px; line-height: 11px; margin-bottom: 6px; }
         .sec-title--plain { display: block; }
 
-        /* --- Только шапка + линия 530 + блок поставщик/покупатель (эталон A4, ~530px контент) --- */
+        /* --- Шапка + линия 530 + поставщик/покупатель: печатный масштаб, фиксированный A4 --- */
         .invoice-lead {
-            font-size: 11px;
-            line-height: 1.4;
-            padding-top: 10pt;
+            font-size: 12px;
+            line-height: 1.45;
+            padding-top: 12pt;
         }
         .invoice-lead .hdr-row {
             width: 530pt;
             max-width: none;
             margin-left: -16pt;
-            margin-bottom: 19pt;
+            margin-bottom: 26pt;
             align-items: flex-start;
         }
         .invoice-lead .title {
-            font-size: 23px;
+            font-size: 28px;
             font-weight: 600;
-            line-height: 28px;
+            line-height: 34px;
             letter-spacing: -0.02em;
         }
         .invoice-lead .meta {
-            gap: 28px;
+            gap: 36px;
             flex-shrink: 0;
         }
         .invoice-lead .meta-block .lbl {
-            font-size: 8px;
-            line-height: 10px;
-            color: rgba(0, 0, 0, 0.4);
+            font-size: 9px;
+            line-height: 11px;
+            color: rgba(0, 0, 0, 0.42);
         }
         .invoice-lead .meta-block .val {
-            font-size: 11px;
-            font-weight: 500;
-            line-height: 13px;
-            margin-top: 5px;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 15px;
+            margin-top: 6px;
+            color: #111827;
         }
         .invoice-lead .logo-block {
-            max-width: 132pt;
+            max-width: 140pt;
             flex-shrink: 0;
         }
         .invoice-lead .logo-mark {
-            height: 21pt;
-            max-width: 118pt;
+            height: 24pt;
+            max-width: 126pt;
         }
         .invoice-lead__divider {
             margin-top: 0;
-            margin-bottom: 0;
+            margin-bottom: 14pt;
         }
         .invoice-lead .two-col--lead {
             width: 530pt;
             max-width: none;
             margin-left: -16pt;
-            margin-top: 22pt;
-            gap: 20pt;
+            margin-top: 28pt;
+            gap: 22pt;
             align-items: flex-start;
         }
         .invoice-lead .two-col--lead .col {
-            width: 255pt;
-            flex: 0 0 255pt;
+            width: 254pt;
+            flex: 0 0 254pt;
             min-width: 0;
         }
         .invoice-lead .sec-title--plain {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
-            line-height: 14px;
-            margin-bottom: 10px;
+            line-height: 16px;
+            margin-bottom: 11px;
         }
         .invoice-lead .col > hr.line {
             margin-top: 0;
-            margin-bottom: 10pt;
+            margin-bottom: 11pt;
         }
         .invoice-lead .lbl-sm {
-            font-size: 8px;
-            line-height: 10px;
-            color: rgba(0, 0, 0, 0.4);
+            font-size: 9px;
+            line-height: 12px;
+            color: rgba(0, 0, 0, 0.45);
         }
         .invoice-lead .val-sm {
-            font-size: 11px;
-            font-weight: 500;
-            line-height: 13px;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 15px;
+            color: #111827;
         }
         .invoice-lead .lbl-sm + .val-sm {
-            margin-top: 4px;
-        }
-        .invoice-lead .pair-row {
-            margin-top: 12pt;
-        }
-        .invoice-lead .addr-block {
-            margin-top: 12pt;
-        }
-        .invoice-lead .addr-block .val-sm {
-            line-height: 1.5;
-        }
-        .invoice-lead .addr-block .lbl-sm + .val-sm {
             margin-top: 5px;
         }
-        .invoice-lead .addr-block .val-sm + .val-sm {
-            margin-top: 4px;
+        .invoice-lead .pair-row {
+            margin-top: 14pt;
         }
-        /* Ряд e-pasts / tālrunis после адреса — заметный отступ сверху */
+        .invoice-lead .addr-block {
+            margin-top: 14pt;
+        }
+        .invoice-lead .addr-block .val-sm {
+            line-height: 1.55;
+            font-weight: 600;
+        }
+        .invoice-lead .addr-block .lbl-sm + .val-sm {
+            margin-top: 6px;
+        }
+        .invoice-lead .addr-block .val-sm + .val-sm {
+            margin-top: 5px;
+        }
         .invoice-lead .addr-block + .pair-row {
-            margin-top: 20pt;
+            margin-top: 22pt;
         }
         .sec-title--icon {
             display: flex;
@@ -249,6 +251,13 @@
             align-items: center;
             gap: 4.56pt;
             min-height: 22.8pt;
+        }
+        .route-wrap .sec-title--icon {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 17px;
+            min-height: 28pt;
+            gap: 7pt;
         }
         .sec-icon {
             width: 23.84pt;
@@ -264,16 +273,32 @@
             box-sizing: border-box;
             padding: 4.77pt;
         }
+        .route-wrap .sec-icon {
+            width: 28pt;
+            height: 28pt;
+            min-width: 28pt;
+            min-height: 28pt;
+            border-radius: 14pt;
+            padding: 5.5pt;
+        }
+        .route-wrap .sec-icon img { width: 15.5pt; height: 15.5pt; }
         .sec-icon img { width: 13.11pt; height: 13.11pt; display: block; object-fit: contain; }
         .sec-icon--service {
-            width: 22.56pt;
-            height: 22.56pt;
-            min-width: 22.56pt;
-            min-height: 22.56pt;
-            border-radius: 11.28pt;
+            width: 26pt;
+            height: 26pt;
+            min-width: 26pt;
+            min-height: 26pt;
+            border-radius: 13pt;
             padding: 0;
         }
-        .sec-icon--service img { width: 11.28pt; height: 11.28pt; }
+        .sec-icon--service img { width: 13pt; height: 13pt; }
+        .svc-head .sec-title--icon {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 17px;
+            min-height: 28pt;
+            gap: 7pt;
+        }
         .sec-icon--pay {
             width: 22.8pt;
             height: 22.8pt;
@@ -288,29 +313,34 @@
         .pair-row { display: flex; gap: 20pt; margin-top: 8px; }
         .pair { flex: 1; min-width: 0; }
         .addr-block { margin-top: 8px; }
-        /* Maršruts: Figma grid 1fr 1.2fr, gap 32px, align start; same 530pt bleed as lead */
+        /* Maršruts: сетка 0.95fr / 1.35fr (карта доминирует), gap 32px = PHP ROUTE_GRID_GAP_PX */
         .route-wrap {
             display: grid;
-            grid-template-columns: 1fr 1.2fr;
+            grid-template-columns: 0.95fr 1.35fr;
             gap: 32px;
-            align-items: start;
+            align-items: center;
             width: 530pt;
             max-width: none;
             margin-left: -16pt;
-            margin-top: 10px;
+            margin-top: 36px;
         }
         .route-left { min-width: 0; }
+        .route-left > hr.line {
+            width: 100%;
+            margin-top: 0;
+            margin-bottom: 14px;
+        }
         .route-timeline-wrap {
             display: flex;
             flex-direction: row;
             align-items: flex-start;
-            gap: 9.12pt;
+            gap: 10pt;
             padding-left: 0;
+            margin-top: 4px;
         }
-        /* Экспорт Figma group-1059: линия + узлы; высота под два блока адреса */
         .timeline-rail-svg {
             width: 5.13184pt;
-            height: 52pt;
+            height: 76pt;
             flex-shrink: 0;
             display: block;
             object-fit: fill;
@@ -321,39 +351,46 @@
         .timeline--with-rail::before { display: none; }
         .timeline--with-rail .tl-item::before { display: none; }
         .tl-item { position: relative; margin-bottom: 0; padding-left: 0; }
-        .route-timeline-wrap .timeline .tl-item + .tl-item { margin-top: 12px; }
+        .route-timeline-wrap .timeline .tl-item + .tl-item { margin-top: 18px; }
         .route-addr-label {
-            font-size: 12px;
-            line-height: 14px;
+            font-size: 11px;
+            line-height: 13px;
             font-weight: 400;
             color: #9CA3AF;
         }
         .route-addr-value {
-            font-size: 16px;
-            line-height: 20px;
+            font-size: 17px;
+            line-height: 22px;
             font-weight: 600;
             color: #111827;
             margin-top: 6px;
         }
-        /* Map: 220px high, 16px radius; pin/line math in PHP — CSS px inner box */
+        /* Карта: высота/бордер = PHP MAP_BOX_H_PX / MAP_BORDER_PX */
         .map-box {
             width: 100%;
-            height: 220px;
+            height: 280px;
             box-sizing: border-box;
-            border: 2px solid #000000;
-            border-radius: 16px;
+            border: 3px solid #000000;
+            border-radius: 18px;
             position: relative;
             background: #e8e8e8;
             overflow: hidden;
         }
         .map-box-inner {
             position: absolute;
-            left: 2px;
-            top: 2px;
-            right: 2px;
-            bottom: 2px;
+            left: 3px;
+            top: 3px;
+            right: 3px;
+            bottom: 3px;
         }
-        .map-box-inner img {
+        .map-box-inner .map-tile-img {
+            position: absolute;
+            display: block;
+            margin: 0;
+            padding: 0;
+            border: 0;
+        }
+        .map-box-inner img.map-fill {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -373,10 +410,10 @@
         /* Pins: макет 12 + 2.85 pt (Pickup — белый, Delivery — #DEDEDE). */
         .map-pin {
             position: absolute;
-            width: 12pt;
-            height: 12pt;
+            width: 13pt;
+            height: 13pt;
             box-sizing: content-box;
-            border: 2px solid #000000;
+            border: 2.5px solid #000000;
             border-radius: 50%;
             transform: translate(-50%, -50%);
             z-index: 2;
@@ -388,9 +425,9 @@
         .svc-head {
             display: grid;
             grid-template-columns: 1fr auto;
-            align-items: center;
-            column-gap: 24px;
-            margin-top: 12px;
+            align-items: baseline;
+            column-gap: 28px;
+            margin-top: 32px;
             width: 530pt;
             max-width: none;
             margin-left: -16pt;
@@ -398,43 +435,51 @@
         .svc-head .sec-title--icon { min-width: 0; }
         .svc-date {
             text-align: right;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 12px;
-            line-height: 14px;
+            line-height: 17px;
             color: #111827;
             white-space: nowrap;
         }
+        hr.line.svc-block-hr {
+            margin-top: 14px;
+            margin-bottom: 14px;
+        }
         .price-grid {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 24px;
-            margin-top: 8px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            margin-top: 0;
             width: 530pt;
             max-width: none;
             margin-left: -16pt;
         }
         .price-cell { min-width: 0; }
-        .price-cell--empty { visibility: hidden; pointer-events: none; }
         .price-lbl {
             font-size: 12px;
-            line-height: 14px;
+            line-height: 15px;
             font-weight: 400;
             color: #9CA3AF;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            white-space: normal;
         }
         .price-val {
-            font-size: 16px;
-            line-height: 20px;
+            font-size: 17px;
+            line-height: 22px;
             font-weight: 600;
             color: #111827;
-            margin-top: 6px;
+            margin-top: 8px;
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
-        .price-cell.total .price-val { font-weight: 700; }
+        .price-cell.total .price-lbl {
+            color: #6B7280;
+            font-weight: 500;
+        }
+        .price-cell.total .price-val {
+            font-weight: 800;
+            font-size: 18px;
+            line-height: 23px;
+            color: #000000;
+        }
         .pay-section { width: 500pt; margin-top: 14px; }
         .pay-grid { display: flex; gap: 48px; margin-top: 8px; }
         .legal-note { color: rgba(0,0,0,0.4); font-size: 7px; max-width: 220px; margin-top: 10px; line-height: 1.35; }
@@ -568,7 +613,12 @@
         </div>
         <div class="map-box">
             <div class="map-box-inner">
-                <img src="{{ map_data_uri|raw }}" alt="">
+                {% if map_show_pins and map_inner_w and map_inner_h and map_img_w %}
+                    <img class="map-tile-img" src="{{ map_data_uri|raw }}" alt=""
+                         style="left: {{ map_img_left }}px; top: {{ map_img_top }}px; width: {{ map_img_w }}px; height: {{ map_img_h }}px;">
+                {% else %}
+                    <img class="map-fill" src="{{ map_data_uri|raw }}" alt="">
+                {% endif %}
                 {% if map_show_pins and map_inner_w and map_inner_h %}
                     <svg class="map-route-svg" viewBox="0 0 {{ map_inner_w }} {{ map_inner_h }}" preserveAspectRatio="none" aria-hidden="true">
                         <line x1="{{ map_pickup_left }}" y1="{{ map_pickup_top }}" x2="{{ map_drop_left }}" y2="{{ map_drop_top }}"
@@ -588,7 +638,7 @@
         </div>
         <div class="svc-date">Pakalpojuma sniegšanas datums: {{ service_date }}</div>
     </div>
-    <hr class="line line--bleed530">
+    <hr class="line line--bleed530 svc-block-hr">
 
     <div class="price-grid">
         <div class="price-cell">
@@ -611,7 +661,6 @@
             <div class="price-lbl">KOPĀ APMAKSAI (ar PVN)</div>
             <div class="price-val">{{ amount_gross }}</div>
         </div>
-        <div class="price-cell price-cell--empty" aria-hidden="true">&nbsp;</div>
     </div>
 
     <div class="pay-section">
