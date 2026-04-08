@@ -18,14 +18,18 @@ final class InvoiceStaticMapFetcher
     private const OSM_TILE_BASE = 'https://tile.openstreetmap.org';
 
     /**
-     * Outer map frame in CSS px (Twig uses pt; 1pt = 96/72 px in browsers).
-     * Figma 773-5893: 240×118 pt, border 2.85 pt.
+     * Route row: same width as invoice lead (530pt), grid 1fr 1.2fr, gap 32px.
+     * Map column outer size in CSS px; height 220px, border 2px (Twig must match).
      */
-    private const MAP_BOX_W_PX = 240.0 * 96.0 / 72.0;
+    private const ROUTE_SECTION_W_PT = 530.0;
 
-    private const MAP_BOX_H_PX = 118.0 * 96.0 / 72.0;
+    private const ROUTE_GRID_GAP_PX = 32.0;
 
-    private const MAP_BORDER_PX = 2.85 * 96.0 / 72.0;
+    private const MAP_BOX_H_PX = 220.0;
+
+    private const MAP_BORDER_PX = 2.0;
+
+    private const BBOX_PAD_LATLON = 0.15;
 
     private const TILE_PX = 256.0;
 
@@ -33,6 +37,14 @@ final class InvoiceStaticMapFetcher
         private readonly HttpClientInterface $httpClient,
         private readonly LoggerInterface $logger,
     ) {
+    }
+
+    /** Map column outer width in CSS px (1.2 / (1 + 1.2) of grid minus gap). */
+    private function mapOuterWidthPx(): float
+    {
+        $sectionPx = self::ROUTE_SECTION_W_PT * 96.0 / 72.0;
+
+        return (max(0.0, $sectionPx - self::ROUTE_GRID_GAP_PX)) * (1.2 / 2.2);
     }
 
     /**
@@ -49,7 +61,7 @@ final class InvoiceStaticMapFetcher
         [$lat1, $lon1] = $a;
         [$lat2, $lon2] = $b;
 
-        [$z, $tileX, $tileY] = $this->resolveTileCoveringBoth($lat1, $lon1, $lat2, $lon2);
+        [$z, $tileX, $tileY] = $this->resolveTileCoveringBothPadded($lat1, $lon1, $lat2, $lon2);
 
         $url = sprintf('%s/%d/%d/%d.png', self::OSM_TILE_BASE, $z, $tileX, $tileY);
 
@@ -81,6 +93,8 @@ final class InvoiceStaticMapFetcher
 
             $dataUri = 'data:image/png;base64,' . base64_encode($bytes);
             [$pL, $pT, $dL, $dT] = $this->pinPositionsInInnerBox($lat1, $lon1, $lat2, $lon2, $z, $tileX, $tileY);
+            $innerW = $this->mapOuterWidthPx() - 2 * self::MAP_BORDER_PX;
+            $innerH = self::MAP_BOX_H_PX - 2 * self::MAP_BORDER_PX;
 
             return new InvoiceMapPayload(
                 $dataUri,
@@ -89,6 +103,8 @@ final class InvoiceStaticMapFetcher
                 sprintf('%.2f', $pT),
                 sprintf('%.2f', $dL),
                 sprintf('%.2f', $dT),
+                sprintf('%.2f', $innerW),
+                sprintf('%.2f', $innerH),
             );
         } catch (\Throwable $e) {
             $this->logger->warning('Invoice map tile fetch failed', [
@@ -114,7 +130,7 @@ final class InvoiceStaticMapFetcher
         int $tileX,
         int $tileY,
     ): array {
-        $innerW = self::MAP_BOX_W_PX - 2 * self::MAP_BORDER_PX;
+        $innerW = $this->mapOuterWidthPx() - 2 * self::MAP_BORDER_PX;
         $innerH = self::MAP_BOX_H_PX - 2 * self::MAP_BORDER_PX;
 
         [$xf1, $yf1] = $this->projectToTileFractional($lat1, $lon1, $z);
@@ -136,6 +152,30 @@ final class InvoiceStaticMapFetcher
             $offX + $px2 * $scale,
             $offY + $py2 * $scale,
         ];
+    }
+
+    /**
+     * Inflate geographic bounds (~Leaflet fitBounds padding) before tile pick.
+     *
+     * @return array{0: int, 1: int, 2: int} z, tileX, tileY
+     */
+    private function resolveTileCoveringBothPadded(float $lat1, float $lon1, float $lat2, float $lon2): array
+    {
+        $minLat = min($lat1, $lat2);
+        $maxLat = max($lat1, $lat2);
+        $minLon = min($lon1, $lon2);
+        $maxLon = max($lon1, $lon2);
+        $dLat = $maxLat - $minLat;
+        $dLon = $maxLon - $minLon;
+        $padLat = max(0.0008, $dLat * self::BBOX_PAD_LATLON + 0.002);
+        $padLon = max(0.0008, $dLon * self::BBOX_PAD_LATLON + 0.002);
+
+        return $this->resolveTileCoveringBoth(
+            $minLat - $padLat,
+            $minLon - $padLon,
+            $maxLat + $padLat,
+            $maxLon + $padLon,
+        );
     }
 
     /**

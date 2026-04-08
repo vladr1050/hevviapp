@@ -271,6 +271,8 @@ final class InvoiceIssuingService
             'map_pickup_top' => $map->pickupTopPx,
             'map_drop_left' => $map->dropLeftPx,
             'map_drop_top' => $map->dropTopPx,
+            'map_inner_w' => $map->innerWidthPx,
+            'map_inner_h' => $map->innerHeightPx,
             'amount_freight' => $this->moneyFormatter->formatCents((int) $invoice->getAmountFreight(), $c),
             'amount_commission' => $this->moneyFormatter->formatCents((int) $invoice->getAmountCommission(), $c),
             'amount_subtotal' => $this->moneyFormatter->formatCents((int) $invoice->getAmountSubtotal(), $c),

@@ -288,8 +288,18 @@
         .pair-row { display: flex; gap: 20pt; margin-top: 8px; }
         .pair { flex: 1; min-width: 0; }
         .addr-block { margin-top: 8px; }
-        .route-wrap { display: flex; justify-content: flex-start; align-items: flex-start; margin-top: 10px; gap: 20pt; width: 500pt; }
-        .route-left { width: 240pt; flex: 0 0 240pt; min-width: 0; }
+        /* Maršruts: Figma grid 1fr 1.2fr, gap 32px, align start; same 530pt bleed as lead */
+        .route-wrap {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 32px;
+            align-items: start;
+            width: 530pt;
+            max-width: none;
+            margin-left: -16pt;
+            margin-top: 10px;
+        }
+        .route-left { min-width: 0; }
         .route-timeline-wrap {
             display: flex;
             flex-direction: row;
@@ -310,25 +320,38 @@
         .timeline--with-rail { padding-left: 0; }
         .timeline--with-rail::before { display: none; }
         .timeline--with-rail .tl-item::before { display: none; }
-        .tl-item { position: relative; margin-bottom: 10pt; padding-left: 0; }
-        /* Map: Figma 240×118 pt, rx≈8 pt (габариты в pt; pin math в PHP — в css px). */
+        .tl-item { position: relative; margin-bottom: 0; padding-left: 0; }
+        .route-timeline-wrap .timeline .tl-item + .tl-item { margin-top: 12px; }
+        .route-addr-label {
+            font-size: 12px;
+            line-height: 14px;
+            font-weight: 400;
+            color: #9CA3AF;
+        }
+        .route-addr-value {
+            font-size: 16px;
+            line-height: 20px;
+            font-weight: 600;
+            color: #111827;
+            margin-top: 6px;
+        }
+        /* Map: 220px high, 16px radius; pin/line math in PHP — CSS px inner box */
         .map-box {
-            width: 240pt;
-            height: 118pt;
+            width: 100%;
+            height: 220px;
             box-sizing: border-box;
-            border: 2.85pt solid #000000;
-            border-radius: 8pt;
+            border: 2px solid #000000;
+            border-radius: 16px;
             position: relative;
-            flex-shrink: 0;
             background: #e8e8e8;
             overflow: hidden;
         }
         .map-box-inner {
             position: absolute;
-            left: 2.85pt;
-            top: 2.85pt;
-            width: calc(240pt - 5.7pt);
-            height: calc(118pt - 5.7pt);
+            left: 2px;
+            top: 2px;
+            right: 2px;
+            bottom: 2px;
         }
         .map-box-inner img {
             width: 100%;
@@ -337,13 +360,23 @@
             object-position: center;
             display: block;
         }
+        .map-route-svg {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            overflow: visible;
+        }
         /* Pins: макет 12 + 2.85 pt (Pickup — белый, Delivery — #DEDEDE). */
         .map-pin {
             position: absolute;
             width: 12pt;
             height: 12pt;
             box-sizing: content-box;
-            border: 2.85pt solid #000000;
+            border: 2px solid #000000;
             border-radius: 50%;
             transform: translate(-50%, -50%);
             z-index: 2;
@@ -353,24 +386,55 @@
         .map-pin-pickup { background: #ffffff; }
         .map-pin-drop { background: #DEDEDE; }
         .svc-head {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr auto;
             align-items: center;
+            column-gap: 24px;
             margin-top: 12px;
-            width: 500pt;
+            width: 530pt;
+            max-width: none;
+            margin-left: -16pt;
+        }
+        .svc-head .sec-title--icon { min-width: 0; }
+        .svc-date {
+            text-align: right;
+            font-weight: 600;
+            font-size: 12px;
+            line-height: 14px;
+            color: #111827;
+            white-space: nowrap;
         }
         .price-grid {
-            display: flex;
-            justify-content: space-between;
-            gap: 6px;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 24px;
             margin-top: 8px;
-            flex-wrap: nowrap;
-            width: 500pt;
+            width: 530pt;
+            max-width: none;
+            margin-left: -16pt;
         }
-        .price-cell { flex: 1; min-width: 0; }
-        .price-cell .lbl-sm { min-height: 22px; }
-        .price-cell .val-sm { font-weight: 500; }
-        .price-cell.total .val-sm { font-weight: 700; }
+        .price-cell { min-width: 0; }
+        .price-cell--empty { visibility: hidden; pointer-events: none; }
+        .price-lbl {
+            font-size: 12px;
+            line-height: 14px;
+            font-weight: 400;
+            color: #9CA3AF;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .price-val {
+            font-size: 16px;
+            line-height: 20px;
+            font-weight: 600;
+            color: #111827;
+            margin-top: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .price-cell.total .price-val { font-weight: 700; }
         .pay-section { width: 500pt; margin-top: 14px; }
         .pay-grid { display: flex; gap: 48px; margin-top: 8px; }
         .legal-note { color: rgba(0,0,0,0.4); font-size: 7px; max-width: 220px; margin-top: 10px; line-height: 1.35; }
@@ -492,12 +556,12 @@
                 <img src="invoice-assets/group-1059.svg" class="timeline-rail-svg" alt="">
                 <div class="timeline timeline--with-rail">
                     <div class="tl-item">
-                        <div class="lbl-sm">Pickup</div>
-                        <div class="val-sm">{{ pickup }}</div>
+                        <div class="route-addr-label">Pickup</div>
+                        <div class="route-addr-value">{{ pickup }}</div>
                     </div>
                     <div class="tl-item">
-                        <div class="lbl-sm">Delivery</div>
-                        <div class="val-sm">{{ delivery }}</div>
+                        <div class="route-addr-label">Delivery</div>
+                        <div class="route-addr-value">{{ delivery }}</div>
                     </div>
                 </div>
             </div>
@@ -505,7 +569,11 @@
         <div class="map-box">
             <div class="map-box-inner">
                 <img src="{{ map_data_uri|raw }}" alt="">
-                {% if map_show_pins %}
+                {% if map_show_pins and map_inner_w and map_inner_h %}
+                    <svg class="map-route-svg" viewBox="0 0 {{ map_inner_w }} {{ map_inner_h }}" preserveAspectRatio="none" aria-hidden="true">
+                        <line x1="{{ map_pickup_left }}" y1="{{ map_pickup_top }}" x2="{{ map_drop_left }}" y2="{{ map_drop_top }}"
+                              stroke="#000000" stroke-width="4" stroke-linecap="round"/>
+                    </svg>
                     <span class="map-pin map-pin-pickup" style="left: {{ map_pickup_left }}px; top: {{ map_pickup_top }}px;"></span>
                     <span class="map-pin map-pin-drop" style="left: {{ map_drop_left }}px; top: {{ map_drop_top }}px;"></span>
                 {% endif %}
@@ -518,31 +586,32 @@
             <span class="sec-icon sec-icon--service" aria-hidden="true"><img src="invoice-assets/delivered-1.svg" alt=""></span>
             <span>Pakalpojums</span>
         </div>
-        <div style="font-weight:600;font-size:9px;">Pakalpojuma sniegšanas datums: {{ service_date }}</div>
+        <div class="svc-date">Pakalpojuma sniegšanas datums: {{ service_date }}</div>
     </div>
-    <hr class="line">
+    <hr class="line line--bleed530">
 
     <div class="price-grid">
         <div class="price-cell">
-            <div class="lbl-sm">Kravas piegādes maksa</div>
-            <div class="val-sm">{{ amount_freight }}</div>
+            <div class="price-lbl">Kravas piegādes maksa</div>
+            <div class="price-val">{{ amount_freight }}</div>
         </div>
         <div class="price-cell">
-            <div class="lbl-sm">{{ commission_label }}</div>
-            <div class="val-sm">{{ amount_commission }}</div>
+            <div class="price-lbl">{{ commission_label }}</div>
+            <div class="price-val">{{ amount_commission }}</div>
         </div>
         <div class="price-cell">
-            <div class="lbl-sm">Starpsumma (bez PVN)</div>
-            <div class="val-sm">{{ amount_subtotal }}</div>
+            <div class="price-lbl">Starpsumma (bez PVN)</div>
+            <div class="price-val">{{ amount_subtotal }}</div>
         </div>
         <div class="price-cell">
-            <div class="lbl-sm">{{ vat_label }}</div>
-            <div class="val-sm">{{ amount_vat }}</div>
+            <div class="price-lbl">{{ vat_label }}</div>
+            <div class="price-val">{{ amount_vat }}</div>
         </div>
         <div class="price-cell total">
-            <div class="lbl-sm">KOPĀ APMAKSAI (ar PVN)</div>
-            <div class="val-sm">{{ amount_gross }}</div>
+            <div class="price-lbl">KOPĀ APMAKSAI (ar PVN)</div>
+            <div class="price-val">{{ amount_gross }}</div>
         </div>
+        <div class="price-cell price-cell--empty" aria-hidden="true">&nbsp;</div>
     </div>
 
     <div class="pay-section">

@@ -16,6 +16,9 @@ final readonly class InvoiceMapPayload
         public ?string $pickupTopPx = null,
         public ?string $dropLeftPx = null,
         public ?string $dropTopPx = null,
+        /** Inner map box size in CSS px (matches .map-box-inner; SVG viewBox). */
+        public ?string $innerWidthPx = null,
+        public ?string $innerHeightPx = null,
     ) {
     }
 }
