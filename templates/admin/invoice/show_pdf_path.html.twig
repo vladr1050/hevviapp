@@ -1,0 +1,13 @@
+{% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %}
+{% block field %}
+    {% if value %}
+        <p class="mb-2">
+            <a href="{{ path('admin_file_invoice_pdf', { id: object.id }) }}" class="btn btn-sm btn-primary" target="_blank" rel="noopener noreferrer">
+                {{ 'show.label_invoice_pdf_open'|trans({}, 'AppBundle') }}
+            </a>
+        </p>
+        <code class="small">{{ value }}</code>
+    {% else %}
+        —
+    {% endif %}
+{% endblock %}

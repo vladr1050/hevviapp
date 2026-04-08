@@ -131,6 +131,7 @@ class InvoiceAdmin extends BaseAdmin
             ])
             ->add('pdfRelativePath', null, [
                 'label' => 'show.label_invoice_pdf_path',
+                'template' => 'admin/invoice/show_pdf_path.html.twig',
             ])
             ->add('pdfError', null, [
                 'label' => 'show.label_invoice_pdf_error',

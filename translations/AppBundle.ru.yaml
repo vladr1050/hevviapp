@@ -265,6 +265,7 @@ form:
     label_invoice_seller_address_2:  Адрес продавца (стр. 2)
     label_invoice_buyer_email:       Email покупателя (снимок)
     label_invoice_pdf_path:          Путь к PDF
+    label_invoice_pdf_open:          Открыть PDF
     label_invoice_pdf_error:         Ошибка PDF
     label_invoice_email_error:       Ошибка email
     label_currency:              Валюта

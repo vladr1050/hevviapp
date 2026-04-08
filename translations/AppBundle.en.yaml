@@ -292,6 +292,7 @@ form:
     label_invoice_seller_address_2:    Seller address line 2
     label_invoice_buyer_email:         Buyer email (snapshot)
     label_invoice_pdf_path:            PDF path (storage)
+    label_invoice_pdf_open:            Open PDF
     label_invoice_pdf_error:           PDF error
     label_invoice_email_error:         Email error
     label_upload_files:                PDF Documents

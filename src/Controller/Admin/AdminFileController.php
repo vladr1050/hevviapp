@@ -8,9 +8,12 @@
 
 namespace App\Controller\Admin;
 
+use App\Repository\InvoiceRepository;
 use App\Repository\OrderAttachmentRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -20,6 +23,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *
  * Находится под /admin — обрабатывается admin firewall (session auth).
  * Путь до файла на диске клиенту никогда не раскрывается.
+ *
+ * PDF счетов: /admin/files/invoice/{id} — только по UUID из БД, файл внутри var/invoices.
  */
 #[Route('/admin/files', name: 'admin_file_')]
 #[IsGranted('ROLE_ADMIN')]
@@ -27,8 +32,11 @@ class AdminFileController extends AbstractController
 {
     public function __construct(
         private readonly OrderAttachmentRepository $attachmentRepository,
+        private readonly InvoiceRepository $invoiceRepository,
         #[Autowire('%kernel.project_dir%/public')]
         private readonly string $publicDir,
+        #[Autowire('%kernel.project_dir%/var/invoices')]
+        private readonly string $invoiceStorageDir,
     ) {
     }
 
@@ -65,5 +73,33 @@ class AdminFileController extends AbstractController
                 'X-Content-Type-Options' => 'nosniff',
             ]
         );
+    }
+
+    #[Route('/invoice/{id}', name: 'invoice_pdf', methods: ['GET'], requirements: ['id' => '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}'])]
+    public function invoicePdf(string $id): BinaryFileResponse
+    {
+        $invoice = $this->invoiceRepository->find($id);
+        $relative = $invoice?->getPdfRelativePath();
+        if ($relative === null || $relative === '') {
+            throw $this->createNotFoundException('Invoice PDF not available.');
+        }
+
+        $relative = str_replace(["\0", '\\'], '', $relative);
+        $absolute = $this->invoiceStorageDir . '/' . $relative;
+        $storageReal = realpath($this->invoiceStorageDir);
+        $fileReal = is_file($absolute) ? realpath($absolute) : false;
+        if ($storageReal === false || $fileReal === false || !str_starts_with($fileReal, $storageReal)) {
+            throw $this->createNotFoundException('Invoice PDF not found on disk.');
+        }
+
+        $safeName = preg_replace('/[^a-zA-Z0-9._-]+/', '_', (string) $invoice->getInvoiceNumber()) . '.pdf';
+
+        $response = new BinaryFileResponse($fileReal);
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $safeName);
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Cache-Control', 'private, no-store');
+        $response->headers->set('X-Content-Type-Options', 'nosniff');
+
+        return $response;
     }
 }
