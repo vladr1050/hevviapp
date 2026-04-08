@@ -55,12 +55,15 @@ final class ChromiumInvoicePdfRenderer
                 throw new \RuntimeException('Cannot write temporary HTML for PDF rendering.');
             }
 
+            // Keep in sync with templates/invoice/pdf.html.twig html/body 595×842.
             $process = new Process([
                 $this->chromeBinary,
                 '--headless=new',
                 '--disable-gpu',
                 '--no-sandbox',
                 '--disable-dev-shm-usage',
+                '--force-device-scale-factor=1',
+                '--window-size=595,842',
                 '--print-to-pdf=' . $pdfPath,
                 'file://' . $htmlPath,
             ]);
