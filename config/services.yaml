@@ -75,6 +75,7 @@ services:
         arguments:
             $chromeBinary: '%env(INVOICE_CHROME_BINARY)%'
             $invoiceFontsSourceDir: '%kernel.project_dir%/public/fonts/invoice'
+            $invoiceAssetsDir: '%kernel.project_dir%/public/invoice-assets'
 
     ### ORDER OFFER SERVICES ###
     # Interface binding for OrderOffer calculator

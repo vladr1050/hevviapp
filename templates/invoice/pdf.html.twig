@@ -115,8 +115,14 @@
         .meta { display: flex; gap: 24px; }
         .meta-block .lbl { color: rgba(0,0,0,0.4); font-size: 7px; }
         .meta-block .val { font-size: 9px; font-weight: 500; margin-top: 2px; }
-        .logo-block { text-align: right; font-size: 6px; color: rgba(0,0,0,0.5); max-width: 120px; }
-        .logo-name { font-size: 14px; font-weight: 700; letter-spacing: -0.02em; color: #000; }
+        .logo-block { text-align: right; max-width: 120pt; }
+        .logo-mark {
+            height: 16pt;
+            width: auto;
+            max-width: 113pt;
+            display: block;
+            margin-left: auto;
+        }
         hr.line {
             border: none;
             border-top: 0.5pt solid #CCCCCC;
@@ -132,8 +138,49 @@
         }
         .two-col { display: flex; gap: 20pt; margin-top: 6px; width: 500pt; }
         .col { width: 240pt; flex: 0 0 240pt; min-width: 0; }
-        .sec-title { font-weight: 600; font-size: 9px; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
-        .dot { width: 24pt; height: 24pt; border-radius: 50%; background: #D7FF01; flex-shrink: 0; }
+        /* Figma: поставщик/покупатель — только заголовок 9px; Maršruts/Pakalpojums/оплата — зелёный круг + иконка */
+        .sec-title { font-weight: 600; font-size: 9px; line-height: 11px; margin-bottom: 6px; }
+        .sec-title--plain { display: block; }
+        .sec-title--icon {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 4.56pt;
+            min-height: 22.8pt;
+        }
+        .sec-icon {
+            width: 23.84pt;
+            height: 23.84pt;
+            min-width: 23.84pt;
+            min-height: 23.84pt;
+            border-radius: 11.92pt;
+            background: #D7FF01;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            padding: 4.77pt;
+        }
+        .sec-icon img { width: 13.11pt; height: 13.11pt; display: block; object-fit: contain; }
+        .sec-icon--service {
+            width: 22.56pt;
+            height: 22.56pt;
+            min-width: 22.56pt;
+            min-height: 22.56pt;
+            border-radius: 11.28pt;
+            padding: 0;
+        }
+        .sec-icon--service img { width: 11.28pt; height: 11.28pt; }
+        .sec-icon--pay {
+            width: 22.8pt;
+            height: 22.8pt;
+            min-width: 22.8pt;
+            min-height: 22.8pt;
+            border-radius: 11.4pt;
+            padding: 4.56pt;
+        }
+        .sec-icon--pay img { width: 9pt; height: 9pt; }
         .lbl-sm { color: rgba(0,0,0,0.4); font-size: 6.8px; }
         .val-sm { font-size: 9px; font-weight: 500; margin-top: 2px; }
         .pair-row { display: flex; gap: 20pt; margin-top: 8px; }
@@ -141,31 +188,27 @@
         .addr-block { margin-top: 8px; }
         .route-wrap { display: flex; justify-content: flex-start; align-items: flex-start; margin-top: 10px; gap: 20pt; width: 500pt; }
         .route-left { width: 240pt; flex: 0 0 240pt; min-width: 0; }
-        /* Timeline: SVG circles cx≈59.4 vs block x=48 → axis ≈11pt from route-left */
-        .timeline { padding-left: 24pt; position: relative; }
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 11pt;
-            top: 4pt;
-            bottom: 4pt;
-            width: 1px;
-            background: #000;
+        .route-timeline-wrap {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 9.12pt;
+            padding-left: 0;
         }
-        .tl-item { position: relative; margin-bottom: 10pt; padding-left: 4pt; }
-        .tl-item::before {
-            content: '';
-            position: absolute;
-            left: 11pt;
-            top: 3pt;
-            width: 8pt;
-            height: 8pt;
-            margin-left: -4pt;
-            border: 1.14pt solid #000;
-            border-radius: 50%;
-            background: #fff;
-            box-sizing: border-box;
+        /* Экспорт Figma group-1059: линия + узлы; высота под два блока адреса */
+        .timeline-rail-svg {
+            width: 5.13184pt;
+            height: 52pt;
+            flex-shrink: 0;
+            display: block;
+            object-fit: fill;
         }
+        /* Текст справа от рейки — без дублирующей CSS-линии */
+        .timeline { position: relative; flex: 1; min-width: 0; }
+        .timeline--with-rail { padding-left: 0; }
+        .timeline--with-rail::before { display: none; }
+        .timeline--with-rail .tl-item::before { display: none; }
+        .tl-item { position: relative; margin-bottom: 10pt; padding-left: 0; }
         /* Map: Figma 240×118 pt, rx≈8 pt (габариты в pt; pin math в PHP — в css px). */
         .map-box {
             width: 240pt;
@@ -247,7 +290,15 @@
             color: rgba(34, 32, 31, 0.3);
         }
         .footer .right { text-align: right; max-width: 58%; }
-        .footer .logo-name { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; font-weight: 400; }
+        .footer-left {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0 3pt;
+            max-width: 48%;
+        }
+        .footer-mark { height: 12pt; width: auto; display: block; flex-shrink: 0; }
     </style>
 </head>
 <body>
@@ -265,15 +316,14 @@
             </div>
         </div>
         <div class="logo-block">
-            <div class="logo-name">hevvi</div>
-            <div>Heavy stuff, delivered quickly.</div>
+            <img src="invoice-assets/group-1122.svg" class="logo-mark" alt="hevvi">
         </div>
     </div>
     <hr class="line line--bleed530">
 
     <div class="two-col">
         <div class="col">
-            <div class="sec-title"><span class="dot"></span> Pakalpojuma sniedzējs</div>
+            <div class="sec-title sec-title--plain">Pakalpojuma sniedzējs</div>
             <hr class="line">
             <div class="lbl-sm">Pārdevējs (Pakalpojuma sniedzējs):</div>
             <div class="val-sm">{{ seller_name }}</div>
@@ -304,7 +354,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="sec-title"><span class="dot"></span> Pakalpojumu saņēmējs</div>
+            <div class="sec-title sec-title--plain">Pakalpojumu saņēmējs</div>
             <hr class="line">
             <div class="lbl-sm">Pircējs (Klients):</div>
             <div class="val-sm">{{ buyer_company }}</div>
@@ -329,16 +379,22 @@
 
     <div class="route-wrap">
         <div class="route-left">
-            <div class="sec-title"><span class="dot"></span> Maršruts</div>
+            <div class="sec-title sec-title--icon">
+                <span class="sec-icon" aria-hidden="true"><img src="invoice-assets/fi-446075.svg" alt=""></span>
+                <span>Maršruts</span>
+            </div>
             <hr class="line">
-            <div class="timeline">
-                <div class="tl-item">
-                    <div class="lbl-sm">Pickup</div>
-                    <div class="val-sm">{{ pickup }}</div>
-                </div>
-                <div class="tl-item">
-                    <div class="lbl-sm">Delivery</div>
-                    <div class="val-sm">{{ delivery }}</div>
+            <div class="route-timeline-wrap">
+                <img src="invoice-assets/group-1059.svg" class="timeline-rail-svg" alt="">
+                <div class="timeline timeline--with-rail">
+                    <div class="tl-item">
+                        <div class="lbl-sm">Pickup</div>
+                        <div class="val-sm">{{ pickup }}</div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="lbl-sm">Delivery</div>
+                        <div class="val-sm">{{ delivery }}</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -354,7 +410,10 @@
     </div>
 
     <div class="svc-head">
-        <div class="sec-title" style="margin-top:0"><span class="dot"></span> Pakalpojums</div>
+        <div class="sec-title sec-title--icon" style="margin-top:0">
+            <span class="sec-icon sec-icon--service" aria-hidden="true"><img src="invoice-assets/delivered-1.svg" alt=""></span>
+            <span>Pakalpojums</span>
+        </div>
         <div style="font-weight:600;font-size:9px;">Pakalpojuma sniegšanas datums: {{ service_date }}</div>
     </div>
     <hr class="line">
@@ -383,7 +442,10 @@
     </div>
 
     <div class="pay-section">
-        <div class="sec-title"><span class="dot"></span> Maksājuma informācija</div>
+        <div class="sec-title sec-title--icon">
+            <span class="sec-icon sec-icon--pay" aria-hidden="true"><img src="invoice-assets/fi-157977.svg" alt=""></span>
+            <span>Maksājuma informācija</span>
+        </div>
         <hr class="line">
         <div class="pay-grid">
             <div>
@@ -401,7 +463,10 @@
     </div>
 
     <div class="footer">
-        <div><span class="logo-name" style="font-size:8px;">hevvi</span> — Pakalpojums sniegts caur Hevvi digitālo platformu</div>
+        <div class="footer-left">
+            <img src="invoice-assets/group-1123.svg" class="footer-mark" alt="" aria-hidden="true">
+            <span>— Pakalpojums sniegts caur Hevvi digitālo platformu</span>
+        </div>
         <div class="right">Hevvi App nodrošina digitālu platformu transporta pakalpojumu organizēšanai. Komisijas maksa tiek ieturēta par platformas izmantošanu un administrēšanu.</div>
     </div>
 </div>

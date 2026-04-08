@@ -8,14 +8,15 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 
 /**
- * Renders HTML from a temporary directory so relative {@code url('fonts/…')} resolve under file://
- * (Chromium loads the page from disk; {@code /public/fonts} URLs would not work).
+ * Renders HTML from a temporary directory so relative {@code url('fonts/…')} and
+ * {@code invoice-assets/*.svg} resolve under file:// (Chromium opens the page from disk).
  */
 final class ChromiumInvoicePdfRenderer
 {
     public function __construct(
         private readonly string $chromeBinary,
         private readonly string $invoiceFontsSourceDir,
+        private readonly string $invoiceAssetsDir,
     ) {
     }
 
@@ -37,6 +38,16 @@ final class ChromiumInvoicePdfRenderer
             if (is_dir($this->invoiceFontsSourceDir)) {
                 foreach (glob($this->invoiceFontsSourceDir . '/*.woff2') ?: [] as $fontFile) {
                     $fs->copy($fontFile, $fontsDestDir . '/' . basename($fontFile), true);
+                }
+            }
+
+            $assetsDestDir = $workDir . '/invoice-assets';
+            if (is_dir($this->invoiceAssetsDir)) {
+                if (!@mkdir($assetsDestDir, 0700, true)) {
+                    throw new \RuntimeException('Cannot create invoice-assets directory for PDF rendering.');
+                }
+                foreach (glob($this->invoiceAssetsDir . '/*.svg') ?: [] as $assetFile) {
+                    $fs->copy($assetFile, $assetsDestDir . '/' . basename($assetFile), true);
                 }
             }
 
