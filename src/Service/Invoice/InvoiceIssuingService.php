@@ -51,10 +51,17 @@ final class InvoiceIssuingService
         try {
             $this->doIssue($order);
         } catch (\Throwable $e) {
-            $this->logger->error('Invoice issuing failed', [
-                'order_id' => $order->getId()?->toRfc4122(),
-                'exception' => $e->getMessage(),
-            ]);
+            $this->logger->error(
+                sprintf(
+                    'Invoice issuing failed (order_id=%s): %s',
+                    $order->getId()?->toRfc4122() ?? '?',
+                    $e->getMessage()
+                ),
+                [
+                    'order_id' => $order->getId()?->toRfc4122(),
+                    'exception' => $e,
+                ]
+            );
         }
     }
 
