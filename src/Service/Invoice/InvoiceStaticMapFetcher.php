@@ -19,23 +19,15 @@ final class InvoiceStaticMapFetcher
 {
     private const OSM_TILE_BASE = 'https://tile.openstreetmap.org';
 
-    /** Same width as invoice lead (530pt). */
-    private const ROUTE_SECTION_W_PT = 530.0;
+    /** Invoice PDF spec: map column 240×118px (main content 500px, route 240 + gap 20 + map 240). */
+    private const MAP_BOX_W_PX = 240.0;
 
-    private const ROUTE_GRID_GAP_PX = 32.0;
+    private const MAP_BOX_H_PX = 118.0;
 
-    /** Left column narrower, map column dominant (must match Twig grid). */
-    private const ROUTE_COL_LEFT_FR = 0.95;
+    private const MAP_BORDER_PX = 0.0;
 
-    private const ROUTE_COL_RIGHT_FR = 1.35;
-
-    /** Outer map frame height in CSS px (Twig must match). */
-    private const MAP_BOX_H_PX = 280.0;
-
-    private const MAP_BORDER_PX = 3.0;
-
-    /** ~Leaflet fitBounds padding in CSS px inside the inner map box. */
-    private const INNER_ROUTE_PAD_PX = 40.0;
+    /** Inner padding (~fitBounds) in CSS px for small preview. */
+    private const INNER_ROUTE_PAD_PX = 14.0;
 
     private const BBOX_PAD_LATLON = 0.18;
 
@@ -51,14 +43,9 @@ final class InvoiceStaticMapFetcher
     ) {
     }
 
-    /** Map column outer width in CSS px. */
     private function mapOuterWidthPx(): float
     {
-        $sectionPx = self::ROUTE_SECTION_W_PT * 96.0 / 72.0;
-        $innerGrid = max(0.0, $sectionPx - self::ROUTE_GRID_GAP_PX);
-        $den = self::ROUTE_COL_LEFT_FR + self::ROUTE_COL_RIGHT_FR;
-
-        return $innerGrid * (self::ROUTE_COL_RIGHT_FR / $den);
+        return self::MAP_BOX_W_PX;
     }
 
     /**
