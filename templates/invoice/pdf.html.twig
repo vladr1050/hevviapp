@@ -2,7 +2,7 @@
 <html lang="lv">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=595, height=842, initial-scale=1">
+    <meta name="viewport" content="width=794, height=1123, initial-scale=1">
     <title>Rēķins {{ invoice_number }}</title>
     <style>
         @font-face {
@@ -72,32 +72,35 @@
 
         @page { size: A4; margin: 0; }
         * { box-sizing: border-box; }
+        /* Page shell: A4 in mm. (595×842px is only ~157×223mm at CSS 96dpi — not full A4.) */
         html, body {
             margin: 0;
             padding: 0;
-            width: 595px;
-            height: 842px;
+            width: 210mm;
+            height: 297mm;
             background: #fff;
             color: #000;
         }
 
         .page {
             position: relative;
-            width: 595px;
-            height: 842px;
+            width: 210mm;
+            height: 297mm;
             background: #fff;
             overflow: hidden;
             box-sizing: border-box;
             font-family: 'Instrument Sans', sans-serif;
         }
 
-        /* Chromium PDF: explicit height so flex + footer margin-top:auto fill the page. */
+        /* 33px @ 96dpi ≈ 8.73mm; inset symmetric on real A4 */
         .page-box {
             position: absolute;
-            left: 33px;
-            top: 33px;
-            width: calc(595px - 66px);
-            height: calc(842px - 66px);
+            left: 8.73mm;
+            top: 8.73mm;
+            right: 8.73mm;
+            bottom: 8.73mm;
+            width: auto;
+            height: auto;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;

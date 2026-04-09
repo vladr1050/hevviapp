@@ -14,9 +14,10 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 final class ChromiumInvoicePdfRenderer
 {
-    private const VIEWPORT_W = 595;
+    /** 96dpi A4 in CSS px (210mm×297mm); must match print layout for html/body 210mm. */
+    private const VIEWPORT_W = 794;
 
-    private const VIEWPORT_H = 842;
+    private const VIEWPORT_H = 1123;
 
     public function __construct(
         private readonly string $chromeBinary,
@@ -76,6 +77,7 @@ final class ChromiumInvoicePdfRenderer
 
             try {
                 $page = $browser->createPage();
+                $page->setViewport(self::VIEWPORT_W, self::VIEWPORT_H)->await(5000);
                 $page->navigate($fileUrl)->waitForNavigation(Page::LOAD, 60000);
 
                 return $page->pdf([
