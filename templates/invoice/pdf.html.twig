@@ -561,8 +561,10 @@
             z-index: 2;
             pointer-events: none;
             display: block;
-            width: 13px;
-            height: auto;
+            width: 14px;
+            height: 16px;
+            object-fit: contain;
+            object-position: center center;
             transform: translate(-50%, -50%);
         }
 
@@ -598,36 +600,21 @@
         }
 
         .service-grid {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: nowrap;
-            align-items: flex-end;
-            justify-content: flex-start;
-            gap: 16px;
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            column-gap: 16px;
+            align-items: end;
             width: 100%;
             box-sizing: border-box;
         }
 
         .service-cell {
-            flex: 1 1 0;
             min-width: 0;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
             gap: 6px;
-        }
-
-        .service-cell--total {
-            align-items: flex-end;
-            text-align: right;
-        }
-
-        .service-cell--total .service-label-lines {
-            align-items: flex-end;
-        }
-
-        .service-cell--total .service-label-line {
-            text-align: right;
+            align-items: flex-start;
         }
 
         .service-label-lines {
@@ -656,7 +643,7 @@
             white-space: nowrap;
         }
 
-        .service-cell--total .service-value {
+        .service-value--gross {
             font-weight: 600;
         }
 
@@ -920,9 +907,9 @@
                                     <img class="map-fill" src="{{ map_data_uri|raw }}" alt="">
                                 {% endif %}
                                 {% if map_show_pins and map_inner_w and map_inner_h %}
-                                    <img class="map-pin-img" src="invoice-assets/map-pin-pickup.svg" width="13" height="15" alt=""
+                                    <img class="map-pin-img" src="invoice-assets/map-pin-pickup.svg" alt=""
                                          style="left: {{ map_pickup_left }}px; top: {{ map_pickup_top }}px;">
-                                    <img class="map-pin-img" src="invoice-assets/map-pin-drop.svg" width="13" height="15" alt=""
+                                    <img class="map-pin-img" src="invoice-assets/map-pin-drop.svg" alt=""
                                          style="left: {{ map_drop_left }}px; top: {{ map_drop_top }}px;">
                                 {% endif %}
                             </div>
@@ -973,7 +960,7 @@
                                 <span class="service-label-line">Kopā apmaksai</span>
                                 <span class="service-label-line">(ar PVN)</span>
                             </div>
-                            <div class="service-value">{{ amount_gross }}</div>
+                            <div class="service-value service-value--gross">{{ amount_gross }}</div>
                         </div>
                     </div>
                 </div>
