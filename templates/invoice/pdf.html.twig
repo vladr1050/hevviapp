@@ -92,13 +92,13 @@
             font-family: 'Instrument Sans', sans-serif;
         }
 
-        /* 33px @ 96dpi ≈ 8.73mm; inset symmetric on real A4 */
+        /* ~24px @ 96dpi; slightly tighter than old 33px so content uses more of A4 */
         .page-box {
             position: absolute;
-            left: 8.73mm;
-            top: 8.73mm;
-            right: 8.73mm;
-            bottom: 8.73mm;
+            left: 6.35mm;
+            top: 6.35mm;
+            right: 6.35mm;
+            bottom: 6.35mm;
             width: auto;
             height: auto;
             box-sizing: border-box;
@@ -110,10 +110,13 @@
             flex: 0 0 auto;
         }
 
+        .header-region .page-rail-530 {
+            zoom: 1.08;
+        }
+
         .body-region {
-            flex: 1 1 0;
-            margin-top: 57px;
-            min-height: 0;
+            flex: 0 0 auto;
+            margin-top: 48px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -121,13 +124,16 @@
 
         .footer-region {
             flex: 0 0 auto;
-            margin-top: auto;
         }
 
-        /* Center 530px rules inside symmetric box; cap at available width */
+        .footer-region .page-rail-530 {
+            zoom: 1.08;
+        }
+
+        /* Wider rail so zoomed main + header align; cap to page-box width */
         .page-rail-530 {
             width: 100%;
-            max-width: 530px;
+            max-width: 580px;
             margin-left: auto;
             margin-right: auto;
             box-sizing: border-box;
@@ -221,8 +227,9 @@
             max-width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 46px;
+            gap: 38px;
             flex-shrink: 0;
+            zoom: 1.08;
         }
 
         /* --- Party --- */
@@ -611,7 +618,7 @@
         .payment-section {
             display: flex;
             flex-direction: column;
-            gap: 19px;
+            gap: 14px;
             flex-shrink: 0;
         }
 
@@ -669,8 +676,8 @@
         .invoice-footer {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            padding-top: 18px;
+            gap: 8px;
+            padding-top: 10px;
             flex-shrink: 0;
         }
 
