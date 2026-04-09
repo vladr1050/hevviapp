@@ -291,8 +291,8 @@
                         <div style="font-weight:500;font-size:9px;line-height:1.22;margin-top:2px;">{{ inv.bank_card|e }} / {{ inv.bank_transfer|e }}</div>
                     </td>
                     <td style="vertical-align:top;">
-                        <div style="font-size:7px;line-height:1.22;color:rgba(0,0,0,0.4);">Maksājuma statuss:</div>
-                        <div style="font-weight:500;font-size:9px;line-height:1.22;margin-top:2px;">{{ inv.payment_status|e }}</div>
+                        <div style="font-size:7px;line-height:1.22;color:rgba(0,0,0,0.4);">Apmaksas termiņš:</div>
+                        <div style="font-weight:500;font-size:9px;line-height:1.22;margin-top:2px;">{{ inv.payment_due_date|default('—')|e }}</div>
                     </td>
                 </tr>
             </table>

@@ -277,6 +277,9 @@ final class InvoiceIssuingService
             'map_img_top' => $map->mapImgTopPx,
             'map_img_w' => $map->mapImgWidthPx,
             'map_img_h' => $map->mapImgHeightPx,
+            'map_data_uri_b' => $map->secondImageDataUri,
+            'map_strip_tiles_x' => $map->stripTilesX,
+            'map_strip_tiles_y' => $map->stripTilesY,
             'amount_freight' => $this->moneyFormatter->formatCents((int) $invoice->getAmountFreight(), $c),
             'amount_commission' => $this->moneyFormatter->formatCents((int) $invoice->getAmountCommission(), $c),
             'amount_subtotal' => $this->moneyFormatter->formatCents((int) $invoice->getAmountSubtotal(), $c),
@@ -284,7 +287,7 @@ final class InvoiceIssuingService
             'amount_gross' => $this->moneyFormatter->formatCents((int) $invoice->getAmountGross(), $c),
             'fee_percent_label' => $this->formatPercentLabel((string) $invoice->getFeePercent()),
             'payment_method' => 'Bankas pārskaitījums',
-            'payment_status' => 'Apmaksāts',
+            'payment_due_date' => $invoice->getDueDate()?->format('d.m.Y') ?? '—',
         ];
     }
 

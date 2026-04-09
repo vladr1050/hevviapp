@@ -75,7 +75,7 @@ class UserController extends AbstractController
                 'amount_total' => '121.00',
                 'bank_card' => 'Bankas karte',
                 'bank_transfer' => 'Bankas pārskaitījums',
-                'payment_status' => 'Apmaksāts',
+                'payment_due_date' => '04.04.2026',
             ],
         ]);
     }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Invoice\DTO;
 
 /**
- * Map tile + pin positions (px) inside the invoice map frame (inner area below border).
+ * Map tile(s) + pin positions (px) inside the invoice map frame (inner area below border).
  */
 final readonly class InvoiceMapPayload
 {
@@ -19,11 +19,15 @@ final readonly class InvoiceMapPayload
         /** Inner map box size in CSS px (matches .map-box-inner; SVG viewBox). */
         public ?string $innerWidthPx = null,
         public ?string $innerHeightPx = null,
-        /** Scaled tile position (object-fit cover + pan so both stops stay inside with padding). */
+        /** Scaled strip position (pan + scale so both stops stay inside with padding, midpoint centered when possible). */
         public ?string $mapImgLeftPx = null,
         public ?string $mapImgTopPx = null,
         public ?string $mapImgWidthPx = null,
         public ?string $mapImgHeightPx = null,
+        /** Second OSM tile (right neighbour or bottom), for 2×1 / 1×2 strips — empty when single tile. */
+        public ?string $secondImageDataUri = null,
+        public int $stripTilesX = 1,
+        public int $stripTilesY = 1,
     ) {
     }
 }
