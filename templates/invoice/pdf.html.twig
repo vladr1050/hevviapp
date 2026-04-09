@@ -92,13 +92,13 @@
             font-family: 'Instrument Sans', sans-serif;
         }
 
-        /* ~24px @ 96dpi; slightly tighter than old 33px so content uses more of A4 */
+        /* ~33px @ 96dpi — как в исходном Figma; ближе к эталону A4 по полям */
         .page-box {
             position: absolute;
-            left: 6.35mm;
-            top: 6.35mm;
-            right: 6.35mm;
-            bottom: 6.35mm;
+            left: 8.73mm;
+            top: 8.73mm;
+            right: 8.73mm;
+            bottom: 8.73mm;
             width: auto;
             height: auto;
             box-sizing: border-box;
@@ -111,12 +111,13 @@
         }
 
         .header-region .page-rail-530 {
-            zoom: 1.08;
+            zoom: 1.12;
         }
 
         .body-region {
-            flex: 0 0 auto;
-            margin-top: 48px;
+            flex: 1 1 0;
+            min-height: 0;
+            margin-top: 57px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -124,16 +125,17 @@
 
         .footer-region {
             flex: 0 0 auto;
+            margin-top: auto;
         }
 
         .footer-region .page-rail-530 {
-            zoom: 1.08;
+            zoom: 1.12;
         }
 
-        /* Wider rail so zoomed main + header align; cap to page-box width */
+        /* Rail шире эталонной колонки 500px после zoom */
         .page-rail-530 {
             width: 100%;
-            max-width: 580px;
+            max-width: 600px;
             margin-left: auto;
             margin-right: auto;
             box-sizing: border-box;
@@ -227,9 +229,9 @@
             max-width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 38px;
+            gap: 44px;
             flex-shrink: 0;
-            zoom: 1.08;
+            zoom: 1.12;
         }
 
         /* --- Party --- */
@@ -618,7 +620,7 @@
         .payment-section {
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 18px;
             flex-shrink: 0;
         }
 
@@ -676,8 +678,8 @@
         .invoice-footer {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            padding-top: 10px;
+            gap: 10px;
+            padding-top: 16px;
             flex-shrink: 0;
         }
 
