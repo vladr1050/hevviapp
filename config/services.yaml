@@ -29,6 +29,7 @@ services:
             - '../src/FRPC/'
             - '../src/Admin/'
             - '../src/Kernel.php'
+            - '../src/Message/'
 
     ### LISTENERS ###
     App\Listener\PlainPasswordListener:

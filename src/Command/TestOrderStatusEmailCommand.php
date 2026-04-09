@@ -18,8 +18,9 @@
 namespace App\Command;
 
 use App\Entity\Order;
+use App\Notification\NotificationEventKey;
 use App\Repository\OrderRepository;
-use App\Service\OrderStatus\OrderStatusService;
+use App\Service\Notification\NotificationDispatchService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -30,13 +31,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:test-order-status-email',
-    description: 'Тестовая команда для проверки отправки email уведомлений о статусах заказов',
+    description: 'Test order status notifications via NotificationDispatchService (DB rules + Messenger).',
 )]
 class TestOrderStatusEmailCommand extends Command
 {
     public function __construct(
         private readonly OrderRepository $orderRepository,
-        private readonly OrderStatusService $orderStatusService
+        private readonly NotificationDispatchService $notificationDispatchService,
     ) {
         parent::__construct();
     }
@@ -45,21 +46,14 @@ class TestOrderStatusEmailCommand extends Command
     {
         $this
             ->addArgument('order-id', InputArgument::OPTIONAL, 'UUID заказа для тестирования')
-            ->addOption('status', 's', InputOption::VALUE_REQUIRED, 'Статус для тестирования (ACCEPTED, ASSIGNED, PICKUP_DONE, DELIVERED)')
+            ->addOption('status', 's', InputOption::VALUE_REQUIRED, 'ACCEPTED, ASSIGNED, IN_TRANSIT, DELIVERED')
             ->setHelp(<<<'HELP'
-Эта команда позволяет протестировать отправку email уведомлений для заказов.
+Отправка тестового уведомления по правилам в БД (как в production).
 
 Использование:
   php bin/console app:test-order-status-email [order-id] --status=ACCEPTED
 
-Если order-id не указан, будет использован первый заказ с нужным статусом.
-
-Примеры:
-  # Отправить уведомление для конкретного заказа
-  php bin/console app:test-order-status-email a1b2c3d4-e5f6-7890-abcd-ef1234567890 --status=ACCEPTED
-  
-  # Отправить уведомление для первого заказа со статусом DELIVERED
-  php bin/console app:test-order-status-email --status=DELIVERED
+При MESSENGER_TRANSPORT_DSN=sync:// обработка выполняется сразу в том же процессе.
 HELP
             );
     }
@@ -67,54 +61,68 @@ HELP
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        
+
         $orderId = $input->getArgument('order-id');
         $statusName = $input->getOption('status');
 
-        // Определяем статус
         if (!$statusName) {
             $io->error('Необходимо указать статус через опцию --status');
+
             return Command::FAILURE;
         }
 
         if (!isset(Order::STATUS[$statusName])) {
             $io->error(sprintf('Неизвестный статус: %s', $statusName));
-            $io->note('Доступные статусы: ' . implode(', ', array_keys(Order::STATUS)));
+            $io->note('Доступные статусы: '.implode(', ', array_keys(Order::STATUS)));
+
             return Command::FAILURE;
         }
 
         $status = Order::STATUS[$statusName];
+        $eventKey = match ($status) {
+            Order::STATUS['ACCEPTED'] => NotificationEventKey::ORDER_STATUS_CHANGED_TO_ACCEPTED,
+            Order::STATUS['ASSIGNED'] => NotificationEventKey::ORDER_STATUS_CHANGED_TO_ASSIGNED,
+            Order::STATUS['IN_TRANSIT'] => NotificationEventKey::ORDER_STATUS_CHANGED_TO_IN_TRANSIT,
+            Order::STATUS['DELIVERED'] => NotificationEventKey::ORDER_STATUS_CHANGED_TO_DELIVERED,
+            default => null,
+        };
 
-        // Получаем заказ
+        if ($eventKey === null) {
+            $io->error('Эта команда поддерживает только ACCEPTED, ASSIGNED, IN_TRANSIT, DELIVERED. Для счёта и перевозчика используйте реальные сценарии или app:notification:replay.');
+
+            return Command::FAILURE;
+        }
+
         if ($orderId) {
             $order = $this->orderRepository->find($orderId);
             if (!$order) {
                 $io->error(sprintf('Заказ с ID %s не найден', $orderId));
+
                 return Command::FAILURE;
             }
         } else {
-            // Ищем первый заказ с нужным статусом
             $order = $this->orderRepository->findOneBy(['status' => $status]);
             if (!$order) {
                 $io->error(sprintf('Не найдено заказов со статусом %s', $statusName));
+
                 return Command::FAILURE;
             }
         }
 
-        // Проверяем наличие отправителя
         if (!$order->getSender()) {
             $io->error('У заказа отсутствует отправитель');
+
             return Command::FAILURE;
         }
 
-        // Выводим информацию о заказе
         $io->section('Информация о заказе');
         $io->table(
             ['Параметр', 'Значение'],
             [
                 ['ID заказа', $order->getId()->toRfc4122()],
-                ['Статус', $statusName . ' (' . $status . ')'],
-                ['Отправитель', $order->getSender()->getFirstName() . ' ' . $order->getSender()->getLastName()],
+                ['Статус', $statusName.' ('.$status.')'],
+                ['Событие', $eventKey],
+                ['Отправитель', $order->getSender()->getFirstName().' '.$order->getSender()->getLastName()],
                 ['Email', $order->getSender()->getEmail()],
                 ['Локаль', $order->getSender()->getLocale()],
                 ['Адрес забора', $order->getPickupAddress()],
@@ -122,23 +130,22 @@ HELP
             ]
         );
 
-        // Подтверждение отправки
-        if (!$io->confirm('Отправить email уведомление?', false)) {
-            $io->info('Отправка отменена');
+        if (!$io->confirm('Отправить уведомление (правила из БД)?', false)) {
+            $io->info('Отменено');
+
             return Command::SUCCESS;
         }
 
-        // Отправляем email
-        $io->info('Отправка email уведомления...');
-        
+        $io->info('Диспетчеризация…');
         try {
-            $this->orderStatusService->sendEmailToSender($order);
-            $io->success('Email уведомление успешно отправлено!');
-            $io->note('Проверьте логи для детальной информации: var/log/dev.log');
-            return Command::SUCCESS;
-        } catch (\Exception $e) {
-            $io->error('Ошибка при отправке email: ' . $e->getMessage());
+            $this->notificationDispatchService->dispatch($order, $eventKey);
+            $io->success('Событие отправлено в Messenger (или синхронно при sync://). Проверьте логи и notification_log.');
+        } catch (\Throwable $e) {
+            $io->error('Ошибка: '.$e->getMessage());
+
             return Command::FAILURE;
         }
+
+        return Command::SUCCESS;
     }
 }

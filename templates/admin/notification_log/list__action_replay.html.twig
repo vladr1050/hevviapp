@@ -1,0 +1,10 @@
+{% if admin.hasAccess('show', object) %}
+    <a
+        class="btn btn-sm btn-default"
+        href="{{ admin.generateObjectUrl('replay', object) }}"
+        title="{{ 'action.notification_replay'|trans({}, 'AppBundle') }}"
+        onclick="return confirm('{{ 'action.notification_replay_confirm'|trans({}, 'AppBundle')|e('js') }}');"
+    >
+        <i class="fas fa-redo"></i>
+    </a>
+{% endif %}

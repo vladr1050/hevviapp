@@ -2,7 +2,34 @@
 
 Система автоматической отправки email уведомлений при смене статусов заказов.
 
-## Архитектура
+Планируется переход к единому **Notification Service**: правила в БД, Sonata Admin, логи, Symfony Messenger. Ниже — **зафиксированные решения** для новой системы и описание **текущей (legacy)** реализации.
+
+**Статус реализации (MVP):** сущности `NotificationRule` / `NotificationLog`, миграции `Version20260409183000` (правила и логи) и `Version20260409190000` (таблица `messenger_messages` для `doctrine://`), админки Sonata (в т.ч. действие **«Повторить»** в списке журнала), команды `app:notification:seed-rules` (пустая таблица или **`--ensure-missing`** для добавления новых дефолтов), `app:notification:replay` (`--sync`, `--force`, `--invoice-id`), сервис **`NotificationDispatchService`** + **`NotificationRuleProcessor`** (плейсхолдеры, PDF счёта, Mailjet, логи). **Symfony Messenger:** `NotificationEventMessage` → транспорт `async` (`MESSENGER_TRANSPORT_DSN`, по умолчанию `sync://`). Триггеры: **`ORDER_PRICE_CONFIRMED`** — синхронно из `InvoiceIssuingService`; **`ORDER_ASSIGNED_TO_CARRIER`** — `OrderAssignmentSubscriber`; смена статуса заказа в **`OrderHistorySubscriber`**: **`ORDER_STATUS_CHANGED_TO_ACCEPTED`**, **`ORDER_STATUS_CHANGED_TO_ASSIGNED`**, **`ORDER_STATUS_CHANGED_TO_IN_TRANSIT`**, **`ORDER_STATUS_CHANGED_TO_DELIVERED`**. Legacy **`OrderStatusService`** и параллельная отправка через Twig `templates/email/order_status/` **удалены** для этих сценариев.
+
+## Решения по спецификации (Notification Service)
+
+### Legacy
+
+- Сценарии **ACCEPTED**, **ASSIGNED**, **IN_TRANSIT**, **DELIVERED** переведены на правила в БД и **`NotificationDispatchService`**. Старые Twig-шаблоны в `templates/email/order_status/` для этих писем **больше не используются** приложением (могут оставаться в репозитории для справки до удаления).
+
+### Плейсхолдер `{{ORDER_ID}}`
+
+- В шаблонах правил подставляется **публичный номер / референс заказа** — тот идентификатор, который пользователь видит в интерфейсе (тот же смысл, что в кабинете и в данных счёта как ссылка на заказ). **Внутренний UUID по умолчанию в `{{ORDER_ID}}` не подставляется.**
+- Если понадобится UUID для поддержки — заводится **отдельный** плейсхолдер (например `{{ORDER_INTERNAL_ID}}`).
+
+### Адреса забора и доставки
+
+- Для загрузки и маршрута используются **полные строки адреса** из заказа (поля вида адреса забора и адреса доставки в сущности), **без** обязательного выделения «только города», если отдельных полей города в модели нет.
+- Целевые имена в справочнике плейсхолдеров: **`{{PICKUP_ADDRESS}}`**, **`{{DELIVERY_ADDRESS}}`**. Пример строки маршрута в тексте: `{{PICKUP_ADDRESS}} → {{DELIVERY_ADDRESS}}`.
+- Имена вида **`{{PICKUP_CITY}}` / `{{DELIVERY_CITY}}`** в старых примерах или сидах трактуются как **алиасы** на полный адрес забора и полный адрес доставки соответственно, либо в шаблонах **однократно заменяются** на `*_ADDRESS`.
+
+### Статус DELIVERED
+
+- Заказ переводится в **DELIVERED** **администратором в админке (Sonata)**. Уведомление о завершении доставки привязывается к этому изменению статуса заказа.
+
+---
+
+## Архитектура (обзор)
 
 Система построена согласно принципам **SOLID** и использует идиомы **Symfony 8**:
 
@@ -17,14 +44,10 @@
    - Single Responsibility: только отправка email
    - Конфигурируется через DI контейнер
 
-3. **OrderStatusService** (`src/Service/OrderStatus/OrderStatusService.php`)
-   - Управляет логикой отправки уведомлений для статусов заказов
-   - Использует Twig для рендеринга шаблонов
-   - Поддерживает локализацию через Translator
+3. **OrderHistorySubscriber** (`src/EventSubscriber/OrderHistorySubscriber.php`)
+   - После сохранения истории статуса вызывает **`NotificationDispatchService`** для событий `ORDER_STATUS_CHANGED_TO_*` (см. список ключей в `App\Notification\NotificationEventKey`).
 
-4. **OrderHistorySubscriber** (`src/EventSubscriber/OrderHistorySubscriber.php`)
-   - Doctrine EventSubscriber для отслеживания изменений статусов
-   - Интегрируется с OrderStatusService для отправки уведомлений
+4. **OrderAssignmentSubscriber** — уведомление перевозчику при принятии назначения (`ORDER_ASSIGNED_TO_CARRIER`).
 
 ## Настройка
 
@@ -43,34 +66,34 @@ MAILJET_SENDER_NAME="Your Company Name"
 MAILJET_ENABLED=true
 ```
 
-### 2. Верификация отправителя
+### 2. Symfony Messenger (очередь уведомлений)
+
+- В `.env`: по умолчанию `MESSENGER_TRANSPORT_DSN=sync://` — сообщения обрабатываются сразу в том же PHP-процессе.
+- Для отложенной обработки задайте, например, `MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=1`, выполните миграции (в т.ч. `Version20260409190000` для таблицы `messenger_messages` или используйте `php bin/console messenger:setup-transports`), затем запустите воркер: `php bin/console messenger:consume async -vv` (supervisor/systemd на production).
+
+### 3. Верификация отправителя
 
 В Mailjet необходимо верифицировать email отправителя:
 1. Перейдите в [Sender Domains & Addresses](https://app.mailjet.com/account/sender)
 2. Добавьте домен или конкретный email
 3. Подтвердите владение через DNS или email
 
-## Статусы с уведомлениями
+## Статусы и события уведомлений
 
-Система отправляет email уведомления для следующих статусов:
+По смене статуса заказа (история в `OrderHistorySubscriber`):
 
-1. **ACCEPTED** (Принят) - Заказ принят в обработку
-2. **ASSIGNED** (Назначен) - Назначен перевозчик
-3. **PICKUP_DONE** (Забор выполнен) - Груз забран перевозчиком
-4. **DELIVERED** (Доставлен) - Груз доставлен получателю
+1. **ACCEPTED** → `ORDER_STATUS_CHANGED_TO_ACCEPTED`
+2. **ASSIGNED** → `ORDER_STATUS_CHANGED_TO_ASSIGNED`
+3. **IN_TRANSIT** → `ORDER_STATUS_CHANGED_TO_IN_TRANSIT`
+4. **DELIVERED** → `ORDER_STATUS_CHANGED_TO_DELIVERED`
+
+Дополнительно: **назначение перевозчика** (принятие `OrderAssignment`) → `ORDER_ASSIGNED_TO_CARRIER`; **счёт после подтверждения цены** → `ORDER_PRICE_CONFIRMED` (синхронно, с PDF).
 
 ## Шаблоны
 
-### Структура шаблонов
+### Шаблоны писем
 
-```
-templates/email/order_status/
-├── base.html.twig          # Базовый шаблон
-├── accepted.html.twig      # Шаблон для статуса ACCEPTED
-├── assigned.html.twig      # Шаблон для статуса ASSIGNED
-├── pickup_done.html.twig   # Шаблон для статуса PICKUP_DONE
-└── delivered.html.twig     # Шаблон для статуса DELIVERED
-```
+Тексты и темы настраиваются в **Sonata → Правила уведомлений** (HTML с плейсхолдерами `{{ORDER_ID}}` и др.). Каталог `templates/email/order_status/` **не используется** для отправки через Notification Service (может сохраняться только как справочный материал).
 
 ### Доступные переменные в шаблонах
 

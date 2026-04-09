@@ -35,6 +35,15 @@ sonata_admin:
                         label: menu.invoices
                     -   route: admin_app_cargo_list
                         label: menu.cargo
+            notifications:
+                label:           menu.notifications
+                label_catalogue: AppBundle
+                icon:            '<i class="fas fa-envelope"></i>'
+                items:
+                    -   route: admin_app_notificationrule_list
+                        label: menu.notification_rules
+                    -   route: admin_app_notificationlog_list
+                        label: menu.notification_logs
             settings:
                 label:           menu.settings
                 label_catalogue: AppBundle
@@ -104,6 +113,7 @@ services:
             - [ addChild, [ '@App\Admin\OrderOfferAdmin', 'offers' ] ]
             - [ addChild, [ '@App\Admin\OrderAssignmentAdmin', 'orderAssignments' ] ]
             - [ addChild, [ '@App\Admin\OrderHistoryAdmin', 'histories' ] ]
+            - [ addChild, [ '@App\Admin\NotificationLogAdmin', 'notificationLogs' ] ]
             - [ setAttachmentUploader, [ '@App\Service\OrderAttachmentUploader' ] ]
 
     App\Admin\CargoAdmin:
@@ -223,6 +233,32 @@ services:
                 controller:                ~
                 manager_type:              orm
                 label:                     menu.invoices
+                label_translator_strategy: sonata.admin.label.strategy.underscore
+                show_in_roles_matrix:      false
+        calls:
+            - [ setTranslationDomain, [ 'AppBundle' ] ]
+
+    App\Admin\NotificationRuleAdmin:
+        tags:
+            -   name:                      sonata.admin
+                code:                      ~
+                model_class:               App\Entity\NotificationRule
+                controller:                ~
+                manager_type:              orm
+                label:                     menu.notification_rules
+                label_translator_strategy: sonata.admin.label.strategy.underscore
+                show_in_roles_matrix:      false
+        calls:
+            - [ setTranslationDomain, [ 'AppBundle' ] ]
+
+    App\Admin\NotificationLogAdmin:
+        tags:
+            -   name:                      sonata.admin
+                code:                      ~
+                model_class:               App\Entity\NotificationLog
+                controller:                App\Controller\Admin\NotificationLogAdminController
+                manager_type:              orm
+                label:                     menu.notification_logs
                 label_translator_strategy: sonata.admin.label.strategy.underscore
                 show_in_roles_matrix:      false
         calls:

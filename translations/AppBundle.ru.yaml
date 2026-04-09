@@ -8,6 +8,15 @@ invoice:
 public_site:
     browser_title: hevvi
 
+action:
+    notification_replay:         Повторить отправку
+    notification_replay_confirm: Повторить отправку этого уведомления? Ограничение «один раз на заказ» будет проигнорировано.
+
+flash:
+    notification_replay_no_order: У записи журнала нет связанного заказа.
+    notification_replay_result: 'Повтор: отправлено %sent%, ошибок %failed%, пропущено %skipped%.'
+    notification_replay_error: 'Ошибка повтора: %message%'
+
 menu:
     users:             Пользователи
     carriers:          Перевозчики
@@ -21,6 +30,9 @@ menu:
     service_areas:     Зоны обслуживания
     matrix_items:      Элементы матрицы
     invoices:          Счета
+    notifications:      Email-уведомления
+    notification_rules: Правила уведомлений
+    notification_logs:  Журнал уведомлений
 
 breadcrumb:
     link_user_list:          Список пользователей
@@ -96,6 +108,17 @@ list:
     label_invoice_number:       № счёта
     label_invoice_status:       Статус счёта
     label_invoice_issue_date:   Дата выставления
+    label_notification_rule_name:      Название правила
+    label_notification_event_key:      Ключ события
+    label_notification_recipient_type: Тип получателя
+    label_notification_is_active:      Активно
+    label_notification_attach_invoice: Вложение PDF счёта
+    label_notification_send_once:      Один раз на заказ
+    label_notification_rule:           Правило
+    label_notification_recipient_email: Email получателя
+    label_notification_log_status:   Статус
+    label_notification_sent_at:        Отправлено
+    label_notification_error:          Ошибка
 
 show:
     label_order_number:       Номер заказа
@@ -169,6 +192,24 @@ show:
     label_company_registration_number: Рег. номер компании
     label_company_address:    Адрес компании
     label_vat_number:         Номер НДС (VAT)
+    label_notification_rule_name:          Название правила
+    label_notification_rule_description:   Описание
+    label_notification_event_key:          Ключ события
+    label_notification_recipient_type:     Тип получателя
+    label_notification_subject_template:   Шаблон темы
+    label_notification_body_template:      Шаблон текста
+    label_notification_attach_invoice:     Вложение PDF счёта
+    label_notification_send_once:          Один раз на заказ
+    label_notification_is_active:          Правило активно
+    label_notification_rule:               Правило уведомления
+    label_notification_recipient_email:    Email получателя
+    label_notification_subject_rendered:   Тема (итог)
+    label_notification_body_rendered:      Текст (итог)
+    label_notification_attachment_type:    Тип вложения
+    label_notification_log_status:         Статус доставки
+    label_notification_error:            Сообщение об ошибке
+    label_notification_provider_message_id: ID сообщения у провайдера
+    label_notification_sent_at:            Время отправки
 
 form:
     label_order_number:        Номер заказа
@@ -276,6 +317,16 @@ form:
     label_help_cancel_reason: Причина, указанная перевозчиком при отмене заказа.
     label_help_carrier_readonly: "Перевозчик назначается автоматически через вкладку «Назначения». Чтобы сменить перевозчика — переведите текущее назначение в статус «Отклонено»."
     label_help_upload_pdf:     "Принимаются только PDF-файлы. Можно загрузить несколько файлов. Файлы автоматически сжимаются при сохранении."
+    label_notification_rule_name:          Название правила
+    label_notification_rule_description:   Описание (внутреннее)
+    label_notification_event_key:          Ключ события
+    label_notification_recipient_type:     Тип получателя
+    label_notification_subject_template:   Шаблон темы
+    label_notification_body_template:      Шаблон текста (HTML)
+    label_notification_attach_invoice:     Вложить PDF счёта
+    label_notification_send_once:          Только один раз на заказ
+    label_notification_is_active:          Правило активно
+    group_notification_rule:               Правило уведомления
 
 # Cargo Type choices
 PALLET:    Паллет

@@ -11,7 +11,8 @@ use App\Entity\OrderOffer;
 use App\Entity\User;
 use App\Repository\BillingCompanyRepository;
 use App\Repository\InvoiceRepository;
-use App\Service\Email\Contract\EmailServiceInterface;
+use App\Notification\NotificationEventKey;
+use App\Service\Notification\NotificationDispatchService;
 use App\Service\Invoice\DTO\InvoiceMapPayload;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -39,7 +40,7 @@ final class InvoiceIssuingService
         private readonly string $invoiceStorageDir,
         #[Autowire('%env(int:PLATFORM_FEE_PERCENT)%')]
         private readonly int $defaultPlatformFeePercent,
-        private readonly EmailServiceInterface $emailService,
+        private readonly NotificationDispatchService $notificationDispatchService,
     ) {
     }
 
@@ -211,29 +212,34 @@ final class InvoiceIssuingService
             return;
         }
 
-        $subject = 'Rēķins ' . $invoice->getInvoiceNumber();
-        $bodyHtml = sprintf(
-            '<p>Sveiki,</p><p>Pielikumā nosūtām rēķinu <strong>%s</strong>.</p><p>Ar cieņu,<br>%s</p>',
-            htmlspecialchars((string) $invoice->getInvoiceNumber(), ENT_QUOTES | ENT_HTML5, 'UTF-8'),
-            htmlspecialchars($issuer->getName() ?? 'Hevvi', ENT_QUOTES | ENT_HTML5, 'UTF-8')
-        );
-        $attachmentName = sprintf('rekina-%s.pdf', preg_replace('/[^a-zA-Z0-9_-]+/', '_', (string) $invoice->getInvoiceNumber()));
+        $relatedOrder = $invoice->getRelatedOrder();
+        if ($relatedOrder === null) {
+            $invoice->setStatus(Invoice::STATUS_EMAIL_FAILED);
+            $invoice->setEmailError('Invoice has no related order for notification dispatch.');
+            $this->em->flush();
 
-        $sent = $this->emailService->sendWithPdfAttachment(
-            $buyerEmail,
-            $subject,
-            $bodyHtml,
-            strip_tags(str_replace(['<br>', '<br/>', '<br />'], "\n", $bodyHtml)),
-            $attachmentName,
-            $pdfBinary
+            return;
+        }
+
+        $dispatch = $this->notificationDispatchService->dispatch(
+            $relatedOrder,
+            NotificationEventKey::ORDER_PRICE_CONFIRMED,
+            $invoice
         );
 
-        if ($sent) {
+        if ($dispatch->getSentCount() > 0) {
             $invoice->setStatus(Invoice::STATUS_EMAIL_SENT);
             $invoice->setEmailError(null);
-        } else {
+        } elseif ($dispatch->getFailedCount() > 0) {
             $invoice->setStatus(Invoice::STATUS_EMAIL_FAILED);
-            $invoice->setEmailError('Mailjet send returned failure.');
+            $invoice->setEmailError($dispatch->getFirstError() ?? 'Notification dispatch failed.');
+        } else {
+            $invoice->setStatus(Invoice::STATUS_EMAIL_NOT_SENT);
+            $invoice->setEmailError(
+                $dispatch->getMatchedRuleCount() === 0
+                    ? 'No active notification rules for ORDER_PRICE_CONFIRMED.'
+                    : null
+            );
         }
 
         $this->em->flush();

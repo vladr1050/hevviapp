@@ -22,7 +22,8 @@ use App\Entity\Manager;
 use App\Entity\Order;
 use App\Entity\OrderHistory;
 use App\Entity\User;
-use App\Service\OrderStatus\OrderStatusService;
+use App\Notification\NotificationEventKey;
+use App\Service\Notification\NotificationDispatchService;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
@@ -41,7 +42,7 @@ class OrderHistorySubscriber implements EventSubscriber
     public function __construct(
         private readonly Security $security,
         private readonly LoggerInterface $logger,
-        private readonly OrderStatusService $orderStatusService
+        private readonly NotificationDispatchService $notificationDispatchService,
     ) {
     }
 
@@ -133,11 +134,19 @@ class OrderHistorySubscriber implements EventSubscriber
 
         foreach ($orders as $order) {
             try {
-                $this->orderStatusService->sendEmailToSender($order);
-            } catch (\Exception $e) {
-                // Логируем ошибку, но не прерываем процесс
-                // (чтобы проблемы с отправкой email не влияли на основную логику)
-                $this->logger->error('Failed to send email notification in postFlush', [
+                $status = $order->getStatus();
+                $eventKey = match ($status) {
+                    Order::STATUS['ACCEPTED'] => NotificationEventKey::ORDER_STATUS_CHANGED_TO_ACCEPTED,
+                    Order::STATUS['ASSIGNED'] => NotificationEventKey::ORDER_STATUS_CHANGED_TO_ASSIGNED,
+                    Order::STATUS['IN_TRANSIT'] => NotificationEventKey::ORDER_STATUS_CHANGED_TO_IN_TRANSIT,
+                    Order::STATUS['DELIVERED'] => NotificationEventKey::ORDER_STATUS_CHANGED_TO_DELIVERED,
+                    default => null,
+                };
+                if ($eventKey !== null) {
+                    $this->notificationDispatchService->dispatch($order, $eventKey);
+                }
+            } catch (\Throwable $e) {
+                $this->logger->error('Failed to dispatch DB notification rules in postFlush', [
                     'order_id' => $order->getId()?->toRfc4122(),
                     'exception' => $e->getMessage(),
                 ]);

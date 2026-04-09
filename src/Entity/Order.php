@@ -86,6 +86,12 @@ class Order extends BaseUUID
     #[ORM\OneToMany(targetEntity: OrderAssignment::class, mappedBy: 'relatedOrder', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $orderAssignments;
 
+    /**
+     * @var Collection<int, NotificationLog>
+     */
+    #[ORM\OneToMany(targetEntity: NotificationLog::class, mappedBy: 'relatedOrder', cascade: ['persist'])]
+    private Collection $notificationLogs;
+
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 7, nullable: true)]
     private ?string $pickupLatitude = null;
 
@@ -141,6 +147,7 @@ class Order extends BaseUUID
         $this->histories = new ArrayCollection();
         $this->offers = new ArrayCollection();
         $this->orderAssignments = new ArrayCollection();
+        $this->notificationLogs = new ArrayCollection();
         $this->attachments = new ArrayCollection();
     }
 
@@ -607,6 +614,35 @@ class Order extends BaseUUID
         if ($this->attachments->removeElement($attachment)) {
             if ($attachment->getRelatedOrder() === $this) {
                 $attachment->setRelatedOrder(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, NotificationLog>
+     */
+    public function getNotificationLogs(): Collection
+    {
+        return $this->notificationLogs;
+    }
+
+    public function addNotificationLog(NotificationLog $notificationLog): static
+    {
+        if (!$this->notificationLogs->contains($notificationLog)) {
+            $this->notificationLogs->add($notificationLog);
+            $notificationLog->setRelatedOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotificationLog(NotificationLog $notificationLog): static
+    {
+        if ($this->notificationLogs->removeElement($notificationLog)) {
+            if ($notificationLog->getRelatedOrder() === $this) {
+                $notificationLog->setRelatedOrder(null);
             }
         }
 

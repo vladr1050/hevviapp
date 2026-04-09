@@ -8,6 +8,15 @@ invoice:
 public_site:
     browser_title: hevvi
 
+action:
+    notification_replay:         Resend
+    notification_replay_confirm: Resend this notification now? Send-once rules will be ignored.
+
+flash:
+    notification_replay_no_order: This log entry has no linked order.
+    notification_replay_result: 'Replay finished: sent %sent%, failed %failed%, skipped %skipped%.'
+    notification_replay_error: 'Replay failed: %message%'
+
 menu:
     users:             Users
     carriers:          Carriers
@@ -21,6 +30,9 @@ menu:
     service_areas:     Service Areas
     matrix_items:      Matrix Items
     invoices:          Invoices
+    notifications:      Email notifications
+    notification_rules: Notification rules
+    notification_logs:  Notification log
 
 breadcrumb:
     link_user_list:           List of Users
@@ -105,6 +117,17 @@ list:
     label_invoice_number:       Invoice №
     label_invoice_status:       Invoice status
     label_invoice_issue_date:   Issue date
+    label_notification_rule_name:      Rule name
+    label_notification_event_key:      Event key
+    label_notification_recipient_type: Recipient type
+    label_notification_is_active:      Active
+    label_notification_attach_invoice: Attach invoice PDF
+    label_notification_send_once:      Send once per order
+    label_notification_rule:           Notification rule
+    label_notification_recipient_email: Recipient email
+    label_notification_log_status:     Status
+    label_notification_sent_at:        Sent at
+    label_notification_error:          Error
 
 show:
     label_order_number:                Order №
@@ -182,6 +205,24 @@ show:
     label_company_registration_number: Company Registration Number
     label_company_address:             Company Address
     label_vat_number:                  VAT number
+    label_notification_rule_name:          Rule name
+    label_notification_rule_description:   Description
+    label_notification_event_key:          Event key
+    label_notification_recipient_type:     Recipient type
+    label_notification_subject_template:   Subject template
+    label_notification_body_template:      Body template
+    label_notification_attach_invoice:     Attach invoice PDF
+    label_notification_send_once:          Send once per order
+    label_notification_is_active:          Active
+    label_notification_rule:               Notification rule
+    label_notification_recipient_email:    Recipient email
+    label_notification_subject_rendered:   Subject (rendered)
+    label_notification_body_rendered:      Body (rendered)
+    label_notification_attachment_type:    Attachment type
+    label_notification_log_status:         Delivery status
+    label_notification_error:              Error message
+    label_notification_provider_message_id: Provider message ID
+    label_notification_sent_at:            Sent at
 
 
 form:
@@ -297,6 +338,16 @@ form:
     label_invoice_email_error:         Email error
     label_upload_files:                PDF Documents
     label_help_upload_pdf:             "Only PDF files accepted. Multiple files allowed. Files are compressed automatically on save."
+    label_notification_rule_name:          Rule name
+    label_notification_rule_description:   Description (internal)
+    label_notification_event_key:          Event key
+    label_notification_recipient_type:     Recipient type
+    label_notification_subject_template:   Subject template
+    label_notification_body_template:      Body template (HTML)
+    label_notification_attach_invoice:     Attach invoice PDF
+    label_notification_send_once:          Send only once per order
+    label_notification_is_active:          Rule is active
+    group_notification_rule:               Notification rule
 
 
 # Cargo Type choices

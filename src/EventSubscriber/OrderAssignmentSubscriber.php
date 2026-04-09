@@ -19,6 +19,8 @@ namespace App\EventSubscriber;
 
 use App\Entity\Order;
 use App\Entity\OrderAssignment;
+use App\Notification\NotificationEventKey;
+use App\Service\Notification\NotificationDispatchService;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
@@ -41,7 +43,8 @@ class OrderAssignmentSubscriber
     private array $pendingOrderUpdates = [];
 
     public function __construct(
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly NotificationDispatchService $notificationDispatchService,
     ) {
     }
 
@@ -168,5 +171,22 @@ class OrderAssignmentSubscriber
         }
 
         $em->flush();
+
+        foreach ($updates as $update) {
+            if ($update['carrier'] === null) {
+                continue;
+            }
+            try {
+                $this->notificationDispatchService->dispatch(
+                    $update['order'],
+                    NotificationEventKey::ORDER_ASSIGNED_TO_CARRIER
+                );
+            } catch (\Throwable $e) {
+                $this->logger->error('ORDER_ASSIGNED_TO_CARRIER notification dispatch failed', [
+                    'order_id' => $update['order']->getId()?->toRfc4122(),
+                    'exception' => $e->getMessage(),
+                ]);
+            }
+        }
     }
 }
