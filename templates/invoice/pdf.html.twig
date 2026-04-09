@@ -574,31 +574,46 @@
 
         .service-grid {
             display: grid;
-            grid-template-columns: 53px 53px 61px 53px 53px 58px;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
             column-gap: 28px;
-            align-items: start;
+            align-items: stretch;
         }
 
         .service-cell {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .service-cell--total {
+            align-items: flex-end;
+            text-align: right;
+        }
+
+        .service-cell--total .service-label-lines {
+            align-items: flex-end;
+        }
+
+        .service-cell--total .service-label-line {
+            text-align: right;
+        }
+
+        .service-label-lines {
             display: flex;
             flex-direction: column;
             gap: 2.28px;
             min-width: 0;
         }
 
-        .service-cell:last-child {
-            align-items: flex-end;
-            text-align: right;
-        }
-
-        .service-label {
+        .service-label-line {
             font-weight: 400;
             font-size: 6.84145px;
             line-height: 8px;
             color: rgba(0, 0, 0, 0.4);
             margin: 0;
             padding: 0;
-            white-space: normal;
         }
 
         .service-value {
@@ -611,7 +626,7 @@
             white-space: nowrap;
         }
 
-        .service-cell:last-child .service-value {
+        .service-cell--total .service-value {
             font-weight: 600;
         }
 
@@ -882,27 +897,38 @@
                     <hr class="service-divider" />
                     <div class="service-grid">
                         <div class="service-cell">
-                            <div class="service-label">Kravas piegādes maksa</div>
+                            <div class="service-label-lines">
+                                <span class="service-label-line">Kravas piegādes</span>
+                                <span class="service-label-line">maksa (bez PVN)</span>
+                            </div>
                             <div class="service-value">{{ amount_freight }}</div>
                         </div>
                         <div class="service-cell">
-                            <div class="service-label">Cena bez PVN</div>
-                            <div class="service-value">{{ amount_cena_bez_pvn }}</div>
-                        </div>
-                        <div class="service-cell">
-                            <div class="service-label">{{ commission_label }}</div>
+                            <div class="service-label-lines">
+                                <span class="service-label-line">Hevvi.app komisija</span>
+                                <span class="service-label-line">{{ fee_percent_label }}% (bez PVN)</span>
+                            </div>
                             <div class="service-value">{{ amount_commission }}</div>
                         </div>
                         <div class="service-cell">
-                            <div class="service-label">Starpsumma (bez PVN)</div>
+                            <div class="service-label-lines">
+                                <span class="service-label-line">Starpsumma</span>
+                                <span class="service-label-line">(bez PVN)</span>
+                            </div>
                             <div class="service-value">{{ amount_subtotal }}</div>
                         </div>
                         <div class="service-cell">
-                            <div class="service-label">{{ vat_label }}</div>
+                            <div class="service-label-lines">
+                                <span class="service-label-line">PVN</span>
+                                <span class="service-label-line">0%</span>
+                            </div>
                             <div class="service-value">{{ amount_vat }}</div>
                         </div>
-                        <div class="service-cell">
-                            <div class="service-label">KOPĀ APMAKSAI (ar PVN)</div>
+                        <div class="service-cell service-cell--total">
+                            <div class="service-label-lines">
+                                <span class="service-label-line">Kopā apmaksai</span>
+                                <span class="service-label-line">(ar PVN)</span>
+                            </div>
                             <div class="service-value">{{ amount_gross }}</div>
                         </div>
                     </div>

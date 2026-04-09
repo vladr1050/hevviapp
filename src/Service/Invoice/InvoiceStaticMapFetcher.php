@@ -9,9 +9,10 @@ use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
- * Static map for invoice PDF: one OSM raster tile (PNG) + pickup/delivery pins + straight route line.
+ * Static map for invoice PDF: one OSM raster tile (PNG) + pickup/delivery pins.
  * Zoom/tile choice follows fitBounds-style logic: padded geographic bbox, highest zoom where the bbox
- * fits one tile and both stops fit in the inner frame with margin (transport preview, not a cropped city tile).
+ * fits one tile and both stops fit in the inner frame with margin. The tile is scaled and panned so the
+ * geographic midpoint between the two stops is centered in the preview when padding allows.
  *
  * @see https://operations.osmfoundation.org/policies/tiles/
  */
@@ -36,6 +37,9 @@ final class InvoiceStaticMapFetcher
     private const MIN_ZOOM = 4;
 
     private const MAX_ZOOM = 16;
+
+    /** Max uniform scale-up over min cover scale to allow panning so route midpoint centers in the frame. */
+    private const MAP_CENTER_MAX_SCALE_FACTOR = 2.6;
 
     public function __construct(
         private readonly HttpClientInterface $httpClient,
@@ -141,8 +145,8 @@ final class InvoiceStaticMapFetcher
             if (!$this->latLonBBoxFitsSingleTile($minLat, $minLon, $maxLat, $maxLon, $z)) {
                 continue;
             }
-            $centerLat = ($minLat + $maxLat) / 2;
-            $centerLon = ($minLon + $maxLon) / 2;
+            $centerLat = ($lat1 + $lat2) / 2;
+            $centerLon = ($lon1 + $lon2) / 2;
             [$xf, $yf] = $this->projectToTileFractional($centerLat, $centerLon, $z);
             $tileX = (int) floor($xf);
             $tileY = (int) floor($yf);
@@ -248,42 +252,76 @@ final class InvoiceStaticMapFetcher
         $px2 = ($xf2 - $tileX) * self::TILE_PX;
         $py2 = ($yf2 - $tileY) * self::TILE_PX;
 
-        $scale = max($innerW / self::TILE_PX, $innerH / self::TILE_PX);
-        $sw = self::TILE_PX * $scale;
-        $sh = self::TILE_PX * $scale;
-
         $minPx = min($px1, $px2);
         $maxPx = max($px1, $px2);
         $minPy = min($py1, $py2);
         $maxPy = max($py1, $py2);
 
-        $spanX = ($maxPx - $minPx) * $scale;
-        $spanY = ($maxPy - $minPy) * $scale;
-
-        if ($requirePaddingSpan && ($spanX + 2 * $padPx > $innerW + 0.5 || $spanY + 2 * $padPx > $innerH + 0.5)) {
-            return null;
-        }
-
         $midPx = ($minPx + $maxPx) / 2;
         $midPy = ($minPy + $maxPy) / 2;
 
-        $oxIdeal = $innerW / 2 - $midPx * $scale;
-        $oyIdeal = $innerH / 2 - $midPy * $scale;
+        $spanPxWorld = $maxPx - $minPx;
+        $spanPyWorld = $maxPy - $minPy;
 
-        $oxMin = $innerW - $sw;
-        $oxMax = 0.0;
-        $oyMin = $innerH - $sh;
-        $oyMax = 0.0;
+        $baseScale = max($innerW / self::TILE_PX, $innerH / self::TILE_PX);
+        $spanX0 = $spanPxWorld * $baseScale;
+        $spanY0 = $spanPyWorld * $baseScale;
+        if ($requirePaddingSpan && ($spanX0 + 2 * $padPx > $innerW + 0.5 || $spanY0 + 2 * $padPx > $innerH + 0.5)) {
+            return null;
+        }
 
-        $ox = min($oxMax, max($oxMin, $oxIdeal));
-        $oy = min($oyMax, max($oyMin, $oyIdeal));
+        $fHi = self::MAP_CENTER_MAX_SCALE_FACTOR;
+        if ($requirePaddingSpan) {
+            if ($spanPxWorld > 1e-6) {
+                $fHi = min($fHi, ($innerW - 2 * $padPx + 0.5) / ($spanPxWorld * $baseScale));
+            }
+            if ($spanPyWorld > 1e-6) {
+                $fHi = min($fHi, ($innerH - 2 * $padPx + 0.5) / ($spanPyWorld * $baseScale));
+            }
+        }
+        if ($fHi < 1.0 - 1e-9) {
+            return null;
+        }
 
-        $pL = $ox + $px1 * $scale;
-        $pT = $oy + $py1 * $scale;
-        $dL = $ox + $px2 * $scale;
-        $dT = $oy + $py2 * $scale;
+        $best = null;
+        $bestErr = INF;
+        for ($f = 1.0; $f <= $fHi + 1e-6; $f += 0.025) {
+            $scale = $baseScale * $f;
+            if ($requirePaddingSpan) {
+                $spanX = $spanPxWorld * $scale;
+                $spanY = $spanPyWorld * $scale;
+                if ($spanX + 2 * $padPx > $innerW + 0.5 || $spanY + 2 * $padPx > $innerH + 0.5) {
+                    break;
+                }
+            }
 
-        return [$pL, $pT, $dL, $dT, $ox, $oy, $scale];
+            $sw = self::TILE_PX * $scale;
+            $sh = self::TILE_PX * $scale;
+            $oxIdeal = $innerW / 2 - $midPx * $scale;
+            $oyIdeal = $innerH / 2 - $midPy * $scale;
+            $oxMin = $innerW - $sw;
+            $oxMax = 0.0;
+            $oyMin = $innerH - $sh;
+            $oyMax = 0.0;
+            $ox = min($oxMax, max($oxMin, $oxIdeal));
+            $oy = min($oyMax, max($oyMin, $oyIdeal));
+
+            $err = abs($ox - $oxIdeal) + abs($oy - $oyIdeal);
+            $pL = $ox + $px1 * $scale;
+            $pT = $oy + $py1 * $scale;
+            $dL = $ox + $px2 * $scale;
+            $dT = $oy + $py2 * $scale;
+            $candidate = [$pL, $pT, $dL, $dT, $ox, $oy, $scale];
+            if ($err < $bestErr) {
+                $bestErr = $err;
+                $best = $candidate;
+            }
+            if ($err < 0.25) {
+                return $candidate;
+            }
+        }
+
+        return $best;
     }
 
     /**
@@ -303,8 +341,8 @@ final class InvoiceStaticMapFetcher
             if (!$this->latLonBBoxFitsSingleTile($minLat, $minLon, $maxLat, $maxLon, $z)) {
                 continue;
             }
-            $centerLat = ($minLat + $maxLat) / 2;
-            $centerLon = ($minLon + $maxLon) / 2;
+            $centerLat = ($lat1 + $lat2) / 2;
+            $centerLon = ($lon1 + $lon2) / 2;
             [$xf, $yf] = $this->projectToTileFractional($centerLat, $centerLon, $z);
             $tileX = (int) floor($xf);
             $tileY = (int) floor($yf);
