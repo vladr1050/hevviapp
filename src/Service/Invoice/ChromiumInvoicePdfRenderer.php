@@ -4,15 +4,20 @@ declare(strict_types=1);
 
 namespace App\Service\Invoice;
 
+use HeadlessChromium\BrowserFactory;
+use HeadlessChromium\Page;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Process\Process;
 
 /**
- * Renders HTML from a temporary directory so relative {@code url('fonts/…')} and
- * {@code invoice-assets/*.svg} resolve under file:// (Chromium opens the page from disk).
+ * Renders HTML from a temp dir (fonts + invoice-assets for file://). Uses DevTools
+ * {@code Page.printToPDF} so A4 layout is not shrunk like with {@code --print-to-pdf} on some Chromium builds.
  */
 final class ChromiumInvoicePdfRenderer
 {
+    private const VIEWPORT_W = 595;
+
+    private const VIEWPORT_H = 842;
+
     public function __construct(
         private readonly string $chromeBinary,
         private readonly string $invoiceFontsSourceDir,
@@ -27,7 +32,6 @@ final class ChromiumInvoicePdfRenderer
         $workDir = $tmpDir . '/hevvi_inv_' . $id;
         $fontsDestDir = $workDir . '/fonts';
         $htmlPath = $workDir . '/index.html';
-        $pdfPath = $workDir . '/output.pdf';
         $fs = new Filesystem();
 
         if (!@mkdir($workDir, 0700, true) || !@mkdir($fontsDestDir, 0700, true)) {
@@ -55,35 +59,37 @@ final class ChromiumInvoicePdfRenderer
                 throw new \RuntimeException('Cannot write temporary HTML for PDF rendering.');
             }
 
-            // Keep in sync with templates/invoice/pdf.html.twig html/body 595×842.
-            $process = new Process([
-                $this->chromeBinary,
-                '--headless=new',
-                '--disable-gpu',
-                '--no-sandbox',
-                '--disable-dev-shm-usage',
-                '--force-device-scale-factor=1',
-                '--window-size=595,842',
-                '--print-to-pdf=' . $pdfPath,
-                'file://' . $htmlPath,
+            $fileUrl = 'file://' . str_replace('\\', '/', $htmlPath);
+            $factory = new BrowserFactory($this->chromeBinary);
+            $browser = $factory->createBrowser([
+                'headless' => true,
+                'noSandbox' => true,
+                'windowSize' => [self::VIEWPORT_W, self::VIEWPORT_H],
+                'customFlags' => [
+                    '--disable-gpu',
+                    '--disable-dev-shm-usage',
+                    '--force-device-scale-factor=1',
+                ],
+                'startupTimeout' => 60,
+                'sendSyncDefaultTimeout' => 120000,
             ]);
-            $process->setTimeout(120);
-            $process->run();
 
-            if (!$process->isSuccessful()) {
-                throw new \RuntimeException(trim($process->getErrorOutput() . ' ' . $process->getOutput()));
+            try {
+                $page = $browser->createPage();
+                $page->navigate($fileUrl)->waitForNavigation(Page::LOAD, 60000);
+
+                return $page->pdf([
+                    'printBackground' => true,
+                    'preferCSSPageSize' => true,
+                    'marginTop' => 0.0,
+                    'marginBottom' => 0.0,
+                    'marginLeft' => 0.0,
+                    'marginRight' => 0.0,
+                    'scale' => 1.0,
+                ])->getRawBinary(120000);
+            } finally {
+                $browser->close();
             }
-
-            if (!is_file($pdfPath) || !is_readable($pdfPath)) {
-                throw new \RuntimeException('Chromium did not produce a PDF file.');
-            }
-
-            $pdf = file_get_contents($pdfPath);
-            if ($pdf === false || $pdf === '') {
-                throw new \RuntimeException('Empty PDF output.');
-            }
-
-            return $pdf;
         } finally {
             $fs->remove($workDir);
         }
