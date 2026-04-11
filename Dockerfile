@@ -7,6 +7,7 @@ ARG APP_MODE=dev
 RUN apk add --no-cache \
     bash \
     git \
+    patch \
     curl \
     openssl \
     chromium \
