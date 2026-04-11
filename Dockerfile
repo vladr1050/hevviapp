@@ -118,6 +118,8 @@ RUN mkdir -p /root/.ssh && \
 
 # Копируем composer файлы для кеширования слоев
 COPY composer.json composer.lock symfony.lock ./
+# Патчи для vendor (composer-patches), иначе install падает: файлы из extra.patches не найдены
+COPY patches ./patches/
 
 # Устанавливаем PHP зависимости (условно в зависимости от APP_MODE)
 # Без --mount=type=ssh для сборки на сервере; для приватных репо добавь mount локально
