@@ -41,7 +41,9 @@ else
 fi
 
 # Загрузка GeoArea дампов (если существуют)
-GEO_AREAS_DUMP_DIR="/var/www/html/docker/dumps/geo_areas"
+# Каталог проекта = каталог этого скрипта (в Docker: /var/www/app, см. Dockerfile WORKDIR)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+GEO_AREAS_DUMP_DIR="${GEO_AREAS_DUMP_DIR:-$SCRIPT_DIR/docker/dumps/geo_areas}"
 GEO_AREAS_DUMP_PATTERN="geo_areas_dump_*_*.sql"
 
 # Находим все файлы дампа
