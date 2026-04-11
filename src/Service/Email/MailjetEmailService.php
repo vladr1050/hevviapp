@@ -90,10 +90,11 @@ class MailjetEmailService implements EmailServiceInterface
             $response = $this->mailjetClient->post(Resources::$Email, ['body' => $body]);
 
             if ($response->success()) {
+                $meta = self::extractSendMetadata($response->getBody());
                 $this->logger->info('Email sent successfully via Mailjet', [
                     'to' => $to,
                     'subject' => $subject,
-                    'message_id' => $response->getData()[0]['To'][0]['MessageID'] ?? null,
+                    ...$meta,
                 ]);
 
                 return true;
@@ -163,9 +164,11 @@ class MailjetEmailService implements EmailServiceInterface
             $response = $this->mailjetClient->post(Resources::$Email, ['body' => $body]);
 
             if ($response->success()) {
+                $meta = self::extractSendMetadata($response->getBody());
                 $this->logger->info('Email with PDF sent via Mailjet', [
                     'to' => $to,
                     'subject' => $subject,
+                    ...$meta,
                 ]);
 
                 return true;
@@ -187,5 +190,45 @@ class MailjetEmailService implements EmailServiceInterface
 
             return false;
         }
+    }
+
+    /**
+     * v3.1 /send returns { "Messages": [ { "Status", "To": [ { "MessageID", "MessageUUID", "MessageHref" } ] } ] }.
+     * getData()[0] is wrong — там нет числового индекса, только ключ Messages.
+     *
+     * @param array<string, mixed> $body Decoded JSON from Mailjet Response::getBody()
+     *
+     * @return array{message_id: string|int|null, message_uuid: ?string, message_href: ?string, send_status: ?string}
+     */
+    private static function extractSendMetadata(array $body): array
+    {
+        $messages = $body['Messages'] ?? null;
+        if (!\is_array($messages) || $messages === []) {
+            return [
+                'message_id' => null,
+                'message_uuid' => null,
+                'message_href' => null,
+                'send_status' => null,
+            ];
+        }
+
+        $first = $messages[0];
+        if (!\is_array($first)) {
+            return [
+                'message_id' => null,
+                'message_uuid' => null,
+                'message_href' => null,
+                'send_status' => null,
+            ];
+        }
+
+        $to0 = $first['To'][0] ?? null;
+
+        return [
+            'message_id' => \is_array($to0) ? ($to0['MessageID'] ?? null) : null,
+            'message_uuid' => \is_array($to0) ? ($to0['MessageUUID'] ?? null) : null,
+            'message_href' => \is_array($to0) ? ($to0['MessageHref'] ?? null) : null,
+            'send_status' => $first['Status'] ?? null,
+        ];
     }
 }
