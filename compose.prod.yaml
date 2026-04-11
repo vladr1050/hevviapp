@@ -4,6 +4,10 @@ services:
     # Иначе после deploy остаётся entrypoint из образа (старый schema:update на prod).
     # С монтированием ./:/var/www/app актуальный entrypoint.sh с диска сервера.
     entrypoint: ["bash", "/var/www/app/entrypoint.sh"]
+    # Весь .env сервера в окружение контейнера (Mailjet, Messenger и т.д.). Иначе в prod часто
+    # остаются только переменные из environment ниже — писем нет при MAILJET_ENABLED=false в образе.
+    env_file:
+      - .env
     environment:
       APP_DEBUG: "0"
       APP_ENV: prod
