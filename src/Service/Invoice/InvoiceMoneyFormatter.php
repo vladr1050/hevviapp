@@ -15,4 +15,14 @@ final class InvoiceMoneyFormatter
 
         return number_format($value, 2, ',', ' ') . ' ' . $currency;
     }
+
+    /**
+     * Amount only (no currency suffix) for templates that use a separate {{CURRENCY}} placeholder.
+     */
+    public function formatCentsNumber(int $amountCents): string
+    {
+        $value = $amountCents / 100;
+
+        return number_format($value, 2, ',', ' ');
+    }
 }
