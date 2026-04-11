@@ -1,6 +1,6 @@
 <?php
 
-return [
+$bundles = [
     Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
     Doctrine\Bundle\DoctrineBundle\DoctrineBundle::class => ['all' => true],
     Symfony\UX\StimulusBundle\StimulusBundle::class => ['all' => true],
@@ -16,9 +16,15 @@ return [
     Sonata\AdminBundle\SonataAdminBundle::class => ['all' => true],
     FRPC\SonataAuthorization\SonataAuthorizationBundle::class => ['all' => true],
     Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle::class => ['all' => true],
-    Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
     Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle::class => ['all' => true],
     Lexik\Bundle\JWTAuthenticationBundle\LexikJWTAuthenticationBundle::class => ['all' => true],
     Sentry\SentryBundle\SentryBundle::class => ['all' => true],
     Symfony\Bundle\MonologBundle\MonologBundle::class => ['all' => true],
 ];
+
+// require-dev: на prod (composer --no-dev) пакета нет — не регистрируем, даже если APP_ENV случайно dev.
+if (class_exists(Symfony\Bundle\MakerBundle\MakerBundle::class)) {
+    $bundles[Symfony\Bundle\MakerBundle\MakerBundle::class] = ['dev' => true];
+}
+
+return $bundles;
