@@ -8,7 +8,6 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "chrome-php/chrome": "^1.15",
-        "cweagans/composer-patches": "^1.7",
         "doctrine/doctrine-bundle": "^3.2.2",
         "doctrine/doctrine-migrations-bundle": "^4.0",
         "doctrine/orm": "^3.6.2",
@@ -39,8 +38,7 @@
         "allow-plugins": {
             "php-http/discovery": true,
             "symfony/flex": true,
-            "symfony/runtime": true,
-            "cweagans/composer-patches": true
+            "symfony/runtime": true
         },
         "bump-after-update": true,
         "sort-packages": true
@@ -73,10 +71,13 @@
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
         },
+        "apply-mailjet-php84-patch": "sh scripts/apply-mailjet-php84-patch.sh",
         "post-install-cmd": [
+            "@apply-mailjet-php84-patch",
             "@auto-scripts"
         ],
         "post-update-cmd": [
+            "@apply-mailjet-php84-patch",
             "@auto-scripts"
         ]
     },
@@ -87,11 +88,6 @@
         "symfony": {
             "allow-contrib": false,
             "require": "8.0.*"
-        },
-        "patches": {
-            "mailjet/mailjet-apiv3-php": {
-                "PHP 8.4: explicit nullable Client::__construct secret parameter": "patches/mailjet-client-php84-constructor.patch"
-            }
         }
     },
     "require-dev": {

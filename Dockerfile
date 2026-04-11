@@ -119,8 +119,9 @@ RUN mkdir -p /root/.ssh && \
 
 # Копируем composer файлы для кеширования слоев
 COPY composer.json composer.lock symfony.lock ./
-# Патчи для vendor (composer-patches), иначе install падает: файлы из extra.patches не найдены
+# Патч Mailjet для PHP 8.4 (без composer-patches: см. scripts/apply-mailjet-php84-patch.sh)
 COPY patches ./patches/
+COPY scripts/apply-mailjet-php84-patch.sh ./scripts/apply-mailjet-php84-patch.sh
 
 # Устанавливаем PHP зависимости (условно в зависимости от APP_MODE)
 # Без --mount=type=ssh для сборки на сервере; для приватных репо добавь mount локально
@@ -128,7 +129,8 @@ RUN if [ "$APP_MODE" = "dev" ]; then \
         composer install --no-scripts --no-autoloader --prefer-dist; \
     else \
         composer install --no-dev --no-scripts --no-autoloader --prefer-dist --optimize-autoloader; \
-    fi
+    fi \
+    && sh scripts/apply-mailjet-php84-patch.sh
 
 # Копируем package.json для кеширования слоев
 COPY package.json package-lock.json ./
