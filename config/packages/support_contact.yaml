@@ -1,0 +1,3 @@
+parameters:
+    # Email of the Manager row used for the public “Need help?” widget (phone + email).
+    app.support_contact.manager_email: 'manager@hevvi.app'

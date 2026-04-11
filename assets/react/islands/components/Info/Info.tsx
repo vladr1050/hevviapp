@@ -1,6 +1,6 @@
-import { type FC, useState } from 'react'
+import { type FC, useCallback, useRef, useState } from 'react'
 
-import { EMAIL, PHONE, Routes } from '@config/constants'
+import { EMAIL, PHONE, PUBLIC_SUPPORT_CONTACT_URL, Routes } from '@config/constants'
 import { DeviceType, useDevice } from '@hooks/useDevice'
 import { Popover } from '@radix-ui/themes'
 import { Icon } from '@ui/Icon/Icon'
@@ -19,16 +19,42 @@ interface InfoProps {
 }
 export const Info: FC<InfoProps> = (props) => {
 	const [currentOrder, setCurrentOrder] = useState(0)
+	const [supportEmail, setSupportEmail] = useState(EMAIL)
+	const [supportPhone, setSupportPhone] = useState(PHONE)
+	const supportContactLoadedRef = useRef(false)
 
 	const { orders, device } = props
 
 	const { isMobile } = useDevice(device)
 
+	const loadSupportContact = useCallback(() => {
+		if (supportContactLoadedRef.current) {
+			return
+		}
+		void fetch(PUBLIC_SUPPORT_CONTACT_URL, { credentials: 'same-origin' })
+			.then((res) => (res.ok ? res.json() : null))
+			.then((data: { email?: string | null; phone?: string | null } | null) => {
+				if (!data) {
+					return
+				}
+				supportContactLoadedRef.current = true
+				if (data.email?.trim()) {
+					setSupportEmail(data.email.trim())
+				}
+				if (data.phone?.trim()) {
+					setSupportPhone(data.phone.trim())
+				}
+			})
+			.catch(() => {})
+	}, [])
+
 	if (isMobile) return null
+
+	const telHref = supportPhone.replace(/\s/g, '')
 
 	return (
 		<>
-			<Popover.Root>
+			<Popover.Root onOpenChange={(open) => open && loadSupportContact()}>
 				<Popover.Trigger>
 					<div className={styles.info}>?</div>
 				</Popover.Trigger>
@@ -39,11 +65,11 @@ export const Info: FC<InfoProps> = (props) => {
 						<h3 className={styles.title}>Need help?</h3>
 
 						<div>
-							<a className={styles.link} href={`tel:${PHONE}`}>
-								{PHONE}
+							<a className={styles.link} href={`tel:${telHref}`}>
+								{supportPhone}
 							</a>
-							<a className={styles.link} href={`mailto:${EMAIL}`}>
-								{EMAIL}
+							<a className={styles.link} href={`mailto:${supportEmail}`}>
+								{supportEmail}
 							</a>
 						</div>
 					</div>

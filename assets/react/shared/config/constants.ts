@@ -1,5 +1,8 @@
+/** Fallback if /api/public/support-contact is empty or fails */
 export const EMAIL = 'support@hevvi.app'
 export const PHONE = '+37122334455'
+
+export const PUBLIC_SUPPORT_CONTACT_URL = '/api/public/support-contact'
 
 export const EMPTY_STRING = '—'
 

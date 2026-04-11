@@ -127,6 +127,9 @@ services:
         arguments:
             $publicDir: '%kernel.project_dir%/public'
 
+    App\Controller\Api\PublicSupportContactController:
+        arguments:
+            $supportManagerEmail: '%app.support_contact.manager_email%'
 
     # Email Services
     App\Service\Email\Contract\EmailServiceInterface:
