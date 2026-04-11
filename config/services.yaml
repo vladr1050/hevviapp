@@ -131,4 +131,5 @@ services:
             $mailjetApiSecret: '%mailjet_api_secret%'
             $senderEmail:      '%mailjet_sender_email%'
             $senderName:       '%mailjet_sender_name%'
+            $logger:           '@monolog.logger.mail'
             $enabled:          '%mailjet_enabled%'

@@ -56,10 +56,11 @@ class MailjetEmailService implements EmailServiceInterface
         ?string $textContent = null
     ): bool {
         if (!$this->enabled) {
-            $this->logger->info('Email sending is disabled', [
+            $this->logger->notice('Mailjet: sending disabled (MAILJET_ENABLED=false); email not sent to provider', [
                 'to' => $to,
                 'subject' => $subject,
             ]);
+
             return true;
         }
 
@@ -103,6 +104,7 @@ class MailjetEmailService implements EmailServiceInterface
                 'subject' => $subject,
                 'status' => $response->getStatus(),
                 'reason' => $response->getReasonPhrase(),
+                'mailjet_body' => $response->getBody(),
             ]);
             return false;
         } catch (\Exception $e) {
@@ -124,7 +126,7 @@ class MailjetEmailService implements EmailServiceInterface
         string $pdfBinary,
     ): bool {
         if (!$this->enabled) {
-            $this->logger->info('Email sending is disabled (attachment skipped)', [
+            $this->logger->notice('Mailjet: sending disabled (MAILJET_ENABLED=false); PDF email not sent to provider', [
                 'to' => $to,
                 'subject' => $subject,
             ]);
@@ -172,6 +174,8 @@ class MailjetEmailService implements EmailServiceInterface
             $this->logger->error('Mailjet PDF email failed', [
                 'to' => $to,
                 'status' => $response->getStatus(),
+                'reason' => $response->getReasonPhrase(),
+                'mailjet_body' => $response->getBody(),
             ]);
 
             return false;
