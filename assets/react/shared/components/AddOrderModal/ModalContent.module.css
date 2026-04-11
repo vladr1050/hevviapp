@@ -530,7 +530,8 @@
 					@apply grid grid-cols-[20px,1fr,20px] gap-5 w-full;
 
 					& .routeWrapper {
-						@apply flex items-center;
+						/* Do not stretch with the inputs column when a geo error row appears below To */
+						@apply flex justify-center self-start;
 
 						& .route {
 							@apply h-[80px] w-[3px] bg-black relative;
@@ -555,7 +556,8 @@
 					}
 
 					& .inputs {
-						@apply flex flex-col justify-between gap-5 w-full min-w-0;
+						/* Stack from top; avoid justify-between so a third row (geo error) does not space out From/To */
+						@apply flex flex-col gap-5 w-full min-w-0;
 
 						& .input {
 							@apply flex items-center gap-1 w-full min-w-0;
