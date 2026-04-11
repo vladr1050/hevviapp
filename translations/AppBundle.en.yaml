@@ -26,6 +26,7 @@ menu:
     order_history:     Order History
     order_assignments: Order Assignments
     settings:          Settings
+    appsettings:       Map & address settings
     companies:         Companies
     service_areas:     Service Areas
     matrix_items:      Matrix Items
@@ -223,6 +224,15 @@ show:
     label_notification_error:              Error message
     label_notification_provider_message_id: Provider message ID
     label_notification_sent_at:            Sent at
+    label_appsettings_restrict: Restrict geography
+    label_appsettings_country_codes: Country codes
+    label_appsettings_bbox_min_lat: BBox min latitude
+    label_appsettings_bbox_max_lat: BBox max latitude
+    label_appsettings_bbox_min_lon: BBox min longitude
+    label_appsettings_bbox_max_lon: BBox max longitude
+    label_appsettings_default_lat: Default map latitude
+    label_appsettings_default_lng: Default map longitude
+    label_appsettings_default_zoom: Default map zoom
 
 
 form:
@@ -348,6 +358,22 @@ form:
     label_notification_send_once:          Send only once per order
     label_notification_is_active:          Rule is active
     group_notification_rule:               Notification rule
+    group_appsettings_geocoding: Address search & geocoding
+    group_appsettings_bbox: Optional bounding box (map + validation)
+    group_appsettings_map: Default map view (optional overrides)
+    label_appsettings_restrict: Restrict pickup/delivery geography
+    help_appsettings_restrict: When enabled, coordinates must stay within the bounding box (if fully set) and/or allowed country codes (if set).
+    label_appsettings_country_codes: Allowed country codes (Nominatim)
+    help_appsettings_country_codes: 'Comma-separated ISO codes, e.g. lv,lt,ee. Used for search bias and server-side checks when coordinates are present.'
+    label_appsettings_bbox_min_lat: Bounding box min latitude
+    label_appsettings_bbox_max_lat: Bounding box max latitude
+    label_appsettings_bbox_min_lon: Bounding box min longitude
+    label_appsettings_bbox_max_lon: Bounding box max longitude
+    help_appsettings_bbox: Leave all four empty to skip bbox checks. Used for Leaflet maxBounds and validation.
+    label_appsettings_default_lat: Default map center latitude
+    label_appsettings_default_lng: Default map center longitude
+    label_appsettings_default_zoom: Default map zoom
+    help_appsettings_map_defaults: If empty, values from MAP_DEFAULT_* environment variables are used.
 
 
 # Cargo Type choices
@@ -584,5 +610,11 @@ order:
     cancel_reason_1: "No trucks available"
     cancel_reason_2: "Wrong price calculation"
     cancel_reason_other: "Other"
+
+api:
+    order:
+        coordinates_outside_bounding_box: Pickup or delivery coordinates are outside the allowed map area.
+        coordinates_outside_allowed_countries: Pickup or delivery location is outside the allowed countries.
+        coordinates_country_check_failed: Could not verify the country for the selected coordinates. Try again later.
 
 

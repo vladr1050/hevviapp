@@ -49,6 +49,8 @@ sonata_admin:
                 label_catalogue: AppBundle
                 icon:            '<i class="fas fa-cog"></i>'
                 items:
+                    -   route: admin_app_appsettings_list
+                        label: menu.appsettings
                     -   route: admin_app_billingcompany_list
                         label: menu.companies
             service_areas:
@@ -208,6 +210,19 @@ services:
                 label:                     menu.matrix_items
                 label_translator_strategy: sonata.admin.label.strategy.underscore
                 show_in_dashboard:         false
+                show_in_roles_matrix:      false
+        calls:
+            - [ setTranslationDomain, [ 'AppBundle' ] ]
+
+    App\Admin\AppSettingsAdmin:
+        tags:
+            -   name:                      sonata.admin
+                code:                      ~
+                model_class:               App\Entity\AppSettings
+                controller:                App\Controller\Admin\AppSettingsAdminController
+                manager_type:              orm
+                label:                     menu.appsettings
+                label_translator_strategy: sonata.admin.label.strategy.underscore
                 show_in_roles_matrix:      false
         calls:
             - [ setTranslationDomain, [ 'AppBundle' ] ]

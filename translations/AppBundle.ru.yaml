@@ -26,6 +26,7 @@ menu:
     order_history:     История заказов
     order_assignments: Назначения заказов
     settings:          Настройки
+    appsettings:       Карта и адреса
     companies:         Компании
     service_areas:     Зоны обслуживания
     matrix_items:      Элементы матрицы
@@ -210,6 +211,15 @@ show:
     label_notification_error:            Сообщение об ошибке
     label_notification_provider_message_id: ID сообщения у провайдера
     label_notification_sent_at:            Время отправки
+    label_appsettings_restrict: Ограничение по географии
+    label_appsettings_country_codes: Коды стран
+    label_appsettings_bbox_min_lat: BBox мин. широта
+    label_appsettings_bbox_max_lat: BBox макс. широта
+    label_appsettings_bbox_min_lon: BBox мин. долгота
+    label_appsettings_bbox_max_lon: BBox макс. долгота
+    label_appsettings_default_lat: Центр карты (широта)
+    label_appsettings_default_lng: Центр карты (долгота)
+    label_appsettings_default_zoom: Масштаб карты по умолчанию
 
 form:
     label_order_number:        Номер заказа
@@ -327,6 +337,22 @@ form:
     label_notification_send_once:          Только один раз на заказ
     label_notification_is_active:          Правило активно
     group_notification_rule:               Правило уведомления
+    group_appsettings_geocoding: Поиск адреса и геокодирование
+    group_appsettings_bbox: Ограничивающий прямоугольник (карта и проверка)
+    group_appsettings_map: Карта по умолчанию (необязательные переопределения)
+    label_appsettings_restrict: Ограничить географию забора/доставки
+    help_appsettings_restrict: Если включено, координаты должны попадать в прямоугольник (если задан полностью) и/или в разрешённые коды стран (если заданы).
+    label_appsettings_country_codes: Разрешённые коды стран (Nominatim)
+    help_appsettings_country_codes: 'Коды ISO через запятую, напр. lv,lt,ee. Используются для поиска и серверной проверки при наличии координат.'
+    label_appsettings_bbox_min_lat: Мин. широта прямоугольника
+    label_appsettings_bbox_max_lat: Макс. широта прямоугольника
+    label_appsettings_bbox_min_lon: Мин. долгота прямоугольника
+    label_appsettings_bbox_max_lon: Макс. долгота прямоугольника
+    help_appsettings_bbox: Оставьте все четыре пустыми, чтобы не проверять bbox. Используется для maxBounds в Leaflet и валидации.
+    label_appsettings_default_lat: Центр карты (широта)
+    label_appsettings_default_lng: Центр карты (долгота)
+    label_appsettings_default_zoom: Масштаб по умолчанию
+    help_appsettings_map_defaults: Если пусто — берутся переменные окружения MAP_DEFAULT_*.
 
 # Cargo Type choices
 PALLET:    Паллет
@@ -522,3 +548,10 @@ order:
     cancel_reason_1:     "Нет доступных грузовиков"
     cancel_reason_2:     "Неверный расчёт стоимости"
     cancel_reason_other: "Прочее"
+
+api:
+    order:
+        coordinates_outside_bounding_box: Координаты забора или доставки вне разрешённой области карты.
+        coordinates_outside_allowed_countries: Точка забора или доставки вне разрешённых стран.
+        coordinates_country_check_failed: Не удалось проверить страну для выбранных координат. Попробуйте позже.
+

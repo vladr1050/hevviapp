@@ -53,6 +53,11 @@ services:
         tags:
             - { name: twig.extension }
 
+    App\Service\GeographicOrderCoordinatesValidator:
+        arguments:
+            $nominatimUrl: '%app.map.nominatim_api_url%'
+            $nominatimUserAgent: '%app.map.user_agent%'
+
     App\Twig\OrderStatusCounterExtension:
         arguments:
             - '@App\Service\OrderStatusCounterService'

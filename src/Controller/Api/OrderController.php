@@ -24,6 +24,7 @@ use App\Entity\OrderAttachment;
 use App\Entity\User;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Repository\OrderRepository;
+use App\Service\GeographicOrderCoordinatesValidator;
 use App\Service\OrderAttachmentUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,6 +41,7 @@ class OrderController extends AbstractController
         private readonly OrderRepository         $orderRepository,
         private readonly OrderAttachmentUploader $attachmentUploader,
         private readonly TranslatorInterface     $translator,
+        private readonly GeographicOrderCoordinatesValidator $coordinatesValidator,
     ) {
     }
 
@@ -152,6 +154,20 @@ class OrderController extends AbstractController
         $order->setStackable((bool) ($data['stackable'] ?? false));
         $order->setManipulatorNeeded((bool) ($data['manipulatorNeeded'] ?? false));
 
+        $locale = $user->getLocale() ?? 'en';
+        $coordErrorKey = $this->coordinatesValidator->validateOrderCoordinates(
+            $order->getPickupLatitude(),
+            $order->getPickupLongitude(),
+            $order->getDropoutLatitude(),
+            $order->getDropoutLongitude(),
+        );
+        if ($coordErrorKey !== null) {
+            return $this->json(
+                ['error' => $this->translator->trans($coordErrorKey, [], 'AppBundle', $locale)],
+                JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
         // Build each Cargo and attach via addCargo() so the in-memory collection
         // is populated before postPersist fires (the offer calculator iterates
         // $order->getCargo() to compute total weight across all cargo items).
@@ -255,6 +271,20 @@ class OrderController extends AbstractController
 
         // Обновляем поля заказа
         $this->applyOrderFields($order, $data);
+
+        $locale = $user->getLocale() ?? 'en';
+        $coordErrorKey = $this->coordinatesValidator->validateOrderCoordinates(
+            $order->getPickupLatitude(),
+            $order->getPickupLongitude(),
+            $order->getDropoutLatitude(),
+            $order->getDropoutLongitude(),
+        );
+        if ($coordErrorKey !== null) {
+            return $this->json(
+                ['error' => $this->translator->trans($coordErrorKey, [], 'AppBundle', $locale)],
+                JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
 
         // Заменяем коллекцию груза целиком
         foreach ($order->getCargo()->toArray() as $existingCargo) {

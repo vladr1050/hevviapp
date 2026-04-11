@@ -169,3 +169,6 @@ export const MAX_QUANTITY = 100
 
 export const DEFAULT_LAT = 56.946845
 export const DEFAULT_LNG = 24.106075
+
+/** Public JSON for map defaults and geographic restrictions (Sonata-configurable). */
+export const PUBLIC_MAP_SETTINGS_URL = '/api/public/map-settings'
