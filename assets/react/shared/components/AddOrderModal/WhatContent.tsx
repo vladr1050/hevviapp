@@ -132,6 +132,24 @@ const Item: FC<{
 
 	const [error, setError] = useState(false)
 
+	const commitItem = () => {
+		if (!item.name.length) {
+			return setError(true)
+		}
+		setError(false)
+
+		if (isNew) {
+			append?.(item)
+			onClose?.()
+		} else {
+			if (typeof idx !== 'undefined') {
+				update?.(idx, item)
+			}
+
+			setExpand(false)
+		}
+	}
+
 	return (
 		<div className={styles.item}>
 			<div className={styles.headerItem}>
@@ -196,6 +214,7 @@ const Item: FC<{
 
 					{!isNew && (
 						<button
+							type="button"
 							className={styles.headerButton}
 							onClick={() => {
 								if (expand && !item.name.length) {
@@ -217,6 +236,7 @@ const Item: FC<{
 					<div className="w-[1px] h-7 bg-black/30"></div>
 
 					<button
+						type="button"
 						className={cn(styles.headerButton, styles.red)}
 						onClick={() => {
 							if (isNew) return onClose?.()
@@ -243,6 +263,13 @@ const Item: FC<{
 								value={item.name}
 								placeholder="Add title"
 								onChange={(e) => setItem((v) => ({ ...v, name: e.target.value }))}
+								onKeyDown={(e) => {
+									if (e.key !== 'Enter') {
+										return
+									}
+									e.preventDefault()
+									commitItem()
+								}}
 							/>
 						</div>
 
@@ -339,27 +366,7 @@ const Item: FC<{
 								</div>
 							</div>
 
-							<Button
-								type="button"
-								onClick={() => {
-									if (!item.name.length) {
-										return setError(true)
-									}
-									setError(false)
-
-									if (isNew) {
-										append?.(item)
-										onClose?.()
-									} else {
-										if (typeof idx !== 'undefined') {
-											update?.(idx, item)
-										}
-
-										setExpand(false)
-									}
-								}}
-								className={styles.addButton}
-							>
+							<Button type="button" onClick={commitItem} className={styles.addButton}>
 								{isNew ? '+ Add' : 'Save'}
 							</Button>
 						</div>
