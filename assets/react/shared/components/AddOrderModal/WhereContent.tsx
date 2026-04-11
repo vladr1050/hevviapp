@@ -366,37 +366,37 @@ export const WhereContent: FC<WhereContentProps> = ({
 								)}
 							/>
 						</div>
-					</div>
 
-					<div className="flex flex-col gap-1 w-full pl-14">
-						<span className="text-[10px] font-medium text-black/60">Map: click to set</span>
-						<div className="flex gap-2">
-							<button
-								type="button"
-								className={cn(
-									'text-xs font-medium rounded-full px-3 py-1 border transition-colors',
-									mapPickTarget === 'from'
-										? 'bg-primary text-white border-primary'
-										: 'bg-white text-black/70 border-black/10'
-								)}
-								onClick={() => setMapPickTarget('from')}
-							>
-								From
-							</button>
-							<button
-								type="button"
-								className={cn(
-									'text-xs font-medium rounded-full px-3 py-1 border transition-colors',
-									mapPickTarget === 'to'
-										? 'bg-primary text-white border-primary'
-										: 'bg-white text-black/70 border-black/10'
-								)}
-								onClick={() => setMapPickTarget('to')}
-							>
-								To
-							</button>
+						<div className={styles.whereMapPick}>
+							<span className="text-[10px] font-medium text-black/60">Map: click to set</span>
+							<div className="flex flex-wrap gap-2">
+								<button
+									type="button"
+									className={cn(
+										'text-xs font-medium rounded-full px-3 py-1 border transition-colors shrink-0',
+										mapPickTarget === 'from'
+											? 'bg-primary text-white border-primary'
+											: 'bg-white text-black/70 border-black/10'
+									)}
+									onClick={() => setMapPickTarget('from')}
+								>
+									From
+								</button>
+								<button
+									type="button"
+									className={cn(
+										'text-xs font-medium rounded-full px-3 py-1 border transition-colors shrink-0',
+										mapPickTarget === 'to'
+											? 'bg-primary text-white border-primary'
+											: 'bg-white text-black/70 border-black/10'
+									)}
+									onClick={() => setMapPickTarget('to')}
+								>
+									To
+								</button>
+							</div>
+							{geoHint ? <p className={styles.whereGeoHint}>{geoHint}</p> : null}
 						</div>
-						{geoHint ? <p className="text-xs text-red-600 font-medium">{geoHint}</p> : null}
 					</div>
 
 					{!watch('from') || !watch('to') ? (

@@ -555,13 +555,21 @@
 					}
 
 					& .inputs {
-						@apply flex flex-col justify-between gap-5 w-full;
+						@apply flex flex-col justify-between gap-5 w-full min-w-0;
 
 						& .input {
-							@apply flex items-center gap-1 w-full;
+							@apply flex items-center gap-1 w-full min-w-0;
 
 							& span {
-								@apply font-medium text-xs w-12;
+								@apply font-medium text-xs w-12 shrink-0;
+							}
+						}
+
+						& .whereMapPick {
+							@apply flex flex-col gap-1 w-full min-w-0;
+
+							& .whereGeoHint {
+								@apply text-xs font-medium text-red-600 break-words whitespace-normal;
 							}
 						}
 					}
