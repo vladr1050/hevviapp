@@ -565,8 +565,8 @@
 							}
 						}
 
-						& .whereMapPick {
-							@apply flex flex-col gap-1 w-full min-w-0;
+						& .whereGeoHintRow {
+							@apply w-full min-w-0;
 
 							& .whereGeoHint {
 								@apply text-xs font-medium text-red-600 break-words whitespace-normal;

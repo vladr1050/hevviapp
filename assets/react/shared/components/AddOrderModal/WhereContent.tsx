@@ -222,7 +222,8 @@ export const WhereContent: FC<WhereContentProps> = ({
 	const [toMarkerPos, setToMarkerPos] = useState<{ lat: number; lng: number } | null>(
 		defaultPosition?.to || null
 	)
-	const [mapPickTarget, setMapPickTarget] = useState<MapPickTarget>('from')
+	/** Which address field last had focus — map clicks apply to this field. */
+	const mapClickTargetRef = useRef<MapPickTarget>('from')
 	const [geoHint, setGeoHint] = useState<string | null>(null)
 
 	useEffect(() => {
@@ -256,22 +257,22 @@ export const WhereContent: FC<WhereContentProps> = ({
 	const applyFromMap = useCallback(
 		async (lat: number, lng: number, target: MapPickTarget) => {
 			setGeoHint(null)
-		const bboxErr = validateBbox(settings, lat, lng)
-		if (bboxErr) {
-			setGeoHint(bboxErr)
-			return
-		}
-		const rev = await reverseGeocode(settings.nominatimApiUrl, lat, lng)
-		if (!rev) {
-			setGeoHint('Could not resolve address for this point. Try again later.')
-			return
-		}
-		const addrText = formatNominatimAddress(rev)
-		const countryErr = validateCountryCodes(settings, rev.address ?? null)
-		if (countryErr) {
-			setGeoHint(countryErr)
-			return
-		}
+			const bboxErr = validateBbox(settings, lat, lng)
+			if (bboxErr) {
+				setGeoHint(bboxErr)
+				return
+			}
+			const rev = await reverseGeocode(settings.nominatimApiUrl, lat, lng)
+			if (!rev) {
+				setGeoHint('Could not resolve address for this point. Try again later.')
+				return
+			}
+			const addrText = formatNominatimAddress(rev)
+			const countryErr = validateCountryCodes(settings, rev.address ?? null)
+			if (countryErr) {
+				setGeoHint(countryErr)
+				return
+			}
 			if (target === 'from') {
 				setValue('from', addrText)
 				setValue('pickupLatitude', lat)
@@ -324,6 +325,9 @@ export const WhereContent: FC<WhereContentProps> = ({
 										value={value}
 										onChange={onChange}
 										onGeoHint={setGeoHint}
+										onAddressFieldFocus={() => {
+											mapClickTargetRef.current = 'from'
+										}}
 										onSelect={(_addr, lat, lng) => {
 											setValue('pickupLatitude', lat)
 											setValue('pickupLongitude', lng)
@@ -351,6 +355,9 @@ export const WhereContent: FC<WhereContentProps> = ({
 										value={value}
 										onChange={onChange}
 										onGeoHint={setGeoHint}
+										onAddressFieldFocus={() => {
+											mapClickTargetRef.current = 'to'
+										}}
 										onSelect={(_addr, lat, lng) => {
 											setValue('dropoutLatitude', lat)
 											setValue('dropoutLongitude', lng)
@@ -367,36 +374,11 @@ export const WhereContent: FC<WhereContentProps> = ({
 							/>
 						</div>
 
-						<div className={styles.whereMapPick}>
-							<span className="text-[10px] font-medium text-black/60">Map: click to set</span>
-							<div className="flex flex-wrap gap-2">
-								<button
-									type="button"
-									className={cn(
-										'text-xs font-medium rounded-full px-3 py-1 border transition-colors shrink-0',
-										mapPickTarget === 'from'
-											? 'bg-primary text-white border-primary'
-											: 'bg-white text-black/70 border-black/10'
-									)}
-									onClick={() => setMapPickTarget('from')}
-								>
-									From
-								</button>
-								<button
-									type="button"
-									className={cn(
-										'text-xs font-medium rounded-full px-3 py-1 border transition-colors shrink-0',
-										mapPickTarget === 'to'
-											? 'bg-primary text-white border-primary'
-											: 'bg-white text-black/70 border-black/10'
-									)}
-									onClick={() => setMapPickTarget('to')}
-								>
-									To
-								</button>
+						{geoHint ? (
+							<div className={styles.whereGeoHintRow}>
+								<p className={styles.whereGeoHint}>{geoHint}</p>
 							</div>
-							{geoHint ? <p className={styles.whereGeoHint}>{geoHint}</p> : null}
-						</div>
+						) : null}
 					</div>
 
 					{!watch('from') || !watch('to') ? (
@@ -461,7 +443,7 @@ export const WhereContent: FC<WhereContentProps> = ({
 						<MapController fromPos={fromMarkerPos} toPos={toMarkerPos} />
 						<MapClickHandler
 							onClick={(lat, lng) => {
-								void applyFromMap(lat, lng, mapPickTarget)
+								void applyFromMap(lat, lng, mapClickTargetRef.current)
 							}}
 						/>
 						{fromMarkerPos && (
@@ -509,6 +491,8 @@ interface AddressSearchInputProps {
 	onSelect: (address: string, lat: number, lng: number) => void
 	onClear?: () => void
 	onGeoHint: (msg: string | null) => void
+	/** Map clicks apply to this field while it is (or was last) focused. */
+	onAddressFieldFocus?: () => void
 	placeholder: string
 	disabled?: boolean
 }
@@ -520,6 +504,7 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 	onSelect,
 	onClear,
 	onGeoHint,
+	onAddressFieldFocus,
 	placeholder,
 	disabled,
 }) => {
@@ -621,7 +606,12 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 							handleSelect(suggestions[0])
 						}
 					}}
-					onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
+					onFocus={() => {
+						onAddressFieldFocus?.()
+						if (suggestions.length > 0) {
+							setShowSuggestions(true)
+						}
+					}}
 					onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
 					placeholder={placeholder}
 					disabled={disabled}
