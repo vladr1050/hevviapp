@@ -17,6 +17,7 @@
 
 namespace FRPC\SonataAuthorization\Admin;
 
+use App\Entity\Manager;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollectionInterface;
@@ -167,5 +168,32 @@ class ManagerAdmin extends BaseAdmin
             ])
             ->end()
             ->end();
+    }
+
+    protected function prePersist(object $object): void
+    {
+        $this->ensureBaselineManagerRoles($object);
+    }
+
+    protected function preUpdate(object $object): void
+    {
+        $this->ensureBaselineManagerRoles($object);
+    }
+
+    /**
+     * RolesMatrixType excludes ROLE_USER from the form; submitting the manager form
+     * otherwise replaces {@see Manager::roles} with only matrix choices and drops ROLE_USER,
+     * which breaks Symfony voters (AccessDeniedException: missing ROLE_USER).
+     */
+    private function ensureBaselineManagerRoles(object $object): void
+    {
+        if (!$object instanceof Manager) {
+            return;
+        }
+        $roles = $object->getRoles();
+        if (!in_array('ROLE_USER', $roles, true)) {
+            $roles[] = 'ROLE_USER';
+            $object->setRoles(array_values(array_unique($roles)));
+        }
     }
 }

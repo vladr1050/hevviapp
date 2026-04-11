@@ -313,7 +313,7 @@ export const WhereContent: FC<WhereContentProps> = ({
 						<div className={styles.route} />
 					</div>
 
-					<div className={styles.inputs}>
+					<div className={styles.whereFieldsOnly}>
 						<div className={styles.input}>
 							<span>From</span>
 							<Controller
@@ -373,16 +373,10 @@ export const WhereContent: FC<WhereContentProps> = ({
 								)}
 							/>
 						</div>
-
-						{geoHint ? (
-							<div className={styles.whereGeoHintRow}>
-								<p className={styles.whereGeoHint}>{geoHint}</p>
-							</div>
-						) : null}
 					</div>
 
 					{!watch('from') || !watch('to') ? (
-						<div />
+						<div className={styles.whereSwapPlaceholder} />
 					) : (
 						<div className={styles.buttonWrapper}>
 							<button
@@ -416,6 +410,12 @@ export const WhereContent: FC<WhereContentProps> = ({
 							</button>
 						</div>
 					)}
+
+					{geoHint ? (
+						<div className={styles.whereGeoHintRow}>
+							<p className={styles.whereGeoHint}>{geoHint}</p>
+						</div>
+					) : null}
 				</div>
 
 				<div />

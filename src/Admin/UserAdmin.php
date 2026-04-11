@@ -18,6 +18,7 @@
 namespace App\Admin;
 
 use App\Entity\BaseDBO;
+use App\Entity\User;
 use Doctrine\DBAL\Types\TextType;
 use FRPC\SonataAuthorization\Admin\BaseAdmin;
 use FRPC\SonataAuthorization\Form\Type\PlainPasswordType;
@@ -133,5 +134,31 @@ class UserAdmin extends BaseAdmin
     private function getStateChoicesFromInt(int $state): ?string
     {
         return array_find(BaseDBO::BASE_STATE, static fn($bit) => ($state & $bit) === $bit);
+    }
+
+    protected function prePersist(object $object): void
+    {
+        $this->ensureSenderRole($object);
+    }
+
+    protected function preUpdate(object $object): void
+    {
+        $this->ensureSenderRole($object);
+    }
+
+    /**
+     * Public pages under /user/ require ROLE_USER (security access_control). If roles were
+     * cleared in DB or by a future form field, restore the baseline.
+     */
+    private function ensureSenderRole(object $object): void
+    {
+        if (!$object instanceof User) {
+            return;
+        }
+        $roles = $object->getRoles();
+        if (!in_array('ROLE_USER', $roles, true)) {
+            $roles[] = 'ROLE_USER';
+            $object->setRoles(array_values(array_unique($roles)));
+        }
     }
 }

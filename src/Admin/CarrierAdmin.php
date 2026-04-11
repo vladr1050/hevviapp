@@ -18,6 +18,7 @@
 namespace App\Admin;
 
 use App\Entity\BaseDBO;
+use App\Entity\Carrier;
 use Doctrine\DBAL\Types\TextType;
 use FRPC\SonataAuthorization\Admin\BaseAdmin;
 use FRPC\SonataAuthorization\Form\Type\PlainPasswordType;
@@ -136,5 +137,28 @@ class CarrierAdmin extends BaseAdmin
     private function getStateChoicesFromInt(int $state): ?string
     {
         return array_find(BaseDBO::BASE_STATE, static fn($bit) => ($state & $bit) === $bit);
+    }
+
+    protected function prePersist(object $object): void
+    {
+        $this->ensureCarrierRole($object);
+    }
+
+    protected function preUpdate(object $object): void
+    {
+        $this->ensureCarrierRole($object);
+    }
+
+    /** /carrier/* requires ROLE_CARRIER in the JWT. */
+    private function ensureCarrierRole(object $object): void
+    {
+        if (!$object instanceof Carrier) {
+            return;
+        }
+        $roles = $object->getRoles();
+        if (!in_array('ROLE_CARRIER', $roles, true)) {
+            $roles[] = 'ROLE_CARRIER';
+            $object->setRoles(array_values(array_unique($roles)));
+        }
     }
 }
