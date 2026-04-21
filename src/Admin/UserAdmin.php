@@ -69,6 +69,8 @@ class UserAdmin extends BaseAdmin
             ->add('companyRegistrationNumber')
             ->add('companyAddress')
             ->add('vatNumber')
+            ->add('iban')
+            ->add('bankAccountHolder')
             ->add('locale')
             ->add('state', TextType::class, [
                 'sortable' => false,
@@ -103,6 +105,19 @@ class UserAdmin extends BaseAdmin
             ->add('companyRegistrationNumber')
             ->add('companyAddress')
             ->add('vatNumber', null, [
+                'required' => false,
+            ])
+            ->end()
+            ->with('payment', [
+                'class' => 'col-md-12',
+            ])
+            ->add('iban', null, [
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 34,
+                ],
+            ])
+            ->add('bankAccountHolder', null, [
                 'required' => false,
             ])
             ->end()

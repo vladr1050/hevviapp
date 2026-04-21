@@ -51,6 +51,12 @@ class User extends BaseSecurityDBO
     #[ORM\Column(length: 64, nullable: true)]
     private ?string $vatNumber = null;
 
+    #[ORM\Column(length: 34, nullable: true)]
+    private ?string $iban = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $bankAccountHolder = null;
+
     public function __construct()
     {
         $this->orders = new ArrayCollection();
@@ -214,6 +220,36 @@ class User extends BaseSecurityDBO
     public function setVatNumber(?string $vatNumber): static
     {
         $this->vatNumber = $vatNumber;
+
+        return $this;
+    }
+
+    public function getIban(): ?string
+    {
+        return $this->iban;
+    }
+
+    public function setIban(?string $iban): static
+    {
+        if ($iban === null || trim($iban) === '') {
+            $this->iban = null;
+
+            return $this;
+        }
+        $normalized = strtoupper((string) preg_replace('/\s+/', '', $iban));
+        $this->iban = $normalized !== '' ? $normalized : null;
+
+        return $this;
+    }
+
+    public function getBankAccountHolder(): ?string
+    {
+        return $this->bankAccountHolder;
+    }
+
+    public function setBankAccountHolder(?string $bankAccountHolder): static
+    {
+        $this->bankAccountHolder = $bankAccountHolder;
 
         return $this;
     }

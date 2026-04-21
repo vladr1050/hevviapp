@@ -76,6 +76,8 @@ class CarrierAdmin extends BaseAdmin
             ->add('address')
             ->add('registrationNumber')
             ->add('vatNumber')
+            ->add('iban')
+            ->add('bankAccountHolder')
             ->add('locale')
             ->add('state', TextType::class, [
                 'sortable' => false,
@@ -106,6 +108,19 @@ class CarrierAdmin extends BaseAdmin
             ->add('address')
             ->add('registrationNumber')
             ->add('vatNumber', null, [
+                'required' => false,
+            ])
+            ->end()
+            ->with('payment', [
+                'class' => 'col-md-12',
+            ])
+            ->add('iban', null, [
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 34,
+                ],
+            ])
+            ->add('bankAccountHolder', null, [
                 'required' => false,
             ])
             ->end()

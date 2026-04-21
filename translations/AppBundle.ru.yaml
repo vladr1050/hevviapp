@@ -193,6 +193,8 @@ show:
     label_company_registration_number: Рег. номер компании
     label_company_address:    Адрес компании
     label_vat_number:         Номер НДС (VAT)
+    label_iban:               IBAN
+    label_bank_account_holder: Получатель платежа (как в банке)
     label_notification_rule_name:          Название правила
     label_notification_rule_description:   Описание
     label_notification_event_key:          Ключ события
@@ -234,6 +236,7 @@ form:
     group_tabs_matrix_items:   Элементы матрицы
     group_profile:             Профиль
     group_contacts:            Контакты
+    group_payment:             Банковский счёт (выплаты)
     group_general:             Основное
     group_order_info:          Информация о заказе
     group_addresses:           Адреса
@@ -301,6 +304,8 @@ form:
     label_fee:                 Сумма комиссии
     label_vat:                 Сумма НДС
     label_vat_number:          Номер НДС (VAT)
+    label_iban:                IBAN
+    label_bank_account_holder: Получатель платежа (как в банке)
     label_platform_fee_percent: Комиссия платформы (%)
     label_invoice_number:       № счёта
     label_invoice_status:       Статус счёта

@@ -206,6 +206,8 @@ show:
     label_company_registration_number: Company Registration Number
     label_company_address:             Company Address
     label_vat_number:                  VAT number
+    label_iban:                        IBAN
+    label_bank_account_holder:         Account holder (as on bank records)
     label_notification_rule_name:          Rule name
     label_notification_rule_description:   Description
     label_notification_event_key:          Event key
@@ -248,6 +250,7 @@ form:
     group_tabs_matrix_items:           Matrix Items
     group_profile:                     Profile
     group_contacts:                    Contact
+    group_payment:                     Bank account (payments)
     group_general:                     General
     group_order_info:                  Order Information
     group_addresses:                   Addresses
@@ -328,6 +331,8 @@ form:
     label_company_registration_number: Company Registration Number
     label_company_address:             Company Address
     label_vat_number:                  VAT number
+    label_iban:                        IBAN
+    label_bank_account_holder:         Account holder (as on bank records)
     label_platform_fee_percent:        Platform fee (%)
     label_invoice_number:              Invoice №
     label_invoice_status:              Invoice status
