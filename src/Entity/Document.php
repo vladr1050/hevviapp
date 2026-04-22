@@ -17,8 +17,13 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'documents')]
 #[ORM\UniqueConstraint(name: 'uniq_documents_order_type', columns: ['order_id', 'document_type'])]
 #[ORM\UniqueConstraint(name: 'uniq_documents_document_number', columns: ['document_number'])]
-#[ORM\Index(columns: ['document_type'])]
-#[ORM\Index(columns: ['status'])]
+#[ORM\Index(name: 'IDX_A2B072888D9F6D38', columns: ['order_id'])]
+#[ORM\Index(name: 'IDX_A2B072888D406B3', columns: ['related_document_id'])]
+#[ORM\Index(name: 'IDX_A2B07288C31F441B', columns: ['sender_company_id'])]
+#[ORM\Index(name: 'IDX_A2B07288D43F1C1F', columns: ['receiver_company_id'])]
+#[ORM\Index(name: 'IDX_A2B07288E78E678', columns: ['carrier_company_id'])]
+#[ORM\Index(name: 'IDX_A2B072882B6ADBBA', columns: ['document_type'])]
+#[ORM\Index(name: 'IDX_A2B072887B00651C', columns: ['status'])]
 #[ORM\HasLifecycleCallbacks]
 class Document extends BaseUUID
 {
@@ -60,7 +65,7 @@ class Document extends BaseUUID
     #[ORM\Column(nullable: true)]
     private ?int $amountTotal = null;
 
-    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: false)]
     private ?\DateTimeImmutable $issuedAt = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]

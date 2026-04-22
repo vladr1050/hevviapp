@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: NotificationRuleRepository::class)]
 #[ORM\Table(name: 'notification_rule')]
+#[ORM\Index(name: 'idx_notification_rule_event_key', columns: ['event_key'])]
 class NotificationRule extends BaseUUID
 {
     #[ORM\Column(length: 255)]
