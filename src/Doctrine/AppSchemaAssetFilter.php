@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Doctrine;
 
 use Doctrine\DBAL\Schema\AbstractAsset;
-use Doctrine\DBAL\Schema\Name\NamedObject;
+use Doctrine\DBAL\Schema\NamedObject;
 
 /**
  * Excludes PostGIS / manual / Messenger assets from schema introspection comparison.
