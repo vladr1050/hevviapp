@@ -917,6 +917,21 @@
             width: 100%;
         }
 
+        /* Maksājuma paziņojums: viena rinda — veids | saņēmējs | IBAN | termiņš */
+        .payment-info-row--payment-notice {
+            flex-direction: row;
+            flex-wrap: nowrap;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .payment-info-row--payment-notice .payment-info-col {
+            flex: 1 1 0;
+            min-width: 0;
+            width: auto;
+        }
+
         .payment-info-col {
             display: flex;
             flex-direction: column;
@@ -1483,25 +1498,19 @@
                 </div>
                 <div class="payment-content">
                     {% if document_type|default('') == 'PAYMENT_NOTICE' %}
-                        <div class="payment-info-row">
+                        <div class="payment-info-row payment-info-row--payment-notice">
                             <div class="payment-info-col">
                                 <div class="field-label">Maksājuma veids:</div>
                                 <div class="field-value">Bankas pārskaitījums</div>
                             </div>
-                        </div>
-                        <div class="payment-info-row">
                             <div class="payment-info-col">
                                 <div class="field-label">Saņēmējs:</div>
                                 <div class="field-value">{{ seller_name }}</div>
                             </div>
-                        </div>
-                        <div class="payment-info-row">
                             <div class="payment-info-col">
                                 <div class="field-label">IBAN:</div>
                                 <div class="field-value">{{ seller_iban|default('—') }}</div>
                             </div>
-                        </div>
-                        <div class="payment-info-row">
                             <div class="payment-info-col">
                                 <div class="field-label">Apmaksas termiņš:</div>
                                 <div class="field-value">{{ issue_date }}</div>
