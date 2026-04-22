@@ -33,6 +33,12 @@ services:
             - '../src/Kernel.php'
             - '../src/Message/'
 
+    App\Doctrine\AppSchemaAssetFilter:
+        arguments:
+            $filterExpression: '~^(?!topology\.)(?!messenger_messages$)(?!invoice_day_counter$)(?!order_number_seq$).*~'
+        tags:
+            - { name: doctrine.dbal.schema_filter, connection: default }
+
     ### LISTENERS ###
     App\Listener\PlainPasswordListener:
         arguments:

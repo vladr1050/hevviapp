@@ -11,6 +11,7 @@ use Jsor\Doctrine\PostGIS\Types\PostGISType;
 #[ORM\Entity(repositoryClass: GeoAreaRepository::class)]
 #[ORM\Index(columns: ['scope'])]
 #[ORM\Index(columns: ['scope', 'country_iso3'])]
+#[ORM\Index(name: 'idx_geo_area_geometry', columns: ['geometry'], flags: ['spatial'])]
 class GeoArea extends BaseUUID
 {
     public const SCOPE = [
