@@ -16,6 +16,7 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         identity_generation_preferences:
             Doctrine\DBAL\Platforms\PostgreSQLPlatform: identity
+            Jsor\Doctrine\PostGIS\Driver\PostGISPlatform: identity
         auto_mapping: true
         mappings:
             App:
@@ -24,8 +25,8 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
-        controller_resolver:
-            auto_mapping: false
+        # false = disable (avoids deprecated controller_resolver.auto_mapping node in DoctrineBundle 3.1+)
+        controller_resolver: false
 
 when@test:
     doctrine:
