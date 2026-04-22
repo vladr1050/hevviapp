@@ -92,12 +92,12 @@
             font-family: 'Instrument Sans', sans-serif;
         }
 
-        /* ~33px @ 96dpi — как в исходном Figma; ближе к эталону A4 по полям */
+        /* Горизонталь: 32px слева, 33px справа от края страницы (линия шапки = ширина page-box). */
         .page-box {
             position: absolute;
-            left: 8.73mm;
+            left: 32px;
             top: 8.73mm;
-            right: 8.73mm;
+            right: 33px;
             bottom: 8.73mm;
             width: auto;
             height: auto;
@@ -211,6 +211,32 @@
             margin-top: 2px;
             padding: 0;
             word-wrap: break-word;
+        }
+
+        /* Maksājuma paziņojums: длинный заголовок + Nr. + datums — не сжимать meta в колонку */
+        .invoice-header--payment-notice .invoice-header-left {
+            width: auto;
+            flex: 1 1 auto;
+            min-width: 0;
+            max-width: none;
+        }
+
+        .invoice-header--payment-notice .invoice-meta {
+            flex-wrap: nowrap;
+            flex-shrink: 0;
+            align-items: flex-start;
+            gap: 28px;
+        }
+
+        .invoice-header--payment-notice .invoice-meta-block {
+            flex: 0 0 auto;
+            min-width: max-content;
+        }
+
+        .invoice-header--payment-notice .invoice-meta-value {
+            white-space: nowrap;
+            word-wrap: normal;
+            overflow-wrap: normal;
         }
 
         .invoice-brand {
@@ -956,7 +982,7 @@
     <div class="page-box">
         <div class="header-region">
             <div class="page-rail-530">
-                <header class="invoice-header">
+                <header class="invoice-header{% if document_type|default('') == 'PAYMENT_NOTICE' %} invoice-header--payment-notice{% endif %}">
                     <div class="invoice-header-row">
                         <div class="invoice-header-left">
                             {% if document_type|default('') == 'PAYMENT_NOTICE' %}
@@ -989,9 +1015,9 @@
                             <img src="invoice-assets/group-1122.svg" width="112" height="16" alt="hevvi">
                         </div>
                     </div>
-                    <hr class="invoice-header-divider" />
                 </header>
             </div>
+            <hr class="invoice-header-divider" />
         </div>
 
         <div class="body-region">
