@@ -11,6 +11,8 @@ public_site:
 action:
     notification_replay:         Resend
     notification_replay_confirm: Resend this notification now? Send-once rules will be ignored.
+    document_open_pdf:           Open PDF
+    document_download_pdf:     Download PDF
 
 flash:
     notification_replay_no_order: This log entry has no linked order.
@@ -31,6 +33,7 @@ menu:
     service_areas:     Service Areas
     matrix_items:      Matrix Items
     invoices:          Invoices
+    documents:         Order documents (PDF)
     notifications:      Email notifications
     notification_rules: Notification rules
     notification_logs:  Notification log
@@ -55,6 +58,8 @@ breadcrumb:
     link_billingcompany_edit:   Edit Company
     link_billingcompany_show:   Company
     link_invoice_list:          Invoices
+    link_document_list:         Order documents (PDF)
+    link_document_show:         Document
 
 filter:
     label_order_number:           Order №
@@ -64,6 +69,9 @@ filter:
     label_latest_offer_status:    Offer Status
     label_last_assignment_status: Assignment Status
     label_order:                  Order
+    label_document_type:        Document type
+    label_document_status:      Document status
+    label_document_number:      Document №
     label_changed_by:             Changed By
     label_name:                   Name
     label_mileage_from:           Mileage From
@@ -129,6 +137,12 @@ list:
     label_notification_log_status:     Status
     label_notification_sent_at:        Sent at
     label_notification_error:          Error
+    label_document_type:               Document type
+    label_document_number:             Document №
+    label_document_status:             Document status
+    label_document_issued_at:          Issued at
+    label_document_sent_at:            Sent at
+    label_document_pdf:                PDF
 
 show:
     label_order_number:                Order №
@@ -227,6 +241,16 @@ show:
     label_notification_error:              Error message
     label_notification_provider_message_id: Provider message ID
     label_notification_sent_at:            Sent at
+    label_document_type:               Document type
+    label_document_number:             Document №
+    label_document_status:             Document status
+    label_document_file_path:          Stored path (relative)
+    label_document_amount_net:         Amount net (minor units)
+    label_document_amount_vat:         VAT (minor units)
+    label_document_amount_total:       Total (minor units)
+    label_document_issued_at:          Issued at
+    label_document_sent_at:            Sent at
+    label_document_pdf:                PDF
     label_appsettings_restrict: Restrict geography
     label_appsettings_country_codes: Country codes
     label_appsettings_bbox_min_lat: BBox min latitude

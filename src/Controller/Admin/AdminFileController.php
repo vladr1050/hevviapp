@@ -8,12 +8,14 @@
 
 namespace App\Controller\Admin;
 
+use App\Repository\DocumentRepository;
 use App\Repository\InvoiceRepository;
 use App\Service\Document\StoredPdfPathResolver;
 use App\Repository\OrderAttachmentRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -25,7 +27,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Находится под /admin — обрабатывается admin firewall (session auth).
  * Путь до файла на диске клиенту никогда не раскрывается.
  *
- * PDF счетов: /admin/files/invoice/{id} — только по UUID из БД; файл в document storage (см. StoredPdfPathResolver).
+ * PDF счетов: /admin/files/invoice/{id} — legacy Invoice.
+ * PDF документов (Document): /admin/files/document/{id} — PAYMENT_NOTICE / CUSTOMER_INVOICE / CARRIER_INVOICE.
  */
 #[Route('/admin/files', name: 'admin_file_')]
 #[IsGranted('ROLE_ADMIN')]
@@ -34,6 +37,7 @@ class AdminFileController extends AbstractController
     public function __construct(
         private readonly OrderAttachmentRepository $attachmentRepository,
         private readonly InvoiceRepository $invoiceRepository,
+        private readonly DocumentRepository $documentRepository,
         #[Autowire('%kernel.project_dir%/public')]
         private readonly string $publicDir,
         private readonly StoredPdfPathResolver $storedPdfPathResolver,
@@ -93,6 +97,34 @@ class AdminFileController extends AbstractController
 
         $response = new BinaryFileResponse($fileReal);
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $safeName);
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Cache-Control', 'private, no-store');
+        $response->headers->set('X-Content-Type-Options', 'nosniff');
+
+        return $response;
+    }
+
+    #[Route('/document/{id}', name: 'document_pdf', methods: ['GET'], requirements: ['id' => '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}'])]
+    public function documentPdf(string $id, Request $request): BinaryFileResponse
+    {
+        $document = $this->documentRepository->find($id);
+        $relative = $document?->getFilePath();
+        if ($relative === null || $relative === '') {
+            throw $this->createNotFoundException('Document PDF not available.');
+        }
+
+        $fileReal = $this->storedPdfPathResolver->resolveReadableFile($relative);
+        if ($fileReal === null || !$this->storedPdfPathResolver->isAllowedAbsolutePath($fileReal)) {
+            throw $this->createNotFoundException('Document PDF not found on disk.');
+        }
+
+        $safeName = preg_replace('/[^a-zA-Z0-9._-]+/', '_', (string) $document->getDocumentNumber()) . '.pdf';
+
+        $response = new BinaryFileResponse($fileReal);
+        $disposition = $request->query->getBoolean('download')
+            ? ResponseHeaderBag::DISPOSITION_ATTACHMENT
+            : ResponseHeaderBag::DISPOSITION_INLINE;
+        $response->setContentDisposition($disposition, $safeName);
         $response->headers->set('Content-Type', 'application/pdf');
         $response->headers->set('Cache-Control', 'private, no-store');
         $response->headers->set('X-Content-Type-Options', 'nosniff');

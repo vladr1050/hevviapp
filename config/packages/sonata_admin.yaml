@@ -31,6 +31,8 @@ sonata_admin:
                 items:
                     -   route: admin_app_order_list
                         label: menu.orders
+                    -   route: admin_app_document_list
+                        label: menu.documents
                     -   route: admin_app_invoice_list
                         label: menu.invoices
                     -   route: admin_app_cargo_list
@@ -274,6 +276,19 @@ services:
                 controller:                App\Controller\Admin\NotificationLogAdminController
                 manager_type:              orm
                 label:                     menu.notification_logs
+                label_translator_strategy: sonata.admin.label.strategy.underscore
+                show_in_roles_matrix:      false
+        calls:
+            - [ setTranslationDomain, [ 'AppBundle' ] ]
+
+    App\Admin\DocumentAdmin:
+        tags:
+            -   name:                      sonata.admin
+                code:                      ~
+                model_class:               App\Entity\Document
+                controller:                ~
+                manager_type:              orm
+                label:                     menu.documents
                 label_translator_strategy: sonata.admin.label.strategy.underscore
                 show_in_roles_matrix:      false
         calls:

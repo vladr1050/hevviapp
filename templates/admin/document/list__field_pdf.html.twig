@@ -1,0 +1,18 @@
+{#
+ # List column: open / download generated PDF (Document.filePath via admin_file_document_pdf).
+ #}
+{% extends '@SonataAdmin/CRUD/base_list_field.html.twig' %}
+
+{% block field %}
+    {% if object.filePath %}
+        {% set doc_id = object.id ? object.id.toRfc4122() : '' %}
+        <a href="{{ path('admin_file_document_pdf', {id: doc_id}) }}" class="btn btn-sm btn-default" target="_blank" rel="noopener noreferrer">
+            {{ 'action.document_open_pdf'|trans({}, 'AppBundle') }}
+        </a>
+        <a href="{{ path('admin_file_document_pdf', {id: doc_id, download: 1}) }}" class="btn btn-sm btn-default">
+            {{ 'action.document_download_pdf'|trans({}, 'AppBundle') }}
+        </a>
+    {% else %}
+        <span class="text-muted">—</span>
+    {% endif %}
+{% endblock %}

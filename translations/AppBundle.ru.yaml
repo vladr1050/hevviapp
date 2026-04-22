@@ -11,6 +11,8 @@ public_site:
 action:
     notification_replay:         Повторить отправку
     notification_replay_confirm: Повторить отправку этого уведомления? Ограничение «один раз на заказ» будет проигнорировано.
+    document_open_pdf:           Открыть PDF
+    document_download_pdf:     Скачать PDF
 
 flash:
     notification_replay_no_order: У записи журнала нет связанного заказа.
@@ -31,6 +33,7 @@ menu:
     service_areas:     Зоны обслуживания
     matrix_items:      Элементы матрицы
     invoices:          Счета
+    documents:         Документы заказов (PDF)
     notifications:      Email-уведомления
     notification_rules: Правила уведомлений
     notification_logs:  Журнал уведомлений
@@ -51,6 +54,8 @@ breadcrumb:
     link_billingcompany_edit:   Редактировать компанию
     link_billingcompany_show:   Компания
     link_invoice_list:          Счета
+    link_document_list:         Документы заказов (PDF)
+    link_document_show:         Документ
 
 filter:
     label_order_number:           Номер заказа
@@ -60,6 +65,9 @@ filter:
     label_latest_offer_status:    Статус последнего предложения
     label_last_assignment_status: Статус последнего назначения
     label_order:                  Заказ
+    label_document_type:        Тип документа
+    label_document_status:      Статус документа
+    label_document_number:      № документа
     label_changed_by:             Изменено
     label_name:                   Название
     label_mileage_from:           Километраж от
@@ -120,6 +128,12 @@ list:
     label_notification_log_status:   Статус
     label_notification_sent_at:        Отправлено
     label_notification_error:          Ошибка
+    label_document_type:               Тип документа
+    label_document_number:             № документа
+    label_document_status:             Статус документа
+    label_document_issued_at:          Дата выставления
+    label_document_sent_at:            Отправлено
+    label_document_pdf:                PDF
 
 show:
     label_order_number:       Номер заказа
@@ -214,6 +228,16 @@ show:
     label_notification_error:            Сообщение об ошибке
     label_notification_provider_message_id: ID сообщения у провайдера
     label_notification_sent_at:            Время отправки
+    label_document_type:               Тип документа
+    label_document_number:             № документа
+    label_document_status:             Статус документа
+    label_document_file_path:          Путь хранения (относительный)
+    label_document_amount_net:         Сумма без НДС (мин. единицы)
+    label_document_amount_vat:         НДС (мин. единицы)
+    label_document_amount_total:       Итого (мин. единицы)
+    label_document_issued_at:          Дата выставления
+    label_document_sent_at:            Отправлено
+    label_document_pdf:                PDF
     label_appsettings_restrict: Ограничение по географии
     label_appsettings_country_codes: Коды стран
     label_appsettings_bbox_min_lat: BBox мин. широта

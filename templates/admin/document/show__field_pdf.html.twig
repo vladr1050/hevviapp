@@ -1,0 +1,20 @@
+{#
+ # Show block: PDF links for Document.
+ #}
+{% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %}
+
+{% block field %}
+    {% if object.filePath %}
+        {% set doc_id = object.id ? object.id.toRfc4122() : '' %}
+        <p>
+            <a href="{{ path('admin_file_document_pdf', {id: doc_id}) }}" class="btn btn-default" target="_blank" rel="noopener noreferrer">
+                {{ 'action.document_open_pdf'|trans({}, 'AppBundle') }}
+            </a>
+            <a href="{{ path('admin_file_document_pdf', {id: doc_id, download: 1}) }}" class="btn btn-default">
+                {{ 'action.document_download_pdf'|trans({}, 'AppBundle') }}
+            </a>
+        </p>
+    {% else %}
+        <p class="text-muted">—</p>
+    {% endif %}
+{% endblock %}
