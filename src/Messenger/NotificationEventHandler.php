@@ -61,6 +61,7 @@ final class NotificationEventHandler
             $message->eventKey,
             $invoice,
             $message->forceResend,
+            null,
         );
     }
 }

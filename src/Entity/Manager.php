@@ -28,7 +28,7 @@ class Manager extends BaseSecurityDBO
     /**
      * @var Collection<int, OrderAssignment>
      */
-    #[ORM\OneToMany(targetEntity: OrderAssignment::class, mappedBy: 'AssignedBy')]
+    #[ORM\OneToMany(targetEntity: OrderAssignment::class, mappedBy: 'assignedBy')]
     private Collection $orderAssignments;
 
     public function __construct()

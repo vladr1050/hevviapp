@@ -7,6 +7,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    app.document_storage_dir: '%kernel.project_dir%/var/storage/documents'
+    app.legacy_invoice_storage_dir: '%kernel.project_dir%/var/invoices'
     mailjet_api_key:      '%env(MAILJET_API_KEY)%'
     mailjet_api_secret:   '%env(MAILJET_API_SECRET)%'
     mailjet_sender_email: '%env(MAILJET_SENDER_EMAIL)%'

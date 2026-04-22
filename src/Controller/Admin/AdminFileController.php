@@ -9,6 +9,7 @@
 namespace App\Controller\Admin;
 
 use App\Repository\InvoiceRepository;
+use App\Service\Document\StoredPdfPathResolver;
 use App\Repository\OrderAttachmentRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -24,7 +25,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Находится под /admin — обрабатывается admin firewall (session auth).
  * Путь до файла на диске клиенту никогда не раскрывается.
  *
- * PDF счетов: /admin/files/invoice/{id} — только по UUID из БД, файл внутри var/invoices.
+ * PDF счетов: /admin/files/invoice/{id} — только по UUID из БД; файл в document storage (см. StoredPdfPathResolver).
  */
 #[Route('/admin/files', name: 'admin_file_')]
 #[IsGranted('ROLE_ADMIN')]
@@ -35,8 +36,7 @@ class AdminFileController extends AbstractController
         private readonly InvoiceRepository $invoiceRepository,
         #[Autowire('%kernel.project_dir%/public')]
         private readonly string $publicDir,
-        #[Autowire('%kernel.project_dir%/var/invoices')]
-        private readonly string $invoiceStorageDir,
+        private readonly StoredPdfPathResolver $storedPdfPathResolver,
     ) {
     }
 
@@ -84,11 +84,8 @@ class AdminFileController extends AbstractController
             throw $this->createNotFoundException('Invoice PDF not available.');
         }
 
-        $relative = str_replace(["\0", '\\'], '', $relative);
-        $absolute = $this->invoiceStorageDir . '/' . $relative;
-        $storageReal = realpath($this->invoiceStorageDir);
-        $fileReal = is_file($absolute) ? realpath($absolute) : false;
-        if ($storageReal === false || $fileReal === false || !str_starts_with($fileReal, $storageReal)) {
+        $fileReal = $this->storedPdfPathResolver->resolveReadableFile($relative);
+        if ($fileReal === null || !$this->storedPdfPathResolver->isAllowedAbsolutePath($fileReal)) {
             throw $this->createNotFoundException('Invoice PDF not found on disk.');
         }
 

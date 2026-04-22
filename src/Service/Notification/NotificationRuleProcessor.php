@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Service\Notification;
 
+use App\Entity\Document;
 use App\Entity\Invoice;
 use App\Entity\NotificationLog;
 use App\Entity\NotificationRule;
 use App\Entity\Order;
+use App\Enum\DocumentStatus;
 use App\Notification\NotificationAttachmentType;
 use App\Notification\NotificationLogStatus;
 use App\Repository\NotificationLogRepository;
@@ -39,6 +41,7 @@ final class NotificationRuleProcessor
         string $eventKey,
         ?Invoice $invoice = null,
         bool $ignoreSendOnce = false,
+        ?Document $document = null,
     ): NotificationDispatchResult {
         $rules = $this->ruleRepository->findActiveByEventKey($eventKey);
         $result = new NotificationDispatchResult(count($rules));
@@ -50,7 +53,7 @@ final class NotificationRuleProcessor
 
         foreach ($rules as $rule) {
             try {
-                $this->dispatchRule($rule, $order, $eventKey, $variables, $invoice, $result, $ignoreSendOnce);
+                $this->dispatchRule($rule, $order, $eventKey, $variables, $invoice, $result, $ignoreSendOnce, $document);
             } catch (\Throwable $e) {
                 $this->logger->error('Notification rule dispatch failed', [
                     'event_key' => $eventKey,
@@ -73,6 +76,7 @@ final class NotificationRuleProcessor
         ?Invoice $invoice,
         NotificationDispatchResult $result,
         bool $ignoreSendOnce = false,
+        ?Document $document = null,
     ): void {
         if (!$ignoreSendOnce && $rule->isSendOncePerOrder()
             && $this->logRepository->hasSuccessfulSendForRuleAndOrder($rule, $order, $eventKey)) {
@@ -108,7 +112,11 @@ final class NotificationRuleProcessor
         $attachment = null;
         $attachmentType = null;
         if ($rule->isAttachInvoicePdf()) {
-            $attachment = $this->attachmentResolver->resolveInvoicePdf($invoice);
+            if ($invoice !== null) {
+                $attachment = $this->attachmentResolver->resolveInvoicePdf($invoice);
+            } elseif ($document !== null) {
+                $attachment = $this->attachmentResolver->resolveDocumentPdf($document);
+            }
             if ($attachment === null) {
                 $this->persistLog(
                     $rule,
@@ -120,14 +128,16 @@ final class NotificationRuleProcessor
                     $bodyHtml,
                     null,
                     NotificationLogStatus::FAILED,
-                    'Invoice PDF required by rule but file is missing',
+                    'PDF attachment required by rule but file is missing',
                 );
                 $this->em->flush();
-                $result->recordFailed('Invoice PDF missing');
+                $result->recordFailed('PDF attachment missing');
 
                 return;
             }
-            $attachmentType = NotificationAttachmentType::INVOICE_PDF;
+            $attachmentType = $invoice !== null
+                ? NotificationAttachmentType::INVOICE_PDF
+                : NotificationAttachmentType::DOCUMENT_PDF;
         }
 
         $log = $this->persistLog(
@@ -165,10 +175,21 @@ final class NotificationRuleProcessor
             $log->setSentAt(new \DateTimeImmutable('now', new \DateTimeZone('UTC')));
             $log->setErrorMessage(null);
             $result->recordSent();
+            if ($document !== null
+                && $rule->isAttachInvoicePdf()
+                && $attachmentType === NotificationAttachmentType::DOCUMENT_PDF) {
+                $document->setSentAt(new \DateTimeImmutable('now', new \DateTimeZone('UTC')));
+                $document->setStatus(DocumentStatus::SENT);
+            }
         } else {
             $log->setStatus(NotificationLogStatus::FAILED);
             $log->setErrorMessage('Mail provider returned failure.');
             $result->recordFailed('Mail provider returned failure.');
+            if ($document !== null
+                && $rule->isAttachInvoicePdf()
+                && $attachmentType === NotificationAttachmentType::DOCUMENT_PDF) {
+                $document->setStatus(DocumentStatus::FAILED);
+            }
         }
 
         $this->em->flush();

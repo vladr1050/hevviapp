@@ -23,6 +23,7 @@ use App\Entity\Order;
 use App\Entity\OrderHistory;
 use App\Entity\User;
 use App\Notification\NotificationEventKey;
+use App\Service\Document\OrderDeliveredDocumentService;
 use App\Service\Notification\NotificationDispatchService;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PostFlushEventArgs;
@@ -43,6 +44,7 @@ class OrderHistorySubscriber implements EventSubscriber
         private readonly Security $security,
         private readonly LoggerInterface $logger,
         private readonly NotificationDispatchService $notificationDispatchService,
+        private readonly OrderDeliveredDocumentService $orderDeliveredDocumentService,
     ) {
     }
 
@@ -144,6 +146,9 @@ class OrderHistorySubscriber implements EventSubscriber
                 };
                 if ($eventKey !== null) {
                     $this->notificationDispatchService->dispatch($order, $eventKey);
+                }
+                if ($status === Order::STATUS['DELIVERED']) {
+                    $this->orderDeliveredDocumentService->issueForDeliveredOrder($order);
                 }
             } catch (\Throwable $e) {
                 $this->logger->error('Failed to dispatch DB notification rules in postFlush', [

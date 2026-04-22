@@ -5,12 +5,18 @@ declare(strict_types=1);
 namespace App\Service\Invoice;
 
 use App\Entity\BillingCompany;
+use App\Entity\Document;
 use App\Entity\Invoice;
 use App\Entity\Order;
 use App\Entity\OrderOffer;
 use App\Entity\User;
+use App\Enum\DocumentStatus;
+use App\Enum\DocumentType;
 use App\Repository\BillingCompanyRepository;
+use App\Repository\DocumentRepository;
 use App\Repository\InvoiceRepository;
+use App\Service\Document\DocumentNumberFormatter;
+use App\Service\Document\StoredPdfPathResolver;
 use App\Notification\NotificationEventKey;
 use App\Service\Notification\NotificationDispatchService;
 use App\Service\Invoice\DTO\InvoiceMapPayload;
@@ -31,16 +37,17 @@ final class InvoiceIssuingService
         private readonly BillingCompanyRepository $billingCompanyRepository,
         private readonly InvoiceNumberGenerator $invoiceNumberGenerator,
         private readonly InvoiceAddressFormatter $addressFormatter,
-        private readonly InvoiceMoneyFormatter $moneyFormatter,
         private readonly InvoiceStaticMapFetcher $staticMapFetcher,
         private readonly ChromiumInvoicePdfRenderer $pdfRenderer,
         private readonly Environment $twig,
         private readonly LoggerInterface $logger,
-        #[Autowire('%kernel.project_dir%/var/invoices')]
-        private readonly string $invoiceStorageDir,
+        private readonly StoredPdfPathResolver $storedPdfPathResolver,
         #[Autowire('%env(int:PLATFORM_FEE_PERCENT)%')]
         private readonly int $defaultPlatformFeePercent,
         private readonly NotificationDispatchService $notificationDispatchService,
+        private readonly DocumentRepository $documentRepository,
+        private readonly DocumentNumberFormatter $documentNumberFormatter,
+        private readonly InvoicePdfContextBuilder $invoicePdfContextBuilder,
     ) {
     }
 
@@ -164,7 +171,15 @@ final class InvoiceIssuingService
             $order->getDropoutLongitude()
         );
 
-        $ctx = $this->buildTwigContext($invoice, $mapPayload);
+        $ctx = $this->invoicePdfContextBuilder->build(
+            $invoice,
+            $mapPayload,
+            $sender,
+            $issuer,
+            'PAYMENT_NOTICE',
+            $this->documentNumberFormatter->formatPaymentNoticeNumber((string) $invoice->getInvoiceNumber()),
+            null,
+        );
 
         try {
             $html = $this->twig->render('invoice/pdf.html.twig', $ctx);
@@ -182,13 +197,13 @@ final class InvoiceIssuingService
             throw new \RuntimeException('Invoice has no id after persist.');
         }
 
-        $relativePath = sprintf(
-            '%s/%s/%s.pdf',
-            $issueDate->format('Y'),
-            $issueDate->format('m'),
-            $id->toRfc4122()
-        );
-        $fullPath = $this->invoiceStorageDir . '/' . $relativePath;
+        $orderUuid = $order->getId()?->toRfc4122();
+        if ($orderUuid === null || $orderUuid === '') {
+            throw new \RuntimeException('Order has no id for PDF storage path.');
+        }
+
+        $relativePath = sprintf('%s/%s.pdf', $orderUuid, $id->toRfc4122());
+        $fullPath = $this->storedPdfPathResolver->getPrimaryDir() . '/' . $relativePath;
         $dir = dirname($fullPath);
         if (!is_dir($dir) && !@mkdir($dir, 0775, true) && !is_dir($dir)) {
             throw new \RuntimeException(sprintf('Cannot create directory "%s".', $dir));
@@ -204,6 +219,9 @@ final class InvoiceIssuingService
 
         $invoice->setPdfRelativePath($relativePath);
         $invoice->setPdfError(null);
+
+        $this->persistPaymentNoticeDocument($invoice, $issuer, $sender);
+        $this->em->flush();
 
         if ($buyerEmail === null) {
             $invoice->setStatus(Invoice::STATUS_EMAIL_NOT_SENT);
@@ -224,7 +242,9 @@ final class InvoiceIssuingService
         $dispatch = $this->notificationDispatchService->dispatch(
             $relatedOrder,
             NotificationEventKey::ORDER_PRICE_CONFIRMED,
-            $invoice
+            $invoice,
+            false,
+            null,
         );
 
         if ($dispatch->getSentCount() > 0) {
@@ -243,68 +263,6 @@ final class InvoiceIssuingService
         }
 
         $this->em->flush();
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function buildTwigContext(Invoice $invoice, InvoiceMapPayload $map): array
-    {
-        $c = $invoice->getCurrency() ?? 'EUR';
-
-        return [
-            'invoice_number' => $invoice->getInvoiceNumber(),
-            'issue_date' => $invoice->getIssueDate()?->format('d.m.Y'),
-            'due_date' => $invoice->getDueDate()?->format('d.m.Y'),
-            'service_date' => $invoice->getIssueDate()?->format('d.m.Y'),
-            'seller_name' => $invoice->getSellerName(),
-            'seller_reg' => $invoice->getSellerRegistrationNumber(),
-            'seller_vat' => $invoice->getSellerVatNumber() ?? '—',
-            'seller_line1' => $invoice->getSellerAddressLine1(),
-            'seller_line2' => $invoice->getSellerAddressLine2(),
-            'seller_email' => $invoice->getSellerEmail(),
-            'seller_phone' => $invoice->getSellerPhone(),
-            'buyer_company' => $invoice->getBuyerCompanyName(),
-            'buyer_reg' => $invoice->getBuyerRegistrationNumber(),
-            'buyer_vat' => $invoice->getBuyerVatNumber() ?? '—',
-            'buyer_address_lines' => array_values(array_filter(explode("\n", $invoice->getBuyerAddress() ?? ''), static fn (string $l): bool => trim($l) !== '')),
-            'order_reference' => $invoice->getOrderReference(),
-            'pickup' => $invoice->getPickupAddress(),
-            'delivery' => $invoice->getDeliveryAddress(),
-            'map_data_uri' => $map->imageDataUri,
-            'map_show_pins' => $map->showPins,
-            'map_pickup_left' => $map->pickupLeftPx,
-            'map_pickup_top' => $map->pickupTopPx,
-            'map_drop_left' => $map->dropLeftPx,
-            'map_drop_top' => $map->dropTopPx,
-            'map_inner_w' => $map->innerWidthPx,
-            'map_inner_h' => $map->innerHeightPx,
-            'map_img_left' => $map->mapImgLeftPx,
-            'map_img_top' => $map->mapImgTopPx,
-            'map_img_w' => $map->mapImgWidthPx,
-            'map_img_h' => $map->mapImgHeightPx,
-            'map_data_uri_b' => $map->secondImageDataUri,
-            'map_strip_tiles_x' => $map->stripTilesX,
-            'map_strip_tiles_y' => $map->stripTilesY,
-            'amount_freight' => $this->moneyFormatter->formatCents((int) $invoice->getAmountFreight(), $c),
-            'amount_commission' => $this->moneyFormatter->formatCents((int) $invoice->getAmountCommission(), $c),
-            'amount_subtotal' => $this->moneyFormatter->formatCents((int) $invoice->getAmountSubtotal(), $c),
-            'amount_vat' => $this->moneyFormatter->formatCents((int) $invoice->getAmountVat(), $c),
-            'amount_gross' => $this->moneyFormatter->formatCents((int) $invoice->getAmountGross(), $c),
-            'fee_percent_label' => $this->formatPercentLabel((string) $invoice->getFeePercent()),
-            'payment_method' => 'Bankas pārskaitījums',
-            'payment_due_date' => $invoice->getDueDate()?->format('d.m.Y') ?? '—',
-        ];
-    }
-
-    private function formatPercentLabel(string $decimal): string
-    {
-        $f = (float) $decimal;
-        if (abs($f - round($f)) < 0.0001) {
-            return (string) (int) round($f);
-        }
-
-        return rtrim(rtrim(number_format($f, 2, ',', ''), '0'), ',');
     }
 
     private function normalizeDecimalString(float $f): string
@@ -361,5 +319,49 @@ final class InvoiceIssuingService
                 throw new \RuntimeException('Buyer company billing data is incomplete.');
             }
         }
+    }
+
+    /**
+     * Registers the payment notice row; {@see Document::filePath} matches the invoice PDF relative path
+     * under {@see StoredPdfPathResolver} primary storage ({orderUuid}/{invoiceUuid}.pdf).
+     */
+    private function persistPaymentNoticeDocument(
+        Invoice $invoice,
+        BillingCompany $issuer,
+        User $sender,
+    ): void {
+        $order = $invoice->getRelatedOrder();
+        if ($order === null) {
+            return;
+        }
+
+        if ($this->documentRepository->findOneByOrderAndType($order, DocumentType::PAYMENT_NOTICE) !== null) {
+            return;
+        }
+
+        $invoiceNumber = $invoice->getInvoiceNumber();
+        if ($invoiceNumber === null || $invoiceNumber === '') {
+            return;
+        }
+
+        $pdfPath = $invoice->getPdfRelativePath();
+        if ($pdfPath === null || $pdfPath === '') {
+            return;
+        }
+
+        $document = new Document();
+        $document->setRelatedOrder($order);
+        $document->setDocumentType(DocumentType::PAYMENT_NOTICE);
+        $document->setDocumentNumber($this->documentNumberFormatter->formatPaymentNoticeNumber($invoiceNumber));
+        $document->setSenderCompany($sender);
+        $document->setReceiverCompany($issuer);
+        $document->setCarrierCompany($order->getCarrier());
+        $document->setFilePath($pdfPath);
+        $document->setAmountNet((int) $invoice->getAmountSubtotal());
+        $document->setAmountVat((int) $invoice->getAmountVat());
+        $document->setAmountTotal((int) $invoice->getAmountGross());
+        $document->setStatus(DocumentStatus::GENERATED);
+
+        $this->em->persist($document);
     }
 }

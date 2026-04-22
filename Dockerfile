@@ -182,7 +182,7 @@ RUN set -eux; \
     php bin/console assets:install --symlink --relative public --no-interaction --env="${APP_ENV}" --no-debug
 
 # Создаем необходимые директории с правильными правами
-RUN mkdir -p var/cache var/log var/invoices public/build && \
+RUN mkdir -p var/cache var/log var/invoices var/storage/documents public/build && \
     chown -R www-data:www-data var public
 
 # Копируем entrypoint.sh в контейнер

@@ -21,6 +21,17 @@ final class NotificationEventKey
 
     public const ORDER_STATUS_CHANGED_TO_DELIVERED = 'ORDER_STATUS_CHANGED_TO_DELIVERED';
 
+    /**
+     * Delivered: email to sender with customer invoice PDF (one attachment).
+     * Distinct from carrier mail so rules can target different templates/recipients.
+     */
+    public const ORDER_DELIVERED_SENDER_DOCUMENT = 'ORDER_DELIVERED_SENDER_DOCUMENT';
+
+    /**
+     * Delivered: email to carrier with carrier invoice PDF (one attachment).
+     */
+    public const ORDER_DELIVERED_CARRIER_DOCUMENT = 'ORDER_DELIVERED_CARRIER_DOCUMENT';
+
     /** @return list<string> */
     public static function all(): array
     {
@@ -31,6 +42,8 @@ final class NotificationEventKey
             self::ORDER_STATUS_CHANGED_TO_ASSIGNED,
             self::ORDER_STATUS_CHANGED_TO_IN_TRANSIT,
             self::ORDER_STATUS_CHANGED_TO_DELIVERED,
+            self::ORDER_DELIVERED_SENDER_DOCUMENT,
+            self::ORDER_DELIVERED_CARRIER_DOCUMENT,
         ];
     }
 }

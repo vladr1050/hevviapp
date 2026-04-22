@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Service\Notification;
 
+use App\Entity\Document;
 use App\Entity\Invoice;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use App\Service\Document\StoredPdfPathResolver;
 
 /**
  * Loads invoice PDF bytes from storage when a rule requires an attachment.
@@ -15,8 +16,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 final class NotificationAttachmentResolver
 {
     public function __construct(
-        #[Autowire('%kernel.project_dir%/var/invoices')]
-        private readonly string $invoiceStorageDir,
+        private readonly StoredPdfPathResolver $storedPdfPathResolver,
     ) {
     }
 
@@ -32,8 +32,8 @@ final class NotificationAttachmentResolver
         if ($relative === null || $relative === '') {
             return null;
         }
-        $fullPath = $this->invoiceStorageDir.'/'.$relative;
-        if (!is_readable($fullPath)) {
+        $fullPath = $this->storedPdfPathResolver->resolveReadableFile($relative);
+        if ($fullPath === null) {
             return null;
         }
         $binary = file_get_contents($fullPath);
@@ -44,6 +44,34 @@ final class NotificationAttachmentResolver
 
         return [
             'filename' => sprintf('rekina-%s.pdf', $number),
+            'binary' => $binary,
+        ];
+    }
+
+    /**
+     * @return Attachment|null
+     */
+    public function resolveDocumentPdf(?Document $document): ?array
+    {
+        if (!$document instanceof Document) {
+            return null;
+        }
+        $relative = $document->getFilePath();
+        if ($relative === null || $relative === '') {
+            return null;
+        }
+        $fullPath = $this->storedPdfPathResolver->resolveReadableFile($relative);
+        if ($fullPath === null) {
+            return null;
+        }
+        $binary = file_get_contents($fullPath);
+        if ($binary === false || $binary === '') {
+            return null;
+        }
+        $number = preg_replace('/[^a-zA-Z0-9_-]+/', '_', $document->getDocumentNumber()) ?? 'document';
+
+        return [
+            'filename' => sprintf('document-%s.pdf', $number),
             'binary' => $binary,
         ];
     }

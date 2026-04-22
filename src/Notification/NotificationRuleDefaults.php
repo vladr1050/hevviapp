@@ -32,6 +32,8 @@ final class NotificationRuleDefaults
             self::inTransit(),
             self::delivered(),
             self::priceConfirmed(),
+            self::deliveredSenderDocument(),
+            self::deliveredCarrierDocument(),
         ];
     }
 
@@ -238,6 +240,52 @@ HTML;
             'eventKey' => NotificationEventKey::ORDER_PRICE_CONFIRMED,
             'recipientType' => NotificationRecipientType::SENDER,
             'subjectTemplate' => 'Rēķins par pārvadājumu – pasūtījums {{ORDER_ID}}',
+            'bodyTemplate' => $body,
+            'attachInvoicePdf' => true,
+            'sendOncePerOrder' => true,
+        ];
+    }
+
+    /**
+     * @return RuleShape
+     */
+    private static function deliveredSenderDocument(): array
+    {
+        $body = <<<'HTML'
+<p>Labdien,</p>
+<p>Pielikumā klienta rēķins par pasūtījumu {{ORDER_ID}} (pēc piegādes).</p>
+<p>Ar cieņu,<br>Hevvi Operāciju komanda<br>support@hevvi.app<br>www.hevvi.app</p>
+HTML;
+
+        return [
+            'name' => 'Sender: klients rēķins pēc piegādes (PDF)',
+            'description' => 'ORDER_DELIVERED_SENDER_DOCUMENT',
+            'eventKey' => NotificationEventKey::ORDER_DELIVERED_SENDER_DOCUMENT,
+            'recipientType' => NotificationRecipientType::SENDER,
+            'subjectTemplate' => 'Rēķins – pasūtījums {{ORDER_ID}}',
+            'bodyTemplate' => $body,
+            'attachInvoicePdf' => true,
+            'sendOncePerOrder' => true,
+        ];
+    }
+
+    /**
+     * @return RuleShape
+     */
+    private static function deliveredCarrierDocument(): array
+    {
+        $body = <<<'HTML'
+<p>Labdien,</p>
+<p>Pielikumā pārvadātāja rēķins par pasūtījumu {{ORDER_ID}}.</p>
+<p>Ar cieņu,<br>Hevvi Operāciju komanda<br>support@hevvi.app<br>www.hevvi.app</p>
+HTML;
+
+        return [
+            'name' => 'Carrier: pārvadātāja rēķins pēc piegādes (PDF)',
+            'description' => 'ORDER_DELIVERED_CARRIER_DOCUMENT',
+            'eventKey' => NotificationEventKey::ORDER_DELIVERED_CARRIER_DOCUMENT,
+            'recipientType' => NotificationRecipientType::CARRIER,
+            'subjectTemplate' => 'Rēķins (pārvadātājs) – {{ORDER_ID}}',
             'bodyTemplate' => $body,
             'attachInvoicePdf' => true,
             'sendOncePerOrder' => true,

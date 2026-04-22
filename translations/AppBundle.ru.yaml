@@ -145,6 +145,7 @@ show:
     label_status:             Статус
     label_sender:             Отправитель
     label_carrier:            Перевозчик
+    label_vehicle_plate:      Рег. знак ТС
     label_pickup_address:     Адрес забора
     label_dropout_address:    Адрес доставки
     label_notes:              Заметки
@@ -272,6 +273,7 @@ form:
     label_status:              Статус
     label_sender:              Отправитель
     label_carrier:             Перевозчик
+    label_vehicle_plate:       Рег. знак ТС
     label_assigned_by:         Назначено менеджером
     label_help_assigned_by:    Автоматически заполняется текущим менеджером. Можно изменить вручную при необходимости.
     label_pickup_address:      Адрес забора

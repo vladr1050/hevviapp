@@ -343,6 +343,9 @@ class OrderAdmin extends BaseAdmin
                 },
             ])
             ->add('carrier')
+            ->add('vehiclePlate', null, [
+                'label' => 'show.label_vehicle_plate',
+            ])
             ->add('pickupAddress', null, [
                 'template' => 'admin/CRUD/show_address_with_map.html.twig',
             ])
@@ -459,6 +462,10 @@ class OrderAdmin extends BaseAdmin
                 'choice_attr' => static fn(int $val): array => $val === Order::STATUS['ASSIGNED']
                     ? ['disabled' => 'disabled', 'title' => 'Assigned status is managed automatically via Order Assignments']
                     : [],
+            ])
+            ->add('vehiclePlate', TextType::class, [
+                'required' => false,
+                'attr' => ['maxlength' => 32],
             ])
             ->end()
             ->with('addresses', [

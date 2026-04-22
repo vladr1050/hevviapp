@@ -1524,11 +1524,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     enable_profiler?: bool|Param, // Whether or not to enable the profiler collector to calculate and visualize migration status. This adds some queries overhead. // Default: false
  *     transactional?: bool|Param, // Whether or not to wrap migrations in a single transaction. // Default: true
  * }
- * @psalm-type MakerConfig = array{
- *     root_namespace?: scalar|Param|null, // Default: "App"
- *     generate_final_classes?: bool|Param, // Default: true
- *     generate_final_entities?: bool|Param, // Default: false
- * }
  * @psalm-type SonataDoctrineOrmAdminConfig = array{
  *     entity_manager?: scalar|Param|null, // Default: null
  *     audit?: array{
@@ -1848,6 +1843,11 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         },
  *     }>,
  * }
+ * @psalm-type MakerConfig = array{
+ *     root_namespace?: scalar|Param|null, // Default: "App"
+ *     generate_final_classes?: bool|Param, // Default: true
+ *     generate_final_entities?: bool|Param, // Default: false
+ * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -1888,11 +1888,11 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         sonata_admin?: SonataAdminConfig,
  *         sonata_authorization?: SonataAuthorizationConfig,
  *         doctrine_migrations?: DoctrineMigrationsConfig,
- *         maker?: MakerConfig,
  *         sonata_doctrine_orm_admin?: SonataDoctrineOrmAdminConfig,
  *         lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
  *         sentry?: SentryConfig,
  *         monolog?: MonologConfig,
+ *         maker?: MakerConfig,
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,

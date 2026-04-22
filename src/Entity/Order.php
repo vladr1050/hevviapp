@@ -92,6 +92,12 @@ class Order extends BaseUUID
     #[ORM\OneToMany(targetEntity: NotificationLog::class, mappedBy: 'relatedOrder', cascade: ['persist'])]
     private Collection $notificationLogs;
 
+    /**
+     * @var Collection<int, Document>
+     */
+    #[ORM\OneToMany(targetEntity: Document::class, mappedBy: 'relatedOrder', orphanRemoval: false)]
+    private Collection $documents;
+
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 7, nullable: true)]
     private ?string $pickupLatitude = null;
 
@@ -135,6 +141,11 @@ class Order extends BaseUUID
     #[ORM\Column(nullable: true, unique: true)]
     private ?int $orderNumber = null;
 
+    /** Vehicle registration for carrier invoice line (carrier UI later; admin until then). */
+    #[ORM\Column(length: 32, nullable: true)]
+    #[Assert\Length(max: 32)]
+    private ?string $vehiclePlate = null;
+
     /**
      * Не маппится в БД: один раз пропустить OrderOfferAutoCreateListener после flush
      * (аннулирование котировки перед редактированием).
@@ -149,6 +160,7 @@ class Order extends BaseUUID
         $this->orderAssignments = new ArrayCollection();
         $this->notificationLogs = new ArrayCollection();
         $this->attachments = new ArrayCollection();
+        $this->documents = new ArrayCollection();
     }
 
     public function getSender(): ?User
@@ -342,6 +354,20 @@ class Order extends BaseUUID
     public function setOrderNumber(int $orderNumber): static
     {
         $this->orderNumber = $orderNumber;
+
+        return $this;
+    }
+
+    public function getVehiclePlate(): ?string
+    {
+        return $this->vehiclePlate;
+    }
+
+    public function setVehiclePlate(?string $vehiclePlate): static
+    {
+        $this->vehiclePlate = $vehiclePlate !== null && $vehiclePlate !== ''
+            ? trim($vehiclePlate)
+            : null;
 
         return $this;
     }
@@ -643,6 +669,35 @@ class Order extends BaseUUID
         if ($this->notificationLogs->removeElement($notificationLog)) {
             if ($notificationLog->getRelatedOrder() === $this) {
                 $notificationLog->setRelatedOrder(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Document>
+     */
+    public function getDocuments(): Collection
+    {
+        return $this->documents;
+    }
+
+    public function addDocument(Document $document): static
+    {
+        if (!$this->documents->contains($document)) {
+            $this->documents->add($document);
+            $document->setRelatedOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocument(Document $document): static
+    {
+        if ($this->documents->removeElement($document)) {
+            if ($document->getRelatedOrder() === $this) {
+                $document->setRelatedOrder(null);
             }
         }
 
