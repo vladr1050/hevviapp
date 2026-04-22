@@ -8,20 +8,20 @@ use Doctrine\DBAL\Schema\AbstractAsset;
 use Doctrine\DBAL\Schema\Name\NamedObject;
 
 /**
- * Same rules as DoctrineBundle's RegexSchemaAssetFilter, but resolves {@see NamedObject}
- * without calling deprecated {@see AbstractAsset::getName()} (e.g. for sequences).
+ * Excludes PostGIS / manual / Messenger assets from schema introspection comparison.
+ * Uses {@see NamedObject} so sequence names never go through deprecated {@see AbstractAsset::getName()}.
  */
 final class AppSchemaAssetFilter
 {
-    public function __construct(
-        private readonly string $filterExpression,
-    ) {
-    }
-
     /** @param string|AbstractAsset<\Doctrine\DBAL\Schema\Name> $assetName */
     public function __invoke(string|AbstractAsset $assetName): bool
     {
-        return (bool) preg_match($this->filterExpression, $this->toFilterableString($assetName));
+        $name = $this->toFilterableString($assetName);
+        if ($name === '') {
+            return true;
+        }
+
+        return ! $this->isExcluded($name);
     }
 
     /** @param string|AbstractAsset<\Doctrine\DBAL\Schema\Name> $assetName */
@@ -36,5 +36,29 @@ final class AppSchemaAssetFilter
         }
 
         return '';
+    }
+
+    private function isExcluded(string $name): bool
+    {
+        if (str_starts_with($name, 'topology.')) {
+            return true;
+        }
+
+        if (preg_match('/^tiger/i', $name) === 1) {
+            return true;
+        }
+
+        $tail = str_contains($name, '.') ? substr($name, (int) strrpos($name, '.') + 1) : $name;
+
+        return in_array(
+            $tail,
+            [
+                'messenger_messages',
+                'messenger_messages_id_seq',
+                'invoice_day_counter',
+                'order_number_seq',
+            ],
+            true,
+        );
     }
 }
