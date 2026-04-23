@@ -113,7 +113,8 @@ final class OrderDeliveredDocumentService
         );
 
         $tz = new \DateTimeZone('Europe/Riga');
-        $nowDisplay = (new \DateTimeImmutable('now', $tz))->format('d.m.Y');
+        $deliveredDocumentsIssueAt = new \DateTimeImmutable('now', $tz);
+        $nowDisplay = $deliveredDocumentsIssueAt->format('d.m.Y');
         $deliveredDisplay = $order->getDeliveryDate() !== null
             ? $order->getDeliveryDate()->format('d.m.Y')
             : $nowDisplay;
@@ -180,7 +181,15 @@ final class OrderDeliveredDocumentService
             );
             $ctx['issue_date'] = $nowDisplay;
             $ctx['service_date'] = $deliveredDisplay;
-            $ctx = $this->applyCarrierDeliveredPdfContext($ctx, $invoice, $carrier, $carrierNet, $carrierVat, $carrierGross);
+            $ctx = $this->applyCarrierDeliveredPdfContext(
+                $ctx,
+                $invoice,
+                $carrier,
+                $carrierNet,
+                $carrierVat,
+                $carrierGross,
+                $deliveredDocumentsIssueAt,
+            );
 
             $carrierDoc = $this->persistRenderedDocument(
                 $order,
@@ -331,6 +340,7 @@ final class OrderDeliveredDocumentService
         int $netCents,
         int $vatCents,
         int $grossCents,
+        \DateTimeImmutable $carrierInvoiceIssueAt,
     ): array {
         $c = $invoice->getCurrency() ?? 'EUR';
         $ctx['amount_freight'] = $this->invoiceMoneyFormatter->formatCents($netCents, $c);
@@ -341,12 +351,33 @@ final class OrderDeliveredDocumentService
         $ctx['payment_beneficiary'] = $this->carrierPayoutBeneficiaryLine($carrier);
         $ctx['payment_iban'] = $this->optionalIbanLine($carrier->getIban());
 
+        $ctx['payment_due_date'] = $carrierInvoiceIssueAt->modify('+1 day')->format('d.m.Y');
+
         $rateRaw = $carrier->getVatRate();
         if ($rateRaw !== null && trim((string) $rateRaw) !== '') {
             $ctx['vat_percent_label'] = $this->invoicePdfContextBuilder->formatPercentForLabel((string) $rateRaw);
         }
 
+        $ctx['carrier_partner_display'] = $this->carrierPartnerDisplayLine($carrier);
+        $ctx['carrier_vat_percent_label'] = $rateRaw !== null && trim((string) $rateRaw) !== ''
+            ? $this->invoicePdfContextBuilder->formatPercentForLabel((string) $rateRaw)
+            : (string) ($ctx['vat_percent_label'] ?? '0');
+
         return $ctx;
+    }
+
+    private function carrierPartnerDisplayLine(Carrier $carrier): string
+    {
+        $name = trim((string) ($carrier->getLegalName() ?? ''));
+        $reg = trim((string) ($carrier->getRegistrationNumber() ?? ''));
+        if ($name === '') {
+            return $reg !== '' ? 'Reģ. ' . $reg : '—';
+        }
+        if ($reg === '') {
+            return $name;
+        }
+
+        return $name . ', Reģ. ' . $reg;
     }
 
     /**
