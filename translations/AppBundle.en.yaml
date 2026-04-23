@@ -37,6 +37,7 @@ menu:
     notifications:      Email notifications
     notification_rules: Notification rules
     notification_logs:  Notification log
+    terms_of_use:        Terms & Conditions (portal)
 
 breadcrumb:
     link_user_list:           List of Users
@@ -60,6 +61,10 @@ breadcrumb:
     link_invoice_list:          Invoices
     link_document_list:         Order documents (PDF)
     link_document_show:         Document
+    link_terms_of_use_list:     Terms & Conditions
+    link_terms_of_use_create:   Create revision
+    link_terms_of_use_edit:     Edit revision
+    link_terms_of_use_show:     Terms revision
 
 filter:
     label_order_number:           Order №
@@ -77,6 +82,8 @@ filter:
     label_mileage_from:           Mileage From
     label_mileage_to:             Mileage To
     label_price:                  Price
+    label_terms_audience:         Audience
+    label_terms_status:           Revision status
 
 
 list:
@@ -143,6 +150,11 @@ list:
     label_document_issued_at:          Issued at
     label_document_sent_at:            Sent at
     label_document_pdf:                PDF
+    label_terms_audience:              Audience
+    label_terms_version:               Version
+    label_terms_status:                Status
+    label_terms_title:                 Title
+    label_terms_published_at:          Published at
 
 show:
     label_order_number:                Order №
@@ -251,6 +263,14 @@ show:
     label_document_issued_at:          Issued at
     label_document_sent_at:            Sent at
     label_document_pdf:                PDF
+    label_terms_id:                    Revision ID
+    label_terms_audience:              Audience
+    label_terms_version:               Version
+    label_terms_status:                Status
+    label_terms_title:                 Title
+    label_terms_subtitle:              Subtitle
+    label_terms_body_html:             Body (HTML)
+    label_terms_published_at:          Published at
     label_appsettings_restrict: Restrict geography
     label_appsettings_country_codes: Country codes
     label_appsettings_bbox_min_lat: BBox min latitude
@@ -296,6 +316,15 @@ form:
     group_billing_company_address:     Legal address
     group_billing_company_contacts:    Bank & contacts
     group_billing_company_invoicing:   Invoice terms
+    group_terms:                       Terms & Conditions
+    label_terms_audience:              Audience (portal)
+    label_terms_title:               Modal title
+    label_terms_subtitle:            Modal subtitle (optional)
+    label_terms_body_html:           HTML body
+    label_terms_status:              Revision status
+    help_terms_audience:             Cannot be changed after the revision is created.
+    help_terms_body_html:            Trusted HTML shown in the portal modal. Use headings, lists, and tables as needed.
+    help_terms_status:               Only one Published revision per audience is active; older published rows become Superseded automatically.
     help_billing_company_vat_rate:     Percent used for VAT on invoices from this company (e.g. 21 for 21%).
     help_billing_company_platform_fee_percent: Commission on base freight (matrix price), before VAT. Leave empty to use PLATFORM_FEE_PERCENT from environment.
     help_billing_company_payment_due_days: Leave empty so the due date equals the invoice issue date; otherwise enter days after the issue date (e.g. 5).

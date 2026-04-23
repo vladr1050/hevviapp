@@ -53,6 +53,8 @@ sonata_admin:
                 items:
                     -   route: admin_app_appsettings_list
                         label: menu.appsettings
+                    -   route: admin_app_termsofuserevision_list
+                        label: menu.terms_of_use
                     -   route: admin_app_billingcompany_list
                         label: menu.companies
             service_areas:
@@ -224,6 +226,19 @@ services:
                 controller:                App\Controller\Admin\AppSettingsAdminController
                 manager_type:              orm
                 label:                     menu.appsettings
+                label_translator_strategy: sonata.admin.label.strategy.underscore
+                show_in_roles_matrix:      false
+        calls:
+            - [ setTranslationDomain, [ 'AppBundle' ] ]
+
+    App\Admin\TermsOfUseRevisionAdmin:
+        tags:
+            -   name:                      sonata.admin
+                code:                      ~
+                model_class:               App\Entity\TermsOfUseRevision
+                controller:                ~
+                manager_type:              orm
+                label:                     menu.terms_of_use
                 label_translator_strategy: sonata.admin.label.strategy.underscore
                 show_in_roles_matrix:      false
         calls:

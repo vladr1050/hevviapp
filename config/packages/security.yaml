@@ -72,6 +72,7 @@ security:
         - { path: ^/api/auth/refresh$, role: PUBLIC_ACCESS }
         - { path: ^/api/auth/logout$, role: PUBLIC_ACCESS }
         - { path: ^/api/public/, role: PUBLIC_ACCESS }
+        - { path: ^/api/terms/current$, role: IS_AUTHENTICATED_FULLY }
         - { path: ^/api/auth/me$, role: IS_AUTHENTICATED_FULLY }
         - { path: ^/logout$, role: PUBLIC_ACCESS }
         - { path: ^/files/, role: IS_AUTHENTICATED_FULLY }

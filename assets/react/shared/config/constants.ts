@@ -4,6 +4,9 @@ export const PHONE = '+37122334455'
 
 export const PUBLIC_SUPPORT_CONTACT_URL = '/api/public/support-contact'
 
+/** Current published Terms & Conditions HTML for the logged-in portal user (JWT). */
+export const TERMS_CURRENT_URL = '/api/terms/current'
+
 export const EMPTY_STRING = '—'
 
 

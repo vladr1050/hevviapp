@@ -1,8 +1,12 @@
 import type { FC } from 'react'
+import { useEffect, useState } from 'react'
 
+import { apiFetchCurrentTerms, type TermsCurrentResponse } from '@api/termsApi'
 import { AccountType, EMPTY_STRING } from '@config/constants'
+import { useAuth } from '@hooks/useAuth'
 import { DeviceType, useDevice } from '@hooks/useDevice'
 import { CircleChart } from '@ui/CircleChart/CircleChart'
+import { Modal } from '@ui/Modal/Modal'
 import { cn } from '@utils/cn'
 
 import styles from './Profile.module.css'
@@ -35,9 +39,61 @@ interface ProfilePageProps {
 
 export const ProfilePage: FC<ProfilePageProps> = (props) => {
 	const { title, accountType, isCarrier, user, orders, device } = props
-	console.log(props)
+	const [termsOpen, setTermsOpen] = useState(false)
+	const [termsLoading, setTermsLoading] = useState(false)
+	const [termsError, setTermsError] = useState<string | null>(null)
+	const [termsData, setTermsData] = useState<TermsCurrentResponse | null>(null)
+
+	const { getValidAccessToken } = useAuth()
 
 	const { isMobile } = useDevice(device)
+
+	useEffect(() => {
+		if (!termsOpen) {
+			return
+		}
+
+		let cancelled = false
+
+		;(async () => {
+			setTermsLoading(true)
+			setTermsError(null)
+
+			const token = await getValidAccessToken()
+			if (!token) {
+				if (!cancelled) {
+					setTermsLoading(false)
+					setTermsError('Not signed in or session expired.')
+				}
+				return
+			}
+
+			try {
+				const data = await apiFetchCurrentTerms(token)
+				if (!cancelled) {
+					setTermsData(data)
+				}
+			} catch (e) {
+				if (!cancelled) {
+					setTermsData(null)
+					setTermsError(e instanceof Error ? e.message : 'Could not load terms.')
+				}
+			} finally {
+				if (!cancelled) {
+					setTermsLoading(false)
+				}
+			}
+		})()
+
+		return () => {
+			cancelled = true
+		}
+	}, [termsOpen, getValidAccessToken])
+
+	const closeTerms = () => {
+		setTermsOpen(false)
+		setTermsError(null)
+	}
 
 	if (isMobile) return <MobilePage />
 
@@ -112,6 +168,12 @@ export const ProfilePage: FC<ProfilePageProps> = (props) => {
 							<div className={styles.label}>E-mail</div>
 							<div className={styles.value}>{user?.email || EMPTY_STRING}</div>
 						</div>
+
+						<div className={styles.hr} />
+
+						<button type="button" className={styles.termsLink} onClick={() => setTermsOpen(true)}>
+							Terms & Conditions
+						</button>
 					</div>
 				</div>
 
@@ -201,6 +263,35 @@ export const ProfilePage: FC<ProfilePageProps> = (props) => {
 					</>
 				)}
 			</div>
+
+			<Modal isOpen={termsOpen} onClose={closeTerms} maxWidth="min(92vw, 720px)">
+				<div className={styles.termsModal}>
+					<div className={styles.termsModalHeader}>
+						<h2 className={styles.termsModalTitle}>
+							{termsData?.title?.trim() ? termsData.title : 'Terms & Conditions'}
+						</h2>
+						{termsData?.subtitle ? <p className={styles.termsModalSubtitle}>{termsData.subtitle}</p> : null}
+						{termsData ? (
+							<div className={styles.termsModalMeta}>
+								Version {termsData.version}
+								{termsData.publishedAt ? ` · ${new Date(termsData.publishedAt).toLocaleDateString()}` : ''}
+							</div>
+						) : null}
+					</div>
+
+					<div className={styles.termsModalScroll}>
+						{termsLoading ? <p className={styles.termsModalMessage}>Loading…</p> : null}
+						{termsError ? <p className={styles.termsModalError}>{termsError}</p> : null}
+						{!termsLoading && !termsError && termsData ? (
+							<div
+								className={styles.termsModalHtml}
+								// Trusted HTML from Sonata (admin-only). Do not pass user-generated content here.
+								dangerouslySetInnerHTML={{ __html: termsData.html }}
+							/>
+						) : null}
+					</div>
+				</div>
+			</Modal>
 		</div>
 	)
 }

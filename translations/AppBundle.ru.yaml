@@ -37,6 +37,7 @@ menu:
     notifications:      Email-уведомления
     notification_rules: Правила уведомлений
     notification_logs:  Журнал уведомлений
+    terms_of_use:        Условия пользования (портал)
 
 breadcrumb:
     link_user_list:          Список пользователей
@@ -56,6 +57,10 @@ breadcrumb:
     link_invoice_list:          Счета
     link_document_list:         Документы заказов (PDF)
     link_document_show:         Документ
+    link_terms_of_use_list:     Условия пользования
+    link_terms_of_use_create:   Создать редакцию
+    link_terms_of_use_edit:     Редактировать редакцию
+    link_terms_of_use_show:     Редакция условий
 
 filter:
     label_order_number:           Номер заказа
@@ -73,6 +78,8 @@ filter:
     label_mileage_from:           Километраж от
     label_mileage_to:             Километраж до
     label_price:                  Цена
+    label_terms_audience:         Аудитория
+    label_terms_status:           Статус редакции
 
 list:
     label_order_number:         Номер заказа
@@ -134,6 +141,11 @@ list:
     label_document_issued_at:          Дата выставления
     label_document_sent_at:            Отправлено
     label_document_pdf:                PDF
+    label_terms_audience:              Аудитория
+    label_terms_version:               Версия
+    label_terms_status:                Статус
+    label_terms_title:                 Заголовок
+    label_terms_published_at:          Дата публикации
 
 show:
     label_order_number:       Номер заказа
@@ -238,6 +250,14 @@ show:
     label_document_issued_at:          Дата выставления
     label_document_sent_at:            Отправлено
     label_document_pdf:                PDF
+    label_terms_id:                    ID редакции
+    label_terms_audience:              Аудитория
+    label_terms_version:               Версия
+    label_terms_status:                Статус
+    label_terms_title:                 Заголовок
+    label_terms_subtitle:              Подзаголовок
+    label_terms_body_html:             Текст (HTML)
+    label_terms_published_at:          Дата публикации
     label_appsettings_restrict: Ограничение по географии
     label_appsettings_country_codes: Коды стран
     label_appsettings_bbox_min_lat: BBox мин. широта
@@ -282,6 +302,15 @@ form:
     group_billing_company_address:     Юридический адрес
     group_billing_company_contacts:    Банк и контакты
     group_billing_company_invoicing:   Условия счёта
+    group_terms:                       Условия пользования
+    label_terms_audience:              Аудитория (портал)
+    label_terms_title:               Заголовок модалки
+    label_terms_subtitle:            Подзаголовок (необязательно)
+    label_terms_body_html:           Текст HTML
+    label_terms_status:              Статус редакции
+    help_terms_audience:             После создания редакции аудиторию изменить нельзя.
+    help_terms_body_html:            Доверенный HTML в модальном окне портала: заголовки, списки, таблицы.
+    help_terms_status:               Для каждой аудитории активна только одна редакция «Опубликовано»; предыдущие помечаются как «Снята с публикации».
     help_billing_company_vat_rate:     Процент НДС для расчётов по счетам от этой компании (например, 21 для 21%).
     help_billing_company_platform_fee_percent: Комиссия от базовой стоимости доставки (цена из матрицы), до НДС. Пусто — берётся PLATFORM_FEE_PERCENT из окружения.
     help_billing_company_payment_due_days: Оставьте пустым — срок оплаты совпадает с датой выставления счёта; иначе укажите число дней после даты выставления (например, 5).

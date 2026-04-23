@@ -1,0 +1,10 @@
+{#
+ # Show block: HTML body preview (trusted admin content).
+ #}
+{% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %}
+
+{% block field %}
+    <div class="terms-admin-html-preview" style="max-height: 480px; overflow: auto; border: 1px solid #ddd; padding: 12px; background: #fff;">
+        {{ value|default('')|raw }}
+    </div>
+{% endblock %}
