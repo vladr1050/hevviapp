@@ -67,23 +67,39 @@ final class OrderDeliveredDocumentService
 
     private function doIssue(Order $order): void
     {
+        $orderId = $order->getId()?->toRfc4122();
+
         $carrier = $order->getCarrier();
         if ($carrier === null) {
+            $this->logger->warning('Delivered documents skipped: order has no carrier', ['order_id' => $orderId]);
+
             return;
         }
 
         $invoice = $this->invoiceRepository->findLatestWithPdfForOrder($order);
         if ($invoice === null) {
+            $this->logger->warning(
+                'Delivered documents skipped: no invoice with PDF for order (pdf_relative_path required)',
+                ['order_id' => $orderId],
+            );
+
             return;
         }
 
         $sender = $order->getSender();
         if (!$sender instanceof User) {
+            $this->logger->warning('Delivered documents skipped: sender is not a User entity', ['order_id' => $orderId]);
+
             return;
         }
 
         $issuer = $this->billingCompanyRepository->findIssuingCompany();
         if (!$issuer instanceof BillingCompany) {
+            $this->logger->warning(
+                'Delivered documents skipped: no issuing billing company (issues_invoices)',
+                ['order_id' => $orderId],
+            );
+
             return;
         }
 
@@ -203,6 +219,14 @@ final class OrderDeliveredDocumentService
                 $carrierDoc,
             );
         }
+
+        $this->logger->info('Delivered documents pipeline completed', [
+            'order_id' => $orderId,
+            'customer_doc_id' => $customerDoc?->getId()?->toRfc4122(),
+            'customer_pdf' => $customerDoc?->getFilePath(),
+            'carrier_doc_id' => $carrierDoc?->getId()?->toRfc4122(),
+            'carrier_pdf' => $carrierDoc?->getFilePath(),
+        ]);
     }
 
     /**
