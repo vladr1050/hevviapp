@@ -753,27 +753,6 @@
             max-width: 55%;
         }
 
-        .service-header-row--carrier-dates {
-            align-items: flex-start;
-        }
-
-        .service-date-stack {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 3px;
-            flex-shrink: 0;
-            max-width: 52%;
-            text-align: right;
-        }
-
-        .service-date-stack .service-date-line {
-            font-weight: 600;
-            font-size: 8px;
-            line-height: 10px;
-            color: #000;
-        }
-
         /* Content-width columns; gaps = equal free space (Figma primary axis “Auto” / space-between). */
         .service-grid {
             display: flex;
@@ -1398,17 +1377,6 @@
                                     <div class="field-value">{{ carrier_iban|default('—') }}</div>
                                 </div>
                             </div>
-                            <div class="party-card__footer">
-                                <div class="party-card__footer-row">
-                                    <span class="party-card__footer-label">Summa (bez PVN)</span>
-                                    <span class="party-card__footer-value">{{ party_carrier_net|default('—') }}</span>
-                                </div>
-                                <div class="party-card__footer-row">
-                                    <span class="party-card__footer-label">PVN {{ vat_percent_label }}%</span>
-                                    <span class="party-card__footer-value">{{ party_carrier_vat|default('—') }}</span>
-                                </div>
-                                <div class="party-card__footer-kopa">KOPĀ: {{ party_carrier_gross|default('—') }}</div>
-                            </div>
                         </article>
                         <article class="party-card">
                             <div class="party-card__header">
@@ -1442,17 +1410,6 @@
                                     <div class="field-label">IBAN:</div>
                                     <div class="field-value">{{ seller_iban|default('—') }}</div>
                                 </div>
-                            </div>
-                            <div class="party-card__footer">
-                                <div class="party-card__footer-row">
-                                    <span class="party-card__footer-label">Summa (bez PVN)</span>
-                                    <span class="party-card__footer-value">{{ party_platform_net|default('—') }}</span>
-                                </div>
-                                <div class="party-card__footer-row">
-                                    <span class="party-card__footer-label">PVN {{ issuer_vat_percent_label }}%</span>
-                                    <span class="party-card__footer-value">{{ party_platform_vat|default('—') }}</span>
-                                </div>
-                                <div class="party-card__footer-kopa">KOPĀ: {{ party_platform_gross|default('—') }}</div>
                             </div>
                         </article>
                         <article class="party-card">
@@ -1670,15 +1627,12 @@
                             </div>
                         </div>
                     {% elseif document_type|default('') == 'CARRIER_INVOICE' %}
-                        <div class="service-header-row service-header-row--carrier-dates">
+                        <div class="service-header-row">
                             <div class="service-title-row">
                                 <span class="icon-bubble icon-bubble--service" aria-hidden="true"><img src="invoice-assets/delivered-1.svg" alt=""></span>
                                 <span class="service-title-text">Pakalpojums</span>
                             </div>
-                            <div class="service-date-stack">
-                                <div class="service-date-line">Rēķina datums: {{ issue_date }}</div>
-                                <div class="service-date-line">Pakalpojuma sniegšanas datums: {{ service_date }}</div>
-                            </div>
+                            <div class="service-date">Pakalpojuma sniegšanas datums: {{ service_date }}</div>
                         </div>
                         <hr class="service-divider" />
                         <div class="service-line-table service-line-table--7" role="presentation">
