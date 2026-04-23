@@ -323,7 +323,7 @@ form:
     label_terms_body_html:           HTML body
     label_terms_status:              Revision status
     help_terms_audience:             Cannot be changed after the revision is created.
-    help_terms_body_html:            Trusted HTML shown in the portal modal. Use headings, lists, and tables as needed.
+    help_terms_body_html:            'Portal modal: line breaks are kept for plain text. For headings, lists, and tables, use HTML (e.g. <h2>, <ul>, <li>, <table>).'
     help_terms_status:               Only one Published revision per audience is active; older published rows become Superseded automatically.
     help_billing_company_vat_rate:     Percent used for VAT on invoices from this company (e.g. 21 for 21%).
     help_billing_company_platform_fee_percent: Commission on base freight (matrix price), before VAT. Leave empty to use PLATFORM_FEE_PERCENT from environment.

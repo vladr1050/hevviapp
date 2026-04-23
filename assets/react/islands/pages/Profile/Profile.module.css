@@ -176,8 +176,12 @@
 	@apply m-0 text-sm text-red-600;
 }
 
+/* Plain text from admin keeps line breaks; real HTML (h2, ul, table) still works. */
 .termsModalHtml {
 	@apply text-sm font-normal text-black leading-relaxed;
+	white-space: pre-line;
+	overflow-wrap: anywhere;
+	word-break: break-word;
 }
 
 .termsModalHtml :global(h1),
