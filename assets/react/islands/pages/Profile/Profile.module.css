@@ -184,23 +184,62 @@
 	word-break: break-word;
 }
 
-.termsModalHtml :global(h1),
-.termsModalHtml :global(h2),
+/* Optional classes for admin HTML (see docs / admin help): .terms-doc-subtitle, .terms-doc-meta */
+.termsModalHtml :global(.terms-doc-subtitle) {
+	@apply block italic text-sm text-black/75 mb-1 leading-snug;
+}
+
+.termsModalHtml :global(.terms-doc-meta) {
+	@apply block text-xs text-black/60 mb-5 leading-snug;
+}
+
+.termsModalHtml :global(h1) {
+	@apply text-lg font-bold text-black uppercase tracking-wide mb-3 mt-0 leading-tight;
+}
+
+.termsModalHtml :global(h2) {
+	@apply text-base font-semibold text-black mt-6 mb-2 first:mt-0;
+}
+
 .termsModalHtml :global(h3) {
-	@apply font-semibold text-black mt-4 mb-2 first:mt-0;
+	@apply text-sm font-semibold text-black mt-4 mb-2;
+}
+
+.termsModalHtml :global(hr) {
+	@apply my-5 border-0 h-0.5 rounded-sm bg-blue-600;
 }
 
 .termsModalHtml :global(p) {
 	@apply mb-3 last:mb-0;
 }
 
+.termsModalHtml :global(dl) {
+	@apply mb-4 space-y-3;
+}
+
+.termsModalHtml :global(dt) {
+	@apply font-bold text-black;
+}
+
+.termsModalHtml :global(dd) {
+	@apply m-0 mb-4 text-black/90 leading-relaxed last:mb-0;
+}
+
 .termsModalHtml :global(ul),
 .termsModalHtml :global(ol) {
-	@apply mb-3 pl-5;
+	@apply mb-4 pl-5 list-outside;
+}
+
+.termsModalHtml :global(ol) {
+	@apply list-decimal;
+}
+
+.termsModalHtml :global(ul) {
+	@apply list-disc;
 }
 
 .termsModalHtml :global(li) {
-	@apply mb-1;
+	@apply mb-1.5 pl-1;
 }
 
 .termsModalHtml :global(table) {
