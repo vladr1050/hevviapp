@@ -753,6 +753,27 @@
             max-width: 55%;
         }
 
+        .service-header-row--carrier-dates {
+            align-items: flex-start;
+        }
+
+        .service-date-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 3px;
+            flex-shrink: 0;
+            max-width: 52%;
+            text-align: right;
+        }
+
+        .service-date-stack .service-date-line {
+            font-weight: 600;
+            font-size: 8px;
+            line-height: 10px;
+            color: #000;
+        }
+
         /* Content-width columns; gaps = equal free space (Figma primary axis “Auto” / space-between). */
         .service-grid {
             display: flex;
@@ -889,6 +910,41 @@
 
         .service-line-table__value--strong {
             font-weight: 600;
+        }
+
+        /* CARRIER_INVOICE: septiņas kolonnas (Partneris + Pakalpojums + …) */
+        .service-line-table--7 {
+            gap: 2px;
+        }
+
+        .service-line-table--7 .service-line-table__col {
+            flex: 1 1 0;
+        }
+
+        .service-line-table--7 .service-line-table__col--partner {
+            flex: 1.05 1 0;
+            min-width: 40px;
+        }
+
+        .service-line-table--7 .service-line-table__col--pakalpojums {
+            flex: 1.12 1 0;
+            min-width: 44px;
+        }
+
+        .service-line-table--7 .service-line-table__value--multiline {
+            white-space: normal;
+            font-size: 7px;
+            line-height: 9px;
+        }
+
+        .service-line-table--7 .service-line-table__label {
+            font-size: 6.2px;
+            line-height: 7.5px;
+        }
+
+        .service-line-table--7 .service-line-table__value {
+            font-size: 7.5px;
+            line-height: 9px;
         }
 
         /* Maksājuma paziņojums: KOPĀ APMAKSAI banner (Figma #D7FF01) */
@@ -1614,38 +1670,45 @@
                             </div>
                         </div>
                     {% elseif document_type|default('') == 'CARRIER_INVOICE' %}
-                        <div class="service-header-row">
+                        <div class="service-header-row service-header-row--carrier-dates">
                             <div class="service-title-row">
                                 <span class="icon-bubble icon-bubble--service" aria-hidden="true"><img src="invoice-assets/delivered-1.svg" alt=""></span>
                                 <span class="service-title-text">Pakalpojums</span>
                             </div>
-                            <div class="service-date">Pakalpojuma sniegšanas datums: {{ service_date }}</div>
+                            <div class="service-date-stack">
+                                <div class="service-date-line">Rēķina datums: {{ issue_date }}</div>
+                                <div class="service-date-line">Pakalpojuma sniegšanas datums: {{ service_date }}</div>
+                            </div>
                         </div>
                         <hr class="service-divider" />
-                        <div class="service-grid service-grid--delivered-split">
-                            <div class="service-cell">
-                                <div class="service-label-lines">
-                                    <span class="service-label-line">Kravas piegādes</span>
-                                    <span class="service-label-line">maksa (bez PVN)</span>
-                                </div>
-                                <div class="service-value">{{ amount_freight }}</div>
+                        <div class="service-line-table service-line-table--7" role="presentation">
+                            <div class="service-line-table__col service-line-table__col--partner">
+                                <div class="service-line-table__label">Partneris</div>
+                                <div class="service-line-table__value service-line-table__value--multiline">{{ carrier_partner_display }}</div>
                             </div>
-                            <div class="service-cell">
-                                <div class="service-label-lines">
-                                    <span class="service-label-line">PVN</span>
-                                    <span class="service-label-line">{{ vat_percent_label }}%</span>
-                                </div>
-                                <div class="service-value">{{ amount_vat }}</div>
+                            <div class="service-line-table__col service-line-table__col--pakalpojums">
+                                <div class="service-line-table__label">Pakalpojums</div>
+                                <div class="service-line-table__value service-line-table__value--multiline">Kravas pārvadājumi.{% if vehicle_plate|default('') != '' and vehicle_plate != '—' %}<br>Auto reģ. Nr.: {{ vehicle_plate }}{% endif %}</div>
                             </div>
-                        </div>
-                        <div class="payment-notice-total-banner" style="margin-top: 12px;">
-                            <div class="payment-notice-total-banner__left">
-                                <p class="payment-notice-total-banner__title">KOPĀ APMAKSAI:</p>
-                                <p class="payment-notice-total-banner__hint">Apmaksājot rēķinu, nepieciešams norādīt rēķina numuru: {{ invoice_number }}</p>
+                            <div class="service-line-table__col">
+                                <div class="service-line-table__label">Daudzums</div>
+                                <div class="service-line-table__value">1 gab</div>
                             </div>
-                            <div class="payment-notice-total-banner__right">
-                                <span class="payment-notice-total-banner__amount">{{ invoice_total_gross_number|default(amount_gross_number) }}</span>
-                                <span class="payment-notice-total-banner__currency">{{ invoice_currency }}</span>
+                            <div class="service-line-table__col">
+                                <div class="service-line-table__label">Summa bez PVN</div>
+                                <div class="service-line-table__value">{{ amount_freight }}</div>
+                            </div>
+                            <div class="service-line-table__col">
+                                <div class="service-line-table__label">PVN likme</div>
+                                <div class="service-line-table__value">{{ vat_percent_label }}%</div>
+                            </div>
+                            <div class="service-line-table__col">
+                                <div class="service-line-table__label">PVN summa</div>
+                                <div class="service-line-table__value">{{ amount_vat }}</div>
+                            </div>
+                            <div class="service-line-table__col service-line-table__col--end">
+                                <div class="service-line-table__label">Total {{ invoice_currency }}</div>
+                                <div class="service-line-table__value service-line-table__value--strong">{{ amount_gross }}</div>
                             </div>
                         </div>
                     {% else %}
@@ -1762,21 +1825,20 @@
                             </div>
                             <div class="payment-info-col">
                                 <div class="field-label">Saņēmējs:</div>
-                                <div class="field-value">{{ payment_beneficiary|default('—') }}</div>
+                                <div class="field-value">{{ carrier_company }}</div>
                             </div>
                             <div class="payment-info-col">
                                 <div class="field-label">IBAN:</div>
-                                <div class="field-value">{{ payment_iban|default('—') }}</div>
+                                <div class="field-value">{{ carrier_iban|default('—') }}</div>
                             </div>
                             <div class="payment-info-col">
                                 <div class="field-label">Apmaksas termiņš:</div>
-                                <div class="field-value">{{ payment_due_date }}</div>
+                                <div class="field-value">{{ carrier_payment_due_date|default('—') }}</div>
                             </div>
                         </div>
                         <div class="payment-legal">
-                            <p>Rēķins sagatavots elektroniski un ir derīgs bez paraksta</p>
-                            <p>PVN piemērots saskaņā ar Pievienotās vērtības nodokļa likumu</p>
-                            <p>Šis rēķins attiecas uz pārvadājuma pakalpojumu atlīdzību. Hevvi App darbojas kā digitāla platforma starpniecībai; līgums par pārvadājumu tiek slēgts starp pārvadātāju un klientu atbilstoši platformas noteikumiem.</p>
+                            <p>Dokuments ir sagatavots elektroniski un ir derīgs bez paraksta.</p>
+                            <p>{{ seller_name }} (Hevvi App) izraksta šo rēķinu un darbojas kā maksājumu iekasēšanas starpnieks pārvadātāja vārdā un interesēs. Maksājums par pārvadājuma pakalpojumu tiek iekasēts pārvadātāja labā. Pārvadājuma pakalpojumu sniedz rēķinā norādītais pārvadātājs, kas darbojas savā vārdā un uz savu atbildību. {{ seller_name }} (Hevvi App) ieņēmumi sastāv tikai no platformas komisijas maksas. {{ seller_name }} (Hevvi App) nav pārvadātājs, ekspeditors vai pārvadājuma līguma puse un neuzņemas atbildību par kravu, tās zudumu, bojājumu vai pārvadājuma izpildi. Summas, kas iekasētas pārvadātāja vārdā, nav {{ seller_name }} (Hevvi App) ieņēmumi.</p>
                         </div>
                     {% else %}
                         <div class="payment-info-row payment-info-row--cols-2">

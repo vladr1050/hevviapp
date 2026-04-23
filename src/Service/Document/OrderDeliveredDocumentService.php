@@ -184,12 +184,14 @@ final class OrderDeliveredDocumentService
                 $ctx,
                 $invoice,
                 $carrier,
+                $order,
                 $carrierNet,
                 $carrierVat,
                 $carrierGross,
                 $customerNet,
                 $customerVat,
                 $customerGross,
+                $tz,
             );
 
             $carrierDoc = $this->persistRenderedDocument(
@@ -338,12 +340,14 @@ final class OrderDeliveredDocumentService
         array $ctx,
         Invoice $invoice,
         Carrier $carrier,
+        Order $order,
         int $carrierNetCents,
         int $carrierVatCents,
         int $carrierGrossCents,
         int $platformNetCents,
         int $platformVatCents,
         int $platformGrossCents,
+        \DateTimeZone $tz,
     ): array {
         $c = $invoice->getCurrency() ?? 'EUR';
         $ctx['amount_freight'] = $this->invoiceMoneyFormatter->formatCents($carrierNetCents, $c);
@@ -370,7 +374,29 @@ final class OrderDeliveredDocumentService
         $ctx['invoice_total_gross'] = $this->invoiceMoneyFormatter->formatCents($invoiceGross, $c);
         $ctx['invoice_total_gross_number'] = $this->invoiceMoneyFormatter->formatCentsNumber($invoiceGross);
 
+        $ctx['carrier_partner_display'] = sprintf(
+            '%s · %s',
+            trim((string) ($ctx['carrier_company'] ?? '—')),
+            trim((string) ($ctx['carrier_reg'] ?? '—')),
+        );
+        $ctx['carrier_payment_due_date'] = $this->formatCarrierPaymentDueDate($order, $tz);
+
         return $ctx;
+    }
+
+    /**
+     * Day after order delivery date (or day after “today” in Riga if delivery date missing).
+     */
+    private function formatCarrierPaymentDueDate(Order $order, \DateTimeZone $tz): string
+    {
+        $delivery = $order->getDeliveryDate();
+        if ($delivery !== null) {
+            $base = \DateTimeImmutable::createFromMutable(clone $delivery)->setTimezone($tz);
+        } else {
+            $base = new \DateTimeImmutable('now', $tz);
+        }
+
+        return $base->modify('+1 day')->format('d.m.Y');
     }
 
     /**
