@@ -52,6 +52,10 @@ class Carrier extends BaseSecurityDBO
     #[ORM\Column(length: 64, nullable: true)]
     private ?string $vatNumber = null;
 
+    /** VAT rate in percent on freight (e.g. 21 for 21%), used for carrier PDF invoice after delivery. Null = use invoice proportional VAT split. */
+    #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 4, nullable: true)]
+    private ?string $vatRate = null;
+
     #[ORM\Column(length: 34, nullable: true)]
     private ?string $iban = null;
 
@@ -204,6 +208,23 @@ class Carrier extends BaseSecurityDBO
     public function setVatNumber(?string $vatNumber): static
     {
         $this->vatNumber = $vatNumber;
+
+        return $this;
+    }
+
+    public function getVatRate(): ?string
+    {
+        return $this->vatRate;
+    }
+
+    public function setVatRate(?string $vatRate): static
+    {
+        if ($vatRate === null || trim($vatRate) === '') {
+            $this->vatRate = null;
+
+            return $this;
+        }
+        $this->vatRate = $vatRate;
 
         return $this;
     }

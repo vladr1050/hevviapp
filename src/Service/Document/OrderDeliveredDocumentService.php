@@ -131,7 +131,8 @@ final class OrderDeliveredDocumentService
         $customerGross = $customerNet + $customerVat;
 
         $carrierNet = $freight;
-        $carrierVat = $allocVat($freight);
+        $carrierVatFromProfile = $this->carrierVatCentsFromProfile($carrier, $carrierNet);
+        $carrierVat = $carrierVatFromProfile ?? $allocVat($freight);
         $carrierGross = $carrierNet + $carrierVat;
 
         $customerDoc = $this->documentRepository->findOneByOrderAndType($order, DocumentType::CUSTOMER_INVOICE);
@@ -340,7 +341,29 @@ final class OrderDeliveredDocumentService
         $ctx['payment_beneficiary'] = $this->carrierPayoutBeneficiaryLine($carrier);
         $ctx['payment_iban'] = $this->optionalIbanLine($carrier->getIban());
 
+        $rateRaw = $carrier->getVatRate();
+        if ($rateRaw !== null && trim((string) $rateRaw) !== '') {
+            $ctx['vat_percent_label'] = $this->invoicePdfContextBuilder->formatPercentForLabel((string) $rateRaw);
+        }
+
         return $ctx;
+    }
+
+    /**
+     * VAT cents on freight from carrier profile rate (exclusive: net * rate / 100). Null = use invoice split.
+     */
+    private function carrierVatCentsFromProfile(Carrier $carrier, int $netCents): ?int
+    {
+        $raw = $carrier->getVatRate();
+        if ($raw === null || trim((string) $raw) === '') {
+            return null;
+        }
+        $rate = (float) $raw;
+        if ($rate < 0.0 || $rate > 100.0) {
+            return null;
+        }
+
+        return (int) round($netCents * $rate / 100.0);
     }
 
     private function carrierPayoutBeneficiaryLine(Carrier $carrier): string

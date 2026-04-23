@@ -330,6 +330,8 @@ form:
     label_fee:                 Сумма комиссии
     label_vat:                 Сумма НДС
     label_vat_number:          Номер НДС (VAT)
+    label_carrier_vat_rate_percent: Ставка НДС перевозчика (%)
+    help_carrier_vat_rate_percent: Используется в PDF счёте перевозчика после доставки (НДС от суммы фрахта без НДС). Оставьте пустым — останется пропорциональный разбив НДС из счёта заказа.
     label_iban:                IBAN
     label_bank_account_holder: Получатель платежа (как в банке)
     label_platform_fee_percent: Комиссия платформы (%)

@@ -357,6 +357,8 @@ form:
     label_company_registration_number: Company Registration Number
     label_company_address:             Company Address
     label_vat_number:                  VAT number
+    label_carrier_vat_rate_percent:    Carrier VAT rate (%)
+    help_carrier_vat_rate_percent:     Used for the carrier freight invoice PDF after delivery (VAT on freight net). Leave empty to keep the proportional VAT split from the order invoice.
     label_iban:                        IBAN
     label_bank_account_holder:         Account holder (as on bank records)
     label_platform_fee_percent:        Platform fee (%)

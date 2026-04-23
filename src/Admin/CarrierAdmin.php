@@ -76,6 +76,9 @@ class CarrierAdmin extends BaseAdmin
             ->add('address')
             ->add('registrationNumber')
             ->add('vatNumber')
+            ->add('vatRate', null, [
+                'label' => 'form.label_carrier_vat_rate_percent',
+            ])
             ->add('iban')
             ->add('bankAccountHolder')
             ->add('locale')
@@ -109,6 +112,11 @@ class CarrierAdmin extends BaseAdmin
             ->add('registrationNumber')
             ->add('vatNumber', null, [
                 'required' => false,
+            ])
+            ->add('vatRate', null, [
+                'required' => false,
+                'label' => 'form.label_carrier_vat_rate_percent',
+                'help' => 'form.help_carrier_vat_rate_percent',
             ])
             ->end()
             ->with('payment', [

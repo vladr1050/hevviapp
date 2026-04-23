@@ -150,6 +150,14 @@ final class InvoicePdfContextBuilder
         return $t !== '' ? $t : '—';
     }
 
+    /**
+     * Human-readable percent for PDF labels (e.g. carrier / issuer VAT rate).
+     */
+    public function formatPercentForLabel(string $decimal): string
+    {
+        return $this->formatPercentLabel($decimal);
+    }
+
     private function formatPercentLabel(string $decimal): string
     {
         $f = (float) $decimal;
