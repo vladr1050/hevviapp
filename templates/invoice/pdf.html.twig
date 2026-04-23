@@ -781,6 +781,73 @@
             font-weight: 600;
         }
 
+        /* CUSTOMER_INVOICE (pēc piegādes): viena horizontāla rinda — 6 kolonnas (Figma) */
+        .service-line-table {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end;
+            align-self: stretch;
+            width: 100%;
+            gap: 4px;
+            box-sizing: border-box;
+        }
+
+        .service-line-table__col {
+            flex: 1 1 0;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            gap: 6px;
+            align-items: flex-start;
+        }
+
+        .service-line-table__col--service {
+            flex: 1.25 1 58px;
+            min-width: 58px;
+        }
+
+        .service-line-table__col--service .service-line-table__value {
+            white-space: normal;
+            font-size: 8px;
+            line-height: 10px;
+        }
+
+        .service-line-table__col--end {
+            align-items: flex-end;
+            text-align: right;
+        }
+
+        .service-line-table__col--end .service-line-table__label,
+        .service-line-table__col--end .service-line-table__value {
+            text-align: right;
+            align-self: flex-end;
+        }
+
+        .service-line-table__label {
+            font-weight: 400;
+            font-size: 6.84145px;
+            line-height: 8px;
+            color: rgba(0, 0, 0, 0.4);
+            margin: 0;
+            padding: 0;
+        }
+
+        .service-line-table__value {
+            font-weight: 500;
+            font-size: 9.12193px;
+            line-height: 11px;
+            color: #000;
+            margin: 0;
+            padding: 0;
+            white-space: nowrap;
+        }
+
+        .service-line-table__value--strong {
+            font-weight: 600;
+        }
+
         /* Maksājuma paziņojums: KOPĀ APMAKSAI banner (Figma #D7FF01) */
         .payment-notice-total-banner {
             display: flex;
@@ -1445,30 +1512,30 @@
                             <div class="service-date">Pakalpojuma sniegšanas datums: {{ service_date }}</div>
                         </div>
                         <hr class="service-divider" />
-                        <div class="service-grid service-grid--delivered-split">
-                            <div class="service-cell">
-                                <div class="service-label-lines">
-                                    <span class="service-label-line">Hevvi.app komisija</span>
-                                    <span class="service-label-line">{{ fee_percent_label }}% (bez PVN)</span>
-                                </div>
-                                <div class="service-value">{{ amount_commission }}</div>
+                        <div class="service-line-table" role="presentation">
+                            <div class="service-line-table__col service-line-table__col--service">
+                                <div class="service-line-table__label">Pakalpojums</div>
+                                <div class="service-line-table__value">Platformas izmantošana</div>
                             </div>
-                            <div class="service-cell">
-                                <div class="service-label-lines">
-                                    <span class="service-label-line">PVN</span>
-                                    <span class="service-label-line">{{ vat_percent_label }}%</span>
-                                </div>
-                                <div class="service-value">{{ amount_vat }}</div>
+                            <div class="service-line-table__col">
+                                <div class="service-line-table__label">Daudzums</div>
+                                <div class="service-line-table__value">1 gab</div>
                             </div>
-                        </div>
-                        <div class="payment-notice-total-banner" style="margin-top: 12px;">
-                            <div class="payment-notice-total-banner__left">
-                                <p class="payment-notice-total-banner__title">KOPĀ APMAKSAI:</p>
-                                <p class="payment-notice-total-banner__hint">Apmaksājot rēķinu, nepieciešams norādīt rēķina numuru: {{ invoice_number }}</p>
+                            <div class="service-line-table__col">
+                                <div class="service-line-table__label">Summa bez PVN</div>
+                                <div class="service-line-table__value">{{ amount_commission }}</div>
                             </div>
-                            <div class="payment-notice-total-banner__right">
-                                <span class="payment-notice-total-banner__amount">{{ amount_gross_number }}</span>
-                                <span class="payment-notice-total-banner__currency">{{ invoice_currency }}</span>
+                            <div class="service-line-table__col">
+                                <div class="service-line-table__label">PVN likme</div>
+                                <div class="service-line-table__value">{{ issuer_vat_percent_label }}%</div>
+                            </div>
+                            <div class="service-line-table__col">
+                                <div class="service-line-table__label">PVN summa</div>
+                                <div class="service-line-table__value">{{ amount_vat }}</div>
+                            </div>
+                            <div class="service-line-table__col service-line-table__col--end">
+                                <div class="service-line-table__label">Total {{ invoice_currency }}</div>
+                                <div class="service-line-table__value service-line-table__value--strong">{{ amount_gross }}</div>
                             </div>
                         </div>
                     {% elseif document_type|default('') == 'CARRIER_INVOICE' %}
@@ -1604,14 +1671,13 @@
                                 <div class="field-value">{{ seller_iban|default('—') }}</div>
                             </div>
                             <div class="payment-info-col">
-                                <div class="field-label">Apmaksas termiņš:</div>
-                                <div class="field-value">{{ payment_due_date }}</div>
+                                <div class="field-label">Maksājuma statuss:</div>
+                                <div class="field-value">Apmaksāts</div>
                             </div>
                         </div>
                         <div class="payment-legal">
-                            <p>Rēķins sagatavots elektroniski un ir derīgs bez paraksta</p>
-                            <p>PVN piemērots saskaņā ar Pievienotās vērtības nodokļa likumu</p>
-                            <p>Šis rēķins attiecas uz Hevvi digitālās platformas komisijas maksu par starpniecību. Kravas pārvadājumu kā tādu sniedz neatkarīgs pārvadātājs savā vārdā; Hevvi App nav pārvadātājs un neuzņemas atbildību par pārvadājuma izpildi.</p>
+                            <p>Dokuments ir sagatavots elektroniski un ir derīgs bez paraksta.</p>
+                            <p>{{ seller_name }} (Hevvi App) izraksta šo rēķinu un darbojas kā maksājumu iekasēšanas starpnieks pārvadātāja vārdā un interesēs. Maksājums par pārvadājuma pakalpojumu tiek iekasēts pārvadātāja labā. Pārvadājuma pakalpojumu sniedz rēķinā norādītais pārvadātājs, kas darbojas savā vārdā un uz savu atbildību. {{ seller_name }} (Hevvi App) ieņēmumi sastāv tikai no platformas komisijas maksas. {{ seller_name }} (Hevvi App) nav pārvadātājs, ekspeditors vai pārvadājuma līguma puse un neuzņemas atbildību par kravu, tās zudumu, bojājumu vai pārvadājuma izpildi. Summas, kas iekasētas pārvadātāja vārdā, nav {{ seller_name }} (Hevvi App) ieņēmumi.</p>
                         </div>
                     {% elseif document_type|default('') == 'CARRIER_INVOICE' %}
                         <div class="payment-info-row payment-info-row--cols-4">

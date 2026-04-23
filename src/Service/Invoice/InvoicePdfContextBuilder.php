@@ -84,6 +84,10 @@ final class InvoicePdfContextBuilder
             'invoice_currency' => $c,
             'fee_percent_label' => $this->formatPercentLabel((string) $invoice->getFeePercent()),
             'vat_percent_label' => $this->formatPercentLabel((string) ($invoice->getVatRatePercent() ?? '0')),
+            /** VAT % from issuing legal entity (BillingCompany), for PDF lines that must reflect issuer profile, not only invoice snapshot. */
+            'issuer_vat_percent_label' => $this->formatPercentLabel((string) (
+                $issuerEntity?->getVatRate() ?? $invoice->getVatRatePercent() ?? '0'
+            )),
             'payment_method' => 'Bankas pārskaitījums',
             'payment_due_date' => $invoice->getDueDate()?->format('d.m.Y') ?? '—',
             'seller_iban' => $this->formatOptionalIban($issuerEntity?->getIban()),
