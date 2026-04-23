@@ -355,6 +355,34 @@
             font-weight: 600;
         }
 
+        .party-section--triple .party-card {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .party-card__totals {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 100%;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 0.5px solid #CCCCCC;
+        }
+
+        .party-card__totals .field-label {
+            font-size: 6.84145px;
+        }
+
+        .party-card__totals-kopaa {
+            font-weight: 600;
+            font-size: 9.12193px;
+            line-height: 11px;
+            color: #000;
+            margin: 0;
+            padding: 0;
+        }
+
         .party-card .icon-bubble--service img.party-card__bubble-partner {
             width: 11.28px;
             height: 11.28px;
@@ -1086,15 +1114,15 @@
                 <header class="invoice-header">
                     <div class="invoice-header-row">
                         <div class="invoice-header-left">
-                            {% if document_type|default('') == 'PAYMENT_NOTICE' %}
-                                <h1 class="invoice-title">Maksājuma paziņojums</h1>
+                            {% if document_type|default('') == 'PAYMENT_NOTICE' or document_type|default('') == 'CUSTOMER_INVOICE' %}
+                                <h1 class="invoice-title">Rēķins</h1>
                                 <div class="invoice-meta">
                                     <div class="invoice-meta-block">
-                                        <div class="invoice-meta-label">Paziņojuma Nr.</div>
+                                        <div class="invoice-meta-label">Rēķina Nr.</div>
                                         <div class="invoice-meta-value">{{ invoice_number }}</div>
                                     </div>
                                     <div class="invoice-meta-block">
-                                        <div class="invoice-meta-label">Paziņojuma datums</div>
+                                        <div class="invoice-meta-label">Rēķina datums:</div>
                                         <div class="invoice-meta-value">{{ issue_date }}</div>
                                     </div>
                                 </div>
@@ -1102,7 +1130,7 @@
                                 <h1 class="invoice-title">Rēķins</h1>
                                 <div class="invoice-meta">
                                     <div class="invoice-meta-block">
-                                        <div class="invoice-meta-label">{% if document_type|default('') == 'CUSTOMER_INVOICE' %}Rēķina Nr.{% else %}Rēķina Nr / Pasūtījuma Nr{% endif %}</div>
+                                        <div class="invoice-meta-label">{% if document_type|default('') == 'CARRIER_INVOICE' %}Rēķina Nr.{% else %}Rēķina Nr / Pasūtījuma Nr{% endif %}</div>
                                         <div class="invoice-meta-value">{{ invoice_number }}</div>
                                     </div>
                                     <div class="invoice-meta-block">
@@ -1125,74 +1153,127 @@
         <main class="invoice-main">
             <section class="party-section">
                 {% if document_type|default('') == 'PAYMENT_NOTICE' %}
-                    <div class="party-column">
-                        <div class="party-title">Maksājuma saņēmējs</div>
-                        <hr class="party-divider" />
-                        <div class="party-content">
-                            <div class="field-stack">
-                                <div class="field-label">Maksājuma saņēmējs</div>
-                                <div class="field-value">{{ seller_name }}</div>
+                    <div class="party-section party-section--triple">
+                        <article class="party-card">
+                            <div class="party-card__header">
+                                <span class="icon-bubble icon-bubble--service" aria-hidden="true"><img src="invoice-assets/delivered-1.svg" alt=""></span>
+                                <div class="party-card__head-text">
+                                    <p class="party-card__title">Pakalpojuma sniedzējs</p>
+                                    <p class="party-card__subtitle">Pārvadātājs</p>
+                                </div>
                             </div>
-                            <div class="field-row">
+                            <hr class="party-card__divider" />
+                            <div class="party-card__fields">
                                 <div class="field-stack">
-                                    <div class="field-label">Reģ. Nr.</div>
+                                    <div class="field-label">Uzņēmuma nosaukums:</div>
+                                    <div class="field-value">{{ carrier_company }}</div>
+                                </div>
+                                <div class="field-stack">
+                                    <div class="field-label">Reģ. Nr.:</div>
+                                    <div class="field-value">{{ carrier_reg }}</div>
+                                </div>
+                                <div class="field-stack">
+                                    <div class="field-label">PVN reģ. Nr.</div>
+                                    <div class="field-value">{{ carrier_vat }}</div>
+                                </div>
+                                <div class="field-stack">
+                                    <div class="field-label">Juridiskā adrese:</div>
+                                    {% for line in carrier_address_lines %}
+                                        <div class="field-value"{% if not loop.first %} style="margin-top: 4px;"{% endif %}>{{ line }}</div>
+                                    {% endfor %}
+                                </div>
+                                <div class="field-stack">
+                                    <div class="field-label">IBAN:</div>
+                                    <div class="field-value">{{ carrier_iban|default('—') }}</div>
+                                </div>
+                            </div>
+                            <div class="party-card__totals">
+                                <div class="field-stack">
+                                    <div class="field-label">Summa (bez PVN):</div>
+                                    <div class="field-value">{{ pn_carrier_freight_net }}</div>
+                                </div>
+                                <div class="field-stack">
+                                    <div class="field-label">PVN {{ pn_carrier_vat_percent_label }}%:</div>
+                                    <div class="field-value">{{ pn_carrier_freight_vat }}</div>
+                                </div>
+                                <p class="party-card__totals-kopaa">KOPĀ: {{ pn_carrier_freight_gross }}</p>
+                            </div>
+                        </article>
+                        <article class="party-card">
+                            <div class="party-card__header">
+                                <span class="icon-bubble icon-bubble--service" aria-hidden="true"><img class="party-card__bubble-partner" src="invoice-assets/fi-11450628.svg" alt=""></span>
+                                <div class="party-card__head-text">
+                                    <p class="party-card__title">Maksājuma saņēmējs</p>
+                                    <p class="party-card__subtitle">Hevvi App (komisija {{ fee_percent_label }}%) · Platforma</p>
+                                </div>
+                            </div>
+                            <hr class="party-card__divider" />
+                            <div class="party-card__fields">
+                                <div class="field-stack">
+                                    <div class="field-label">Uzņēmuma nosaukums:</div>
+                                    <div class="field-value">{{ seller_name }}</div>
+                                </div>
+                                <div class="field-stack">
+                                    <div class="field-label">Reģ. Nr.:</div>
                                     <div class="field-value">{{ seller_reg }}</div>
                                 </div>
                                 <div class="field-stack">
                                     <div class="field-label">PVN reģ. Nr.</div>
                                     <div class="field-value">{{ seller_vat }}</div>
                                 </div>
-                            </div>
-                            <div class="field-stack">
-                                <div class="field-label">Juridiskā adrese:</div>
-                                <div class="field-value">{{ seller_line1 }}</div>
-                                {% if seller_line2 %}<div class="field-value" style="margin-top: 4px;">{{ seller_line2 }}</div>{% endif %}
-                            </div>
-                            <div class="field-stack">
-                                <div class="field-label">Bankas konts:</div>
-                                <div class="field-value">{{ seller_iban|default('—') }}</div>
-                            </div>
-                            <div class="field-row">
                                 <div class="field-stack">
-                                    <div class="field-label">E-pasts:</div>
-                                    <div class="field-value">{{ seller_email }}</div>
-                                </div>
-                                <div class="field-stack">
-                                    <div class="field-label">Tālrunis:</div>
-                                    <div class="field-value">{{ seller_phone }}</div>
+                                    <div class="field-label">Juridiskā adrese:</div>
+                                    {% for line in seller_address_lines %}
+                                        <div class="field-value"{% if not loop.first %} style="margin-top: 4px;"{% endif %}>{{ line }}</div>
+                                    {% endfor %}
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="party-column">
-                        <div class="party-title">Maksātājs</div>
-                        <hr class="party-divider" />
-                        <div class="party-content">
-                            <div class="field-stack">
-                                <div class="field-label">Maksātājs</div>
-                                <div class="field-value">{{ buyer_company }}</div>
-                            </div>
-                            <div class="field-row">
+                            <div class="party-card__totals">
                                 <div class="field-stack">
-                                    <div class="field-label">Reģ. Nr.</div>
+                                    <div class="field-label">Summa (bez PVN):</div>
+                                    <div class="field-value">{{ pn_platform_commission_net }}</div>
+                                </div>
+                                <div class="field-stack">
+                                    <div class="field-label">PVN {{ pn_platform_vat_percent_label }}%:</div>
+                                    <div class="field-value">{{ pn_platform_commission_vat }}</div>
+                                </div>
+                                <p class="party-card__totals-kopaa">KOPĀ: {{ pn_platform_commission_gross }}</p>
+                            </div>
+                        </article>
+                        <article class="party-card">
+                            <div class="party-card__header">
+                                <span class="icon-bubble icon-bubble--service" aria-hidden="true"><img class="party-card__bubble-partner" src="invoice-assets/fi-552848.svg" alt=""></span>
+                                <div class="party-card__head-text">
+                                    <p class="party-card__title">Rēķina saņēmējs</p>
+                                    <p class="party-card__subtitle">Klients</p>
+                                </div>
+                            </div>
+                            <hr class="party-card__divider" />
+                            <div class="party-card__fields">
+                                <div class="field-stack">
+                                    <div class="field-label">Uzņēmuma nosaukums:</div>
+                                    <div class="field-value">{{ buyer_company }}</div>
+                                </div>
+                                <div class="field-stack">
+                                    <div class="field-label">Reģ. Nr.:</div>
                                     <div class="field-value">{{ buyer_reg }}</div>
                                 </div>
                                 <div class="field-stack">
                                     <div class="field-label">PVN reģ. Nr.</div>
                                     <div class="field-value">{{ buyer_vat }}</div>
                                 </div>
+                                <div class="field-stack">
+                                    <div class="field-label">Juridiskā adrese:</div>
+                                    {% for line in buyer_address_lines %}
+                                        <div class="field-value"{% if not loop.first %} style="margin-top: 4px;"{% endif %}>{{ line }}</div>
+                                    {% endfor %}
+                                </div>
+                                <div class="field-stack">
+                                    <div class="field-label">Bankas konts:</div>
+                                    <div class="field-value">{{ buyer_iban|default('—') }}</div>
+                                </div>
                             </div>
-                            <div class="field-stack">
-                                <div class="field-label">Adrese:</div>
-                                {% for line in buyer_address_lines %}
-                                    <div class="field-value"{% if not loop.first %} style="margin-top: 4px;"{% endif %}>{{ line }}</div>
-                                {% endfor %}
-                            </div>
-                            <div class="field-stack">
-                                <div class="field-label">Bankas konts:</div>
-                                <div class="field-value">{{ buyer_iban|default('—') }}</div>
-                            </div>
-                        </div>
+                        </article>
                     </div>
                 {% elseif document_type|default('') == 'CUSTOMER_INVOICE' %}
                     {# Divu kolonnu kā Maksājuma paziņojums: platforma (izrakstītājs) + pasūtītājs (saņēmējs) #}

@@ -95,6 +95,7 @@ final class InvoicePdfContextBuilder
             'carrier_company' => $this->lineOrDash($carrierEntity?->getLegalName()),
             'carrier_reg' => $this->lineOrDash($carrierEntity?->getRegistrationNumber()),
             'carrier_vat' => $this->formatOptionalVat($carrierEntity?->getVatNumber()),
+            'carrier_iban' => $this->formatOptionalIban($carrierEntity?->getIban()),
             'carrier_address_lines' => $this->addressToLines($carrierEntity?->getAddress()),
         ];
     }
