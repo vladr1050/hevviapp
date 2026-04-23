@@ -113,8 +113,7 @@ final class OrderDeliveredDocumentService
         );
 
         $tz = new \DateTimeZone('Europe/Riga');
-        $deliveredDocumentsIssueAt = new \DateTimeImmutable('now', $tz);
-        $nowDisplay = $deliveredDocumentsIssueAt->format('d.m.Y');
+        $nowDisplay = (new \DateTimeImmutable('now', $tz))->format('d.m.Y');
         $deliveredDisplay = $order->getDeliveryDate() !== null
             ? $order->getDeliveryDate()->format('d.m.Y')
             : $nowDisplay;
@@ -188,7 +187,9 @@ final class OrderDeliveredDocumentService
                 $carrierNet,
                 $carrierVat,
                 $carrierGross,
-                $deliveredDocumentsIssueAt,
+                $customerNet,
+                $customerVat,
+                $customerGross,
             );
 
             $carrierDoc = $this->persistRenderedDocument(
@@ -337,47 +338,39 @@ final class OrderDeliveredDocumentService
         array $ctx,
         Invoice $invoice,
         Carrier $carrier,
-        int $netCents,
-        int $vatCents,
-        int $grossCents,
-        \DateTimeImmutable $carrierInvoiceIssueAt,
+        int $carrierNetCents,
+        int $carrierVatCents,
+        int $carrierGrossCents,
+        int $platformNetCents,
+        int $platformVatCents,
+        int $platformGrossCents,
     ): array {
         $c = $invoice->getCurrency() ?? 'EUR';
-        $ctx['amount_freight'] = $this->invoiceMoneyFormatter->formatCents($netCents, $c);
-        $ctx['amount_subtotal'] = $this->invoiceMoneyFormatter->formatCents($netCents, $c);
-        $ctx['amount_vat'] = $this->invoiceMoneyFormatter->formatCents($vatCents, $c);
-        $ctx['amount_gross'] = $this->invoiceMoneyFormatter->formatCents($grossCents, $c);
-        $ctx['amount_gross_number'] = $this->invoiceMoneyFormatter->formatCentsNumber($grossCents);
+        $ctx['amount_freight'] = $this->invoiceMoneyFormatter->formatCents($carrierNetCents, $c);
+        $ctx['amount_subtotal'] = $this->invoiceMoneyFormatter->formatCents($carrierNetCents, $c);
+        $ctx['amount_vat'] = $this->invoiceMoneyFormatter->formatCents($carrierVatCents, $c);
+        $ctx['amount_gross'] = $this->invoiceMoneyFormatter->formatCents($carrierGrossCents, $c);
+        $ctx['amount_gross_number'] = $this->invoiceMoneyFormatter->formatCentsNumber($carrierGrossCents);
         $ctx['payment_beneficiary'] = $this->carrierPayoutBeneficiaryLine($carrier);
         $ctx['payment_iban'] = $this->optionalIbanLine($carrier->getIban());
-
-        $ctx['payment_due_date'] = $carrierInvoiceIssueAt->modify('+1 day')->format('d.m.Y');
 
         $rateRaw = $carrier->getVatRate();
         if ($rateRaw !== null && trim((string) $rateRaw) !== '') {
             $ctx['vat_percent_label'] = $this->invoicePdfContextBuilder->formatPercentForLabel((string) $rateRaw);
         }
 
-        $ctx['carrier_partner_display'] = $this->carrierPartnerDisplayLine($carrier);
-        $ctx['carrier_vat_percent_label'] = $rateRaw !== null && trim((string) $rateRaw) !== ''
-            ? $this->invoicePdfContextBuilder->formatPercentForLabel((string) $rateRaw)
-            : (string) ($ctx['vat_percent_label'] ?? '0');
+        $ctx['party_carrier_net'] = $this->invoiceMoneyFormatter->formatCents($carrierNetCents, $c);
+        $ctx['party_carrier_vat'] = $this->invoiceMoneyFormatter->formatCents($carrierVatCents, $c);
+        $ctx['party_carrier_gross'] = $this->invoiceMoneyFormatter->formatCents($carrierGrossCents, $c);
+        $ctx['party_platform_net'] = $this->invoiceMoneyFormatter->formatCents($platformNetCents, $c);
+        $ctx['party_platform_vat'] = $this->invoiceMoneyFormatter->formatCents($platformVatCents, $c);
+        $ctx['party_platform_gross'] = $this->invoiceMoneyFormatter->formatCents($platformGrossCents, $c);
+
+        $invoiceGross = (int) $invoice->getAmountGross();
+        $ctx['invoice_total_gross'] = $this->invoiceMoneyFormatter->formatCents($invoiceGross, $c);
+        $ctx['invoice_total_gross_number'] = $this->invoiceMoneyFormatter->formatCentsNumber($invoiceGross);
 
         return $ctx;
-    }
-
-    private function carrierPartnerDisplayLine(Carrier $carrier): string
-    {
-        $name = trim((string) ($carrier->getLegalName() ?? ''));
-        $reg = trim((string) ($carrier->getRegistrationNumber() ?? ''));
-        if ($name === '') {
-            return $reg !== '' ? 'Reģ. ' . $reg : '—';
-        }
-        if ($reg === '') {
-            return $name;
-        }
-
-        return $name . ', Reģ. ' . $reg;
     }
 
     /**

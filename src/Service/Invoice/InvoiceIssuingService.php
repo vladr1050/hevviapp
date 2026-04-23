@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Service\Invoice;
 
 use App\Entity\BillingCompany;
-use App\Entity\Carrier;
 use App\Entity\Document;
 use App\Entity\Invoice;
 use App\Entity\Order;
@@ -49,7 +48,6 @@ final class InvoiceIssuingService
         private readonly DocumentRepository $documentRepository,
         private readonly DocumentNumberFormatter $documentNumberFormatter,
         private readonly InvoicePdfContextBuilder $invoicePdfContextBuilder,
-        private readonly InvoiceMoneyFormatter $invoiceMoneyFormatter,
     ) {
     }
 
@@ -180,9 +178,8 @@ final class InvoiceIssuingService
             $issuer,
             'PAYMENT_NOTICE',
             $this->documentNumberFormatter->formatPaymentNoticeNumber((string) $invoice->getInvoiceNumber()),
-            $order->getCarrier(),
+            null,
         );
-        $ctx = $this->enrichPaymentNoticePartyAmounts($ctx, $invoice, $order->getCarrier());
 
         try {
             $html = $this->twig->render('invoice/pdf.html.twig', $ctx);
@@ -266,67 +263,6 @@ final class InvoiceIssuingService
         }
 
         $this->em->flush();
-    }
-
-    /**
-     * Per-party net / VAT / gross for PDF party cards (freight VAT uses carrier profile rate when set).
-     *
-     * @param array<string, mixed> $ctx
-     *
-     * @return array<string, mixed>
-     */
-    private function enrichPaymentNoticePartyAmounts(array $ctx, Invoice $invoice, ?Carrier $carrier): array
-    {
-        $c = $invoice->getCurrency() ?? 'EUR';
-        $subtotal = max(1, (int) $invoice->getAmountSubtotal());
-        $vatTotal = (int) $invoice->getAmountVat();
-        $freight = (int) $invoice->getAmountFreight();
-        $commission = (int) $invoice->getAmountCommission();
-
-        $allocVat = static function (int $part) use ($vatTotal, $subtotal): int {
-            return (int) round($vatTotal * ($part / $subtotal));
-        };
-
-        $freightVat = $this->freightVatCentsFromCarrierProfile($carrier, $freight, $allocVat);
-        $freightVat = min($freightVat, $vatTotal);
-        $commissionVat = max(0, $vatTotal - $freightVat);
-
-        $freightGross = $freight + $freightVat;
-        $commissionGross = $commission + $commissionVat;
-
-        $ctx['pn_carrier_freight_net'] = $this->invoiceMoneyFormatter->formatCents($freight, $c);
-        $ctx['pn_carrier_freight_vat'] = $this->invoiceMoneyFormatter->formatCents($freightVat, $c);
-        $ctx['pn_carrier_freight_gross'] = $this->invoiceMoneyFormatter->formatCents($freightGross, $c);
-
-        $ctx['pn_platform_commission_net'] = $this->invoiceMoneyFormatter->formatCents($commission, $c);
-        $ctx['pn_platform_commission_vat'] = $this->invoiceMoneyFormatter->formatCents($commissionVat, $c);
-        $ctx['pn_platform_commission_gross'] = $this->invoiceMoneyFormatter->formatCents($commissionGross, $c);
-
-        $rateRaw = $carrier?->getVatRate();
-        $ctx['pn_carrier_vat_percent_label'] = $rateRaw !== null && trim((string) $rateRaw) !== ''
-            ? $this->invoicePdfContextBuilder->formatPercentForLabel((string) $rateRaw)
-            : (string) ($ctx['vat_percent_label'] ?? '0');
-
-        $ctx['pn_platform_vat_percent_label'] = (string) ($ctx['issuer_vat_percent_label'] ?? $ctx['vat_percent_label'] ?? '0');
-
-        return $ctx;
-    }
-
-    private function freightVatCentsFromCarrierProfile(?Carrier $carrier, int $freightNet, callable $allocVat): int
-    {
-        if ($carrier === null) {
-            return $allocVat($freightNet);
-        }
-        $raw = $carrier->getVatRate();
-        if ($raw === null || trim((string) $raw) === '') {
-            return $allocVat($freightNet);
-        }
-        $rate = (float) $raw;
-        if ($rate < 0.0 || $rate > 100.0) {
-            return $allocVat($freightNet);
-        }
-
-        return (int) round($freightNet * $rate / 100.0);
     }
 
     private function normalizeDecimalString(float $f): string
