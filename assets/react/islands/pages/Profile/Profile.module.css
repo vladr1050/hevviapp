@@ -225,9 +225,11 @@
 	@apply m-0 mb-4 text-black/90 leading-relaxed last:mb-0;
 }
 
+/* Enough padding for two-digit list markers; pre-line on parent must not apply to li (clips "10." → "0.") */
 .termsModalHtml :global(ul),
 .termsModalHtml :global(ol) {
-	@apply mb-4 pl-5 list-outside;
+	@apply mb-4 pl-10 list-outside;
+	white-space: normal;
 }
 
 .termsModalHtml :global(ol) {
@@ -240,6 +242,7 @@
 
 .termsModalHtml :global(li) {
 	@apply mb-1.5 pl-1;
+	white-space: normal;
 }
 
 .termsModalHtml :global(table) {

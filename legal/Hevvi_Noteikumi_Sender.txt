@@ -1,0 +1,227 @@
+HEVVI APP — noteikumi nosūtītājiem (avota teksts)
+
+Ielieciet šeit pilnu dokumenta tekstu (latviski). No šī faila var ģenerēt HTML admin iestatījumiem.
+
+---
+
+(Paste full document body below this line.)
+
+HEVVI APP VISPARIGIE NOTEIKUMI NOSŪTĪTĀJIEM
+Piemērojami gan juridiskām personām (uzņēmumiem), gan privātpersonām
+
+SIA "Ampir" | Reģ. Nr. 50003849291 | Meža prospekts 15, Jūrmala, LV-2010
+
+SVARIGS PAZINOJUMS PRIVĀTPERSONĀM (PATĒRĒTĀJIEM):
+Ja Jūs esat fiziska persona, kas rīkojas ārpus savas saimnieciskās vai profesionālās darbības (patērētājs), uz Jums attiecas
+ar [TIKAI PRIVĀTPERSONĀM] apzīmētās normas, kas piešķir papildu tiesības saskaņā ar Patērētāju tiesību aizsardzības likumu.
+Normas, apzīmētas [TIKAI UZŅĒMUMIEM], attiecas tikai uz juridiskām personām un komersantiem.
+Normas bez apzīmējuma attiecas uz visiem Nosūtītājiem.
+
+Saturs
+1.  Definīcijas
+2.  Vispārīgie noteikumi
+3.  Pilnvarojumi
+4.  Pasūtījumu veikšana un atcelšana
+5.  Pārvadājuma izpildes apliecinājums
+6.  Pārvadājuma drošība, atbildība un apdrošināšana
+7.  Nokavējums, dīkstāve, pārvadājuma neizpildīšana
+8.  Pārvadājuma maksa, Hevvi App komisija un citi maksājumi
+9.  Pārvadātāju reitings
+10. Informācija, konfidencialitāte, privātuma noteikumi, intelektuālais īpašums
+11. Patērētāju (privātpersonu) likumiskās tiesības
+Pielikums – Maksas un termiņi
+
+1. Definīcijas
+Administrators – fiziska persona, kura ir tiesīga pārstāvēt Nosūtītāju kā: (i) tā likumiskais pārstāvis (valdes loceklis, prokūrists vai tml.) – attiecas uz juridiskām personām; (ii) reģistrējoties Platformā, norādīts Administrators; vai (iii) Administrators, kuru reģistrējis cits Administrators. Ja Nosūtītājs ir privātpersona, tā pati darbojas Administratora lomā.
+Hevvi App – SIA "Ampir", reģistrācijas numurs Latvijas Republikas Komercreģistrā 50003849291, juridiskā adrese: Meža prospekts 15, Jūrmala, LV-2010, kas darbojas ar zīmolu Hevvi App.
+Hevvi App Līgums – līgums starp Hevvi App un Nosūtītāju, kas tiek noslēgts reģistrējoties Platformā, un kas sastāv no šiem Noteikumiem, t.sk. Pielikuma, reģistrācijas procesā norādītiem Nosūtītāja datiem un īpašiem noteikumiem (ja tādi ir), ar visām izmaiņām, kas var tikt veiktas laiku pa laikam Noteikumos norādītajā kārtībā.
+Hevvi App komisija – atlīdzība, kuru Nosūtītājs maksā Hevvi App par katru Platformā noslēgtu Pārvadājuma līgumu, kas noteikta procentuālā izteiksmē no Pārvadājuma maksas vai kā fiksēta maksa par Pasūtījumu.
+Krava – manta, par kuras pārvadājumu Nosūtītājs un Pārvadātājs vienojušies Platformā ar Hevvi App starpniecību saskaņā ar Noteikumiem.
+Menedžeris – fiziska persona, kuru kā Menedžeri Platformā reģistrējis Administrators. Nav piemērojams privātpersonām.
+Nosūtītājs – juridiska vai fiziska persona (tajā skaitā privātpersona), kura reģistrēta darbībai Platformā Nosūtītāja statusā un kura pasūta pārvadājuma pakalpojumu Platformā. Nosūtītāja statuss nemainās arī tad, ja pārvadājums tiek uzsākts pie trešās personas.
+Noteikumi – šie Hevvi App Vispārīgie Noteikumi Nosūtītājiem un visi to grozījumi.
+Pasūtījums – pieprasījums veikt konkrētu pārvadājumu, kas tiek iesniegts Platformā.
+Pārvadājuma līgums – pārvadājuma līgums par konkrēta pārvadājuma veikšanu, kas tiek noslēgts starp Nosūtītāju un Pārvadātāju ar Platformas starpniecību šajos Noteikumos paredzētajā kārtībā.
+Papildu maksājumi – visi maksājumi, kuri saskaņā ar šiem Noteikumiem Nosūtītājam jāmaksā Pārvadātājam vai otrādi, tajā skaitā atcelšanas maksas, nokavējuma maksas un dīkstāves maksas, bet izņemot Pārvadājuma maksu.
+Pārvadājuma maksa – maksa par pārvadājuma pakalpojuma sniegšanu, kuru Nosūtītājs apņēmies samaksāt Pārvadātājam ar Hevvi App starpniecību saskaņā ar Pārvadājuma līgumu.
+Pārvadātājs – komersants, kurš reģistrēts darbībai Platformā Pārvadātāja statusā.
+Piegādes atskaite – dokuments, kas tiek automātiski izveidots Platformā un kas apliecina pārvadājuma izpildi un galvenās pārvadājuma ietvaros veiktās darbības.
+Pielikums – Noteikumu pielikums, kas veido to neatņemamu sastāvdaļu.
+Platforma – elektroniskā informācijas apmaiņas sistēma Hevvi App.
+Puse – Hevvi App vai Nosūtītājs; Puses – Hevvi App un Nosūtītājs kopā.
+PVN – pievienotās vērtības nodoklis, kas noteikts saskaņā ar Latvijas Republikas un ES tiesību aktiem.
+Saņēmējs – juridiska vai fiziska persona, kuru kā Kravas saņēmēju Pasūtījumā norādījis Nosūtītājs, tajā skaitā Nosūtītājs pats.
+Patērētājs – Nosūtītājs, kurš ir fiziska persona un kurš noslēdz Hevvi App Līgumu nolūkos, kas nav saistīti ar tā saimniecisko vai profesionālo darbību.
+
+2. Vispārīgie noteikumi
+2.1  Hevvi App Līgums ir noslēgts ar brīdi, kad Nosūtītājs reģistrējies Platformā. Hevvi App ir tiesības jebkurai personai atteikt reģistrēšanos Platformā, neatklājot atteikuma iemeslu. 
+2.2  Nosūtītājs apņemas izpildīt gan pret Hevvi App, gan pret Pārvadātājiem visus pienākumus, kas izriet no Hevvi App Līguma un Pārvadājuma līgumiem. Uzņēmumu Nosūtītāji uzņemas pilnu atbildību par visiem saviem Administratoriem, Menedžeriem un citiem pārstāvjiem.
+2.3  Hevvi App nodrošina Platformas darbību kā informācijas sabiedrības pakalpojumu sniedzējs, kas nodrošina tehnisku rīku Nosūtītājiem un Pārvadātājiem Pasūtījumu veikšanai un akceptēšanai (Pārvadājuma līgumu noslēgšanai), pārvadājuma izpildes apliecinājumu veikšanai, norēķiniem par pārvadājuma pakalpojumiem un citiem Noteikumos paredzētajiem pakalpojumiem.
+Hevvi App nodrošina tikai digitālu platformu, kas savieno Nosūtītājus ar neatkarīgiem Pārvadātājiem. Pārvadājuma līgums tiek noslēgts tieši starp Nosūtītāju un Pārvadātāju. Hevvi App nav šī līguma puse un neatbild par tā izpildi.
+2.4  Hevvi App informē Nosūtītāju, ka Pārvadātāji, reģistrējoties Platformā, uzņemas saistības pret Nosūtītāju atbilstoši Hevvi App Vispārīgajiem Noteikumiem Pārvadātājiem, tomēr Hevvi App neatbild par Pārvadātāju saistību izpildi, izņemot vienīgi Noteikumos nepārprotami paredzētos gadījumus.
+2.5  Hevvi App ir tiesības jebkurā laikā mainīt Hevvi App Līguma noteikumus, par būtiskām izmaiņām informējot Nosūtītāju Platformā vai ar atsevišķu paziņojumu. Patērētājiem būtiskas izmaiņas prasa atkārtotu akceptēšanu, un Patērētājs var izbeigt līgumu bez soda, ja akceptu neveic. Uzņēmumu Nosūtītājiem būtiskas izmaiņas ir spēkā ar nākamo darba dienu pēc paziņošanas.
+2.6  Jebkurai Pusei ir tiesības jebkurā laikā atcelt Nosūtītāja reģistrāciju Platformā, tādējādi izbeidzot Hevvi App Līgumu, neatklājot izbeigšanas iemeslu. Hevvi App Līguma izbeigšana neatbrīvo Puses no jau radušos saistību pilnīgas izpildes, tajā skaitā no 10. nodaļā paredzētajiem konfidencialitātes pienākumiem.
+2.7  Hevvi App ir tiesības apturēt pakalpojumu sniegšanu, ja Nosūtītājs pārkāpis Hevvi App Līguma, Pārvadājuma līguma vai piemērojamo tiesību aktu noteikumus.
+2.8  Visām tiesiskajām attiecībām piemērojami Latvijas Republikas tiesību akti, neskarot Patērētāja pastāvīgās dzīvesvietas valsts obligātās patērētāju tiesību aizsardzības normas.
+2.9  Strīdi starp Hevvi App un uzņēmumu Nosūtītājiem tiks risināti Latvijas Republikas tiesās pēc Hevvi App juridiskās adreses. Patērētāji var vērsties Patērētāju tiesību aizsardzības centrā (PTAC) vai izmantot alternatīvo strīdu risināšanu (ASR).
+2.10 Nosūtītāja apliecinājums	
+Nosūtītājs apzinās un piekrīt, ka:
+- pārvadājuma pakalpojumu sniedz Pārvadātājs;
+- Hevvi App darbojas tikai kā starpnieks;
+- visi ar pārvadājumu saistītie riski gulstas uz Pārvadātāju.
+2.11 Garantiju neesamība
+Hevvi App nesniedz nekādas garantijas attiecībā uz:
+- piegādes laiku;
+- pārvadājuma kvalitāti;
+- Pārvadātāja darbību.
+
+3. Pilnvarojumi
+3.1  [TIKAI UZŅĒMUMIEM]  Vienīgi Administratori ir tiesīgi Nosūtītāja vārdā piekrist Hevvi App Līguma izmaiņām, reģistrēt, dzēst un nomainīt Administratorus un Menedžerus, un paziņot par Nosūtītāja bankas konta maiņu saskaņā ar 8.9. punktu. Administratori ir tiesīgi veikt arī visas Menedžeru funkcijas.
+3.2  [TIKAI UZŅĒMUMIEM]  Menedžeri ir tiesīgi Nosūtītāja vārdā noslēgt un atcelt Pārvadājuma līgumus, pārstāvēt Nosūtītāju visos ar to izpildi saistītajos jautājumos, kā arī veikt citas darbības, kas paredzētas 4., 5. un 7. nodaļā, ciktāl Menedžera pilnvarojums nav Platformā ierobežots.
+3.3  Nosūtītājs piekrīt, ka autentifikācija Platformā notiek, pārbaudot pieslēgšanās akreditācijas datus neatkarīgi no izmantotās ierīces vai piekļuves veida (mobilā lietotne vai tīmekļa pārlūks). Nosūtītājs ir atbildīgs par to, lai Platformu izmantotu tikai no drošām un pilnvarotām ierīcēm, un apņemas atzīt par saistošām visas darbības, kas atbilstoši pilnvarojuma apjomiem veiktas ar attiecīgajiem pieslēgšanās akreditācijas datiem. Nosūtītājs uzņemas visus riskus par nesankcionētu piekļuvi Platformai neatkarīgi no izmantotās ierīces vai piekļuves veida.
+3.4  Nosūtītājs Kravas nodošanas un pieņemšanas vajadzībām atzīst personu identificēšanu pēc šādiem derīgiem dokumentiem: (i) pase; (ii) Latvijas Republikā vai citā ES dalībvalstī izdota personas apliecība (ID karte); (iii) Latvijas Republikā vai citā ES dalībvalstī izdota autovadītāja apliecība.
+
+4. Pasūtījumu veikšana un atcelšana
+4.1  Nosūtītāja veikts Pasūtījums ir pieejams visiem Platformā reģistrētajiem Pārvadātājiem, kuri atbilst Pasūtījumā norādītajiem kritērijiem (darbības teritorija, transporta līdzekļu parametri, darbalaiks, reitings u.tml.; Nosūtītājs ir tiesīgs norādīt vai izslēgt konkrētus Pārvadātājus). Līdz Pasūtījuma akceptēšanai Nosūtītāja identifikācija netiek atklāta. Pasūtījumus iespējams veikt fiksētās cenas procedūrā.
+4.2  Fiksētās cenas procedūra:
+4.2.1  Platformā var tikt rekomendēta fiksēta cena.
+4.2.2  Pārvadājuma līgums ir noslēgts ar to Pārvadātāju, kurš pirmais akceptē Pasūtījumu. Ja neviens Pārvadātājs noteiktajā laikā nav akceptējis cenu, Pasūtījums zaudē spēku un ir jāveic no jauna.
+4.2.3 Ja Nosūtītājs Platformā noteiktajā laikā ir akceptējis piedāvājumu, Pārvadājuma līgums ir noslēgts.
+4.2.4  Ja vairāki Pārvadātāji piedāvājuši vienādu cenu un nav mainījuši citus Pasūtījuma noteikumus, Pārvadājuma līgums ir noslēgts ar to Pārvadātāju, kurš savu Piedāvāto cenu iesniedzis agrāk.
+4.3 Pārvadājuma līgums sastāv no attiecīgajā Pasūtījumā norādītajiem noteikumiem, noteiktās cenas un 5.–8. nodaļās paredzētajiem noteikumiem.
+4.4  Nosūtītājs vai Pārvadātājs var atcelt noslēgtu Pārvadājuma līgumu, veicot Pielikumā noteiktos un/vai Platformā norādītos maksājumus (atkarībā no atcelšanas laika) vai neveicot maksājumus, ja tas paredzēts Pielikumā. Nosūtītājs un Pārvadātājs Platformā var vienoties par citādu atcelšanas maksu.
+4.6  [TIKAI PRIVĀTPERSONĀM]  Privātpersonai, kas veikusi Pasūtījumu uz nākotnes datumu, ir tiesības atcelt Pasūtījumu bez maksas vairāk kā 12 stundas pirms plānotā pārvadājuma uzsākšanas laika. Pasūtot tūlītēju pārvadājumu, Patērētājs skaidri lūdz nekavējoties uzsākt pakalpojuma sniegšanu un apzinās, ka pēc pārvadājuma uzsākšanas atteikuma tiesības neattiecas. Atmaksas gadījumā (piemēram, atcelšanas vai Pārvadātāja neizpildes gadījumā) Hevvi App veic atmaksu 14 dienu laikā uz sākotnējo maksājuma metodi.
+
+5. Pārvadājuma izpildes apliecinājums
+5.1  Kravas pieņemšanu pārvadājumam un piegādi galamērķī, kā arī citas pārvadājuma stadijas fiksē Platformas web lietotnē atbilstoši zemāk aprakstītajiem noteikumiem.
+Pārvadātājam nav tiesību saņemt samaksu no Hevvi App par pārvadājumiem, kuru izpilde nav pienācīgi fiksēta Platformas mobilajā lietotnē.
+5.2  Kravas pieņemšanu pārvadājumam savā Platformas Web lietotnē fiksē Pārvadājuma līgumā norādītais Pārvadātājs atbilstoši tur paredzētajiem norādījumiem.
+5.3  Kravas piegādi galamērķī Platformas Web lietotnē fiksē Pārvadājuma līgumā norādītais Pārvadātājs un/vai Saņēmēja pārstāvis un/vai Nosūtītājs atbilstoši lietotnē norādītajiem norādījumiem. 
+5.4  Nosūtītāja apstiprinājums:
+5.4.1  Par Kravas piegādi galamērķī Nosūtītājs pārliecinās, patstāvīgi sazinoties ar Saņēmēju, un apstiprina to Platformas Web lietotnē. Nosūtītāja apstiprinājums Platformā ir pietiekams.
+5.4.2  Ja krava piegādāta un Pārvadātājs ir mēģinājis apstiprināt piegādi, bet Nosūtītājs Platformā nav veicis apstiprinājumu, Nosūtītāja kavēšanās uzskatāma par dīkstāvi pie Kravas pieņemšanas.
+5.5  Papīra formas akts (pavadzīme):
+5.5.1  Kravas piegādi papīra formas aktā fiksē Autovadītājs un Saņēmēja pārstāvis, ierakstot identifikācijas datus un parakstot to. Ja nepieciešams, aktu Autovadītājam izsniedz Nosūtītājs iekraušanas brīdī. Vienu eksemplāru saglabā Pārvadātājs, pārējos nodod Nosūtītājam.
+5.6  Pārvadātāja apstiprinājums:
+5.6.1  Kravas piegādi galamērķī fiksē Pārvadātājs.
+5.6.2  Ja Kravas piegādes vietā nav Pārvadājuma līgumā norādītais Saņēmēja pārstāvis, Pārvadātājam ir jāsazinās ar Nosūtītāju.
+5.7  Nosūtītājs Pasūtījumā var noteikt prasību veikt izkrautās Kravas fotografēšanu. Šādā gadījumā piegādes apstiprinājumu var veikt tikai pēc fotoattēlu augšupielādēšanas. Hevvi App neveic fotoattēlu pārbaudi un neatbild par to saturu.
+5.8 Par Platformā fiksētu Kravas pieņemšanu un nodošanu Platformā tiek izveidota Piegādes atskaite un nosūtīta Nosūtītājam un Pārvadātājam uz Pārvadājuma līgumā norādītām e-pasta adresēm. Piegādes atskaite kalpo par pietiekamu apliecinājumu pārvadājuma pakalpojuma izpildei.
+5.9 Ja tas nepieciešams strīdu risināšanai vai iesniegšanai iestādēs, pēc Pārvadātāja pieprasījuma Hevvi App izsniedz Piegādes atskaiti, kas apliecināta ar kvalificētu elektronisko parakstu. 
+
+6. Pārvadājuma drošība, atbildība un apdrošināšana
+6.1  Reģistrējoties Platformā, Pārvadātāji apliecina, ka tiem ir visas nepieciešamās licences, atļaujas un apdrošināšana. Hevvi App ir tiesības, bet ne pienākums, pārbaudīt Pārvadātāju atbilstību. Ja pirms iekraušanas tiek konstatēta neatbilstība, Nosūtītājs ir tiesīgs atteikties iekraut Kravu, un tādā gadījumā Pārvadātājs uzskatāms par Pārvadājuma līguma neizpildītāju.
+6.2  Hevvi App informē Nosūtītāju, ka Platformā reģistrētie Pārvadātāji saskaņā ar Hevvi App Vispārīgajiem Noteikumiem Pārvadātājiem apņemas: (a) izmantot vienīgi tehniski kvalitatīvus transporta līdzekļus; (b) pieļaut pie vadīšanas tikai kvalificētus, atturīgus un darbspējīgus vadītājus; (c) droši nostiprināt un pārvadāt Kravu; un (d) neatstāt transporta līdzekli bez uzraudzības vietās, kur iespējama Kravas sabojāšana vai zādzība.
+6.3  Ja Pārvadājuma līgumā nav paredzēts Kravas iekraušanas un izkraušanas pakalpojums, Nosūtītājs ir atbildīgs par Kravas iekraušanu un izkraušanu neatkarīgi no tā, vai to veic Nosūtītājs, Saņēmējs vai trešā persona. Ja šāds pakalpojums ir paredzēts, par to atbildīgs ir Pārvadātājs.
+6.4  Nosūtītājam ir pienākums ievērot un nodrošināt, ka Saņēmējs ievēro Pārvadātāja norādījumus par drošu Kravas novietošanu transporta līdzeklī vai izkraušanu no tā.
+6.5  Nosūtītājs atbild par Pārvadātāja transporta līdzekļa, ceļa, trešo personu mantas bojājumiem un kaitējumu personām, ja tas noticis Kravas īpašību vai defektu dēļ, izņemot, ja bīstamā Kravas īpašība vai defekts bijis acīmredzams un Pārvadātājs pieļāvis rupju neuzmanību vai tīšam rīkojies nolaidīgi.
+6.6  Acīmredzami Kravas bojājumi, kas varētu būt radušies pārvadājuma laikā, jāpiesaka Platformā Kravas pieņemšanas brīdī kopā ar fotofiksāciju. Vēlāk pieteikti bojājumi prasa Nosūtītāja pierādījumu par to rašanās laiku. Kravas bojājumi, kas nav acīmredzami, jāpiesaka Platformā ne vēlāk kā nākamās darba dienas laikā pēc Kravas pieņemšanas. Prasījumi par Kravas bojājumiem pēc šajā punktā noteiktā termiņa nevar tikt celti.
+6.7  Apdrošināšana
+6.7.1  [TIKAI UZŅĒMUMIEM]  Uzņēmumu Nosūtītājiem ir pienākums apdrošināt Kravu par pilnu vērtību, t.sk. transportēšanas, iekraušanas un izkraušanas laikā, ciktāl šāda apdrošināšana saprātīgi iespējama un atbilst normālai komercdarbības praksei.
+6.7.2  [TIKAI PRIVĀTPERSONĀM]  Privātpersonām ir ieteicams apdrošināt Kravu par tās pilnu vērtību..
+6.7.3  Hevvi App Vispārīgie Noteikumi Pārvadātājiem paredz, ka Pārvadātājiem ir pienākums apdrošināt transporta līdzekli par pilnu vērtību, Kravu – vismaz EUR 50 000 apmērā un civiltiesisko atbildību par kaitējumu Kravai – vismaz EUR 100 000 apmērā.
+6.7.4  [TIKAI UZŅĒMUMIEM]  Ja uzņēmuma Nosūtītājs nav izpildījis apdrošināšanas pienākumus, tas nevar izvirzīt pret Pārvadātāju tādus prasījumus, kuri būtu ietverti apdrošināšanas segumā, ja tāds būtu.
+6.7.5  Hevvi App ir tiesības, bet nav pienākuma veikt Kravas un/vai civiltiesiskās atbildības apdrošināšanu. Hevvi App nekādos apstākļos neatbild par jebkādas apdrošināšanas atlīdzības neizmaksāšanu.
+6.8  Hevvi App neatbild par Kravu, pārvadājuma izpildi vai Pārvadātāja darbībām. Hevvi App atbildība jebkurā gadījumā ir ierobežota ar Hevvi App komisijas apmēru. Hevvi App neatbild par netiešiem zaudējumiem vai negūto peļņu.
+6.9   Kravas deklarācija
+Nosūtītājs apliecina, ka Krava:
+- nav aizliegta;
+- ir droša pārvadāšanai;
+- ir pienācīgi aprakstīta Platformā.
+
+7. Nokavējums, dīkstāve, pārvadājuma neizpildīšana
+7.1  Par Pārvadājuma līgumā noteiktā Kravas saņemšanas vai piegādes laika nokavējumu Pārvadātājs maksā Nosūtītāja labā (un Hevvi App saņem no Pārvadātāja attiecīgo summu un saņemto summu samaksā Nosūtītājam) Pielikumā noteiktos maksājumus. Ja Kravas saņemšanas nokavējums pārsniedz Pielikumā noteikto maksimālo laiku, uzskatāms, ka Pārvadātājs nav izpildījis Pārvadājuma līgumu un tas ir atcelts.
+7.2  Par Pārvadājuma līgumā noteiktā Kravas iekraušanas, pieņemšanas vai izkraušanas laika nokavējumu Nosūtītājs maksā Pārvadātāja labā (un Hevvi App saņem no Nosūtītāja attiecīgo summu un saņemto summu nodod Pārvadātājam) Pielikumā noteiktos maksājumus. Ja iekraušanas nokavējums pārsniedz Pielikumā noteikto laiku, Pārvadājuma līgums uzskatāms par atceltu.
+7.3  Ja Kravas izkraušanas nokavējums pārsniedz Pielikumā noteikto laiku, Pārvadātājs ir tiesīgs nogādāt Kravu atpakaļ nosūtīšanas punktā un Nosūtītājam ir pienākums Kravu pieņemt atpakaļ. Ja atpakaļ pieņemšanas nokavējums pārsniedz noteikto laiku, Pārvadātājs ir tiesīgs Kravu nogādāt glabāšanā uz Nosūtītāja rēķina.
+7.4  Ja Pārvadājuma līgumā jebkurš termiņš noteikts kā laika koridors (no – līdz), nokavējums skaitāms no vēlākā termiņa.
+7.5  Ja Kravas piegāde termiņā nav iespējama negadījuma vai transporta līdzekļa bojājuma dēļ un Pārvadātājs par to paziņojis Platformā, termiņi pagarinās par Pielikumā noteikto laiku.
+7.6  Šajā nodaļā minētos maksājumus var pieteikt Platformā ne vēlāk kā 24 stundu laikā no Pārvadājuma līgumā noteiktā Kravas piegādes laika. Nosūtītājam nav tiesību uz prasījumiem, kas nav pieteikti noteiktajā termiņā un kārtībā.
+7.7  Prasījumu var apstrīdēt Platformā 2 darba dienu laikā no tā saņemšanas. Prasījums, kas nav apstrīdēts noteiktajā veidā un termiņā, kļūst neapstrīdams un Nosūtītājam saistošs.
+7.8  Nosūtītājs un Pārvadātājs neatbild par zaudējumiem vai citiem prasījumiem par nokavējumu vai neizpildi, kas nav tieši noteikti šajā nodaļā.
+7.9.   Prasījumu kārtība
+Visi prasījumi par Kravas bojājumu, zudumu vai kavējumu iesniedzami tieši Pārvadātājam. Hevvi App var sniegt tehnisku atbalstu, bet neuzņemas atbildību par strīda iznākumu.
+
+8. Pārvadājuma maksa, Hevvi App komisija un citi maksājumi
+8.1.1  Pārvadājuma maksa.  Par pārvadājuma pakalpojumiem saskaņā ar Pārvadājuma līgumiem, kas noslēgti un kuru izpilde apliecināta atbilstoši 4. un 5. nodaļai, Nosūtītājs maksā Pārvadājuma maksu Pārvadātājam ar Hevvi App starpniecību. Hevvi App darbojas kā maksājumu iekasēšanas un norēķinu administrēšanas starpnieks Nosūtītāja vārdā un interesēs. Maksājuma saņemšana Hevvi App kontā uzskatāma par maksājuma veikšanu Pārvadātājam.
+8.1.2 Nosūtītājiem Pārvadājuma maksa jāmaksā avansā (priekšapmaksa) Pasūtījuma veikšanas brīdī, izmantojot Platformā pieejamo maksājumu metodi (bankas karte, tiešsaistes maksājums vai cita Hevvi App norādīta metode). Pasūtījums tiek apstiprināts tikai pēc veiksmīgas apmaksas.
+8.1.3  Ar Pārvadājuma līguma noslēgšanas brīdi Pārvadātājs ir cedējis Hevvi App prasījumus pret Nosūtītāju par Pārvadājuma maksas samaksu. Nosūtītājs nav tiesīgs veikt maksājumus Pārvadātājam tieši.
+8.2  Hevvi App komisija.  Par katru Platformā noslēgtu Pārvadājuma līgumu Nosūtītājs maksā Hevvi App komisiju saskaņā ar Hevvi App Līgumā noteiktajiem apmēriem. Hevvi App var nepiemērot komisiju par Pasūtījumiem, kas atcelti saskaņā ar Noteikumiem.
+8.3  Papildu maksājumi.  Hevvi App veic norēķinu starpniecību Papildu maksājumiem saskaņā ar šādiem noteikumiem:
+8.3.1  Hevvi App samaksās Nosūtītājam tikai tādus Papildu maksājumus, kurus faktiski ir apmaksājuši Pārvadātāji. Hevvi App nekādā gadījumā neatbild par Papildu maksājuma samaksu, ja to nav apmaksājis attiecīgais Pārvadātājs.
+8.3.2  Par Papildu maksājumiem, kuri pieteikti un akceptēti vai uzskatāmi par akceptētiem Platformā kalendārajā nedēļā, Hevvi App līdz 2 darba dienām pēc attiecīgās kalendārās nedēļas beigām izrakstīs rēķinu Nosūtītājam vai attiecīgajam Pārvadātājam.
+8.3.3  Ja rēķins izstādīts Nosūtītājam, tas to apmaksā līdz tās pašas nedēļas piektdienai. Par samaksas nokavējumu piemērojami likumiskie procenti.
+8.4  Citi Hevvi App pakalpojumi.  Hevvi App var sniegt papildu pakalpojumus par papildu samaksu. Par samaksas nokavējumu maksājami nokavējuma procenti 0,2% apmērā no kavētās summas par katru nokavēto dienu.
+8.5  [TIKAI UZŅĒMUMIEM]  Kredītlimits.  Hevvi App Nosūtītājam nosaka kredītlimitu, līdz kuram var sniegties noslēgto un neapmaksāto Pārvadājuma līgumu kopsumma. Hevvi App var jebkurā laikā mainīt kredītlimitu. Sasniedzot vai pārsniedzot kredītlimitu, iespēja veikt jaunus Pasūtījumus var tikt apturēta. Nosūtītājs var jebkurā laikā veikt avansa maksājumu.
+8.6  Visi Hevvi App izrakstītie rēķini tiek nosūtīti uz Nosūtītāja Platformā norādīto e-pasta adresi un augšupielādēti Platformā. Hevvi App izrakstītie rēķini ir derīgi bez paraksta. Nosūtītājam ir pienākums savlaicīgi iepazīties ar rēķiniem.
+8.7  [TIKAI UZŅĒMUMIEM]  Uzņēmuma Nosūtītājs ar reģistrēšanās brīdi Platformā ir pilnvarojis Hevvi App izrakstīt 8.3. punktā paredzētos rēķinus Pārvadātāja vārdā. Nosūtītājs apņemas šādus rēķinus iekļaut savās PVN deklarācijās un samaksāt PVN.
+8.8  Hevvi App ir tiesības, bet nav pienākuma, ar ieskaitu dzēst savstarpējos maksājumus starp Hevvi App un Nosūtītāju.
+8.9  Visi maksājumi Nosūtītājam no Hevvi App veicami uz reģistrācijas procesā norādīto bankas kontu vai maksājumu metodi. Bankas konta maiņu jāpaziņo Hevvi App atbilstoši Platformā noteiktajai kārtībai.
+
+9. Pārvadātāju reitings
+9.1  Pēc katra Pasūtījuma izpildes Nosūtītājs tiks aicināts novērtēt Pārvadātāja sniegto pakalpojumu skalā no 1 līdz 5. Nosūtītājs par katru Pasūtījumu var veikt tikai vienu novērtējumu.
+9.2  Pārvadātāja tekošo reitingu veido vidējais Nosūtītāju novērtējums pēdējo 12 mēnešu periodā. Reģistrējoties Platformā, Pārvadātājam tiek piešķirts reitings 4.
+9.3  Pārvadātāja tekošais reitings ir pieejams Nosūtītājam. Platforma var paredzēt iespēju noteikt minimālo reitinga prasību Pasūtījuma nosūtīšanai.
+9.4  Hevvi App neatbild par kritērijiem, pēc kuriem Nosūtītāji novērtē Pārvadātājus, vai par to, kā reitings tiek izmantots.
+
+10. Informācija, konfidencialitāte, privātuma noteikumi, intelektuālais īpašums
+10.1 Puses neizpauž informāciju par jebkuriem darījumiem starp tām bez attiecīgās Puses piekrišanas. Nosūtītājs neizpauž informāciju par maksājumiem un citiem darījumu noteikumiem ar Hevvi App bez skaidras Hevvi App piekrišanas, izņemot gadījumus, kad šādas informācijas izpaušana ir obligāta saskaņā ar tiesību aktiem. Privātpersonām konfidencialitātes pienākumi attiecas tikai tādā apmērā, cik tas atbilst piemērojamajiem tiesību aktiem. Konfidencialitātes saistības saglabājas 2 gadus pēc reģistrācijas izbeigšanas.
+10.2 Puses personas datus apstrādā atbilstoši VDAR un piemērojamajiem datu aizsardzības tiesību aktiem. Uzņēmumu Nosūtītāji informē savus darbiniekus, kuru personas dati tiek nodoti Hevvi App. Informācija par personas datu apstrādi pieejama Hevvi App Privātuma politikā vietnē hevvi.app/privatuma-politika.
+10.3 [TIKAI PRIVĀTPERSONĀM]  Kā Patērētājam Jums ir tiesības pieprasīt piekļuvi saviem personas datiem, to labošanu, dzēšanu, apstrādes ierobežošanu un pārnesamību, kā arī iebilst pret apstrādi saskaņā ar VDAR. Lai izmantotu šīs tiesības, lūdzu sazinieties ar Hevvi App pa e-pastu support@hevvi.app.
+10.4 Klientu apkalpošanas dienests ir paredzēts, lai palīdzētu Nosūtītājam izmantot Platformas priekšrocības. Nosūtītājs ir aicināts iesniegt jautājumus, ierosinājumus un sūdzības Platformas sadaļā Kontakti vai pa e-pastu support@hevvi.app. Patērētāju sūdzībām Hevvi App atbildēs saprātīgā termiņā un saskaņā ar piemērojamajiem Patērētāju tiesību aizsardzības tiesību aktiem.
+10.5 Visa programmatūra, ko izmanto Hevvi App pakalpojumu sniegšanai, un visas intelektuālā īpašuma tiesības uz Platformas saturu ir ekskluzīvs Hevvi App vai tā pakalpojumu sniedzēju īpašums. Šie Noteikumi nepiešķir Nosūtītājam intelektuālā īpašuma tiesības uz Hevvi App pakalpojumiem vai Platformas saturu.
+10.6 Hevvi App saglabā ekskluzīvas īpašuma tiesības uz visu informāciju, kas iegūta no Nosūtītāja un citām personām, izmantojot Platformu, un uz Hevvi App datu bāzi. Hevvi App ir tiesības izmantot šādu informāciju saskaņā ar Privātuma politiku.
+10.7 Neviena persona nedrīkst kopēt, izgūt, publicēt, integrēt vai citādi izmantot Platformas saturu vai Hevvi App zīmolu bez nepārprotamas rakstveida Hevvi App atļaujas. Jebkura neatļauta izmantošana ir būtisks intelektuālā īpašuma tiesību pārkāpums.
+
+11. Patērētāju (privātpersonu) likumiskās tiesības
+Šī nodaļa attiecas tikai uz Nosūtītājiem, kas ir Patērētāji (fiziskas personas, kas rīkojas ārpus savas saimnieciskās vai profesionālās darbības).
+
+11.1  Cenu pārskatāmība.  Pirms Pasūtījuma apstiprināšanas Patērētājam tiek skaidri norādīta pilna Pasūtījuma cena, tajā skaitā Pārvadājuma maksa un Hevvi App komisija. Netiks piemērotas papildu izmaksas bez Patērētāja skaidras piekrišanas.
+11.2  Atteikuma tiesības.  Ja Patērētājs veic Pasūtījumu uz nākotnes datumu, tam ir tiesības 2 kalendāro dienu laikā no Pārvadājuma līguma noslēgšanas dienas atteikties no Pārvadājuma līguma, nepaziņojot iemeslu un bez soda, ja vien pakalpojuma sniegšana nav uzsākta. Ja Patērētājs pasūta tūlītēju pārvadājumu, tas skaidri lūdz nekavējoties uzsākt pakalpojumu un apzinās, ka pēc pakalpojuma sniegšanas uzsākšanas atteikuma tiesības neattiecas.
+11.3  Atmaksa.  Ja Patērētājam rodas tiesības uz atmaksu (piem., atteikuma, atcelšanas vai Pārvadātāja neizpildes gadījumā), Hevvi App veic atmaksu uz sākotnējo maksājuma metodi 14 kalendāro dienu laikā no atmaksas tiesību rašanās brīža.
+11.4  Sūdzību iesniegšana.  Patērētāji var iesniegt sūdzības par Hevvi App pakalpojumiem pa e-pastu support@hevvi.app vai Platformas sadaļā Kontakti. Hevvi App apstiprinās sūdzības saņemšanu 5 darba dienu laikā un centīsies to atrisināt 30 kalendāro dienu laikā. Ja sūdzība netiks atrisināta, Patērētājs var vērsties Patērētāju tiesību aizsardzības centrā (PTAC), Brīvības iela 55, Rīga, LV-1010, tālr. 65452554, www.ptac.gov.lv, vai izmantot Eiropas Komisijas tiešsaistes strīdu izšķiršanas platformu ec.europa.eu/odr.
+11.5  Atbildības ierobežojumi Patērētājiem.  Nekas šajos Noteikumos neierobežo vai neizslēdz Hevvi App atbildību pret Patērētājiem par: (i) kaitējumu, kas nodarīts Hevvi App vainas dēļ; (ii) maldinošiem apgalvojumiem; vai (iii) jebkuru citu gadījumu, kurā atbildības ierobežošana ir aizliegta saskaņā ar piemērojamajiem tiesību aktiem.
+11.6  Piemērojamie tiesību akti Patērētājiem.  Neatkarīgi no tiesību aktu izvēles šajos Noteikumos, Patērētāji vienmēr bauda obligātās Patērētāju tiesību aizsardzības normas saskaņā ar tās valsts tiesību aktiem, kurā atrodas viņu pastāvīgā dzīvesvieta.
+
+Pielikums – Maksas un termiņi
+Šis Pielikums ir Hevvi App Vispārīgo Noteikumu Nosūtītājiem neatņemama sastāvdaļa. Visiem jēdzieniem ar lielo burtu ir tāda pati nozīme kā Noteikumos. Visas summas norādītas bez PVN, kas piemērojams papildus. Normas, apzīmētas [TIKAI PRIVĀTPERSONĀM] vai [TIKAI UZŅĒMUMIEM], attiecas tikai uz attiecīgo Nosūtītāja veidu.
+1.  Pasūtījumu atcelšanas maksa
+
+Kas atcel Pasūtījumu	Atcelšanas laiks*	Atcelšanas maksa
+Nosūtītājs vai Pārvadātājs	Vairāk kā 2 h	Platformā pie konkrēta Pasūtījuma norādītā maksa, bet ja tādas nav – bez maksas
+Nosūtītājs vai Pārvadātājs	2 – 1 h	50% no Pasūtījuma cenas
+Nosūtītājs	Mazāk kā 1 h	100% no Pasūtījuma cenas
+Pārvadātājs	Mazāk kā 1 h	100% no Pasūtījuma cenas 
+
+* Stundās pirms Pasūtījumā noteiktā pārvadājuma uzsākšanas laika (ja noteikts laika koridors – pirms agrākā noteiktā laika).
+
+2.  Nokavējumi, dīkstāves maksājumi, Pasūtījuma neizpilde
+
+Kas nokavējis	Nokavējumā veids	Nokavējuma laiks*	Maksājumi
+Pārvadātājs	Kravas saņemšana	Līdz 3 h	Netiek piemēroti
+Pārvadātājs	Kravas saņemšana	Ilgāk kā 4 h	50% Pasūtījuma cenas 
+Pārvadātājs	Kravas piegāde	Līdz 24 h	Netiek piemēroti
+Pārvadātājs	Kravas piegāde	Ilgāk kā 48 h	50% Pasūtījuma cenas
+Nosūtītājs	Kravas iekraušana	Līdz 1 h	Netiek piemēroti
+Nosūtītājs	Kravas iekraušana	1 – 3 h	Dīkstāves likme par katru stundu
+Nosūtītājs	Kravas iekraušana	Ilgāk kā 3 h	100% Pasūtījuma cenas
+Nosūtītājs	Kravas izkraušana	Līdz 1 h	Netiek piemēroti
+Nosūtītājs	Kravas izkraušana	1 – 3 h	Dīkstāves likme par katru stundu
+Nosūtītājs	Kravas izkraušana	Ilgāk kā 3 h	100% Pasūtījuma cenas  + dīkstāves maksa (Krava nogādājama atpakaļ)
+Nosūtītājs	Kravas pieņemšana atpakaļ	Līdz 1 h	Netiek piemēroti
+Nosūtītājs	Kravas pieņemšana atpakaļ	1 – 3 h	Dīkstāves likme par katru stundu
+Nosūtītājs	Kravas pieņemšana atpakaļ	Ilgāk kā 3 h	Krava nogādājama glabāšanā uz Nosūtītāja rēķina
+Pārvadātājs	Jebkurš nokavējums negadījuma dēļ	Līdz 24 h	Netiek piemēroti
+
+3.  Dīkstāves maksa par 1 stundu pēc transporta veida
+
+Transporta veids	Likme
+Vieglās automašīnas, SUV, SUV ar piekabēm u.c.	EUR 20 par katru stundu
+Mikroautobusi līdz 3,5 T, mikroautobusi ar piekabēm	EUR 20 par katru stundu
+Kravas automašīnas līdz 24 T	EUR 40 par katru stundu
+Kravas automašīnas līdz 24 T ar manipulatoru	EUR 40 par katru stundu
+Cita veida speciālās kravas automašīnas	EUR 50 par katru stundu
+
+* Ja tiek izmantots cits transporta tips, piemērojama maksa, kas noteikta vislīdzīgākajam analoģiskam transporta tipam.
+
+HEVVI APP – Digitāla kravas platforma
+SIA "Ampir"  |  Reģ. Nr. 50003849291  |  Meža prospekts 15, Jūrmala, LV-2010  |  support@hevvi.app  |  hevvi.app
