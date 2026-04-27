@@ -20,6 +20,9 @@ interface HeaderProps {
 	device?: DeviceType
 }
 
+/** Set to `true` to show the "Register" link on `/login` again. Registration page still works by URL. */
+const SHOW_REGISTER_IN_HEADER_ON_LOGIN = false
+
 export const Header: FC<HeaderProps> = ({ user, isCarrier, device }) => {
 	const { push, pathname } = useLocation()
 
@@ -68,12 +71,14 @@ export const Header: FC<HeaderProps> = ({ user, isCarrier, device }) => {
 						<div className={styles.right}>
 							{typeof user === 'undefined' ? (
 								<div>
-									<a
-										className={styles.link}
-										href={pathname === Routes.LOGIN ? Routes.REGISTRATION : Routes.LOGIN}
-									>
-										{pathname === Routes.LOGIN ? 'Register' : 'Login'}
-									</a>
+									{(pathname !== Routes.LOGIN || SHOW_REGISTER_IN_HEADER_ON_LOGIN) && (
+										<a
+											className={styles.link}
+											href={pathname === Routes.LOGIN ? Routes.REGISTRATION : Routes.LOGIN}
+										>
+											{pathname === Routes.LOGIN ? 'Register' : 'Login'}
+										</a>
+									)}
 								</div>
 							) : (
 								<Popover.Root>

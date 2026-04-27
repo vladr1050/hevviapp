@@ -824,7 +824,7 @@
             font-weight: 600;
         }
 
-        /* CUSTOMER_INVOICE (pēc piegādes): viena horizontāla rinda — 6 kolonnas (Figma) */
+        /* CUSTOMER_INVOICE (pēc piegādes): viena horizontāla rinda — 6 kolonnas ar PVN, vai 4 ja izrakstītāja PVN likme = 0 */
         .service-line-table {
             display: flex;
             flex-direction: row;
@@ -834,6 +834,19 @@
             width: 100%;
             gap: 4px;
             box-sizing: border-box;
+        }
+
+        .service-line-table--customer-no-vat {
+            gap: 6px;
+        }
+
+        .service-line-table--customer-no-vat .service-line-table__col {
+            flex: 1 1 0;
+        }
+
+        .service-line-table--customer-no-vat .service-line-table__col--service {
+            flex: 1.35 1 0;
+            min-width: 72px;
         }
 
         .service-line-table__col {
@@ -1600,7 +1613,7 @@
                             <div class="service-date">Pakalpojuma sniegšanas datums: {{ service_date }}</div>
                         </div>
                         <hr class="service-divider" />
-                        <div class="service-line-table" role="presentation">
+                        <div class="service-line-table{% if not (customer_invoice_show_service_vat_columns ?? true) %} service-line-table--customer-no-vat{% endif %}" role="presentation">
                             <div class="service-line-table__col service-line-table__col--service">
                                 <div class="service-line-table__label">Pakalpojums</div>
                                 <div class="service-line-table__value">Platformas izmantošana</div>
@@ -1613,6 +1626,7 @@
                                 <div class="service-line-table__label">Summa bez PVN</div>
                                 <div class="service-line-table__value">{{ amount_commission }}</div>
                             </div>
+                            {% if customer_invoice_show_service_vat_columns ?? true %}
                             <div class="service-line-table__col">
                                 <div class="service-line-table__label">PVN likme</div>
                                 <div class="service-line-table__value">{{ issuer_vat_percent_label }}%</div>
@@ -1621,6 +1635,7 @@
                                 <div class="service-line-table__label">PVN summa</div>
                                 <div class="service-line-table__value">{{ amount_vat }}</div>
                             </div>
+                            {% endif %}
                             <div class="service-line-table__col service-line-table__col--end">
                                 <div class="service-line-table__label">Total {{ invoice_currency }}</div>
                                 <div class="service-line-table__value service-line-table__value--strong">{{ amount_gross }}</div>

@@ -34,6 +34,7 @@ final class InvoicePdfContextBuilder
     ): array {
         $c = $invoice->getCurrency() ?? 'EUR';
         $number = $displayInvoiceNumber ?? (string) $invoice->getInvoiceNumber();
+        $issuerVatRateRaw = $this->resolveIssuerVatRatePercent($issuerEntity, $invoice);
 
         return [
             'document_type' => $documentType,
@@ -85,9 +86,11 @@ final class InvoicePdfContextBuilder
             'fee_percent_label' => $this->formatPercentLabel((string) $invoice->getFeePercent()),
             'vat_percent_label' => $this->formatPercentLabel((string) ($invoice->getVatRatePercent() ?? '0')),
             /** VAT % from issuing legal entity (BillingCompany), for PDF lines that must reflect issuer profile, not only invoice snapshot. */
-            'issuer_vat_percent_label' => $this->formatPercentLabel((string) (
-                $issuerEntity?->getVatRate() ?? $invoice->getVatRatePercent() ?? '0'
-            )),
+            'issuer_vat_percent_label' => $this->formatPercentLabel($issuerVatRateRaw),
+            /**
+             * CUSTOMER_INVOICE Pakalpojums row: hide PVN likme / PVN summa when issuer VAT rate is 0.
+             */
+            'customer_invoice_show_service_vat_columns' => !$this->isPercentRateZero($issuerVatRateRaw),
             'payment_method' => 'Bankas pārskaitījums',
             'payment_due_date' => $invoice->getDueDate()?->format('d.m.Y') ?? '—',
             'seller_iban' => $this->formatOptionalIban($issuerEntity?->getIban()),
@@ -167,5 +170,15 @@ final class InvoicePdfContextBuilder
         }
 
         return rtrim(rtrim(number_format($f, 2, ',', ''), '0'), ',');
+    }
+
+    private function resolveIssuerVatRatePercent(?BillingCompany $issuerEntity, Invoice $invoice): string
+    {
+        return (string) ($issuerEntity?->getVatRate() ?? $invoice->getVatRatePercent() ?? '0');
+    }
+
+    private function isPercentRateZero(string $decimal): bool
+    {
+        return abs((float) $decimal) < 0.0000001;
     }
 }
