@@ -263,7 +263,7 @@ export const LoginPage: FC<LoginProps> = ({ device }) => {
 									render={({ field: { value, onChange } }) => (
 										<Checkbox value={value} onChange={onChange} alignTop>
 											<span className={styles.agreementText}>
-												Piekrītu{' '}
+												{'Piekrītu\u00A0'}
 												<button
 													type="button"
 													className={styles.termsDocLink}
@@ -273,9 +273,8 @@ export const LoginPage: FC<LoginProps> = ({ device }) => {
 														setTermsOpen(true)
 													}}
 												>
-													Hevvi.app platformas lietošanas noteikumiem un privātuma politikai
+													Hevvi.app platformas lietošanas noteikumiem un privātuma politikai.
 												</button>
-												.
 											</span>
 										</Checkbox>
 									)}

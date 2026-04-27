@@ -63,11 +63,12 @@
 			}
 
 			& .agreementText {
-				@apply text-sm font-normal text-black leading-snug text-left;
+				@apply text-sm font-normal text-black leading-snug text-left min-w-0 flex-1;
 			}
 
 			& .termsDocLink {
-				@apply inline p-0 m-0 border-0 bg-transparent font-medium text-black underline cursor-pointer text-left;
+				@apply inline p-0 m-0 border-0 bg-transparent font-medium text-black underline cursor-pointer align-baseline max-w-full break-words text-left;
+				word-break: break-word;
 			}
 
 			& .termsDocLink:hover,
