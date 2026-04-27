@@ -11,6 +11,7 @@ public_site:
 action:
     notification_replay:         Повторить отправку
     notification_replay_confirm: Повторить отправку этого уведомления? Ограничение «один раз на заказ» будет проигнорировано.
+    notification_rule_copy:      Скопировать правило
     document_open_pdf:           Открыть PDF
     document_download_pdf:     Скачать PDF
 
@@ -18,6 +19,10 @@ flash:
     notification_replay_no_order: У записи журнала нет связанного заказа.
     notification_replay_result: 'Повтор: отправлено %sent%, ошибок %failed%, пропущено %skipped%.'
     notification_replay_error: 'Ошибка повтора: %message%'
+    notification_rule_copied: Создана копия правила. Измените получателя (и при необходимости название), затем включите правило.
+
+notification_rule:
+    copy_name_suffix: (копия)
 
 menu:
     users:             Пользователи

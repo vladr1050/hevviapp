@@ -1,0 +1,9 @@
+{% if admin.hasAccess('show', object) and admin.hasAccess('create') %}
+    <a
+        class="btn btn-sm btn-default"
+        href="{{ admin.generateObjectUrl('copy', object) }}"
+        title="{{ 'action.notification_rule_copy'|trans({}, 'AppBundle') }}"
+    >
+        <i class="fas fa-copy"></i>
+    </a>
+{% endif %}

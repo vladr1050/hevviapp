@@ -11,6 +11,7 @@ use Sonata\AdminBundle\Datagrid\DatagridInterface;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Route\RouteCollectionInterface;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -19,6 +20,11 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class NotificationRuleAdmin extends BaseAdmin
 {
+    protected function configureRoutes(RouteCollectionInterface $collection): void
+    {
+        $collection->add('copy');
+    }
+
     protected function configureDefaultSortValues(array &$sortValues): void
     {
         $sortValues[DatagridInterface::SORT_BY] = 'updatedAt';
@@ -67,7 +73,19 @@ class NotificationRuleAdmin extends BaseAdmin
                 'label' => 'list.label_updated_at',
                 'format' => self::BASE_LIST_DATETIME_FORMAT,
             ]);
-        parent::configureListFields($list);
+
+        if ($this->hasSameRole()) {
+            $list->add('_action', 'actions', [
+                'actions' => [
+                    'edit' => [],
+                    'show' => [],
+                    'delete' => [],
+                    'copy' => [
+                        'template' => 'admin/notification_rule/list__action_copy.html.twig',
+                    ],
+                ],
+            ]);
+        }
     }
 
     protected function configureFormFields(FormMapper $form): void
