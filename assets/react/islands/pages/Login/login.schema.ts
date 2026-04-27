@@ -28,6 +28,11 @@ const schema = z.object({
 		})
 		.trim()
 		.min(1, { error: 'Password is required' }),
-}).passthrough()
+
+	portalType: z.enum(['Sender', 'Carrier']),
+	termsAccepted: z.boolean(),
+})
+
+export type LoginFormValues = z.infer<typeof schema>
 
 export const resolver = zodResolver(schema)

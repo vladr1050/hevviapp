@@ -3,7 +3,6 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
 import { apiFetchPublicTermsCurrent, type TermsCurrentResponse } from '@api/termsApi'
 import { apiLogin, apiResetPassword } from '@api/authApi'
-import { AccountType } from '@config/constants'
 import { saveTokens } from '@hooks/useAuth'
 import { DeviceType, useDevice } from '@hooks/useDevice'
 import { Button } from '@ui/Button/Button'
@@ -20,17 +19,10 @@ import { MobilePage } from '../MobilePage/MobilePage'
 import profileStyles from '../Profile/Profile.module.css'
 import registrationStyles from '../Registration/Registration.module.css'
 
-import { resolver } from './login.schema'
+import { type LoginFormValues, resolver } from './login.schema'
 
 interface LoginProps {
 	device?: DeviceType
-}
-
-type FormValues = {
-	login: string
-	password: string
-	portalType: AccountType
-	termsAccepted: boolean
 }
 
 export const LoginPage: FC<LoginProps> = ({ device }) => {
@@ -51,7 +43,7 @@ export const LoginPage: FC<LoginProps> = ({ device }) => {
 		watch,
 		trigger,
 		formState: { errors },
-	} = useForm<FormValues>({
+	} = useForm<LoginFormValues>({
 		resolver,
 		defaultValues: {
 			portalType: 'Sender',
@@ -104,7 +96,7 @@ export const LoginPage: FC<LoginProps> = ({ device }) => {
 		setTermsError(null)
 	}
 
-	const onSubmit: SubmitHandler<FormValues> = async (values, event) => {
+	const onSubmit: SubmitHandler<LoginFormValues> = async (values, event) => {
 		const submitter = (event?.nativeEvent as SubmitEvent)?.submitter as HTMLButtonElement | null
 
 		if (submitter?.name === 'reset') {
@@ -200,7 +192,7 @@ export const LoginPage: FC<LoginProps> = ({ device }) => {
 												value: 'Carrier',
 											},
 										]}
-										onChange={(v) => onChange(v as AccountType)}
+										onChange={(v) => onChange(v as LoginFormValues['portalType'])}
 									/>
 								)}
 							/>
