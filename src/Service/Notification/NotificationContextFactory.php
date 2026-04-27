@@ -209,8 +209,21 @@ final class NotificationContextFactory
         return $a !== '' ? $a : $b;
     }
 
+    /**
+     * Planned delivery deadline: 48 hours from first transition to PAID (payment).
+     * Format: d.m.Y and 24-hour clock (H:i). Falls back to order delivery date/window if PAID history is missing.
+     */
     private function buildEta(Order $order): string
     {
+        $paidHistory = $this->orderHistoryRepository->findEarliestForOrderAndStatus(
+            $order,
+            Order::STATUS['PAID'],
+        );
+        $paidAt = $paidHistory?->getCreatedAt();
+        if ($paidAt !== null) {
+            return $paidAt->modify('+48 hours')->format('d.m.Y H:i');
+        }
+
         $date = $this->formatDate($order->getDeliveryDate());
         $tw = $this->formatTimeWindow($order->getDeliveryTimeFrom(), $order->getDeliveryTimeTo());
         if ($date === '') {

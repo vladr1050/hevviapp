@@ -33,6 +33,22 @@ class OrderHistoryRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * First transition to the given status (e.g. PAID = payment moment).
+     */
+    public function findEarliestForOrderAndStatus(Order $order, int $status): ?OrderHistory
+    {
+        return $this->createQueryBuilder('h')
+            ->andWhere('h.relatedOrder = :order')
+            ->andWhere('h.status = :status')
+            ->setParameter('order', $order)
+            ->setParameter('status', $status)
+            ->orderBy('h.createdAt', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     //    /**
     //     * @return OrderHistory[] Returns an array of OrderHistory objects
     //     */
