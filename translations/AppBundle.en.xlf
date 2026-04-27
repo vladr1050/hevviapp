@@ -1509,6 +1509,10 @@
         <source>order.status_10</source>
         <target>Delivered</target>
       </trans-unit>
+      <trans-unit id="nApPrv1" resname="order.status_11">
+        <source>order.status_11</source>
+        <target>Approved</target>
+      </trans-unit>
       <trans-unit id="qcuMKck" resname="order.status_-1">
         <source>order.status_-1</source>
         <target>Cancelled</target>

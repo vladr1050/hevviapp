@@ -222,10 +222,11 @@ class CarrierController extends AbstractController
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
 
-        // Final DELIVERED is set in Sonata admin only; carrier stops at IN_TRANSIT.
+        // Carrier: pickup → in transit → delivered. APPROVED is set in Sonata admin only.
         $allowedTransitions = [
             Order::STATUS['AWAITING_PICKUP'] => ['PICKUP_DONE' => Order::STATUS['PICKUP_DONE']],
             Order::STATUS['PICKUP_DONE'] => ['IN_TRANSIT' => Order::STATUS['IN_TRANSIT']],
+            Order::STATUS['IN_TRANSIT'] => ['DELIVERED' => Order::STATUS['DELIVERED']],
         ];
 
         $action = (string)$request->request->get('action');
@@ -237,12 +238,6 @@ class CarrierController extends AbstractController
 
         $newStatus = $allowedTransitions[$currentStatus][$action];
         $order->setStatus($newStatus);
-
-        $history = new OrderHistory();
-        $history->setRelatedOrder($order);
-        $history->setStatus($newStatus);
-        $history->setChangedBy(OrderHistory::CHANGED_BY['CARRIER']);
-        $this->em->persist($history);
         $this->em->flush();
 
         return $this->redirectToRoute('carrier_public_order', ['id' => $id]);
@@ -408,7 +403,7 @@ class CarrierController extends AbstractController
     /**
      * Считает заказы перевозчика по ключевым статусам и вычисляет статистику профиля.
      *
-     * delivery_percent — доля DELIVERED среди завершённых (DELIVERED + CANCELLED), макс. 100.
+     * delivery_percent — доля DELIVERED/APPROVED среди завершённых (DELIVERED + APPROVED + CANCELLED), макс. 100.
      * approval_percent — доля ACCEPTED среди всех ответов на назначения (ACCEPTED + REJECTED), макс. 100.
      *
      * @return array{total: int, cancelled: int, delivered: int, in_progress: int, delivery_percent: int, approval_percent: int}
@@ -425,7 +420,7 @@ class CarrierController extends AbstractController
         foreach ($carrier->getOrders() as $order) {
             match ($order->getStatus()) {
                 Order::STATUS['CANCELLED'] => $stats['cancelled']++,
-                Order::STATUS['DELIVERED'] => $stats['delivered']++,
+                Order::STATUS['DELIVERED'], Order::STATUS['APPROVED'] => $stats['delivered']++,
                 default => $stats['in_progress']++,
             };
         }

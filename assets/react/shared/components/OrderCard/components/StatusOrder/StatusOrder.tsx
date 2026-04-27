@@ -59,7 +59,7 @@ const useDeliveryCountdown = (paidDate: string | undefined, deliveredDate: strin
 }
 
 export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId, csrfToken }) => {
-	const [valueForm, setValueForm] = useState<'PICKUP_DONE' | 'IN_TRANSIT'>()
+	const [valueForm, setValueForm] = useState<'PICKUP_DONE' | 'IN_TRANSIT' | 'DELIVERED'>()
 	const countdown = useDeliveryCountdown(order.paid_date, order.delivered_date)
 
 	return (
@@ -174,9 +174,9 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 					<div className={styles.item}>
 						Delivery
 						<Icon type="mark_map" size={24} className="!translate-x-0.5" />
-						{order.status === OrderStatusEnum.DELIVERED && (
+						{order.status >= OrderStatusEnum.DELIVERED && (
 							<div className={styles.active}>
-								Delivered
+								{order.status === OrderStatusEnum.APPROVED ? 'Approved' : 'Delivered'}
 								<div className={cn(styles.icon, styles.activeIcon)}>
 									<Icon type="check_circle_1" size={20} />
 								</div>
@@ -218,7 +218,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 
 						<ItemCarrier
 							iconType="vehicle_right"
-							label={<>Delivered</>}
+							label={<>In transit</>}
 							checked={order.status >= OrderStatusEnum.IN_TRANSIT || valueForm === 'IN_TRANSIT'}
 							isActive={order.status >= OrderStatusEnum.IN_TRANSIT}
 							isWaiting={order.status === OrderStatusEnum.PICKUP_DONE}
@@ -234,13 +234,30 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 						/>
 
 						<ItemCarrier
+							iconType="mark_map"
+							label={<>Delivered</>}
+							checked={order.status >= OrderStatusEnum.DELIVERED || valueForm === 'DELIVERED'}
+							isActive={order.status >= OrderStatusEnum.DELIVERED}
+							isWaiting={order.status === OrderStatusEnum.IN_TRANSIT}
+							showInfo={order.status === OrderStatusEnum.IN_TRANSIT}
+							infoText="Confirm delivery"
+							onClick={() => setValueForm((v) => (v === 'DELIVERED' ? undefined : 'DELIVERED'))}
+						/>
+
+						<div
+							className={cn(styles.line, {
+								[styles.big]: order.status === OrderStatusEnum.DELIVERED,
+							})}
+						/>
+
+						<ItemCarrier
 							iconType="check_circle_1"
 							label={<>Approved</>}
 							hideCheckbox
-							isActive={order.status === OrderStatusEnum.DELIVERED}
+							isActive={order.status >= OrderStatusEnum.APPROVED}
 							isWaiting={false}
-							showInfo={order.status === OrderStatusEnum.IN_TRANSIT}
-							infoText="Pending approval"
+							showInfo={order.status === OrderStatusEnum.DELIVERED}
+							infoText="Pending admin approval"
 						/>
 					</div>
 				</div>

@@ -315,6 +315,7 @@ const STATUS = {
 	IN_TRANSIT: 9,
 	// Delivery
 	DELIVERED: 10,
+	APPROVED: 11,
 	// Cancelled
 	CANCELLED: -1,
 }

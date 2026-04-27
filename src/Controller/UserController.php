@@ -429,7 +429,7 @@ class UserController extends AbstractController
         foreach ($user->getOrders() as $order) {
             match ($order->getStatus()) {
                 Order::STATUS['CANCELLED'] => $stats['cancelled']++,
-                Order::STATUS['DELIVERED'] => $stats['delivered']++,
+                Order::STATUS['DELIVERED'], Order::STATUS['APPROVED'] => $stats['delivered']++,
                 default => $stats['in_progress']++,
             };
         }

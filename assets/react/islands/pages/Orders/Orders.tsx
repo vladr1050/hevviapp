@@ -64,7 +64,9 @@ export const OrdersPage: FC<OrdersPageProps> = (props) => {
 									[styles.inTransit]:
 										order.status === OrderStatusEnum.PICKUP_DONE ||
 										order.status === OrderStatusEnum.IN_TRANSIT,
-									[styles.delivered]: order.status === OrderStatusEnum.DELIVERED,
+									[styles.delivered]:
+										order.status === OrderStatusEnum.DELIVERED ||
+										order.status === OrderStatusEnum.APPROVED,
 								})}
 								title={order?.status_text}
 							>
@@ -74,8 +76,18 @@ export const OrdersPage: FC<OrdersPageProps> = (props) => {
 										<div className={styles.dot} />
 									) : (
 										<Icon
-											type={order.status === OrderStatusEnum.DELIVERED ? 'check' : 'clock_1'}
-											size={order.status === OrderStatusEnum.DELIVERED ? 12 : 16}
+											type={
+												order.status === OrderStatusEnum.DELIVERED ||
+												order.status === OrderStatusEnum.APPROVED
+													? 'check'
+													: 'clock_1'
+											}
+											size={
+												order.status === OrderStatusEnum.DELIVERED ||
+												order.status === OrderStatusEnum.APPROVED
+													? 12
+													: 16
+											}
 										/>
 									)}
 

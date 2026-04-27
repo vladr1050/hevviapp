@@ -30,7 +30,8 @@ class Order extends BaseUUID
         'PICKUP_DONE' => 8,
         'IN_TRANSIT' => 9,
         'DELIVERED' => 10,
-        'CANCELLED' => -1
+        'APPROVED' => 11,
+        'CANCELLED' => -1,
     ];
 
     #[ORM\ManyToOne(inversedBy: 'orders')]

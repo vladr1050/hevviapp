@@ -81,7 +81,8 @@ export const OrderCard: FC<OrderCardProps> = ({
 	const showId = isRequest
 
 	const isCanceled = order.status === OrderStatusEnum.CANCELLED
-	const isDelivered = order.status === OrderStatusEnum.DELIVERED
+	const isDelivered =
+		order.status === OrderStatusEnum.DELIVERED || order.status === OrderStatusEnum.APPROVED
 	const isOffered = order.status <= OrderStatusEnum.OFFERED
 
 	const showInfo =
