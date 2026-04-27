@@ -1,4 +1,4 @@
-import { TERMS_CURRENT_URL } from '@config/constants'
+import { TERMS_CURRENT_URL, TERMS_PUBLIC_CURRENT_URL } from '@config/constants'
 
 export interface TermsCurrentResponse {
 	audience: string
@@ -21,6 +21,25 @@ export async function apiFetchCurrentTerms(accessToken: string): Promise<TermsCu
 
 	if (!res.ok) {
 		const err = typeof data === 'object' && data !== null && 'error' in data ? String((data as { error: unknown }).error) : null
+		throw new Error(err || `Terms request failed (${res.status})`)
+	}
+
+	return data as TermsCurrentResponse
+}
+
+export async function apiFetchPublicTermsCurrent(
+	audience: 'sender' | 'carrier'
+): Promise<TermsCurrentResponse> {
+	const url = `${TERMS_PUBLIC_CURRENT_URL}?audience=${encodeURIComponent(audience)}`
+	const res = await fetch(url, { method: 'GET' })
+
+	const data: unknown = await res.json().catch(() => ({}))
+
+	if (!res.ok) {
+		const err =
+			typeof data === 'object' && data !== null && 'error' in data
+				? String((data as { error: unknown }).error)
+				: null
 		throw new Error(err || `Terms request failed (${res.status})`)
 	}
 

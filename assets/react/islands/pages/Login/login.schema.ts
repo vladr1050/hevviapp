@@ -1,17 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 
-const schema1 = z.object({
-	login: z
-		.string()
-		.trim()
-		.min(1, { error: 'E-mail is required' })
-		.refine((val) => z.email({ error: 'E-mail is invalid' }).safeParse(val).success, {
-			error: 'E-mail is invalid',
-		}),
-	password: z.string().trim().min(1, { error: 'Password is required' }),
-})
-
 const schema = z.object({
 	login: z
 		.string({
@@ -39,6 +28,6 @@ const schema = z.object({
 		})
 		.trim()
 		.min(1, { error: 'Password is required' }),
-})
+}).passthrough()
 
 export const resolver = zodResolver(schema)

@@ -7,6 +7,9 @@ export const PUBLIC_SUPPORT_CONTACT_URL = '/api/public/support-contact'
 /** Current published Terms & Conditions HTML for the logged-in portal user (JWT). */
 export const TERMS_CURRENT_URL = '/api/terms/current'
 
+/** Published terms by audience for login / registration (no auth). ?audience=sender|carrier */
+export const TERMS_PUBLIC_CURRENT_URL = '/api/public/terms/current'
+
 export const EMPTY_STRING = '—'
 
 

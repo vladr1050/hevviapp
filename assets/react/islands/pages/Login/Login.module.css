@@ -26,7 +26,7 @@
 		& .right {
 			@apply flex flex-col items-center justify-between gap-10 p-16 bg-white rounded-[30px] shadow-2xl;
 
-			& .title {
+			& .titleFallback {
 				@apply font-semibold text-3xl text-black text-center m-0;
 			}
 
@@ -39,6 +39,23 @@
 					border: none;
 					text-decoration: none;
 				}
+			}
+
+			& .agreementBlock {
+				@apply w-full flex flex-col gap-2;
+			}
+
+			& .agreementText {
+				@apply text-sm font-normal text-black leading-snug text-left;
+			}
+
+			& .termsDocLink {
+				@apply inline p-0 m-0 border-0 bg-transparent font-medium text-black underline cursor-pointer text-left;
+			}
+
+			& .termsDocLink:hover,
+			& .termsDocLink:focus-visible {
+				@apply text-black/70 outline-none;
 			}
 		}
 	}

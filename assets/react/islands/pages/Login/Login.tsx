@@ -1,17 +1,24 @@
-import { type FC, useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { type FC, useEffect, useState } from 'react'
+import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
+import { apiFetchPublicTermsCurrent, type TermsCurrentResponse } from '@api/termsApi'
 import { apiLogin, apiResetPassword } from '@api/authApi'
+import { AccountType } from '@config/constants'
 import { saveTokens } from '@hooks/useAuth'
 import { DeviceType, useDevice } from '@hooks/useDevice'
 import { Button } from '@ui/Button/Button'
+import { Checkbox } from '@ui/Checkbox/Checkbox'
 import { Icon } from '@ui/Icon/Icon'
 import { Input } from '@ui/Input/Input'
+import { Modal } from '@ui/Modal/Modal'
+import { Tabs } from '@ui/Tabs/Tabs'
 import { cn } from '@utils/cn'
 
 import styles from './Login.module.css'
 
 import { MobilePage } from '../MobilePage/MobilePage'
+import profileStyles from '../Profile/Profile.module.css'
+import registrationStyles from '../Registration/Registration.module.css'
 
 import { resolver } from './login.schema'
 
@@ -22,6 +29,8 @@ interface LoginProps {
 type FormValues = {
 	login: string
 	password: string
+	portalType: AccountType
+	termsAccepted: boolean
 }
 
 export const LoginPage: FC<LoginProps> = ({ device }) => {
@@ -31,19 +40,79 @@ export const LoginPage: FC<LoginProps> = ({ device }) => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [error, setError] = useState<string | null>(null)
 
+	const [termsOpen, setTermsOpen] = useState(false)
+	const [termsLoading, setTermsLoading] = useState(false)
+	const [termsError, setTermsError] = useState<string | null>(null)
+	const [termsData, setTermsData] = useState<TermsCurrentResponse | null>(null)
+
 	const {
 		control,
 		handleSubmit,
 		watch,
 		trigger,
 		formState: { errors },
-	} = useForm<FormValues>({ resolver })
+	} = useForm<FormValues>({
+		resolver,
+		defaultValues: {
+			portalType: 'Sender',
+			termsAccepted: false,
+			login: '',
+			password: '',
+		},
+	})
+
+	const portalType = watch('portalType')
+	const termsAccepted = watch('termsAccepted')
+
+	useEffect(() => {
+		if (!termsOpen) {
+			return
+		}
+
+		const audience = portalType === 'Carrier' ? 'carrier' : 'sender'
+		let cancelled = false
+
+		;(async () => {
+			setTermsLoading(true)
+			setTermsError(null)
+			setTermsData(null)
+
+			try {
+				const data = await apiFetchPublicTermsCurrent(audience)
+				if (!cancelled) {
+					setTermsData(data)
+				}
+			} catch (e) {
+				if (!cancelled) {
+					setTermsData(null)
+					setTermsError(e instanceof Error ? e.message : 'Could not load terms.')
+				}
+			} finally {
+				if (!cancelled) {
+					setTermsLoading(false)
+				}
+			}
+		})()
+
+		return () => {
+			cancelled = true
+		}
+	}, [termsOpen, portalType])
+
+	const closeTerms = () => {
+		setTermsOpen(false)
+		setTermsError(null)
+	}
 
 	const onSubmit: SubmitHandler<FormValues> = async (values, event) => {
 		const submitter = (event?.nativeEvent as SubmitEvent)?.submitter as HTMLButtonElement | null
 
 		if (submitter?.name === 'reset') {
 			setIsReset(true)
+			return
+		}
+
+		if (!values.termsAccepted) {
 			return
 		}
 
@@ -91,7 +160,56 @@ export const LoginPage: FC<LoginProps> = ({ device }) => {
 				</div>
 
 				<form className={styles.right} onSubmit={handleSubmit(onSubmit)}>
-					<h1 className={styles.title}>{isReset ? 'Recover password' : 'Login'}</h1>
+					{!isReset && (
+						<div className={registrationStyles.titleWrapper}>
+							<h1 className={registrationStyles.title}>Login</h1>
+
+							<Controller
+								control={control}
+								name="portalType"
+								render={({ field: { value, onChange } }) => (
+									<Tabs
+										className={registrationStyles.tabs}
+										classNames={{ tab: '!w-[140px]' }}
+										defaultValue={value}
+										items={[
+											{
+												label: (
+													<div className={registrationStyles.item}>
+														{portalType === 'Sender' && (
+															<div className={registrationStyles.iconWrapper}>
+																<Icon type="box" size={20} />
+															</div>
+														)}
+														Sender
+													</div>
+												),
+												value: 'Sender',
+											},
+											{
+												label: (
+													<div className={registrationStyles.item}>
+														{portalType === 'Carrier' && (
+															<div className={registrationStyles.iconWrapper}>
+																<Icon type="vehicle" size={20} />
+															</div>
+														)}
+														Carrier
+													</div>
+												),
+												value: 'Carrier',
+											},
+										]}
+										onChange={(v) => onChange(v as AccountType)}
+									/>
+								)}
+							/>
+						</div>
+					)}
+
+					{isReset ? (
+						<h1 className={styles.titleFallback}>Recover password</h1>
+					) : null}
 
 					{isReset ? (
 						<div className="flex flex-col items-center gap-9 animate-fade">
@@ -148,18 +266,79 @@ export const LoginPage: FC<LoginProps> = ({ device }) => {
 							Back to login
 						</Button>
 					) : (
-						<Button
-							key="login"
-							type="submit"
-							name="login"
-							className="w-full h-12"
-							disabled={isLoading}
-						>
-							{isLoading ? 'Loading...' : 'Login'}
-						</Button>
+						<div className="w-full flex flex-col gap-6">
+							<div className={styles.agreementBlock}>
+								<Controller
+									control={control}
+									name="termsAccepted"
+									render={({ field: { value, onChange } }) => (
+										<Checkbox value={value} onChange={onChange} alignTop>
+											<span className={styles.agreementText}>
+												Piekrītu{' '}
+												<button
+													type="button"
+													className={styles.termsDocLink}
+													onClick={(e) => {
+														e.preventDefault()
+														e.stopPropagation()
+														setTermsOpen(true)
+													}}
+												>
+													Hevvi.app platformas lietošanas noteikumiem un privātuma politikai
+												</button>
+												.
+											</span>
+										</Checkbox>
+									)}
+								/>
+							</div>
+
+							<Button
+								key="login"
+								type="submit"
+								name="login"
+								className="w-full h-12"
+								disabled={isLoading || !termsAccepted}
+							>
+								{isLoading ? 'Loading...' : 'Login'}
+							</Button>
+						</div>
 					)}
 				</form>
 			</div>
+
+			<Modal isOpen={termsOpen} onClose={closeTerms} maxWidth="min(92vw, 720px)">
+				<div className={profileStyles.termsModal}>
+					<div className={profileStyles.termsModalHeader}>
+						<h2 className={profileStyles.termsModalTitle}>
+							{termsData?.title?.trim() ? termsData.title : 'Terms & Conditions'}
+						</h2>
+						{termsData?.subtitle ? (
+							<p className={profileStyles.termsModalSubtitle}>{termsData.subtitle}</p>
+						) : null}
+						{termsData ? (
+							<div className={profileStyles.termsModalMeta}>
+								Version {termsData.version}
+								{termsData.publishedAt
+									? ` · ${new Date(termsData.publishedAt).toLocaleDateString()}`
+									: ''}
+							</div>
+						) : null}
+					</div>
+
+					<div className={profileStyles.termsModalScroll}>
+						{termsLoading ? <p className={profileStyles.termsModalMessage}>Loading…</p> : null}
+						{termsError ? <p className={profileStyles.termsModalError}>{termsError}</p> : null}
+						{!termsLoading && !termsError && termsData ? (
+							<div
+								className={profileStyles.termsModalHtml}
+								// Trusted HTML from Sonata (admin-only).
+								dangerouslySetInnerHTML={{ __html: termsData.html }}
+							/>
+						) : null}
+					</div>
+				</div>
+			</Modal>
 		</div>
 	)
 }
