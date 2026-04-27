@@ -20,6 +20,9 @@ final class NotificationEventKey
     /** Order status AWAITING_PICKUP (e.g. carrier accepted assignment). */
     public const ORDER_STATUS_CHANGED_TO_AWAITING_PICKUP = 'ORDER_STATUS_CHANGED_TO_AWAITING_PICKUP';
 
+    /** Order status PICKUP_DONE (cargo collected from pickup). */
+    public const ORDER_STATUS_CHANGED_TO_PICKUP_DONE = 'ORDER_STATUS_CHANGED_TO_PICKUP_DONE';
+
     public const ORDER_STATUS_CHANGED_TO_IN_TRANSIT = 'ORDER_STATUS_CHANGED_TO_IN_TRANSIT';
 
     public const ORDER_STATUS_CHANGED_TO_DELIVERED = 'ORDER_STATUS_CHANGED_TO_DELIVERED';
@@ -44,6 +47,7 @@ final class NotificationEventKey
             self::ORDER_STATUS_CHANGED_TO_ACCEPTED,
             self::ORDER_STATUS_CHANGED_TO_ASSIGNED,
             self::ORDER_STATUS_CHANGED_TO_AWAITING_PICKUP,
+            self::ORDER_STATUS_CHANGED_TO_PICKUP_DONE,
             self::ORDER_STATUS_CHANGED_TO_IN_TRANSIT,
             self::ORDER_STATUS_CHANGED_TO_DELIVERED,
             self::ORDER_DELIVERED_SENDER_DOCUMENT,

@@ -141,6 +141,7 @@ class OrderHistorySubscriber implements EventSubscriber
                     Order::STATUS['ACCEPTED'] => NotificationEventKey::ORDER_STATUS_CHANGED_TO_ACCEPTED,
                     Order::STATUS['ASSIGNED'] => NotificationEventKey::ORDER_STATUS_CHANGED_TO_ASSIGNED,
                     Order::STATUS['AWAITING_PICKUP'] => NotificationEventKey::ORDER_STATUS_CHANGED_TO_AWAITING_PICKUP,
+                    Order::STATUS['PICKUP_DONE'] => NotificationEventKey::ORDER_STATUS_CHANGED_TO_PICKUP_DONE,
                     Order::STATUS['IN_TRANSIT'] => NotificationEventKey::ORDER_STATUS_CHANGED_TO_IN_TRANSIT,
                     Order::STATUS['DELIVERED'] => NotificationEventKey::ORDER_STATUS_CHANGED_TO_DELIVERED,
                     default => null,

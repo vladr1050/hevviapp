@@ -30,6 +30,7 @@ final class NotificationRuleDefaults
             self::assignedToSender(),
             self::assignedToCarrier(),
             self::awaitingPickup(),
+            self::pickupDone(),
             self::inTransit(),
             self::delivered(),
             self::priceConfirmed(),
@@ -178,6 +179,37 @@ HTML;
             'eventKey' => NotificationEventKey::ORDER_STATUS_CHANGED_TO_AWAITING_PICKUP,
             'recipientType' => NotificationRecipientType::SENDER,
             'subjectTemplate' => 'Gaida iekraušanu – pasūtījums {{ORDER_ID}}',
+            'bodyTemplate' => $body,
+            'attachInvoicePdf' => false,
+            'sendOncePerOrder' => true,
+        ];
+    }
+
+    /**
+     * @return RuleShape
+     */
+    private static function pickupDone(): array
+    {
+        $body = <<<'HTML'
+<p>Labdien,</p>
+<p>Saskaņā ar sistēmas datiem krava ir veiksmīgi iekrauta un atzīmēta kā paņemta no iekraušanas vietas.</p>
+<p><strong>Pasūtījuma informācija:</strong></p>
+<ul>
+<li>Pasūtījuma ID: {{ORDER_ID}}</li>
+<li>Maršruts: {{PICKUP_ADDRESS}} → {{DELIVERY_ADDRESS}}</li>
+<li>Krava: {{CARGO_DESCRIPTION}}</li>
+</ul>
+<p><strong>Pārvadātājs:</strong> {{CARRIER_NAME}} ({{CARRIER_PHONE}})</p>
+<p>Jūs informēsim par nākamo statusu (ceļā uz piegādi).</p>
+<p>Ar cieņu,<br>Hevvi Operāciju komanda<br>support@hevvi.app<br>www.hevvi.app</p>
+HTML;
+
+        return [
+            'name' => 'Sender: krava paņemta (PICKUP_DONE)',
+            'description' => 'MVP: ORDER_STATUS_CHANGED_TO_PICKUP_DONE',
+            'eventKey' => NotificationEventKey::ORDER_STATUS_CHANGED_TO_PICKUP_DONE,
+            'recipientType' => NotificationRecipientType::SENDER,
+            'subjectTemplate' => 'Krava paņemta – pasūtījums {{ORDER_ID}}',
             'bodyTemplate' => $body,
             'attachInvoicePdf' => false,
             'sendOncePerOrder' => true,
