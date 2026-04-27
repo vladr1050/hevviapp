@@ -9,6 +9,7 @@ use App\Entity\Carrier;
 use App\Entity\Document;
 use App\Entity\Invoice;
 use App\Entity\Order;
+use App\Entity\OrderHistory;
 use App\Entity\User;
 use App\Enum\DocumentStatus;
 use App\Enum\DocumentType;
@@ -23,6 +24,7 @@ use App\Service\Invoice\InvoiceStaticMapFetcher;
 use App\Service\Notification\NotificationDispatchService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Uid\Uuid;
 use Twig\Environment;
 
@@ -45,6 +47,8 @@ final class OrderDeliveredDocumentService
         private readonly StoredPdfPathResolver $storedPdfPathResolver,
         private readonly NotificationDispatchService $notificationDispatchService,
         private readonly LoggerInterface $logger,
+        #[Autowire('%env(int:PLATFORM_FEE_PERCENT)%')]
+        private readonly int $defaultPlatformFeePercent,
     ) {
     }
 
@@ -117,18 +121,23 @@ final class OrderDeliveredDocumentService
         $deliveredDisplay = $order->getDeliveryDate() !== null
             ? $order->getDeliveryDate()->format('d.m.Y')
             : $nowDisplay;
+        $customerServiceDateDisplay = $this->resolvePaidStatusFirstAtDisplay($order, $tz, $deliveredDisplay);
+
+        $grossOrderCents = (int) $invoice->getAmountGross();
+        $feePercent = $this->resolvePlatformFeePercentFloat($issuer);
+        $customerNet = (int) round($grossOrderCents * $feePercent / 100.0);
+        $issuerVatPercent = $this->resolveIssuerVatPercentFloat($issuer);
+        $customerVat = $this->isIssuerVatRateZero($issuerVatPercent)
+            ? 0
+            : (int) round($customerNet * $issuerVatPercent / 100.0);
+        $customerGross = $customerNet + $customerVat;
 
         $subtotal = max(1, (int) $invoice->getAmountSubtotal());
         $vatTotal = (int) $invoice->getAmountVat();
         $freight = (int) $invoice->getAmountFreight();
-        $commission = (int) $invoice->getAmountCommission();
         $allocVat = static function (int $part) use ($vatTotal, $subtotal): int {
             return (int) round($vatTotal * ($part / $subtotal));
         };
-
-        $customerNet = $commission;
-        $customerVat = $allocVat($commission);
-        $customerGross = $customerNet + $customerVat;
 
         $carrierNet = $freight;
         $carrierVatFromProfile = $this->carrierVatCentsFromProfile($carrier, $carrierNet);
@@ -148,7 +157,7 @@ final class OrderDeliveredDocumentService
                 $carrier,
             );
             $ctx['issue_date'] = $nowDisplay;
-            $ctx['service_date'] = $deliveredDisplay;
+            $ctx['service_date'] = $customerServiceDateDisplay;
             $ctx = $this->applyCustomerDeliveredPdfContext($ctx, $invoice, $customerNet, $customerVat, $customerGross);
 
             $customerDoc = $this->persistRenderedDocument(
@@ -432,5 +441,59 @@ final class OrderDeliveredDocumentService
         $t = $iban !== null ? trim($iban) : '';
 
         return $t !== '' ? $t : '—';
+    }
+
+    private function resolvePlatformFeePercentFloat(BillingCompany $issuer): float
+    {
+        $p = $issuer->getPlatformFeePercent();
+        if ($p !== null && $p !== '') {
+            return (float) $p;
+        }
+
+        return (float) $this->defaultPlatformFeePercent;
+    }
+
+    private function resolveIssuerVatPercentFloat(BillingCompany $issuer): float
+    {
+        $rate = $issuer->getVatRate();
+        if ($rate === null || trim((string) $rate) === '') {
+            return 0.0;
+        }
+
+        return (float) $rate;
+    }
+
+    private function isIssuerVatRateZero(float $percent): bool
+    {
+        return abs($percent) < 0.0000001;
+    }
+
+    /**
+     * Customer invoice “Pakalpojuma sniegšanas datums”: first moment order status became PAID (history).
+     */
+    private function resolvePaidStatusFirstAtDisplay(Order $order, \DateTimeZone $tz, string $fallbackDisplay): string
+    {
+        $earliest = null;
+        foreach ($order->getHistories() as $history) {
+            if (!$history instanceof OrderHistory) {
+                continue;
+            }
+            if ($history->getStatus() !== Order::STATUS['PAID']) {
+                continue;
+            }
+            $at = $history->getCreatedAt();
+            if ($at === null) {
+                continue;
+            }
+            if ($earliest === null || $at < $earliest) {
+                $earliest = $at;
+            }
+        }
+
+        if ($earliest === null) {
+            return $fallbackDisplay;
+        }
+
+        return $earliest->setTimezone($tz)->format('d.m.Y');
     }
 }
