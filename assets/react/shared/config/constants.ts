@@ -116,6 +116,8 @@ type CargoType = {
 
 export type OrderType = {
 	id: string
+	/** Business order no., e.g. HEV-00042 (from DB order_number). */
+	reference?: string
 	// 
 	cargo: CargoType[]
 	attachments: {filename: string, path: string}[]

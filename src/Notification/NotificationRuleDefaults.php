@@ -216,17 +216,17 @@ HTML;
         $body = <<<'HTML'
 <p>Labdien,</p>
 <p>Paldies, ka apstiprinājāt pārvadājuma cenu.</p>
-<p>Pielikumā pievienots rēķins par pasūtījumu {{ORDER_ID}}.</p>
+<p>Pielikumā pievienots maksājuma paziņojums par pasūtījumu {{ORDER_ID}}.</p>
 <p><strong>Pasūtījuma informācija:</strong></p>
 <ul>
 <li>Pasūtījuma ID: {{ORDER_ID}}</li>
 <li>Maršruts: {{PICKUP_ADDRESS}} → {{DELIVERY_ADDRESS}}</li>
 <li>Krava: {{CARGO_DESCRIPTION}}</li>
 </ul>
-<p><strong>Rēķina informācija:</strong></p>
+<p><strong>Maksājuma paziņojuma informācija:</strong></p>
 <ul>
-<li>Rēķina numurs: {{INVOICE_NUMBER}}</li>
-<li>Datums: {{INVOICE_DATE}}</li>
+<li>Maksājuma paziņojuma numurs: {{PAYMENT_NOTICE_NUMBER}}</li>
+<li>Datums: {{PAYMENT_NOTICE_DATE}}</li>
 <li>Summa: {{TOTAL_AMOUNT}} {{CURRENCY}}</li>
 <li>Apmaksas termiņš: {{PAYMENT_DUE_DATE}}</li>
 </ul>
@@ -239,7 +239,7 @@ HTML;
             'description' => 'MVP: ORDER_PRICE_CONFIRMED (PDF pielikums)',
             'eventKey' => NotificationEventKey::ORDER_PRICE_CONFIRMED,
             'recipientType' => NotificationRecipientType::SENDER,
-            'subjectTemplate' => 'Rēķins par pārvadājumu – pasūtījums {{ORDER_ID}}',
+            'subjectTemplate' => 'Maksājuma paziņojums – pasūtījums {{ORDER_ID}}',
             'bodyTemplate' => $body,
             'attachInvoicePdf' => true,
             'sendOncePerOrder' => true,

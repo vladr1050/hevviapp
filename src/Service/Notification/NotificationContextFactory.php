@@ -7,6 +7,9 @@ namespace App\Service\Notification;
 use App\Entity\Invoice;
 use App\Entity\Order;
 use App\Entity\User;
+use App\Enum\DocumentType;
+use App\Repository\DocumentRepository;
+use App\Service\Document\DocumentNumberFormatter;
 use App\Service\Invoice\InvoiceMoneyFormatter;
 
 /**
@@ -16,6 +19,8 @@ final class NotificationContextFactory
 {
     public function __construct(
         private readonly InvoiceMoneyFormatter $moneyFormatter,
+        private readonly DocumentRepository $documentRepository,
+        private readonly DocumentNumberFormatter $documentNumberFormatter,
     ) {
     }
 
@@ -27,6 +32,7 @@ final class NotificationContextFactory
         $empty = $this->emptyPlaceholders();
         $filled = $this->fillFromOrder($order);
         $merged = array_merge($empty, $filled);
+        $merged = array_merge($merged, $this->fillPaymentNoticePlaceholders($order, $invoice));
 
         if ($invoice instanceof Invoice) {
             $merged = array_merge($merged, $this->fillFromInvoice($invoice));
@@ -52,6 +58,7 @@ final class NotificationContextFactory
             'PICKUP_DATE', 'PICKUP_TIME', 'DELIVERY_DATE', 'DELIVERY_TIME', 'ETA',
             'CARGO_DESCRIPTION', 'RECEIVER_NAME', 'PICKUP_CONTACT',
             'INVOICE_NUMBER', 'INVOICE_DATE', 'TOTAL_AMOUNT', 'CURRENCY', 'PAYMENT_DUE_DATE',
+            'PAYMENT_NOTICE_NUMBER', 'PAYMENT_NOTICE_DATE',
         ];
 
         return array_fill_keys($keys, '');
@@ -132,6 +139,35 @@ final class NotificationContextFactory
             'TOTAL_AMOUNT' => $this->moneyFormatter->formatCentsNumber($gross),
             'CURRENCY' => $c,
             'PAYMENT_DUE_DATE' => $invoice->getDueDate()?->format('d.m.Y') ?? '',
+        ];
+    }
+
+    /**
+     * Payment notice row (documents) or derived number (invoice no. + "-PN") for ORDER_PRICE_CONFIRMED emails.
+     *
+     * @return array{PAYMENT_NOTICE_NUMBER: string, PAYMENT_NOTICE_DATE: string}
+     */
+    private function fillPaymentNoticePlaceholders(Order $order, ?Invoice $invoice): array
+    {
+        $doc = $this->documentRepository->findOneByOrderAndType($order, DocumentType::PAYMENT_NOTICE);
+        if ($doc !== null) {
+            return [
+                'PAYMENT_NOTICE_NUMBER' => $doc->getDocumentNumber(),
+                'PAYMENT_NOTICE_DATE' => $doc->getIssuedAt()?->format('d.m.Y') ?? '',
+            ];
+        }
+
+        $invNo = $invoice?->getInvoiceNumber();
+        if ($invNo !== null && $invNo !== '') {
+            return [
+                'PAYMENT_NOTICE_NUMBER' => $this->documentNumberFormatter->formatPaymentNoticeNumber((string) $invNo),
+                'PAYMENT_NOTICE_DATE' => $invoice->getIssueDate()?->format('d.m.Y') ?? '',
+            ];
+        }
+
+        return [
+            'PAYMENT_NOTICE_NUMBER' => '',
+            'PAYMENT_NOTICE_DATE' => '',
         ];
     }
 

@@ -31,7 +31,7 @@ export const OrdersPage: FC<OrdersPageProps> = (props) => {
 
 			<div className={styles.tableWrapper}>
 				<div className={styles.header}>
-					<span>ID</span>
+					<span>Order №</span>
 					<span>Comment</span>
 					<span>Item</span>
 					<span>Delivery Address</span>
@@ -44,7 +44,7 @@ export const OrdersPage: FC<OrdersPageProps> = (props) => {
 				<div className={styles.items}>
 					{orders?.map((order, index) => (
 						<div className={styles.item} key={index}>
-							<span>{order.id.split('-')[0]}</span>
+							<span>{order.reference?.trim() || order.id.split('-')[0]}</span>
 							<span
 								className={cn(styles.comment, { [styles.empty]: !order.comment })}
 								title={order.comment}

@@ -76,7 +76,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 		iconAnchor: [20, 30],
 	})
 
-	const orderId = order.id.split('-')[0]
+	const orderReferenceDisplay = order.reference?.trim() || order.id.split('-')[0]
 
 	const showId = isRequest
 
@@ -147,7 +147,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 
 								<div className={styles.id}>
 									Reference ID
-									<span>{orderId}</span>
+									<span>{orderReferenceDisplay}</span>
 								</div>
 							</div>
 						</>
@@ -423,7 +423,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 					{showId && (
 						<div className={styles.id}>
 							<div className={styles.label}>Reference ID</div>
-							<div className={styles.value}>{orderId}</div>
+							<div className={styles.value}>{orderReferenceDisplay}</div>
 						</div>
 					)}
 

@@ -95,6 +95,8 @@ MAILJET_ENABLED=true
 
 Тексты и темы настраиваются в **Sonata → Правила уведомлений** (HTML с плейсхолдерами `{{ORDER_ID}}` и др.). Каталог `templates/email/order_status/` **не используется** для отправки через Notification Service (может сохраняться только как справочный материал).
 
+**Плейсхолдеры** подставляет `NotificationContextFactory` (строки `{{ИМЯ}}` в теме и теле правила). Для письма после подтверждения цены (`ORDER_PRICE_CONFIRMED`, вложение — PDF maksājuma paziņojums / payment notice) используйте **`{{PAYMENT_NOTICE_NUMBER}}`** и **`{{PAYMENT_NOTICE_DATE}}`** (номер и дата из записи `documents` типа `PAYMENT_NOTICE`, либо при отсутствии строки — номер вида `{{INVOICE_NUMBER}}-PN` и дата счёта). Старый **`{{INVOICE_NUMBER}}`** — это номер **счёта** в таблице `invoice`, он может не совпадать с номером на PDF maksājuma paziņojuma.
+
 ### Доступные переменные в шаблонах
 
 - `order` - объект Order
