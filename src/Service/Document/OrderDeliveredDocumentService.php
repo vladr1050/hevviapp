@@ -123,9 +123,10 @@ final class OrderDeliveredDocumentService
             : $nowDisplay;
         $customerServiceDateDisplay = $this->resolvePaidStatusFirstAtDisplay($order, $tz, $deliveredDisplay);
 
-        $grossOrderCents = (int) $invoice->getAmountGross();
+        // Platform commission: % of freight (delivery) net — без ПВН, как при расчёте оффера.
+        $freight = (int) $invoice->getAmountFreight();
         $feePercent = $this->resolvePlatformFeePercentFloat($issuer);
-        $customerNet = (int) round($grossOrderCents * $feePercent / 100.0);
+        $customerNet = (int) round($freight * $feePercent / 100.0);
         $issuerVatPercent = $this->resolveIssuerVatPercentFloat($issuer);
         $customerVat = $this->isIssuerVatRateZero($issuerVatPercent)
             ? 0
@@ -134,7 +135,6 @@ final class OrderDeliveredDocumentService
 
         $subtotal = max(1, (int) $invoice->getAmountSubtotal());
         $vatTotal = (int) $invoice->getAmountVat();
-        $freight = (int) $invoice->getAmountFreight();
         $allocVat = static function (int $part) use ($vatTotal, $subtotal): int {
             return (int) round($vatTotal * ($part / $subtotal));
         };
