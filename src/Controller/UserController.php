@@ -9,8 +9,8 @@ use App\Entity\OrderHistory;
 use App\Entity\OrderOffer;
 use App\Entity\User;
 use App\Repository\OrderRepository;
-use App\Service\Billing\IssuingCompanyResolver;
 use App\Service\Invoice\InvoiceIssuingService;
+use App\Service\Order\SenderOrderPayableTotalCentsCalculator;
 use App\Service\OrderAttachmentUploader;
 use App\Twig\Extension\Filter\MoneyExtension;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,9 +27,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ROLE_USER')]
 class UserController extends AbstractController
 {
-    /** @var float VAT on freight for sender UI; replace with carrier-specific rate when assigned. */
-    private const SENDER_FREIGHT_VAT_PERCENT = 21.0;
-
     public function __construct(
         private readonly OrderRepository           $orderRepository,
         private readonly MoneyExtension            $moneyExtension,
@@ -37,7 +34,7 @@ class UserController extends AbstractController
         private readonly EntityManagerInterface    $em,
         private readonly OrderAttachmentUploader   $attachmentUploader,
         private readonly InvoiceIssuingService     $invoiceIssuingService,
-        private readonly IssuingCompanyResolver    $issuingCompanyResolver,
+        private readonly SenderOrderPayableTotalCentsCalculator $senderOrderPayableTotalCentsCalculator,
     )
     {
     }
@@ -478,25 +475,12 @@ class UserController extends AbstractController
      */
     private function computeSenderOrderTotalDisplay(Order $order): ?string
     {
-        $offer = $order->getLatestOffer();
-        $baseCents = $this->resolveBaseFreight($offer);
-        if ($baseCents === null) {
+        $totalCents = $this->senderOrderPayableTotalCentsCalculator->computePayableGrossCents(
+            $order->getLatestOffer()
+        );
+        if ($totalCents === null) {
             return null;
         }
-
-        $feeCents = (int) ($offer?->getFee() ?? 0);
-        $issuer = $this->issuingCompanyResolver->getIssuingCompany();
-        $issuerVatPercent = 0.0;
-        if ($issuer !== null) {
-            $rate = $issuer->getVatRate();
-            if ($rate !== null && trim((string) $rate) !== '') {
-                $issuerVatPercent = (float) $rate;
-            }
-        }
-
-        $freightVatCents = (int) round($baseCents * self::SENDER_FREIGHT_VAT_PERCENT / 100.0);
-        $platformVatCents = (int) round($feeCents * $issuerVatPercent / 100.0);
-        $totalCents = $baseCents + $freightVatCents + $feeCents + $platformVatCents;
 
         return $this->moneyExtension->currencyConvert($totalCents, $order->getCurrency());
     }

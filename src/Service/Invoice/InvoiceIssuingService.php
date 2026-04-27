@@ -17,6 +17,7 @@ use App\Repository\DocumentRepository;
 use App\Repository\InvoiceRepository;
 use App\Service\Document\DocumentNumberFormatter;
 use App\Service\Document\StoredPdfPathResolver;
+use App\Service\Order\SenderOrderPayableTotalCentsCalculator;
 use App\Notification\NotificationEventKey;
 use App\Service\Notification\NotificationDispatchService;
 use App\Service\Invoice\DTO\InvoiceMapPayload;
@@ -48,6 +49,7 @@ final class InvoiceIssuingService
         private readonly DocumentRepository $documentRepository,
         private readonly DocumentNumberFormatter $documentNumberFormatter,
         private readonly InvoicePdfContextBuilder $invoicePdfContextBuilder,
+        private readonly SenderOrderPayableTotalCentsCalculator $senderOrderPayableTotalCentsCalculator,
     ) {
     }
 
@@ -114,8 +116,14 @@ final class InvoiceIssuingService
             $freight = 0;
         }
 
-        $vatAmount = $offer->getVat() ?? 0;
-        $gross = $offer->getBrutto() ?? 0;
+        $splitPayable = $this->senderOrderPayableTotalCentsCalculator->computePayableGrossAndVatCents($offer);
+        if ($splitPayable !== null) {
+            $vatAmount = $splitPayable['vat_cents'];
+            $gross = $splitPayable['gross_cents'];
+        } else {
+            $vatAmount = $offer->getVat() ?? 0;
+            $gross = $offer->getBrutto() ?? 0;
+        }
 
         $vatRateStr = (string) $issuer->getVatRate();
         $feePercentFloat = $this->resolveFeePercentFloat($issuer);
