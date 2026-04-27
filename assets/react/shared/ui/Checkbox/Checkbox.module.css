@@ -7,6 +7,14 @@
 			@apply cursor-not-allowed !text-black/20;
 		}
 
+		& .row .inputOnlyLabel {
+			@apply cursor-not-allowed;
+		}
+
+		& .row .sideContent {
+			@apply !text-black/20;
+		}
+
 		& input[type='checkbox'] {
 			&:disabled {
 				@apply cursor-not-allowed !border-black/20;
@@ -39,6 +47,22 @@
 		&.green input[type='checkbox'] {
 			@apply hover-hover:hover:bg-primary hover-none:active:bg-primary;
 		}
+	}
+
+	& .row {
+		@apply flex w-full gap-3 items-center;
+
+		&.alignTop {
+			@apply items-start;
+		}
+	}
+
+	& .inputOnlyLabel {
+		@apply shrink-0 cursor-pointer !mb-0 flex;
+	}
+
+	& .sideContent {
+		@apply flex-1 min-w-0 text-sm font-medium text-black transition-colors select-none;
 	}
 
 	& label {

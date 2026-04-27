@@ -71,14 +71,14 @@
 				display: inline;
 			}
 
-			& .termsDocLink {
+			& .agreementOpenTerms {
 				@apply inline font-normal text-black cursor-pointer align-baseline no-underline;
 				white-space: normal;
 				word-break: break-word;
 			}
 
-			& .termsDocLink:hover,
-			& .termsDocLink:focus-visible {
+			& .agreementOpenTerms:hover,
+			& .agreementOpenTerms:focus-visible {
 				@apply text-black/70 outline-none no-underline;
 			}
 		}

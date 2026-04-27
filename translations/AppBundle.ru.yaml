@@ -37,6 +37,7 @@ menu:
     notifications:      Email-уведомления
     notification_rules: Правила уведомлений
     notification_logs:  Журнал уведомлений
+    portal_login_consent_logs: Вход в портал и согласие с условиями
     terms_of_use:        Условия пользования (портал)
 
 breadcrumb:
@@ -80,6 +81,10 @@ filter:
     label_price:                  Цена
     label_terms_audience:         Аудитория
     label_terms_status:           Статус редакции
+    label_portal_login_created_at:   Время входа (диапазон)
+    label_portal_login_email:        Email входа
+    label_portal_login_account_type: Тип учётной записи
+    label_portal_login_portal_audience: Аудитория условий (UI)
 
 list:
     label_order_number:         Номер заказа
@@ -146,6 +151,19 @@ list:
     label_terms_status:                Статус
     label_terms_title:                 Заголовок
     label_terms_published_at:          Дата публикации
+    label_portal_login_created_at:     Время входа
+    label_portal_login_email:          Email
+    label_portal_login_account_type:   Тип аккаунта
+    label_portal_login_portal_audience: Аудитория условий
+    label_portal_login_terms_version:  Версия условий (снимок)
+    label_portal_login_terms_revision: Редакция условий
+    label_portal_login_subject_id:     ID пользователя / перевозчика
+    label_portal_login_ip:             IP-адрес
+    label_portal_login_user_agent:     User-Agent
+    label_portal_login_account_user:   Отправитель (user)
+    label_portal_login_account_carrier: Перевозчик
+    label_portal_login_audience_sender: Условия отправителя
+    label_portal_login_audience_carrier: Условия перевозчика
 
 show:
     label_order_number:       Номер заказа

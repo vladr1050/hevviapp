@@ -24,6 +24,8 @@ sonata_admin:
                         label: menu.users
                     -   route: admin_app_carrier_list
                         label: menu.carriers
+                    -   route: admin_app_portalloginconsentlog_list
+                        label: menu.portal_login_consent_logs
             orders:
                 label:           menu.orders
                 label_catalogue: AppBundle
@@ -304,6 +306,19 @@ services:
                 controller:                ~
                 manager_type:              orm
                 label:                     menu.documents
+                label_translator_strategy: sonata.admin.label.strategy.underscore
+                show_in_roles_matrix:      false
+        calls:
+            - [ setTranslationDomain, [ 'AppBundle' ] ]
+
+    App\Admin\PortalLoginConsentLogAdmin:
+        tags:
+            -   name:                      sonata.admin
+                code:                      ~
+                model_class:               App\Entity\PortalLoginConsentLog
+                controller:                ~
+                manager_type:              orm
+                label:                     menu.portal_login_consent_logs
                 label_translator_strategy: sonata.admin.label.strategy.underscore
                 show_in_roles_matrix:      false
         calls:

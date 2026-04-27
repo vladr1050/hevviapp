@@ -5,14 +5,18 @@ namespace App\Controller\Api;
 use App\Entity\Carrier;
 use App\Entity\RefreshToken;
 use App\Entity\User;
+use App\Enum\TermsAudience;
 use App\Repository\CarrierRepository;
 use App\Repository\RefreshTokenRepository;
+use App\Repository\TermsOfUseRevisionRepository;
 use App\Repository\UserRepository;
+use App\Service\PortalLoginConsentLogService;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -27,9 +31,11 @@ class AuthController extends AbstractController
         private readonly UserRepository $userRepository,
         private readonly CarrierRepository $carrierRepository,
         private readonly RefreshTokenRepository $refreshTokenRepository,
+        private readonly TermsOfUseRevisionRepository $termsOfUseRevisionRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly JWTTokenManagerInterface $jwtManager,
         private readonly UserPasswordHasherInterface $passwordHasher,
+        private readonly PortalLoginConsentLogService $portalLoginConsentLogService,
     ) {
     }
 
@@ -40,6 +46,27 @@ class AuthController extends AbstractController
 
         if (!isset($data['login'], $data['password'])) {
             return $this->json(['error' => 'Missing credentials'], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        if (!isset($data['terms_accepted']) || $data['terms_accepted'] !== true) {
+            return $this->json(
+                ['error' => 'Terms must be accepted before login.'],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        $audienceRaw = strtolower(trim((string) ($data['portal_audience'] ?? '')));
+        $portalAudience = match ($audienceRaw) {
+            'sender' => TermsAudience::Sender,
+            'carrier' => TermsAudience::Carrier,
+            default => null,
+        };
+
+        if ($portalAudience === null) {
+            return $this->json(
+                ['error' => 'Field "portal_audience" must be "sender" or "carrier".'],
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         $subject = $this->userRepository->findOneBy(['email' => $data['login']]);
@@ -64,6 +91,19 @@ class AuthController extends AbstractController
 
         $accessToken = $this->jwtManager->create($subject);
         $refreshToken = $this->createRefreshToken($subject);
+
+        $termsRevision = $this->termsOfUseRevisionRepository->findCurrentPublished($portalAudience);
+        try {
+            $this->portalLoginConsentLogService->recordSuccessfulLogin(
+                $request,
+                $subject,
+                $accountType,
+                $portalAudience,
+                $termsRevision,
+            );
+        } catch (\Throwable $e) {
+            error_log('portal_login_consent_log: '.$e->getMessage());
+        }
 
         return $this->json([
             'access_token'  => $accessToken,

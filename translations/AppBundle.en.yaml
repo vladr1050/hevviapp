@@ -37,6 +37,7 @@ menu:
     notifications:      Email notifications
     notification_rules: Notification rules
     notification_logs:  Notification log
+    portal_login_consent_logs: Portal login & terms consent
     terms_of_use:        Terms & Conditions (portal)
 
 breadcrumb:
@@ -84,6 +85,10 @@ filter:
     label_price:                  Price
     label_terms_audience:         Audience
     label_terms_status:           Revision status
+    label_portal_login_created_at:   Login time (range)
+    label_portal_login_email:        Portal login email
+    label_portal_login_account_type: Account type
+    label_portal_login_portal_audience: Terms audience (UI)
 
 
 list:
@@ -155,6 +160,19 @@ list:
     label_terms_status:                Status
     label_terms_title:                 Title
     label_terms_published_at:          Published at
+    label_portal_login_created_at:     Login time
+    label_portal_login_email:          Email
+    label_portal_login_account_type:   Logged-in account
+    label_portal_login_portal_audience: Terms audience
+    label_portal_login_terms_version:  Terms version (snapshot)
+    label_portal_login_terms_revision: Terms revision
+    label_portal_login_subject_id:     User / carrier ID
+    label_portal_login_ip:             IP address
+    label_portal_login_user_agent:     User agent
+    label_portal_login_account_user:   Sender (user)
+    label_portal_login_account_carrier: Carrier
+    label_portal_login_audience_sender: Sender terms
+    label_portal_login_audience_carrier: Carrier terms
 
 show:
     label_order_number:                Order №

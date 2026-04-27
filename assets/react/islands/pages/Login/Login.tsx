@@ -110,7 +110,11 @@ export const LoginPage: FC<LoginProps> = ({ device }) => {
 		setIsLoading(true)
 
 		try {
-			const result = await apiLogin(values.login, values.password)
+			const portalAudience = values.portalType === 'Carrier' ? 'carrier' : 'sender'
+			const result = await apiLogin(values.login, values.password, {
+				portal_audience: portalAudience,
+				terms_accepted: true,
+			})
 
 			saveTokens(result.access_token, result.refresh_token, result.expires_in, result.user)
 
@@ -261,29 +265,32 @@ export const LoginPage: FC<LoginProps> = ({ device }) => {
 									control={control}
 									name="termsAccepted"
 									render={({ field: { value, onChange } }) => (
-										<Checkbox value={value} onChange={onChange} alignTop>
+										<Checkbox
+											value={value}
+											onChange={onChange}
+											alignTop
+											labelCoversInputOnly
+										>
 											<span className={styles.agreementText}>
-												<span className={styles.agreementSentence}>
-													Piekrītu{' '}
-													<span
-														role="button"
-														tabIndex={0}
-														className={styles.termsDocLink}
-														onClick={(e) => {
+												<span
+													role="button"
+													tabIndex={0}
+													className={cn(styles.agreementSentence, styles.agreementOpenTerms)}
+													onClick={(e) => {
+														e.preventDefault()
+														e.stopPropagation()
+														setTermsOpen(true)
+													}}
+													onKeyDown={(e) => {
+														if (e.key === 'Enter' || e.key === ' ') {
 															e.preventDefault()
 															e.stopPropagation()
 															setTermsOpen(true)
-														}}
-														onKeyDown={(e) => {
-															if (e.key === 'Enter' || e.key === ' ') {
-																e.preventDefault()
-																e.stopPropagation()
-																setTermsOpen(true)
-															}
-														}}
-													>
-														Hevvi.app platformas lietošanas noteikumiem un privātuma politikai.
-													</span>
+														}
+													}}
+												>
+													{'Piekrītu\u00A0'}
+													Hevvi.app platformas lietošanas noteikumiem un privātuma politikai.
 												</span>
 											</span>
 										</Checkbox>

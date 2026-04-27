@@ -30,11 +30,25 @@ export interface ApiError {
 	error: string
 }
 
-export async function apiLogin(email: string, password: string): Promise<LoginResponse> {
+export interface PortalLoginConsentPayload {
+	portal_audience: 'sender' | 'carrier'
+	terms_accepted: boolean
+}
+
+export async function apiLogin(
+	email: string,
+	password: string,
+	consent: PortalLoginConsentPayload
+): Promise<LoginResponse> {
 	const res = await fetch(`${API_BASE}/login`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ login: email, password }),
+		body: JSON.stringify({
+			login: email,
+			password,
+			portal_audience: consent.portal_audience,
+			terms_accepted: consent.terms_accepted,
+		}),
 	})
 
 	const data = await res.json()
