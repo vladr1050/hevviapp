@@ -9,7 +9,8 @@ namespace App\Service\Notification;
  */
 final class NotificationTemplateRenderer
 {
-    private const PLACEHOLDER_PATTERN = '/\{\{([A-Z0-9_]+)\}\}/';
+    /** Allow optional spaces (e.g. WYSIWYG/HTML editors: "{{ ETA }}"). */
+    private const PLACEHOLDER_PATTERN = '/\{\{\s*([A-Z0-9_]+)\s*\}\}/';
 
     /**
      * @param array<string, string> $variables

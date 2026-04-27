@@ -38,4 +38,19 @@ class InvoiceRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * First invoice for the order (by issue date) — used for ETA when status history is incomplete.
+     */
+    public function findEarliestByRelatedOrder(Order $order): ?Invoice
+    {
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.relatedOrder = :order')
+            ->setParameter('order', $order)
+            ->orderBy('i.issueDate', 'ASC')
+            ->addOrderBy('i.createdAt', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
