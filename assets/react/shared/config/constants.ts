@@ -147,6 +147,8 @@ export type OrderType = {
 	type?: string
 	vat?: string
 	brutto?: string
+	/** Sender order page: total = (freight + freight VAT) + (platform fee + operator VAT on fee). */
+	sender_total?: string
 	subtotal?: string
 	fee?: string
 	sender?: { 

@@ -9,6 +9,7 @@ use App\Entity\OrderHistory;
 use App\Entity\OrderOffer;
 use App\Entity\User;
 use App\Repository\OrderRepository;
+use App\Service\Billing\IssuingCompanyResolver;
 use App\Service\Invoice\InvoiceIssuingService;
 use App\Service\OrderAttachmentUploader;
 use App\Twig\Extension\Filter\MoneyExtension;
@@ -26,6 +27,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ROLE_USER')]
 class UserController extends AbstractController
 {
+    /** @var float VAT on freight for sender UI; replace with carrier-specific rate when assigned. */
+    private const SENDER_FREIGHT_VAT_PERCENT = 21.0;
+
     public function __construct(
         private readonly OrderRepository           $orderRepository,
         private readonly MoneyExtension            $moneyExtension,
@@ -33,6 +37,7 @@ class UserController extends AbstractController
         private readonly EntityManagerInterface    $em,
         private readonly OrderAttachmentUploader   $attachmentUploader,
         private readonly InvoiceIssuingService     $invoiceIssuingService,
+        private readonly IssuingCompanyResolver    $issuingCompanyResolver,
     )
     {
     }
@@ -188,6 +193,7 @@ class UserController extends AbstractController
             'vat' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getVat(), $order->getCurrency()),
             'brutto' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
             'fee' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getFee(), $order->getCurrency()),
+            'sender_total' => $this->computeSenderOrderTotalDisplay($order),
             // netto в OrderOffer = base + platform fee (до НДС), см. OrderOfferCalculatorService; не суммировать с fee повторно
             'subtotal' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getNetto(), $order->getCurrency()),
             'address' => [
@@ -464,5 +470,34 @@ class UserController extends AbstractController
         }
 
         return $fee !== null ? $netto - $fee : $netto;
+    }
+
+    /**
+     * Total for sender confirmation UI: (base + VAT on base) + (platform fee + VAT on fee).
+     * VAT on freight is fixed for now; VAT on fee follows issuing BillingCompany (operator).
+     */
+    private function computeSenderOrderTotalDisplay(Order $order): ?string
+    {
+        $offer = $order->getLatestOffer();
+        $baseCents = $this->resolveBaseFreight($offer);
+        if ($baseCents === null) {
+            return null;
+        }
+
+        $feeCents = (int) ($offer?->getFee() ?? 0);
+        $issuer = $this->issuingCompanyResolver->getIssuingCompany();
+        $issuerVatPercent = 0.0;
+        if ($issuer !== null) {
+            $rate = $issuer->getVatRate();
+            if ($rate !== null && trim((string) $rate) !== '') {
+                $issuerVatPercent = (float) $rate;
+            }
+        }
+
+        $freightVatCents = (int) round($baseCents * self::SENDER_FREIGHT_VAT_PERCENT / 100.0);
+        $platformVatCents = (int) round($feeCents * $issuerVatPercent / 100.0);
+        $totalCents = $baseCents + $freightVatCents + $feeCents + $platformVatCents;
+
+        return $this->moneyExtension->currencyConvert($totalCents, $order->getCurrency());
     }
 }

@@ -92,7 +92,19 @@ export const OrderCard: FC<OrderCardProps> = ({
 		!isCanceled &&
 		((!isCarrier && order.status > OrderStatusEnum.OFFERED) || (isCarrier && !isRequest))
 
-	const PriceBlock = () => (
+	const SenderTotalPriceBlock = () => (
+		<div className="grid grid-cols-5 gap-3 w-full">
+			<div className="col-span-4" aria-hidden="true" />
+			<div className={styles.item}>
+				<div className={styles.label}>Total</div>
+				<div className={styles.value}>
+					{order?.sender_total ?? order?.brutto ?? EMPTY_STRING}
+				</div>
+			</div>
+		</div>
+	)
+
+	const CarrierPriceBlock = () => (
 		<div className="grid grid-cols-5 gap-3">
 			<div className={styles.item}>
 				<div className={styles.label}>Base fee</div>
@@ -120,6 +132,8 @@ export const OrderCard: FC<OrderCardProps> = ({
 			</div>
 		</div>
 	)
+
+	const PriceBlock = () => (!isCarrier ? <SenderTotalPriceBlock /> : <CarrierPriceBlock />)
 
 	return (
 		<>
@@ -414,7 +428,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 
 					{showInfo && (
 						<div className={styles.info}>
-							<div className={cn(styles.top, '!grid-cols-5')}>
+							<div className={cn(styles.top, isCarrier ? '!grid-cols-5' : 'w-full')}>
 								<PriceBlock />
 							</div>
 
