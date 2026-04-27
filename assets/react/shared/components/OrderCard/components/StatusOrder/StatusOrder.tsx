@@ -59,7 +59,7 @@ const useDeliveryCountdown = (paidDate: string | undefined, deliveredDate: strin
 }
 
 export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId, csrfToken }) => {
-	const [valueForm, setValueForm] = useState<'PICKUP_DONE' | 'IN_TRANSIT' | 'DELIVERED'>()
+	const [valueForm, setValueForm] = useState<'PICKUP_DONE' | 'DELIVERED'>()
 	const countdown = useDeliveryCountdown(order.paid_date, order.delivered_date)
 
 	return (
@@ -202,51 +202,71 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 						<ItemCarrier
 							iconType="up_box"
 							label={<>Pickup done</>}
-							checked={order.status >= OrderStatusEnum.PICKUP_DONE || valueForm === 'PICKUP_DONE'}
-							isActive={order.status >= OrderStatusEnum.PICKUP_DONE}
-							isWaiting={order.status < OrderStatusEnum.PICKUP_DONE}
-							showInfo={order.status < OrderStatusEnum.PICKUP_DONE}
+							checked={order.status >= OrderStatusEnum.IN_TRANSIT || valueForm === 'PICKUP_DONE'}
+							isActive={order.status >= OrderStatusEnum.IN_TRANSIT}
+							isWaiting={order.status === OrderStatusEnum.AWAITING_PICKUP}
+							showInfo={order.status === OrderStatusEnum.AWAITING_PICKUP}
 							infoText="Awaiting pickup"
 							onClick={() => setValueForm((v) => (v === 'PICKUP_DONE' ? undefined : 'PICKUP_DONE'))}
 						/>
 
 						<div
 							className={cn(styles.line, {
-								[styles.big]: order.status === OrderStatusEnum.PICKUP_DONE,
+								[styles.big]: order.status >= OrderStatusEnum.IN_TRANSIT,
 							})}
 						/>
 
-						<ItemCarrier
-							iconType="vehicle_right"
-							label={<>In transit</>}
-							checked={order.status >= OrderStatusEnum.IN_TRANSIT || valueForm === 'IN_TRANSIT'}
-							isActive={order.status >= OrderStatusEnum.IN_TRANSIT}
-							isWaiting={order.status === OrderStatusEnum.PICKUP_DONE}
-							showInfo={order.status === OrderStatusEnum.PICKUP_DONE}
-							infoText="In transit"
-							onClick={() => setValueForm((v) => (v === 'IN_TRANSIT' ? undefined : 'IN_TRANSIT'))}
-						/>
+						<div className={styles.transitGroup}>
+							<ItemCarrier
+								iconType="vehicle_right"
+								label={<>In transit</>}
+								checked={order.status >= OrderStatusEnum.IN_TRANSIT}
+								isActive={order.status >= OrderStatusEnum.IN_TRANSIT}
+								isWaiting={false}
+								showInfo={false}
+							/>
+
+							{order.status >= OrderStatusEnum.IN_TRANSIT && (
+								<div
+									className={cn(styles.nestedDelivered, {
+										[styles.nestedDeliveredClickable]:
+											order.status === OrderStatusEnum.IN_TRANSIT,
+									})}
+									onClick={
+										order.status === OrderStatusEnum.IN_TRANSIT
+											? () => setValueForm((v) => (v === 'DELIVERED' ? undefined : 'DELIVERED'))
+											: undefined
+									}
+									onKeyDown={
+										order.status === OrderStatusEnum.IN_TRANSIT
+											? (e) => {
+													if (e.key === 'Enter' || e.key === ' ') {
+														e.preventDefault()
+														setValueForm((v) => (v === 'DELIVERED' ? undefined : 'DELIVERED'))
+													}
+												}
+											: undefined
+									}
+									role={order.status === OrderStatusEnum.IN_TRANSIT ? 'button' : undefined}
+									tabIndex={order.status === OrderStatusEnum.IN_TRANSIT ? 0 : undefined}
+								>
+									<Checkbox
+										className="pointer-events-none"
+										value={
+											order.status >= OrderStatusEnum.DELIVERED || valueForm === 'DELIVERED'
+										}
+										disabledWithoutCss
+										disabled={order.status !== OrderStatusEnum.IN_TRANSIT}
+									/>
+									<span className="font-medium">Delivered</span>
+									<Icon type="mark_map" size={22} className="ml-auto shrink-0 text-black/40" />
+								</div>
+							)}
+						</div>
 
 						<div
 							className={cn(styles.line, {
-								[styles.big]: order.status === OrderStatusEnum.IN_TRANSIT,
-							})}
-						/>
-
-						<ItemCarrier
-							iconType="mark_map"
-							label={<>Delivered</>}
-							checked={order.status >= OrderStatusEnum.DELIVERED || valueForm === 'DELIVERED'}
-							isActive={order.status >= OrderStatusEnum.DELIVERED}
-							isWaiting={order.status === OrderStatusEnum.IN_TRANSIT}
-							showInfo={order.status === OrderStatusEnum.IN_TRANSIT}
-							infoText="Confirm delivery"
-							onClick={() => setValueForm((v) => (v === 'DELIVERED' ? undefined : 'DELIVERED'))}
-						/>
-
-						<div
-							className={cn(styles.line, {
-								[styles.big]: order.status === OrderStatusEnum.DELIVERED,
+								[styles.big]: order.status >= OrderStatusEnum.DELIVERED,
 							})}
 						/>
 
@@ -298,6 +318,16 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 								method="POST"
 								action={carrierUpdateStatusUrl(order.id)}
 								className={styles.button}
+								onSubmit={(e) => {
+									if (
+										valueForm === 'DELIVERED' &&
+										!window.confirm(
+											'Mark this order as delivered? The customer will be notified.',
+										)
+									) {
+										e.preventDefault()
+									}
+								}}
 							>
 								<input type="hidden" name="_token" value={csrfToken} />
 								<Button
@@ -312,7 +342,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 							</form>
 						)}
 
-						{order.status < OrderStatusEnum.PICKUP_DONE && (
+						{order.status < OrderStatusEnum.IN_TRANSIT && (
 							<Button
 								type="button"
 								// className="!w-full"

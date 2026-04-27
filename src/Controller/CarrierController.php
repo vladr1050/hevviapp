@@ -222,15 +222,24 @@ class CarrierController extends AbstractController
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
 
-        // Carrier: pickup → in transit → delivered. APPROVED is set in Sonata admin only.
+        // Carrier: PICKUP_DONE is persisted first, then IN_TRANSIT (two flushes) so notification triggers run for both.
+        // DELIVERED and legacy PICKUP_DONE→IN_TRANSIT use the map below. APPROVED is admin-only.
+        $action = (string)$request->request->get('action');
+        $currentStatus = $order->getStatus();
+
+        if ($currentStatus === Order::STATUS['AWAITING_PICKUP'] && $action === 'PICKUP_DONE') {
+            $order->setStatus(Order::STATUS['PICKUP_DONE']);
+            $this->em->flush();
+            $order->setStatus(Order::STATUS['IN_TRANSIT']);
+            $this->em->flush();
+
+            return $this->redirectToRoute('carrier_public_order', ['id' => $id]);
+        }
+
         $allowedTransitions = [
-            Order::STATUS['AWAITING_PICKUP'] => ['PICKUP_DONE' => Order::STATUS['PICKUP_DONE']],
             Order::STATUS['PICKUP_DONE'] => ['IN_TRANSIT' => Order::STATUS['IN_TRANSIT']],
             Order::STATUS['IN_TRANSIT'] => ['DELIVERED' => Order::STATUS['DELIVERED']],
         ];
-
-        $action = (string)$request->request->get('action');
-        $currentStatus = $order->getStatus();
 
         if (!isset($allowedTransitions[$currentStatus][$action])) {
             return $this->redirectToRoute('carrier_public_order', ['id' => $id]);
