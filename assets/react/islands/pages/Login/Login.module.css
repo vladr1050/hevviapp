@@ -66,8 +66,14 @@
 				@apply text-sm font-normal text-black leading-snug text-left min-w-0 flex-1;
 			}
 
+			/* Inline run so “Piekrītu” and the link wrap as one sentence (not button block/nowrap). */
+			& .agreementSentence {
+				display: inline;
+			}
+
 			& .termsDocLink {
-				@apply inline p-0 m-0 border-0 bg-transparent font-medium text-black underline cursor-pointer align-baseline max-w-full break-words text-left;
+				@apply inline font-medium text-black underline cursor-pointer align-baseline;
+				white-space: normal;
 				word-break: break-word;
 			}
 
