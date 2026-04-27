@@ -17,8 +17,6 @@ import styles from './Login.module.css'
 
 import { MobilePage } from '../MobilePage/MobilePage'
 import profileStyles from '../Profile/Profile.module.css'
-import registrationStyles from '../Registration/Registration.module.css'
-
 import { type LoginFormValues, resolver } from './login.schema'
 
 interface LoginProps {
@@ -153,23 +151,22 @@ export const LoginPage: FC<LoginProps> = ({ device }) => {
 
 				<form className={styles.right} onSubmit={handleSubmit(onSubmit)}>
 					{!isReset && (
-						<div className={registrationStyles.titleWrapper}>
-							<h1 className={registrationStyles.title}>Login</h1>
+						<div className={styles.loginHeader}>
+							<h1 className={styles.loginTitle}>Login</h1>
 
 							<Controller
 								control={control}
 								name="portalType"
 								render={({ field: { value, onChange } }) => (
 									<Tabs
-										className={registrationStyles.tabs}
 										classNames={{ tab: '!w-[140px]' }}
 										defaultValue={value}
 										items={[
 											{
 												label: (
-													<div className={registrationStyles.item}>
+													<div className={styles.switchItem}>
 														{portalType === 'Sender' && (
-															<div className={registrationStyles.iconWrapper}>
+															<div className={styles.switchIcon}>
 																<Icon type="box" size={20} />
 															</div>
 														)}
@@ -180,9 +177,9 @@ export const LoginPage: FC<LoginProps> = ({ device }) => {
 											},
 											{
 												label: (
-													<div className={registrationStyles.item}>
+													<div className={styles.switchItem}>
 														{portalType === 'Carrier' && (
-															<div className={registrationStyles.iconWrapper}>
+															<div className={styles.switchIcon}>
 																<Icon type="vehicle" size={20} />
 															</div>
 														)}

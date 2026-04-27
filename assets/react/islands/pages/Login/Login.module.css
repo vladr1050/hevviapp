@@ -26,6 +26,23 @@
 		& .right {
 			@apply flex flex-col items-center justify-between gap-10 p-16 bg-white rounded-[30px] shadow-2xl;
 
+			/* Same layout as registration header; scoped under Login .right so nested rules apply. */
+			& .loginHeader {
+				@apply flex flex-col gap-4 w-full items-center;
+
+				& .loginTitle {
+					@apply font-semibold text-3xl text-black text-center m-0 w-full;
+				}
+
+				& .switchItem {
+					@apply flex items-center justify-center gap-3;
+				}
+
+				& .switchIcon {
+					@apply w-10 h-10 rounded-full flex items-center justify-center bg-primary animate-fade text-black;
+				}
+			}
+
 			& .titleFallback {
 				@apply font-semibold text-3xl text-black text-center m-0;
 			}
