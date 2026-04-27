@@ -28,6 +28,64 @@ interface StatusOrderProps {
 
 const DELIVERY_LIMIT_MS = 48 * 60 * 60 * 1000
 
+type CarrierFlatRowProps = {
+	muted?: boolean
+	done?: boolean
+	clickable?: boolean
+	checkbox?: boolean
+	checked?: boolean
+	onActivate?: () => void
+	label: ReactNode
+	iconType: IconNameType
+}
+
+const CarrierFlatRow: FC<CarrierFlatRowProps> = ({
+	muted,
+	done,
+	clickable,
+	checkbox = true,
+	checked = false,
+	onActivate,
+	label,
+	iconType,
+}) => (
+	<div
+		className={cn(
+			styles.carrierFlatCard,
+			muted && styles.carrierFlatCardMuted,
+			clickable && styles.carrierFlatCardClickable,
+		)}
+		onClick={clickable ? onActivate : undefined}
+		onKeyDown={
+			clickable
+				? (e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							e.preventDefault()
+							onActivate?.()
+						}
+					}
+				: undefined
+		}
+		role={clickable ? 'button' : undefined}
+		tabIndex={clickable ? 0 : undefined}
+	>
+		{checkbox ? (
+			<Checkbox
+				className="pointer-events-none"
+				value={checked}
+				disabledWithoutCss
+				disabled={!clickable}
+			/>
+		) : (
+			<div className="w-5 shrink-0" aria-hidden />
+		)}
+		<span>{label}</span>
+		<div className={cn(styles.carrierFlatIcon, done && styles.carrierFlatIconDone)}>
+			<Icon type={iconType} size={22} />
+		</div>
+	</div>
+)
+
 const useDeliveryCountdown = (paidDate: string | undefined, deliveredDate: string | undefined) => {
 	const getRemaining = () => {
 		if (!paidDate) return 0
@@ -189,160 +247,217 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 			{isCarrier && (
 				<div className={styles.statusWrapper}>
 					<div className={styles.top}>
-						<CircleChart
-							size={150}
-							percent={countdown.percent}
-							title={countdown.timeLabel}
-							subtitle={countdown.subtitle}
-							countdown
-						/>
+						{order.status === OrderStatusEnum.APPROVED ? (
+							<div className={styles.carrierHeroApproved}>
+								<Icon type="vehicle_check" size={72} />
+							</div>
+						) : (
+							<CircleChart
+								size={150}
+								percent={countdown.percent}
+								title={countdown.timeLabel}
+								subtitle={countdown.subtitle}
+								countdown
+							/>
+						)}
 					</div>
 
 					<div className={styles.bottom}>
-						<div className={styles.carrierPickupShell}>
-							{order.status === OrderStatusEnum.AWAITING_PICKUP && (
-								<div className={styles.carrierAwaitBanner}>
-									<span className={styles.carrierAwaitBannerDot} aria-hidden />
-									Awaiting pickup
-								</div>
-							)}
-							<div
-								className={cn(
-									styles.carrierPickupCard,
-									order.status >= OrderStatusEnum.IN_TRANSIT && styles.carrierPickupCardDone,
-									order.status === OrderStatusEnum.AWAITING_PICKUP &&
-										styles.carrierPickupCardClickable,
-								)}
-								onClick={
-									order.status === OrderStatusEnum.AWAITING_PICKUP
-										? () => setValueForm((v) => (v === 'PICKUP_DONE' ? undefined : 'PICKUP_DONE'))
-										: undefined
-								}
-								onKeyDown={
-									order.status === OrderStatusEnum.AWAITING_PICKUP
-										? (e) => {
-												if (e.key === 'Enter' || e.key === ' ') {
-													e.preventDefault()
-													setValueForm((v) => (v === 'PICKUP_DONE' ? undefined : 'PICKUP_DONE'))
-												}
-											}
-										: undefined
-								}
-								role={order.status === OrderStatusEnum.AWAITING_PICKUP ? 'button' : undefined}
-								tabIndex={order.status === OrderStatusEnum.AWAITING_PICKUP ? 0 : undefined}
-							>
-								<Checkbox
-									className="pointer-events-none"
-									value={
-										order.status >= OrderStatusEnum.IN_TRANSIT || valueForm === 'PICKUP_DONE'
-									}
-									disabledWithoutCss
-									disabled={order.status !== OrderStatusEnum.AWAITING_PICKUP}
+						{order.status === OrderStatusEnum.APPROVED ? (
+							<>
+								<CarrierFlatRow
+									done
+									checkbox
+									checked
+									label="Pickup done"
+									iconType="up_box"
 								/>
-								<span>Pickup done</span>
-								<div
-									className={cn(
-										styles.carrierPickupIconWrap,
-										order.status >= OrderStatusEnum.IN_TRANSIT &&
-											styles.carrierPickupIconWrapDone,
-									)}
-								>
-									<Icon type="up_box" size={22} />
-								</div>
-							</div>
-						</div>
-
-						<div
-							className={cn(styles.line, {
-								[styles.big]: order.status >= OrderStatusEnum.IN_TRANSIT,
-							})}
-						/>
-
-						<div
-							className={cn(
-								styles.transitFolder,
-								order.status < OrderStatusEnum.IN_TRANSIT && styles.transitFolderWaiting,
-							)}
-						>
-							<div
-								className={cn(
-									styles.transitFolderHeader,
-									order.status < OrderStatusEnum.IN_TRANSIT &&
-										styles.transitFolderHeaderMuted,
-								)}
-							>
-								<span className={styles.transitFolderHeaderDot} aria-hidden />
-								<span>In transit</span>
-							</div>
-							<div className={styles.transitFolderBody}>
-								<div
-									className={cn(
-										styles.transitFolderBodyRow,
-										order.status === OrderStatusEnum.IN_TRANSIT &&
-											styles.transitFolderBodyRowClickable,
-									)}
-									onClick={
-										order.status === OrderStatusEnum.IN_TRANSIT
-											? () => setValueForm((v) => (v === 'DELIVERED' ? undefined : 'DELIVERED'))
-											: undefined
-									}
-									onKeyDown={
-										order.status === OrderStatusEnum.IN_TRANSIT
-											? (e) => {
-													if (e.key === 'Enter' || e.key === ' ') {
-														e.preventDefault()
-														setValueForm((v) => (v === 'DELIVERED' ? undefined : 'DELIVERED'))
-													}
-												}
-											: undefined
-									}
-									role={order.status === OrderStatusEnum.IN_TRANSIT ? 'button' : undefined}
-									tabIndex={order.status === OrderStatusEnum.IN_TRANSIT ? 0 : undefined}
-								>
-									<Checkbox
-										className="pointer-events-none"
-										value={
-											order.status >= OrderStatusEnum.DELIVERED || valueForm === 'DELIVERED'
-										}
-										disabledWithoutCss
-										disabled={order.status !== OrderStatusEnum.IN_TRANSIT}
-									/>
-									<span>Delivered</span>
-									<div
-										className={cn(
-											styles.transitDeliveredIconWrap,
-											order.status >= OrderStatusEnum.DELIVERED &&
-												styles.transitDeliveredIconWrapDone,
-										)}
-									>
-										<Icon type="vehicle_right" size={22} />
+								<div className={cn(styles.line, styles.big)} />
+								<CarrierFlatRow
+									done
+									checkbox
+									checked
+									label="Delivered"
+									iconType="vehicle_right"
+								/>
+								<div className={cn(styles.line, styles.big)} />
+								<CarrierFlatRow
+									done
+									checkbox={false}
+									checked
+									label="Approved"
+									iconType="check_circle_1"
+								/>
+							</>
+						) : order.status === OrderStatusEnum.DELIVERED ? (
+							<>
+								<CarrierFlatRow
+									done
+									checkbox
+									checked
+									label="Pickup done"
+									iconType="up_box"
+								/>
+								<div className={cn(styles.line, styles.big)} />
+								<CarrierFlatRow
+									done
+									checkbox
+									checked
+									label="Delivered"
+									iconType="vehicle_right"
+								/>
+								<div className={cn(styles.line, styles.big)} />
+								<div className={styles.transitFolder}>
+									<div className={styles.transitFolderHeader}>
+										<span className={styles.transitFolderHeaderDot} aria-hidden />
+										<span>Pending admin approval</span>
+									</div>
+									<div className={styles.transitFolderBody}>
+										<div
+											className={cn(
+												styles.transitFolderBodyRow,
+												'text-black/45 opacity-80',
+											)}
+										>
+											<Checkbox
+												className="pointer-events-none"
+												value={false}
+												disabledWithoutCss
+												disabled
+											/>
+											<span>Approved</span>
+											<div className={styles.transitDeliveredIconWrap}>
+												<Icon type="check_circle_1" size={22} />
+											</div>
+										</div>
 									</div>
 								</div>
-							</div>
-						</div>
-
-						<div
-							className={cn(styles.line, {
-								[styles.big]: order.status >= OrderStatusEnum.DELIVERED,
-							})}
-						/>
-
-						<div
-							className={cn(
-								styles.approvedShell,
-								order.status >= OrderStatusEnum.APPROVED && styles.approvedShellActive,
-							)}
-						>
-							<ItemCarrier
-								iconType="check_circle_1"
-								label={<>Approved</>}
-								hideCheckbox
-								isActive={order.status >= OrderStatusEnum.APPROVED}
-								isWaiting={false}
-								showInfo={order.status === OrderStatusEnum.DELIVERED}
-								infoText="Pending admin approval"
-							/>
-						</div>
+							</>
+						) : order.status === OrderStatusEnum.PICKUP_DONE ||
+						  order.status === OrderStatusEnum.IN_TRANSIT ? (
+							<>
+								<CarrierFlatRow
+									done
+									checkbox
+									checked
+									label="Pickup done"
+									iconType="up_box"
+								/>
+								<div className={cn(styles.line, styles.big)} />
+								<div
+									className={cn(
+										styles.transitFolder,
+										order.status < OrderStatusEnum.IN_TRANSIT &&
+											styles.transitFolderWaiting,
+									)}
+								>
+									<div
+										className={cn(
+											styles.transitFolderHeader,
+											order.status < OrderStatusEnum.IN_TRANSIT &&
+												styles.transitFolderHeaderMuted,
+										)}
+									>
+										<span className={styles.transitFolderHeaderDot} aria-hidden />
+										<span>In transit</span>
+									</div>
+									<div className={styles.transitFolderBody}>
+										<div
+											className={cn(
+												styles.transitFolderBodyRow,
+												order.status === OrderStatusEnum.IN_TRANSIT &&
+													styles.transitFolderBodyRowClickable,
+											)}
+											onClick={
+												order.status === OrderStatusEnum.IN_TRANSIT
+													? () =>
+															setValueForm((v) =>
+																v === 'DELIVERED' ? undefined : 'DELIVERED',
+															)
+													: undefined
+											}
+											onKeyDown={
+												order.status === OrderStatusEnum.IN_TRANSIT
+													? (e) => {
+															if (e.key === 'Enter' || e.key === ' ') {
+																e.preventDefault()
+																setValueForm((v) =>
+																	v === 'DELIVERED' ? undefined : 'DELIVERED',
+																)
+															}
+														}
+													: undefined
+											}
+											role={
+												order.status === OrderStatusEnum.IN_TRANSIT ? 'button' : undefined
+											}
+											tabIndex={order.status === OrderStatusEnum.IN_TRANSIT ? 0 : undefined}
+										>
+											<Checkbox
+												className="pointer-events-none"
+												value={
+													order.status >= OrderStatusEnum.DELIVERED ||
+													valueForm === 'DELIVERED'
+												}
+												disabledWithoutCss
+												disabled={order.status !== OrderStatusEnum.IN_TRANSIT}
+											/>
+											<span>Delivered</span>
+											<div
+												className={cn(
+													styles.transitDeliveredIconWrap,
+													order.status >= OrderStatusEnum.DELIVERED &&
+														styles.transitDeliveredIconWrapDone,
+												)}
+											>
+												<Icon type="vehicle_right" size={22} />
+											</div>
+										</div>
+									</div>
+								</div>
+								<div className={cn(styles.line, styles.big)} />
+								<CarrierFlatRow
+									muted
+									checkbox
+									checked={false}
+									label="Approved"
+									iconType="check_circle_1"
+								/>
+							</>
+						) : (
+							<>
+								<div className={styles.carrierPhaseHeader}>
+									<span className={styles.carrierPhaseHeaderDot} aria-hidden />
+									Awaiting pickup
+								</div>
+								<CarrierFlatRow
+									clickable={order.status === OrderStatusEnum.AWAITING_PICKUP}
+									checkbox
+									checked={valueForm === 'PICKUP_DONE'}
+									onActivate={() =>
+										setValueForm((v) => (v === 'PICKUP_DONE' ? undefined : 'PICKUP_DONE'))
+									}
+									label="Pickup done"
+									iconType="up_box"
+								/>
+								<div className={styles.line} />
+								<CarrierFlatRow
+									muted
+									checkbox
+									checked={false}
+									label="Delivered"
+									iconType="vehicle_right"
+								/>
+								<div className={styles.line} />
+								<CarrierFlatRow
+									muted
+									checkbox
+									checked={false}
+									label="Approved"
+									iconType="check_circle_1"
+								/>
+							</>
+						)}
 					</div>
 				</div>
 			)}
@@ -406,10 +521,9 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 							</form>
 						)}
 
-						{order.status < OrderStatusEnum.IN_TRANSIT && (
+						{order.status <= OrderStatusEnum.AWAITING_PICKUP && (
 							<Button
 								type="button"
-								// className="!w-full"
 								variant="transparent"
 								onClick={() => setModalId('cancel')}
 								className={styles.button}
@@ -417,17 +531,6 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 								Cancel order
 							</Button>
 						)}
-
-						{/* {order.status === OrderStatusEnum.DELIVERED && (
-							<Button
-								type="button"
-								className={styles.button}
-								// className="!w-full"
-								onClick={() => setModalId('rate')}
-							>
-								Rate delivery
-							</Button>
-						)} */}
 					</div>
 				</>
 			)}
@@ -435,66 +538,3 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 	)
 }
 
-//
-//
-//
-//
-//
-
-type ItemCarrierProps = {
-	showInfo?: boolean
-	isWaiting?: boolean
-	isActive?: boolean
-	checked?: boolean
-	infoText?: string
-	iconType: IconNameType
-	label: ReactNode
-	hideCheckbox?: boolean
-	onClick?: () => void
-}
-
-const ItemCarrier: FC<ItemCarrierProps> = ({
-	showInfo,
-	isWaiting,
-	isActive,
-	iconType,
-	label,
-	checked,
-	infoText,
-	hideCheckbox,
-	onClick,
-}) => {
-	return (
-		<div
-			className={cn(styles.itemWrapper, {
-				['!cursor-pointer']: isWaiting && onClick,
-			})}
-			onClick={isWaiting ? onClick : undefined}
-		>
-			{showInfo && (
-				<div className={styles.info}>
-					<div className={styles.dot} />
-					{infoText}
-				</div>
-			)}
-
-			<div
-				className={cn(styles.item, {
-					[styles.waiting]: isWaiting,
-					[styles.active]: isActive,
-				})}
-			>
-				{hideCheckbox && <div />}
-				{!hideCheckbox && (
-					<Checkbox value={checked} disabledWithoutCss disabled={!isWaiting && !isActive} />
-				)}
-
-				<span>{label}</span>
-
-				<div className={styles.icon}>
-					<Icon type={iconType} size={25} />
-				</div>
-			</div>
-		</div>
-	)
-}
