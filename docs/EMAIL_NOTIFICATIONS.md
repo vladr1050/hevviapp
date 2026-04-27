@@ -4,13 +4,13 @@
 
 Планируется переход к единому **Notification Service**: правила в БД, Sonata Admin, логи, Symfony Messenger. Ниже — **зафиксированные решения** для новой системы и описание **текущей (legacy)** реализации.
 
-**Статус реализации (MVP):** сущности `NotificationRule` / `NotificationLog`, миграции `Version20260409183000` (правила и логи) и `Version20260409190000` (таблица `messenger_messages` для `doctrine://`), админки Sonata (в т.ч. действие **«Повторить»** в списке журнала), команды `app:notification:seed-rules` (пустая таблица или **`--ensure-missing`** для добавления новых дефолтов), `app:notification:replay` (`--sync`, `--force`, `--invoice-id`), сервис **`NotificationDispatchService`** + **`NotificationRuleProcessor`** (плейсхолдеры, PDF счёта, Mailjet, логи). **Symfony Messenger:** `NotificationEventMessage` → транспорт `async` (`MESSENGER_TRANSPORT_DSN`, по умолчанию `sync://`). Триггеры: **`ORDER_PRICE_CONFIRMED`** — синхронно из `InvoiceIssuingService`; **`ORDER_ASSIGNED_TO_CARRIER`** — `OrderAssignmentSubscriber`; смена статуса заказа в **`OrderHistorySubscriber`**: **`ORDER_STATUS_CHANGED_TO_ACCEPTED`**, **`ORDER_STATUS_CHANGED_TO_ASSIGNED`**, **`ORDER_STATUS_CHANGED_TO_IN_TRANSIT`**, **`ORDER_STATUS_CHANGED_TO_DELIVERED`**. Legacy **`OrderStatusService`** и параллельная отправка через Twig `templates/email/order_status/` **удалены** для этих сценариев.
+**Статус реализации (MVP):** сущности `NotificationRule` / `NotificationLog`, миграции `Version20260409183000` (правила и логи) и `Version20260409190000` (таблица `messenger_messages` для `doctrine://`), админки Sonata (в т.ч. действие **«Повторить»** в списке журнала), команды `app:notification:seed-rules` (пустая таблица или **`--ensure-missing`** для добавления новых дефолтов), `app:notification:replay` (`--sync`, `--force`, `--invoice-id`), сервис **`NotificationDispatchService`** + **`NotificationRuleProcessor`** (плейсхолдеры, PDF счёта, Mailjet, логи). **Symfony Messenger:** `NotificationEventMessage` → транспорт `async` (`MESSENGER_TRANSPORT_DSN`, по умолчанию `sync://`). Триггеры: **`ORDER_PRICE_CONFIRMED`** — синхронно из `InvoiceIssuingService`; **`ORDER_ASSIGNED_TO_CARRIER`** — `OrderAssignmentSubscriber`; смена статуса заказа в **`OrderHistorySubscriber`**: **`ORDER_STATUS_CHANGED_TO_ACCEPTED`**, **`ORDER_STATUS_CHANGED_TO_ASSIGNED`**, **`ORDER_STATUS_CHANGED_TO_AWAITING_PICKUP`**, **`ORDER_STATUS_CHANGED_TO_IN_TRANSIT`**, **`ORDER_STATUS_CHANGED_TO_DELIVERED`**. Legacy **`OrderStatusService`** и параллельная отправка через Twig `templates/email/order_status/` **удалены** для этих сценариев.
 
 ## Решения по спецификации (Notification Service)
 
 ### Legacy
 
-- Сценарии **ACCEPTED**, **ASSIGNED**, **IN_TRANSIT**, **DELIVERED** переведены на правила в БД и **`NotificationDispatchService`**. Старые Twig-шаблоны в `templates/email/order_status/` для этих писем **больше не используются** приложением (могут оставаться в репозитории для справки до удаления).
+- Сценарии **ACCEPTED**, **ASSIGNED**, **AWAITING_PICKUP**, **IN_TRANSIT**, **DELIVERED** переведены на правила в БД и **`NotificationDispatchService`**. Старые Twig-шаблоны в `templates/email/order_status/` для этих писем **больше не используются** приложением (могут оставаться в репозитории для справки до удаления).
 
 ### Плейсхолдер `{{ORDER_ID}}`
 
@@ -84,8 +84,9 @@ MAILJET_ENABLED=true
 
 1. **ACCEPTED** → `ORDER_STATUS_CHANGED_TO_ACCEPTED`
 2. **ASSIGNED** → `ORDER_STATUS_CHANGED_TO_ASSIGNED`
-3. **IN_TRANSIT** → `ORDER_STATUS_CHANGED_TO_IN_TRANSIT`
-4. **DELIVERED** → `ORDER_STATUS_CHANGED_TO_DELIVERED`
+3. **AWAITING_PICKUP** → `ORDER_STATUS_CHANGED_TO_AWAITING_PICKUP`
+4. **IN_TRANSIT** → `ORDER_STATUS_CHANGED_TO_IN_TRANSIT`
+5. **DELIVERED** → `ORDER_STATUS_CHANGED_TO_DELIVERED`
 
 Дополнительно: **назначение перевозчика** (принятие `OrderAssignment`) → `ORDER_ASSIGNED_TO_CARRIER`; **счёт после подтверждения цены** → `ORDER_PRICE_CONFIRMED` (синхронно, с PDF).
 

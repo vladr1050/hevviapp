@@ -46,7 +46,7 @@ class TestOrderStatusEmailCommand extends Command
     {
         $this
             ->addArgument('order-id', InputArgument::OPTIONAL, 'UUID заказа для тестирования')
-            ->addOption('status', 's', InputOption::VALUE_REQUIRED, 'ACCEPTED, ASSIGNED, IN_TRANSIT, DELIVERED')
+            ->addOption('status', 's', InputOption::VALUE_REQUIRED, 'ACCEPTED, ASSIGNED, AWAITING_PICKUP, IN_TRANSIT, DELIVERED')
             ->setHelp(<<<'HELP'
 Отправка тестового уведомления по правилам в БД (как в production).
 
@@ -82,13 +82,14 @@ HELP
         $eventKey = match ($status) {
             Order::STATUS['ACCEPTED'] => NotificationEventKey::ORDER_STATUS_CHANGED_TO_ACCEPTED,
             Order::STATUS['ASSIGNED'] => NotificationEventKey::ORDER_STATUS_CHANGED_TO_ASSIGNED,
+            Order::STATUS['AWAITING_PICKUP'] => NotificationEventKey::ORDER_STATUS_CHANGED_TO_AWAITING_PICKUP,
             Order::STATUS['IN_TRANSIT'] => NotificationEventKey::ORDER_STATUS_CHANGED_TO_IN_TRANSIT,
             Order::STATUS['DELIVERED'] => NotificationEventKey::ORDER_STATUS_CHANGED_TO_DELIVERED,
             default => null,
         };
 
         if ($eventKey === null) {
-            $io->error('Эта команда поддерживает только ACCEPTED, ASSIGNED, IN_TRANSIT, DELIVERED. Для счёта и перевозчика используйте реальные сценарии или app:notification:replay.');
+            $io->error('Эта команда поддерживает только ACCEPTED, ASSIGNED, AWAITING_PICKUP, IN_TRANSIT, DELIVERED. Для счёта и перевозчика используйте реальные сценарии или app:notification:replay.');
 
             return Command::FAILURE;
         }

@@ -29,6 +29,7 @@ final class NotificationRuleDefaults
             self::accepted(),
             self::assignedToSender(),
             self::assignedToCarrier(),
+            self::awaitingPickup(),
             self::inTransit(),
             self::delivered(),
             self::priceConfirmed(),
@@ -140,6 +141,43 @@ HTML;
             'eventKey' => NotificationEventKey::ORDER_ASSIGNED_TO_CARRIER,
             'recipientType' => NotificationRecipientType::CARRIER,
             'subjectTemplate' => 'Jauns Hevvi pasūtījums ID {{ORDER_ID}}',
+            'bodyTemplate' => $body,
+            'attachInvoicePdf' => false,
+            'sendOncePerOrder' => true,
+        ];
+    }
+
+    /**
+     * @return RuleShape
+     */
+    private static function awaitingPickup(): array
+    {
+        $body = <<<'HTML'
+<p>Labdien,</p>
+<p>Pārvadātājs ir apstiprinājis pasūtījumu; gaidām kravas iekraušanu.</p>
+<p><strong>Pasūtījuma informācija:</strong></p>
+<ul>
+<li>Pasūtījuma ID: {{ORDER_ID}}</li>
+<li>Maršruts: {{PICKUP_ADDRESS}} → {{DELIVERY_ADDRESS}}</li>
+<li>Krava: {{CARGO_DESCRIPTION}}</li>
+</ul>
+<p><strong>Iekraušanas informācija:</strong></p>
+<ul>
+<li>Datums: {{PICKUP_DATE}}</li>
+<li>Laiks: {{PICKUP_TIME}}</li>
+<li>Adrese: {{PICKUP_ADDRESS}}</li>
+<li>Kontaktpersona: {{PICKUP_CONTACT}}</li>
+</ul>
+<p><strong>Pārvadātājs:</strong> {{CARRIER_NAME}} ({{CARRIER_PHONE}})</p>
+<p>Ar cieņu,<br>Hevvi Operāciju komanda<br>support@hevvi.app<br>www.hevvi.app</p>
+HTML;
+
+        return [
+            'name' => 'Sender: gaida iekraušanu (AWAITING_PICKUP)',
+            'description' => 'MVP: ORDER_STATUS_CHANGED_TO_AWAITING_PICKUP',
+            'eventKey' => NotificationEventKey::ORDER_STATUS_CHANGED_TO_AWAITING_PICKUP,
+            'recipientType' => NotificationRecipientType::SENDER,
+            'subjectTemplate' => 'Gaida iekraušanu – pasūtījums {{ORDER_ID}}',
             'bodyTemplate' => $body,
             'attachInvoicePdf' => false,
             'sendOncePerOrder' => true,
