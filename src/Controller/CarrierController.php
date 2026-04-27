@@ -26,6 +26,7 @@ use App\Entity\OrderHistory;
 use App\Entity\OrderOffer;
 use App\Repository\OrderAssignmentRepository;
 use App\Repository\OrderRepository;
+use App\Service\Order\SenderOrderPayableTotalCentsCalculator;
 use App\Twig\Extension\Filter\MoneyExtension;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -47,6 +48,7 @@ class CarrierController extends AbstractController
         private readonly MoneyExtension            $moneyExtension,
         private readonly TranslatorInterface       $translator,
         private readonly EntityManagerInterface    $em,
+        private readonly SenderOrderPayableTotalCentsCalculator $senderOrderPayableTotalCentsCalculator,
     )
     {
     }
@@ -71,6 +73,7 @@ class CarrierController extends AbstractController
                 'brutto' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
                 'fee' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getFee(), $order->getCurrency()),
                 'subtotal' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getNetto(), $order->getCurrency()),
+                ...$this->buildCarrierFreightPriceBreakdown($order),
                 'address' => [
                     'from' => $order->getPickupAddress(),
                     'to' => $order->getDropoutAddress(),
@@ -326,6 +329,7 @@ class CarrierController extends AbstractController
             'brutto' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
             'fee' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getFee(), $order->getCurrency()),
             'subtotal' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getNetto(), $order->getCurrency()),
+            ...$this->buildCarrierFreightPriceBreakdown($order),
             'address' => [
                 'from' => $order->getPickupAddress(),
                 'to' => $order->getDropoutAddress(),
@@ -468,6 +472,34 @@ class CarrierController extends AbstractController
         return $order->getHistories()
             ->filter(fn(OrderHistory $history) => $history->getStatus() === Order::STATUS['DELIVERED'])
             ->first();
+    }
+
+    /**
+     * Поля для блока цены у перевозчика: PVN только от base fee; total = base + этот PVN.
+     * Ставка «21%» пока совпадает с {@see SenderOrderPayableTotalCentsCalculator}; позже — из профиля перевозчика.
+     *
+     * @return array{
+     *     carrier_freight_vat_rate_display: string,
+     *     carrier_freight_vat: ?string,
+     *     carrier_freight_total: ?string,
+     * }
+     */
+    private function buildCarrierFreightPriceBreakdown(Order $order): array
+    {
+        $currency = $order->getCurrency() ?? 'EUR';
+        $parts = $this->senderOrderPayableTotalCentsCalculator->computeCarrierFreightOnlyVatAndGrossCents(
+            $order->getLatestOffer()
+        );
+
+        return [
+            'carrier_freight_vat_rate_display' => '21%',
+            'carrier_freight_vat' => $parts !== null
+                ? $this->moneyExtension->currencyConvert($parts['vat_cents'], $currency)
+                : null,
+            'carrier_freight_total' => $parts !== null
+                ? $this->moneyExtension->currencyConvert($parts['gross_cents'], $currency)
+                : null,
+        ];
     }
 
     /**

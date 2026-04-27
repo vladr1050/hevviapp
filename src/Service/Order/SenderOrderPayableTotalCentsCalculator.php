@@ -55,6 +55,27 @@ final class SenderOrderPayableTotalCentsCalculator
         return ['gross_cents' => $grossCents, 'vat_cents' => $vatCents];
     }
 
+    /**
+     * Carrier UI: VAT only on base freight; gross = base + that VAT (no platform fee).
+     *
+     * @return array{vat_cents: int, gross_cents: int}|null
+     */
+    public function computeCarrierFreightOnlyVatAndGrossCents(?OrderOffer $offer): ?array
+    {
+        if ($offer === null) {
+            return null;
+        }
+
+        $baseCents = $this->resolveBaseFreightCents($offer);
+        if ($baseCents === null) {
+            return null;
+        }
+
+        $vatCents = (int) round($baseCents * self::FREIGHT_VAT_PERCENT / 100.0);
+
+        return ['vat_cents' => $vatCents, 'gross_cents' => $baseCents + $vatCents];
+    }
+
     private function resolveBaseFreightCents(OrderOffer $offer): ?int
     {
         $netto = $offer->getNetto();

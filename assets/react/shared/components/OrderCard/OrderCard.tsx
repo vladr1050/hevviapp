@@ -105,30 +105,31 @@ export const OrderCard: FC<OrderCardProps> = ({
 	)
 
 	const CarrierPriceBlock = () => (
-		<div className="grid grid-cols-5 gap-3">
+		<div className="grid grid-cols-4 gap-3 w-full">
 			<div className={styles.item}>
 				<div className={styles.label}>Base fee</div>
 				<div className={styles.value}>{order?.price || EMPTY_STRING}</div>
 			</div>
 
 			<div className={styles.item}>
-				<div className={styles.label}>Platform fee</div>
-				<div className={styles.value}>{order?.fee || EMPTY_STRING}</div>
-			</div>
-
-			<div className={styles.item}>
-				<div className={styles.label}>Subtotal</div>
-				<div className={styles.value}>{order?.subtotal || EMPTY_STRING}</div>
+				<div className={styles.label}>PVN likme</div>
+				<div className={styles.value}>
+					{order?.carrier_freight_vat_rate_display ?? '21%'}
+				</div>
 			</div>
 
 			<div className={styles.item}>
 				<div className={styles.label}>VAT 21%</div>
-				<div className={styles.value}>{order?.vat || EMPTY_STRING}</div>
+				<div className={styles.value}>
+					{order?.carrier_freight_vat ?? order?.vat ?? EMPTY_STRING}
+				</div>
 			</div>
 
 			<div className={styles.item}>
 				<div className={styles.label}>Total</div>
-				<div className={styles.value}>{order?.brutto || EMPTY_STRING}</div>
+				<div className={styles.value}>
+					{order?.carrier_freight_total ?? order?.brutto ?? EMPTY_STRING}
+				</div>
 			</div>
 		</div>
 	)
@@ -428,7 +429,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 
 					{showInfo && (
 						<div className={styles.info}>
-							<div className={cn(styles.top, isCarrier ? '!grid-cols-5' : 'w-full')}>
+							<div className={cn(styles.top, 'w-full')}>
 								<PriceBlock />
 							</div>
 

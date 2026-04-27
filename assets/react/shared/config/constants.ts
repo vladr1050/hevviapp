@@ -149,6 +149,11 @@ export type OrderType = {
 	brutto?: string
 	/** Sender order page: total = (freight + freight VAT) + (platform fee + operator VAT on fee). */
 	sender_total?: string
+	/** Carrier freight VAT on base only (formatted); total = base + this VAT. */
+	carrier_freight_vat?: string
+	carrier_freight_total?: string
+	/** e.g. "21%" — later from executing carrier profile. */
+	carrier_freight_vat_rate_display?: string
 	subtotal?: string
 	fee?: string
 	sender?: { 

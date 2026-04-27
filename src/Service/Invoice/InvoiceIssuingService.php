@@ -258,6 +258,9 @@ final class InvoiceIssuingService
         if ($dispatch->getSentCount() > 0) {
             $invoice->setStatus(Invoice::STATUS_EMAIL_SENT);
             $invoice->setEmailError(null);
+            if ($relatedOrder->getStatus() === Order::STATUS['ACCEPTED']) {
+                $relatedOrder->setStatus(Order::STATUS['INVOICED']);
+            }
         } elseif ($dispatch->getFailedCount() > 0) {
             $invoice->setStatus(Invoice::STATUS_EMAIL_FAILED);
             $invoice->setEmailError($dispatch->getFirstError() ?? 'Notification dispatch failed.');
