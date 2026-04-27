@@ -9,6 +9,7 @@ use App\Entity\Order;
 use App\Entity\User;
 use App\Enum\DocumentType;
 use App\Repository\DocumentRepository;
+use App\Repository\OrderHistoryRepository;
 use App\Service\Document\DocumentNumberFormatter;
 use App\Service\Invoice\InvoiceMoneyFormatter;
 
@@ -21,6 +22,7 @@ final class NotificationContextFactory
         private readonly InvoiceMoneyFormatter $moneyFormatter,
         private readonly DocumentRepository $documentRepository,
         private readonly DocumentNumberFormatter $documentNumberFormatter,
+        private readonly OrderHistoryRepository $orderHistoryRepository,
     ) {
     }
 
@@ -103,6 +105,19 @@ final class NotificationContextFactory
             $pickupContact = $clientName.' / '.$clientPhone;
         }
 
+        $deliveredHistory = $this->orderHistoryRepository->findLatestForOrderAndStatus(
+            $order,
+            Order::STATUS['DELIVERED'],
+        );
+        $deliveredAt = $deliveredHistory?->getCreatedAt();
+
+        $deliveryDate = $deliveredAt !== null
+            ? $this->formatDate($deliveredAt)
+            : $this->formatDate($order->getDeliveryDate());
+        $deliveryTime = $deliveredAt !== null
+            ? $deliveredAt->format('H:i')
+            : $this->formatTimeWindow($order->getDeliveryTimeFrom(), $order->getDeliveryTimeTo());
+
         return [
             'ORDER_ID' => $order->getReference(),
             'ORDER_INTERNAL_ID' => $order->getId()?->toRfc4122() ?? '',
@@ -116,11 +131,11 @@ final class NotificationContextFactory
             'DELIVERY_ADDRESS' => trim((string) ($order->getDropoutAddress() ?? '')),
             'PICKUP_DATE' => $this->formatDate($order->getPickupDate()),
             'PICKUP_TIME' => $this->formatTimeWindow($order->getPickupTimeFrom(), $order->getPickupTimeTo()),
-            'DELIVERY_DATE' => $this->formatDate($order->getDeliveryDate()),
-            'DELIVERY_TIME' => $this->formatTimeWindow($order->getDeliveryTimeFrom(), $order->getDeliveryTimeTo()),
+            'DELIVERY_DATE' => $deliveryDate,
+            'DELIVERY_TIME' => $deliveryTime,
             'ETA' => $this->buildEta($order),
             'CARGO_DESCRIPTION' => $this->buildCargoDescription($order),
-            'RECEIVER_NAME' => '',
+            'RECEIVER_NAME' => $clientName,
             'PICKUP_CONTACT' => $pickupContact,
         ];
     }

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Order;
 use App\Entity\OrderHistory;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -14,6 +15,22 @@ class OrderHistoryRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, OrderHistory::class);
+    }
+
+    /**
+     * Latest history row for the given order status (e.g. DELIVERED) — for notification placeholders.
+     */
+    public function findLatestForOrderAndStatus(Order $order, int $status): ?OrderHistory
+    {
+        return $this->createQueryBuilder('h')
+            ->andWhere('h.relatedOrder = :order')
+            ->andWhere('h.status = :status')
+            ->setParameter('order', $order)
+            ->setParameter('status', $status)
+            ->orderBy('h.createdAt', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     //    /**
