@@ -71,7 +71,7 @@
 			}
 
 			& .carrierAwaitingStack {
-				/* Figma: black label sits under Pickup row; white card overlaps upward with full rx=14 + own shadow */
+				/* Black header h=59px; white Pickup row overlaps 25px upward (34px of black stays visible) */
 				@apply relative flex w-full flex-col overflow-visible bg-transparent;
 			}
 
@@ -80,7 +80,7 @@
 			}
 
 			& .carrierAwaitingStack .carrierFlatCard {
-				@apply relative z-[1] -mt-3 shrink-0;
+				@apply relative z-[1] -mt-[25px] shrink-0;
 			}
 
 			& .carrierAwaitingStack .carrierFlatIcon:not(.carrierFlatIconDone) {
