@@ -35,8 +35,6 @@ sonata_admin:
                         label: menu.orders
                     -   route: admin_app_document_list
                         label: menu.documents
-                    -   route: admin_app_invoice_list
-                        label: menu.invoices
                     -   route: admin_app_cargo_list
                         label: menu.cargo
             notifications:

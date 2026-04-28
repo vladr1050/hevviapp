@@ -10,8 +10,10 @@ use App\Entity\NotificationLog;
 use App\Entity\NotificationRule;
 use App\Entity\Order;
 use App\Enum\DocumentStatus;
+use App\Enum\DocumentType;
 use App\Notification\NotificationAttachmentType;
 use App\Notification\NotificationLogStatus;
+use App\Repository\DocumentRepository;
 use App\Repository\NotificationLogRepository;
 use App\Repository\NotificationRuleRepository;
 use App\Service\Email\Contract\EmailServiceInterface;
@@ -32,6 +34,7 @@ final class NotificationRuleProcessor
         private readonly NotificationAttachmentResolver $attachmentResolver,
         private readonly EmailServiceInterface $emailService,
         private readonly EntityManagerInterface $em,
+        private readonly DocumentRepository $documentRepository,
         private readonly LoggerInterface $logger,
     ) {
     }
@@ -181,6 +184,11 @@ final class NotificationRuleProcessor
                 $document->setSentAt(new \DateTimeImmutable('now', new \DateTimeZone('UTC')));
                 $document->setStatus(DocumentStatus::SENT);
             }
+            if ($invoice !== null
+                && $rule->isAttachInvoicePdf()
+                && $attachmentType === NotificationAttachmentType::INVOICE_PDF) {
+                $this->markPaymentNoticeDocumentSentIfSamePdf($invoice, $order);
+            }
         } else {
             $log->setStatus(NotificationLogStatus::FAILED);
             $log->setErrorMessage('Mail provider returned failure.');
@@ -190,9 +198,57 @@ final class NotificationRuleProcessor
                 && $attachmentType === NotificationAttachmentType::DOCUMENT_PDF) {
                 $document->setStatus(DocumentStatus::FAILED);
             }
+            if ($invoice !== null
+                && $rule->isAttachInvoicePdf()
+                && $attachmentType === NotificationAttachmentType::INVOICE_PDF) {
+                $this->markPaymentNoticeDocumentFailedIfSamePdf($invoice, $order);
+            }
         }
 
         $this->em->flush();
+    }
+
+    /**
+     * Payment notice rows reuse the customer invoice PDF path; email uses {@see NotificationAttachmentType::INVOICE_PDF},
+     * so the DOCUMENT_PDF branch above never ran — align document status with the sent attachment.
+     */
+    private function markPaymentNoticeDocumentSentIfSamePdf(Invoice $invoice, Order $order): void
+    {
+        $pdfPath = $invoice->getPdfRelativePath();
+        if ($pdfPath === null || $pdfPath === '') {
+            return;
+        }
+
+        $notice = $this->documentRepository->findOneByOrderAndType($order, DocumentType::PAYMENT_NOTICE);
+        if ($notice === null || $notice->getFilePath() !== $pdfPath) {
+            return;
+        }
+
+        if ($notice->getStatus() !== DocumentStatus::GENERATED) {
+            return;
+        }
+
+        $notice->setSentAt(new \DateTimeImmutable('now', new \DateTimeZone('UTC')));
+        $notice->setStatus(DocumentStatus::SENT);
+    }
+
+    private function markPaymentNoticeDocumentFailedIfSamePdf(Invoice $invoice, Order $order): void
+    {
+        $pdfPath = $invoice->getPdfRelativePath();
+        if ($pdfPath === null || $pdfPath === '') {
+            return;
+        }
+
+        $notice = $this->documentRepository->findOneByOrderAndType($order, DocumentType::PAYMENT_NOTICE);
+        if ($notice === null || $notice->getFilePath() !== $pdfPath) {
+            return;
+        }
+
+        if ($notice->getStatus() !== DocumentStatus::GENERATED) {
+            return;
+        }
+
+        $notice->setStatus(DocumentStatus::FAILED);
     }
 
     private function persistLog(
