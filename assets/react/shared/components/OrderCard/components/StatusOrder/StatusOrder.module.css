@@ -109,8 +109,8 @@
 			}
 
 			& .carrierFlatCard {
-				/* No z-index — avoids painting over the black phase header or footer actions */
-				@apply grid min-h-[73px] w-full shrink-0 grid-cols-[19px,1fr,40px] items-center gap-x-6 gap-y-0 rounded-[14px] bg-white
+				/* Figma: white status rows are 240×73; fixed height keeps Pickup / Delivered / Approved aligned */
+				@apply grid h-[73px] w-full shrink-0 grid-cols-[19px,1fr,40px] items-center gap-x-6 gap-y-0 rounded-[14px] bg-white
 				px-6 py-0 text-sm font-medium leading-snug text-black;
 				box-shadow:
 					0 6px 54px rgba(0, 0, 0, 0.029),
