@@ -71,23 +71,16 @@
 			}
 
 			& .carrierAwaitingStack {
-				/* No bg here — avoids a white seam; children paint black + white, outer clips radius */
-				@apply flex w-full flex-col overflow-hidden rounded-[14px] bg-transparent;
-				box-shadow:
-					0 6px 54px rgba(0, 0, 0, 0.029),
-					0 5px 15px rgba(0, 0, 0, 0.1);
+				/* Figma: black label sits under Pickup row; white card overlaps upward with full rx=14 + own shadow */
+				@apply relative flex w-full flex-col overflow-visible bg-transparent;
 			}
 
 			& .carrierAwaitingStack .carrierPhaseHeader {
-				/* Stacked white row comes later in DOM; keep header on top at the seam */
-				@apply relative z-[2] shadow-none;
-				border-radius: 14px 14px 0 0;
+				@apply relative z-0 shrink-0;
 			}
 
 			& .carrierAwaitingStack .carrierFlatCard {
-				/* Longhand beats base .carrierFlatCard rounded-[14px] — no top curve “into” the black bar */
-				@apply z-0 shadow-none;
-				border-radius: 0 0 14px 14px;
+				@apply relative z-[1] -mt-3 shrink-0;
 			}
 
 			& .carrierAwaitingStack .carrierFlatIcon:not(.carrierFlatIconDone) {
@@ -95,7 +88,8 @@
 			}
 
 			& .carrierAwaitingBelow {
-				@apply mt-3 flex w-full flex-col gap-3;
+				/* Vertical rhythm: .bottom already applies gap-3 (12px) between stack and this block */
+				@apply flex w-full flex-col gap-3;
 			}
 
 			& .carrierPhaseHeader {
