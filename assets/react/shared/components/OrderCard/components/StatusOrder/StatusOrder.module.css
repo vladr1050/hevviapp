@@ -78,11 +78,12 @@
 			}
 
 			& .carrierAwaitingStack .carrierPhaseHeader {
-				@apply rounded-b-none rounded-t-[14px] shadow-none;
+				/* Above the white row (flat card uses z-[1]) so the seam does not look “cut” by white */
+				@apply relative z-[2] rounded-b-none rounded-t-[14px] shadow-none;
 			}
 
 			& .carrierAwaitingStack .carrierFlatCard {
-				@apply rounded-b-[14px] rounded-t-none shadow-none;
+				@apply z-0 rounded-b-[14px] rounded-t-none shadow-none;
 			}
 
 			& .carrierAwaitingStack .carrierFlatIcon:not(.carrierFlatIconDone) {
