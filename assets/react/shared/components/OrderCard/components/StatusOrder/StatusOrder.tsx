@@ -288,7 +288,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 									done
 									checkbox={false}
 									checked
-									label="Approved"
+									label="Approved by Sender"
 									iconType="check_circle_1"
 								/>
 							</>
@@ -347,20 +347,8 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 									iconType="up_box"
 								/>
 								<div className={cn(styles.line, styles.big)} />
-								<div
-									className={cn(
-										styles.transitFolder,
-										order.status < OrderStatusEnum.IN_TRANSIT &&
-											styles.transitFolderWaiting,
-									)}
-								>
-									<div
-										className={cn(
-											styles.transitFolderHeader,
-											order.status < OrderStatusEnum.IN_TRANSIT &&
-												styles.transitFolderHeaderMuted,
-										)}
-									>
+								<div className={styles.transitFolder}>
+									<div className={styles.transitFolderHeader}>
 										<span className={styles.transitFolderHeaderDot} aria-hidden />
 										<span>In transit</span>
 									</div>
@@ -409,6 +397,8 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 											<div
 												className={cn(
 													styles.transitDeliveredIconWrap,
+													order.status === OrderStatusEnum.PICKUP_DONE &&
+														styles.transitDeliveredIconWrapPending,
 													order.status >= OrderStatusEnum.DELIVERED &&
 														styles.transitDeliveredIconWrapDone,
 												)}
@@ -423,7 +413,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 									muted
 									checkbox
 									checked={false}
-									label="Approved"
+									label="Approved by Sender"
 									iconType="check_circle_1"
 								/>
 							</>
@@ -456,7 +446,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 									muted
 									checkbox
 									checked={false}
-									label="Approved"
+									label="Approved by Sender"
 									iconType="check_circle_1"
 								/>
 							</>
@@ -524,7 +514,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 							</form>
 						)}
 
-						{order.status <= OrderStatusEnum.AWAITING_PICKUP && (
+						{order.status < OrderStatusEnum.IN_TRANSIT && (
 							<Button
 								type="button"
 								variant="transparent"

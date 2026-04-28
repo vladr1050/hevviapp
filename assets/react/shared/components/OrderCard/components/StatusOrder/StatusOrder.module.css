@@ -114,18 +114,10 @@
 				box-shadow:
 					0 6px 54px rgba(0, 0, 0, 0.029),
 					0 5px 15px rgba(0, 0, 0, 0.1);
-
-				&.transitFolderWaiting {
-					@apply opacity-40;
-				}
 			}
 
 			& .transitFolderHeader {
 				@apply flex h-[59px] shrink-0 items-center gap-2.5 bg-black px-4 text-sm font-medium text-white;
-
-				&.transitFolderHeaderMuted {
-					@apply bg-[#737373];
-				}
 			}
 
 			& .transitFolderHeaderDot {
@@ -158,6 +150,10 @@
 
 			& .transitDeliveredIconWrap {
 				@apply flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F2F2F2] text-black/35 transition-colors;
+
+				&.transitDeliveredIconWrapPending {
+					@apply [&_svg]:opacity-40;
+				}
 
 				&.transitDeliveredIconWrapDone {
 					@apply bg-primary text-black;
