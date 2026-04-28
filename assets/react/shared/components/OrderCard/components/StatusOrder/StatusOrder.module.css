@@ -43,7 +43,8 @@
 	}
 
 	&.carrier {
-		@apply h-full justify-start p-7 rounded-[30px];
+		/* Figma: 15px from last footer action (e.g. Cancel Order) to card bottom */
+		@apply h-full justify-start rounded-[30px] px-7 pt-7 pb-[15px];
 
 		& .statusWrapper {
 			/* Figma: ~33px between timer and status block */
@@ -166,6 +167,11 @@
 
 			& .button {
 				@apply w-full select-none;
+				animation: fade1 0.5s ease-in-out;
+			}
+
+			& .footerCancel {
+				@apply mx-auto w-max min-h-0 rounded-none border-0 !border-0 bg-transparent !px-0 !py-0 text-sm font-medium !text-black shadow-none;
 				animation: fade1 0.5s ease-in-out;
 			}
 		}

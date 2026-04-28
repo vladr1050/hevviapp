@@ -479,9 +479,9 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 						{order.status < OrderStatusEnum.IN_TRANSIT && (
 							<Button
 								type="button"
-								variant="outline"
+								variant="transparent"
 								onClick={() => setModalId('cancel')}
-								className={styles.button}
+								className={styles.footerCancel}
 							>
 								Cancel Order
 							</Button>
