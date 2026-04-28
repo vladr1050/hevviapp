@@ -93,10 +93,18 @@
 			}
 
 			& .carrierPhaseHeader {
-				@apply flex h-[59px] w-full shrink-0 items-center gap-2.5 rounded-[14px] bg-black px-4 text-sm font-medium text-white;
+				@apply flex h-[59px] w-full shrink-0 items-center justify-center rounded-[14px] bg-black px-4 text-sm font-medium text-white;
 				box-shadow:
 					0 6px 54px rgba(0, 0, 0, 0.029),
 					0 5px 15px rgba(0, 0, 0, 0.1);
+			}
+
+			& .carrierPhaseHeaderContent {
+				@apply inline-flex max-w-full items-center gap-2.5;
+			}
+
+			& .carrierPhaseHeaderLabel {
+				@apply shrink-0 leading-none;
 			}
 
 			& .carrierPhaseHeaderDot {

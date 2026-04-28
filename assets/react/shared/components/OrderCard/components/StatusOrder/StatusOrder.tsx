@@ -417,8 +417,10 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 							<>
 								<div className={styles.carrierAwaitingStack}>
 									<div className={styles.carrierPhaseHeader}>
-										<span className={styles.carrierPhaseHeaderDot} aria-hidden />
-										Awaiting pickup
+										<span className={styles.carrierPhaseHeaderContent}>
+											<span className={styles.carrierPhaseHeaderDot} aria-hidden />
+											<span className={styles.carrierPhaseHeaderLabel}>Awaiting pickup</span>
+										</span>
 									</div>
 									<CarrierFlatRow
 										clickable={order.status === OrderStatusEnum.AWAITING_PICKUP}
