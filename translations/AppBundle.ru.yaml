@@ -139,6 +139,7 @@ list:
     label_notification_recipient_type: Тип получателя
     label_notification_is_active:      Активно
     label_notification_attach_invoice: Вложение PDF счёта
+    label_notification_attach_document_types: Какие PDF заказа прикрепить
     label_notification_send_once:      Один раз на заказ
     label_notification_rule:           Правило
     label_notification_recipient_email: Email получателя
@@ -252,6 +253,7 @@ show:
     label_notification_subject_template:   Шаблон темы
     label_notification_body_template:      Шаблон текста
     label_notification_attach_invoice:     Вложение PDF счёта
+    label_notification_attach_document_types: Какие PDF заказа прикрепить
     label_notification_send_once:          Один раз на заказ
     label_notification_is_active:          Правило активно
     label_notification_rule:               Правило уведомления
@@ -419,8 +421,13 @@ form:
     label_notification_subject_template:   Шаблон темы
     label_notification_body_template:      Шаблон текста (HTML)
     label_notification_attach_invoice:     Вложить PDF счёта
+    label_notification_attach_document_types: Какие PDF заказа прикрепить
     label_notification_send_once:          Только один раз на заказ
     label_notification_is_active:          Правило активно
+    help_notification_attach_document_types: "Если выбрано — файлы берутся из документов заказа (как в разделе «Документы заказа») и заменяют старую схему «один PDF счёта». Оставьте пустым для прежнего поведения (счёт или один документ, который передаёт система)."
+    form.choice_document_type_payment_notice: Платёжное уведомление
+    form.choice_document_type_customer_invoice: Счёт заказчику
+    form.choice_document_type_carrier_invoice: Счёт перевозчику
     group_notification_rule:               Правило уведомления
     group_appsettings_geocoding: Поиск адреса и геокодирование
     group_appsettings_bbox: Ограничивающий прямоугольник (карта и проверка)

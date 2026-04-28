@@ -29,7 +29,8 @@ use Symfony\Component\Uid\Uuid;
 use Twig\Environment;
 
 /**
- * After delivery: generates customer + carrier PDFs (same Twig as prepayment), persists {@see Document} rows, emails one attachment each.
+ * After delivery: generates customer + carrier PDFs (same Twig as prepayment), persists {@see Document} rows,
+ * then triggers notification rules (PDF set per rule {@see NotificationRule::attachDocumentTypes} — e.g. both invoices to sender).
  */
 final class OrderDeliveredDocumentService
 {
@@ -228,7 +229,7 @@ final class OrderDeliveredDocumentService
                 NotificationEventKey::ORDER_DELIVERED_SENDER_DOCUMENT,
                 null,
                 false,
-                $customerDoc,
+                null,
             );
         }
 
@@ -238,7 +239,7 @@ final class OrderDeliveredDocumentService
                 NotificationEventKey::ORDER_DELIVERED_CARRIER_DOCUMENT,
                 null,
                 false,
-                $carrierDoc,
+                null,
             );
         }
 

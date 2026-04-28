@@ -192,6 +192,88 @@ class MailjetEmailService implements EmailServiceInterface
         }
     }
 
+    public function sendWithPdfAttachments(
+        string $to,
+        string $subject,
+        string $htmlContent,
+        ?string $textContent,
+        array $attachments,
+    ): bool {
+        if ($attachments === []) {
+            return false;
+        }
+
+        if (!$this->enabled) {
+            $this->logger->notice('Mailjet: sending disabled (MAILJET_ENABLED=false); multi-PDF email not sent', [
+                'to' => $to,
+                'subject' => $subject,
+                'attachment_count' => \count($attachments),
+            ]);
+
+            return true;
+        }
+
+        try {
+            $mailAttachments = [];
+            foreach ($attachments as $item) {
+                $mailAttachments[] = [
+                    'ContentType' => 'application/pdf',
+                    'Filename' => $item['filename'],
+                    'Base64Content' => base64_encode($item['binary']),
+                ];
+            }
+
+            $message = [
+                'From' => [
+                    'Email' => $this->senderEmail,
+                    'Name' => $this->senderName,
+                ],
+                'To' => [
+                    ['Email' => $to],
+                ],
+                'Subject' => $subject,
+                'HTMLPart' => $htmlContent,
+                'Attachments' => $mailAttachments,
+            ];
+
+            if ($textContent !== null) {
+                $message['TextPart'] = $textContent;
+            }
+
+            $body = ['Messages' => [$message]];
+
+            $response = $this->mailjetClient->post(Resources::$Email, ['body' => $body]);
+
+            if ($response->success()) {
+                $meta = self::extractSendMetadata($response->getBody());
+                $this->logger->info('Email with multiple PDFs sent via Mailjet', [
+                    'to' => $to,
+                    'subject' => $subject,
+                    'attachment_count' => \count($attachments),
+                    ...$meta,
+                ]);
+
+                return true;
+            }
+
+            $this->logger->error('Mailjet multi-PDF email failed', [
+                'to' => $to,
+                'status' => $response->getStatus(),
+                'reason' => $response->getReasonPhrase(),
+                'mailjet_body' => $response->getBody(),
+            ]);
+
+            return false;
+        } catch (\Exception $e) {
+            $this->logger->error('Mailjet multi-PDF email exception', [
+                'to' => $to,
+                'exception' => $e->getMessage(),
+            ]);
+
+            return false;
+        }
+    }
+
     /**
      * v3.1 /send returns { "Messages": [ { "Status", "To": [ { "MessageID", "MessageUUID", "MessageHref" } ] } ] }.
      * getData()[0] is wrong — там нет числового индекса, только ключ Messages.

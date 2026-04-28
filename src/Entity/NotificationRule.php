@@ -34,6 +34,15 @@ class NotificationRule extends BaseUUID
     #[ORM\Column(name: 'attach_invoice_pdf', options: ['default' => false])]
     private bool $attachInvoicePdf = false;
 
+    /**
+     * When non-empty, PDFs are loaded from {@see \App\Entity\Document} rows on the order (e.g. customer + carrier invoices after delivery).
+     * Takes precedence over the legacy single attachment (invoice / passed document) for that rule.
+     *
+     * @var list<string>|null
+     */
+    #[ORM\Column(name: 'attach_document_types', type: Types::JSON, nullable: true)]
+    private ?array $attachDocumentTypes = null;
+
     #[ORM\Column(name: 'is_active', options: ['default' => true])]
     private bool $isActive = true;
 
@@ -120,6 +129,30 @@ class NotificationRule extends BaseUUID
     public function setAttachInvoicePdf(bool $attachInvoicePdf): static
     {
         $this->attachInvoicePdf = $attachInvoicePdf;
+
+        return $this;
+    }
+
+    /**
+     * @return list<string>|null
+     */
+    public function getAttachDocumentTypes(): ?array
+    {
+        return $this->attachDocumentTypes;
+    }
+
+    /**
+     * @param list<string>|null $attachDocumentTypes
+     */
+    public function setAttachDocumentTypes(?array $attachDocumentTypes): static
+    {
+        if ($attachDocumentTypes === null || $attachDocumentTypes === []) {
+            $this->attachDocumentTypes = null;
+
+            return $this;
+        }
+
+        $this->attachDocumentTypes = array_values(array_unique(array_map(static fn ($v) => (string) $v, $attachDocumentTypes)));
 
         return $this;
     }

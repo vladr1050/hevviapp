@@ -29,6 +29,7 @@ final class NotificationRuleAdminController extends CRUDController
             ->setSubjectTemplate($object->getSubjectTemplate())
             ->setBodyTemplate($object->getBodyTemplate())
             ->setAttachInvoicePdf($object->isAttachInvoicePdf())
+            ->setAttachDocumentTypes($object->getAttachDocumentTypes())
             ->setSendOncePerOrder($object->isSendOncePerOrder())
             ->setIsActive(false);
 

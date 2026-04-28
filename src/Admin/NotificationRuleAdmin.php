@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Admin;
 
+use App\Enum\DocumentType;
 use App\Notification\NotificationEventKey;
 use App\Notification\NotificationRecipientType;
 use FRPC\SonataAuthorization\Admin\BaseAdmin;
@@ -66,6 +67,9 @@ class NotificationRuleAdmin extends BaseAdmin
             ->add('attachInvoicePdf', null, [
                 'label' => 'list.label_notification_attach_invoice',
             ])
+            ->add('attachDocumentTypes', null, [
+                'label' => 'list.label_notification_attach_document_types',
+            ])
             ->add('sendOncePerOrder', null, [
                 'label' => 'list.label_notification_send_once',
             ])
@@ -92,6 +96,11 @@ class NotificationRuleAdmin extends BaseAdmin
     {
         $eventChoices = array_combine(NotificationEventKey::all(), NotificationEventKey::all()) ?: [];
         $recipientChoices = array_combine(NotificationRecipientType::all(), NotificationRecipientType::all()) ?: [];
+        $documentTypeChoices = [
+            'form.choice_document_type_payment_notice' => DocumentType::PAYMENT_NOTICE->value,
+            'form.choice_document_type_customer_invoice' => DocumentType::CUSTOMER_INVOICE->value,
+            'form.choice_document_type_carrier_invoice' => DocumentType::CARRIER_INVOICE->value,
+        ];
 
         $form
             ->tab('tabs_general')
@@ -133,6 +142,15 @@ class NotificationRuleAdmin extends BaseAdmin
                 'label' => 'form.label_notification_attach_invoice',
                 'required' => false,
             ])
+            ->add('attachDocumentTypes', ChoiceType::class, [
+                'label' => 'form.label_notification_attach_document_types',
+                'help' => 'form.help_notification_attach_document_types',
+                'choices' => $documentTypeChoices,
+                'choice_translation_domain' => 'AppBundle',
+                'multiple' => true,
+                'expanded' => false,
+                'required' => false,
+            ])
             ->add('sendOncePerOrder', CheckboxType::class, [
                 'label' => 'form.label_notification_send_once',
                 'required' => false,
@@ -168,6 +186,9 @@ class NotificationRuleAdmin extends BaseAdmin
             ])
             ->add('attachInvoicePdf', null, [
                 'label' => 'show.label_notification_attach_invoice',
+            ])
+            ->add('attachDocumentTypes', null, [
+                'label' => 'show.label_notification_attach_document_types',
             ])
             ->add('sendOncePerOrder', null, [
                 'label' => 'show.label_notification_send_once',

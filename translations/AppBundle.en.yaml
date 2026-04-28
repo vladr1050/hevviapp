@@ -148,6 +148,7 @@ list:
     label_notification_recipient_type: Recipient type
     label_notification_is_active:      Active
     label_notification_attach_invoice: Attach invoice PDF
+    label_notification_attach_document_types: Order PDF documents to attach
     label_notification_send_once:      Send once per order
     label_notification_rule:           Notification rule
     label_notification_recipient_email: Recipient email
@@ -265,6 +266,7 @@ show:
     label_notification_subject_template:   Subject template
     label_notification_body_template:      Body template
     label_notification_attach_invoice:     Attach invoice PDF
+    label_notification_attach_document_types: Order PDF documents to attach
     label_notification_send_once:          Send once per order
     label_notification_is_active:          Active
     label_notification_rule:               Notification rule
@@ -440,8 +442,13 @@ form:
     label_notification_subject_template:   Subject template
     label_notification_body_template:      Body template (HTML)
     label_notification_attach_invoice:     Attach invoice PDF
+    label_notification_attach_document_types: Order PDF documents to attach
     label_notification_send_once:          Send only once per order
     label_notification_is_active:          Rule is active
+    help_notification_attach_document_types: "When set, these PDFs are loaded from the order's document rows (Order Documents). They override the single “attach invoice PDF” path for this rule. Leave empty for the legacy attachment (invoice or one document passed by the system)."
+    form.choice_document_type_payment_notice: Payment notice
+    form.choice_document_type_customer_invoice: Customer invoice
+    form.choice_document_type_carrier_invoice: Carrier invoice
     group_notification_rule:               Notification rule
     group_appsettings_geocoding: Address search & geocoding
     group_appsettings_bbox: Optional bounding box (map + validation)

@@ -114,7 +114,90 @@ final class NotificationRuleProcessor
 
         $attachment = null;
         $attachmentType = null;
-        if ($rule->isAttachInvoicePdf()) {
+        /** @var list<array{filename: string, binary: string}> $multiAttachments */
+        $multiAttachments = [];
+        /** @var list<Document> $multiDocuments */
+        $multiDocuments = [];
+
+        $configuredTypes = $rule->getAttachDocumentTypes();
+        if (\is_array($configuredTypes) && $configuredTypes !== []) {
+            foreach (array_values(array_unique($configuredTypes)) as $typeString) {
+                if (!\is_string($typeString) || $typeString === '') {
+                    continue;
+                }
+                try {
+                    $docType = DocumentType::from($typeString);
+                } catch (\ValueError) {
+                    $this->logger->warning('Notification rule has invalid attach_document_types entry', [
+                        'rule_id' => $rule->getId()?->toRfc4122(),
+                        'type' => $typeString,
+                    ]);
+
+                    continue;
+                }
+                $docEntity = $this->documentRepository->findOneByOrderAndType($order, $docType);
+                if ($docEntity === null) {
+                    $this->persistLog(
+                        $rule,
+                        $order,
+                        $eventKey,
+                        $rule->getRecipientType(),
+                        $to,
+                        $subject,
+                        $bodyHtml,
+                        null,
+                        NotificationLogStatus::FAILED,
+                        sprintf('Document row not found for type %s', $typeString),
+                    );
+                    $this->em->flush();
+                    $result->recordFailed('PDF attachment missing');
+
+                    return;
+                }
+                $part = $this->attachmentResolver->resolveDocumentPdf($docEntity);
+                if ($part === null) {
+                    $this->persistLog(
+                        $rule,
+                        $order,
+                        $eventKey,
+                        $rule->getRecipientType(),
+                        $to,
+                        $subject,
+                        $bodyHtml,
+                        null,
+                        NotificationLogStatus::FAILED,
+                        sprintf('Document PDF missing on disk for type %s', $typeString),
+                    );
+                    $this->em->flush();
+                    $result->recordFailed('PDF attachment missing');
+
+                    return;
+                }
+                $multiAttachments[] = $part;
+                $multiDocuments[] = $docEntity;
+            }
+
+            if ($multiAttachments === []) {
+                $this->persistLog(
+                    $rule,
+                    $order,
+                    $eventKey,
+                    $rule->getRecipientType(),
+                    $to,
+                    $subject,
+                    $bodyHtml,
+                    null,
+                    NotificationLogStatus::FAILED,
+                    'attach_document_types did not resolve to any PDF',
+                );
+                $this->em->flush();
+                $result->recordFailed('PDF attachment missing');
+
+                return;
+            }
+
+            $attachmentType = NotificationAttachmentType::DOCUMENTS_PDF;
+        } elseif ($rule->isAttachInvoicePdf()) {
             if ($invoice !== null) {
                 $attachment = $this->attachmentResolver->resolveInvoicePdf($invoice);
             } elseif ($document !== null) {
@@ -157,27 +240,45 @@ final class NotificationRuleProcessor
         );
         $this->em->flush();
 
-        $ok = $attachment !== null
-            ? $this->emailService->sendWithPdfAttachment(
+        $textPayload = $bodyText !== '' ? $bodyText : null;
+        $ok = match (true) {
+            $multiAttachments !== [] => $this->emailService->sendWithPdfAttachments(
                 $to,
                 $subject,
                 $bodyHtml,
-                $bodyText !== '' ? $bodyText : null,
+                $textPayload,
+                $multiAttachments,
+            ),
+            $attachment !== null => $this->emailService->sendWithPdfAttachment(
+                $to,
+                $subject,
+                $bodyHtml,
+                $textPayload,
                 $attachment['filename'],
                 $attachment['binary'],
-            )
-            : $this->emailService->send(
+            ),
+            default => $this->emailService->send(
                 $to,
                 $subject,
                 $bodyHtml,
-                $bodyText !== '' ? $bodyText : null,
-            );
+                $textPayload,
+            ),
+        };
 
         if ($ok) {
             $log->setStatus(NotificationLogStatus::SENT);
             $log->setSentAt(new \DateTimeImmutable('now', new \DateTimeZone('UTC')));
             $log->setErrorMessage(null);
             $result->recordSent();
+            if ($attachmentType === NotificationAttachmentType::DOCUMENTS_PDF) {
+                $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
+                foreach ($multiDocuments as $docEntity) {
+                    if ($docEntity->getStatus() === DocumentStatus::GENERATED) {
+                        $docEntity->setSentAt($now);
+                        $docEntity->setStatus(DocumentStatus::SENT);
+                    }
+                }
+            }
             if ($document !== null
                 && $rule->isAttachInvoicePdf()
                 && $attachmentType === NotificationAttachmentType::DOCUMENT_PDF) {
@@ -193,6 +294,13 @@ final class NotificationRuleProcessor
             $log->setStatus(NotificationLogStatus::FAILED);
             $log->setErrorMessage('Mail provider returned failure.');
             $result->recordFailed('Mail provider returned failure.');
+            if ($attachmentType === NotificationAttachmentType::DOCUMENTS_PDF) {
+                foreach ($multiDocuments as $docEntity) {
+                    if ($docEntity->getStatus() === DocumentStatus::GENERATED) {
+                        $docEntity->setStatus(DocumentStatus::FAILED);
+                    }
+                }
+            }
             if ($document !== null
                 && $rule->isAttachInvoicePdf()
                 && $attachmentType === NotificationAttachmentType::DOCUMENT_PDF) {

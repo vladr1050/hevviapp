@@ -50,4 +50,15 @@ interface EmailServiceInterface
         string $attachmentFilename,
         string $pdfBinary,
     ): bool;
+
+    /**
+     * @param non-empty-list<array{filename: string, binary: string}> $attachments
+     */
+    public function sendWithPdfAttachments(
+        string $to,
+        string $subject,
+        string $htmlContent,
+        ?string $textContent,
+        array $attachments,
+    ): bool;
 }
