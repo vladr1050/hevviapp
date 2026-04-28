@@ -10,6 +10,7 @@ interface CircleChartProps extends PropsWithChildren {
 	percent: number
 	title?: string
 	subtitle?: string
+	titleClassName?: string
 	className?: string
 	strokeWidth?: number
 	countdown?: boolean
@@ -20,6 +21,7 @@ export const CircleChart: FC<CircleChartProps> = ({
 	percent,
 	title,
 	subtitle,
+	titleClassName,
 	className,
 	strokeWidth = 8,
 	countdown,
@@ -111,7 +113,7 @@ export const CircleChart: FC<CircleChartProps> = ({
 
 			{(title || subtitle) && (
 				<div className={styles.content}>
-					{title && <div className={styles.title}>{title}</div>}
+					{title && <div className={cn(styles.title, titleClassName)}>{title}</div>}
 					{subtitle && <div className={styles.subtitle}>{subtitle}</div>}
 				</div>
 			)}

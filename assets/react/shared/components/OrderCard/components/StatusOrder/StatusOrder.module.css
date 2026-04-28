@@ -43,11 +43,11 @@
 	}
 
 	&.carrier {
-		@apply p-7;
+		@apply h-full justify-start p-7 rounded-[30px];
 
 		& .statusWrapper {
-			/* ~33px in Figma between chart and first row */
-			@apply grid grid-rows-[auto,1fr] gap-8 h-full;
+			/* Figma: ~33px between timer and status block */
+			@apply flex min-h-0 w-full flex-1 flex-col items-center justify-start gap-[33px];
 
 			& .top {
 				@apply flex h-[170px] w-[170px] shrink-0 items-center justify-center self-center rounded-full bg-white;
@@ -65,6 +65,33 @@
 
 			& .bottom {
 				@apply flex w-[240px] flex-col items-stretch justify-self-center gap-3;
+
+			& .carrierCountdownTitle {
+				@apply !text-2xl !font-bold tracking-tight;
+			}
+
+			& .carrierAwaitingStack {
+				@apply flex w-full flex-col overflow-hidden rounded-[14px] bg-white;
+				box-shadow:
+					0 6px 54px rgba(0, 0, 0, 0.029),
+					0 5px 15px rgba(0, 0, 0, 0.1);
+			}
+
+			& .carrierAwaitingStack .carrierPhaseHeader {
+				@apply rounded-b-none rounded-t-[14px] shadow-none;
+			}
+
+			& .carrierAwaitingStack .carrierFlatCard {
+				@apply rounded-b-[14px] rounded-t-none shadow-none;
+			}
+
+			& .carrierAwaitingStack .carrierFlatIcon:not(.carrierFlatIconDone) {
+				@apply [&_svg]:opacity-40;
+			}
+
+			& .carrierAwaitingBelow {
+				@apply mt-3 flex w-full flex-col gap-3;
+			}
 
 			& .carrierPhaseHeader {
 				@apply flex h-[59px] w-full shrink-0 items-center gap-2.5 rounded-[14px] bg-black px-4 text-sm font-medium text-white;
@@ -90,6 +117,10 @@
 
 				&.carrierFlatCardMuted {
 					@apply text-[#919191];
+
+					& .carrierFlatCheckbox input[type='checkbox'] {
+						@apply !border-[#919191];
+					}
 				}
 
 				&.carrierFlatCardClickable {
@@ -172,7 +203,7 @@
 		}
 
 		& .footer {
-			@apply flex flex-col items-center gap-1;
+			@apply mt-auto flex flex-col items-center gap-1;
 
 			& .button {
 				@apply w-full select-none;

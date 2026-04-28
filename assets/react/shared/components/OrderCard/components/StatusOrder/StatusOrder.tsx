@@ -72,6 +72,7 @@ const CarrierFlatRow: FC<CarrierFlatRowProps> = ({
 		{checkbox ? (
 			<Checkbox
 				className={cn(styles.carrierFlatCheckbox, 'pointer-events-none')}
+				color={muted ? 'gray' : 'default'}
 				value={checked}
 				disabledWithoutCss
 				disabled={!clickable}
@@ -258,7 +259,8 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 							<CircleChart
 								size={170}
 								percent={countdown.percent}
-								title={countdown.timeLabel}
+								title={`${countdown.timeLabel}h`}
+								titleClassName={styles.carrierCountdownTitle}
 								subtitle={countdown.subtitle}
 								countdown
 							/>
@@ -419,36 +421,38 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 							</>
 						) : (
 							<>
-								<div className={styles.carrierPhaseHeader}>
-									<span className={styles.carrierPhaseHeaderDot} aria-hidden />
-									Awaiting pickup
+								<div className={styles.carrierAwaitingStack}>
+									<div className={styles.carrierPhaseHeader}>
+										<span className={styles.carrierPhaseHeaderDot} aria-hidden />
+										Awaiting pickup
+									</div>
+									<CarrierFlatRow
+										clickable={order.status === OrderStatusEnum.AWAITING_PICKUP}
+										checkbox
+										checked={valueForm === 'PICKUP_DONE'}
+										onActivate={() =>
+											setValueForm((v) => (v === 'PICKUP_DONE' ? undefined : 'PICKUP_DONE'))
+										}
+										label="Pickup done"
+										iconType="up_box"
+									/>
 								</div>
-								<CarrierFlatRow
-									clickable={order.status === OrderStatusEnum.AWAITING_PICKUP}
-									checkbox
-									checked={valueForm === 'PICKUP_DONE'}
-									onActivate={() =>
-										setValueForm((v) => (v === 'PICKUP_DONE' ? undefined : 'PICKUP_DONE'))
-									}
-									label="Pickup done"
-									iconType="up_box"
-								/>
-								<div className={styles.line} />
-								<CarrierFlatRow
-									muted
-									checkbox
-									checked={false}
-									label={deliveredToLabel}
-									iconType="vehicle_right"
-								/>
-								<div className={styles.line} />
-								<CarrierFlatRow
-									muted
-									checkbox
-									checked={false}
-									label="Approved by Sender"
-									iconType="check_circle_1"
-								/>
+								<div className={styles.carrierAwaitingBelow}>
+									<CarrierFlatRow
+										muted
+										checkbox
+										checked={false}
+										label={deliveredToLabel}
+										iconType="vehicle_right"
+									/>
+									<CarrierFlatRow
+										muted
+										checkbox
+										checked={false}
+										label="Approved by Sender"
+										iconType="check_circle_1"
+									/>
+								</div>
 							</>
 						)}
 					</div>
@@ -517,11 +521,11 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 						{order.status < OrderStatusEnum.IN_TRANSIT && (
 							<Button
 								type="button"
-								variant="transparent"
+								variant="outline"
 								onClick={() => setModalId('cancel')}
 								className={styles.button}
 							>
-								Cancel order
+								Cancel Order
 							</Button>
 						)}
 					</div>
