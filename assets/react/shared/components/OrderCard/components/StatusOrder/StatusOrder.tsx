@@ -277,7 +277,6 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 									label="Pickup done"
 									iconType="up_box"
 								/>
-								<div className={cn(styles.line, styles.big)} />
 								<CarrierFlatRow
 									done
 									checkbox
@@ -285,7 +284,6 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 									label={deliveredToLabel}
 									iconType="vehicle_right"
 								/>
-								<div className={cn(styles.line, styles.big)} />
 								<CarrierFlatRow
 									done
 									checkbox={false}
@@ -303,7 +301,6 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 									label="Pickup done"
 									iconType="up_box"
 								/>
-								<div className={cn(styles.line, styles.big)} />
 								<CarrierFlatRow
 									done
 									checkbox
@@ -311,7 +308,6 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 									label={deliveredToLabel}
 									iconType="vehicle_right"
 								/>
-								<div className={cn(styles.line, styles.big)} />
 								<div className={styles.transitFolder}>
 									<div className={styles.transitFolderHeader}>
 										<span className={styles.transitFolderHeaderDot} aria-hidden />
@@ -348,7 +344,6 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 									label="Pickup done"
 									iconType="up_box"
 								/>
-								<div className={cn(styles.line, styles.big)} />
 								<div className={styles.transitFolder}>
 									<div className={styles.transitFolderHeader}>
 										<span className={styles.transitFolderHeaderDot} aria-hidden />
@@ -410,7 +405,6 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 										</div>
 									</div>
 								</div>
-								<div className={cn(styles.line, styles.big)} />
 								<CarrierFlatRow
 									muted
 									checkbox

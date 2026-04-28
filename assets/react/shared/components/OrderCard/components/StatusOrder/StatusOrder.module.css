@@ -71,19 +71,23 @@
 			}
 
 			& .carrierAwaitingStack {
-				@apply flex w-full flex-col overflow-hidden rounded-[14px] bg-white;
+				/* No bg here — avoids a white seam; children paint black + white, outer clips radius */
+				@apply flex w-full flex-col overflow-hidden rounded-[14px] bg-transparent;
 				box-shadow:
 					0 6px 54px rgba(0, 0, 0, 0.029),
 					0 5px 15px rgba(0, 0, 0, 0.1);
 			}
 
 			& .carrierAwaitingStack .carrierPhaseHeader {
-				/* Above the white row (flat card uses z-[1]) so the seam does not look “cut” by white */
-				@apply relative z-[2] rounded-b-none rounded-t-[14px] shadow-none;
+				/* Stacked white row comes later in DOM; keep header on top at the seam */
+				@apply relative z-[2] shadow-none;
+				border-radius: 14px 14px 0 0;
 			}
 
 			& .carrierAwaitingStack .carrierFlatCard {
-				@apply z-0 rounded-b-[14px] rounded-t-none shadow-none;
+				/* Longhand beats base .carrierFlatCard rounded-[14px] — no top curve “into” the black bar */
+				@apply z-0 shadow-none;
+				border-radius: 0 0 14px 14px;
 			}
 
 			& .carrierAwaitingStack .carrierFlatIcon:not(.carrierFlatIconDone) {
@@ -106,7 +110,8 @@
 			}
 
 			& .carrierFlatCard {
-				@apply relative z-[1] grid min-h-[73px] w-full shrink-0 grid-cols-[19px,1fr,40px] items-center gap-x-6 gap-y-0 rounded-[14px] bg-white
+				/* No z-index — avoids painting over the black phase header or footer actions */
+				@apply grid min-h-[73px] w-full shrink-0 grid-cols-[19px,1fr,40px] items-center gap-x-6 gap-y-0 rounded-[14px] bg-white
 				px-6 py-0 text-sm font-medium leading-snug text-black;
 				box-shadow:
 					0 6px 54px rgba(0, 0, 0, 0.029),
@@ -142,7 +147,7 @@
 			}
 
 			& .transitFolder {
-				@apply relative z-[2] w-full shrink-0 overflow-hidden rounded-[14px];
+				@apply relative w-full shrink-0 overflow-hidden rounded-[14px];
 				box-shadow:
 					0 6px 54px rgba(0, 0, 0, 0.029),
 					0 5px 15px rgba(0, 0, 0, 0.1);
@@ -204,7 +209,8 @@
 		}
 
 		& .footer {
-			@apply mt-auto flex flex-col items-center gap-1;
+			/* Above status rows (flat cards used to use z-[1]) so Update status / Cancel are never covered */
+			@apply relative z-20 mt-auto flex flex-col items-center gap-1;
 
 			& .button {
 				@apply w-full select-none;
