@@ -56,8 +56,9 @@
 					0 9.26px 83.32px rgba(0, 0, 0, 0.029),
 					0 7.71px 23.15px rgba(0, 0, 0, 0.1);
 
+				/* Figma: toxic-green disc sits inside the white 170 ring (white “ободок” from .top bg) */
 				& .carrierHeroApproved {
-					@apply flex h-full w-full items-center justify-center rounded-full bg-primary;
+					@apply flex h-[120px] w-[120px] shrink-0 items-center justify-center self-center rounded-full bg-primary;
 					box-shadow:
 						0 6.53px 58.75px rgba(0, 0, 0, 0.029),
 						inset 0 0 0 1px rgba(255, 255, 255, 0.15);

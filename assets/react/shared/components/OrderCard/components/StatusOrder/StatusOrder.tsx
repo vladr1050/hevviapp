@@ -262,7 +262,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 					<div className={styles.top}>
 						{order.status === OrderStatusEnum.APPROVED ? (
 							<div className={styles.carrierHeroApproved}>
-								<Icon type="vehicle_check" size={72} />
+								<Icon type="vehicle_check" size={54} />
 							</div>
 						) : (
 							<CircleChart
