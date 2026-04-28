@@ -70,21 +70,17 @@
 				@apply !text-2xl !font-bold tracking-tight;
 			}
 
-			& .carrierAwaitingStack {
-				/* Black header h=59px; white Pickup row overlaps 25px upward (34px of black stays visible) */
+			& .carrierPhaseStack {
+				/* Black phase header h=59px; first white row overlaps 25px upward (same as Figma awaiting / in-transit) */
 				@apply relative flex w-full flex-col overflow-visible bg-transparent;
 			}
 
-			& .carrierAwaitingStack .carrierPhaseHeader {
+			& .carrierPhaseStack .carrierPhaseHeader {
 				@apply relative z-0 shrink-0;
 			}
 
-			& .carrierAwaitingStack .carrierFlatCard {
+			& .carrierPhaseStack .carrierFlatCard {
 				@apply relative z-[1] -mt-[25px] shrink-0;
-			}
-
-			& .carrierAwaitingStack .carrierFlatIcon:not(.carrierFlatIconDone) {
-				@apply [&_svg]:opacity-40;
 			}
 
 			& .carrierAwaitingBelow {
@@ -147,56 +143,9 @@
 				&.carrierFlatIconDone {
 					@apply bg-primary text-black;
 				}
-			}
 
-			& .transitFolder {
-				@apply relative w-full shrink-0 overflow-hidden rounded-[14px];
-				box-shadow:
-					0 6px 54px rgba(0, 0, 0, 0.029),
-					0 5px 15px rgba(0, 0, 0, 0.1);
-			}
-
-			& .transitFolderHeader {
-				@apply flex h-[59px] shrink-0 items-center gap-2.5 bg-black px-4 text-sm font-medium text-white;
-			}
-
-			& .transitFolderHeaderDot {
-				@apply h-3 w-3 shrink-0 rounded-full bg-primary;
-			}
-
-			& .transitFolderBody {
-				@apply min-h-[56px] bg-white px-6 py-3.5;
-			}
-
-			& .transitFolderBodyRow {
-				@apply grid min-h-[40px] grid-cols-[19px,1fr,40px] items-center gap-x-6 text-sm font-medium leading-snug text-black;
-
-				& > span {
-					@apply min-w-0 max-w-full leading-snug [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical] overflow-hidden break-words;
-				}
-
-				&.transitFolderBodyRowClickable {
-					@apply cursor-pointer rounded-lg -mx-2 -my-1 px-2 py-1 transition-colors hover:bg-neutral-100;
-				}
-
-				&.transitFolderBodyRowMuted {
-					@apply text-[#919191];
-				}
-			}
-
-			& .transitFolderBodyRowMuted .transitDeliveredIconWrap {
-				@apply bg-[#F2F2F2] text-[#919191];
-			}
-
-			& .transitDeliveredIconWrap {
-				@apply flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F2F2F2] text-black/35 transition-colors;
-
-				&.transitDeliveredIconWrapPending {
+				&.carrierFlatIconPending {
 					@apply [&_svg]:opacity-40;
-				}
-
-				&.transitDeliveredIconWrapDone {
-					@apply bg-primary text-black;
 				}
 			}
 

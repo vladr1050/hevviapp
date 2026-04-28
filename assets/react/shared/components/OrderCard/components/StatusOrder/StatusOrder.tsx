@@ -37,6 +37,8 @@ type CarrierFlatRowProps = {
 	onActivate?: () => void
 	label: ReactNode
 	iconType: IconNameType
+	/** Softer truck / step icon (e.g. before in-transit) */
+	iconPending?: boolean
 }
 
 const CarrierFlatRow: FC<CarrierFlatRowProps> = ({
@@ -48,6 +50,7 @@ const CarrierFlatRow: FC<CarrierFlatRowProps> = ({
 	onActivate,
 	label,
 	iconType,
+	iconPending,
 }) => (
 	<div
 		className={cn(
@@ -81,7 +84,13 @@ const CarrierFlatRow: FC<CarrierFlatRowProps> = ({
 			<div className="w-5 shrink-0" aria-hidden />
 		)}
 		<span>{label}</span>
-		<div className={cn(styles.carrierFlatIcon, done && styles.carrierFlatIconDone)}>
+		<div
+			className={cn(
+				styles.carrierFlatIcon,
+				done && styles.carrierFlatIconDone,
+				iconPending && styles.carrierFlatIconPending,
+			)}
+		>
 			<Icon type={iconType} size={22} />
 		</div>
 	</div>
@@ -308,30 +317,20 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 									label={deliveredToLabel}
 									iconType="vehicle_right"
 								/>
-								<div className={styles.transitFolder}>
-									<div className={styles.transitFolderHeader}>
-										<span className={styles.transitFolderHeaderDot} aria-hidden />
-										<span>Pending approval</span>
+								<div className={styles.carrierPhaseStack}>
+									<div className={styles.carrierPhaseHeader}>
+										<span className={styles.carrierPhaseHeaderContent}>
+											<span className={styles.carrierPhaseHeaderDot} aria-hidden />
+											<span className={styles.carrierPhaseHeaderLabel}>Pending approval</span>
+										</span>
 									</div>
-									<div className={styles.transitFolderBody}>
-										<div
-											className={cn(
-												styles.transitFolderBodyRow,
-												styles.transitFolderBodyRowMuted,
-											)}
-										>
-											<Checkbox
-												className={cn(styles.carrierFlatCheckbox, 'pointer-events-none')}
-												value={false}
-												disabledWithoutCss
-												disabled
-											/>
-											<span>Approved by Sender</span>
-											<div className={styles.transitDeliveredIconWrap}>
-												<Icon type="check_circle_1" size={22} />
-											</div>
-										</div>
-									</div>
+									<CarrierFlatRow
+										muted
+										checkbox
+										checked={false}
+										label="Approved by Sender"
+										iconType="check_circle_1"
+									/>
 								</div>
 							</>
 						) : order.status === OrderStatusEnum.PICKUP_DONE ||
@@ -344,66 +343,28 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 									label="Pickup done"
 									iconType="up_box"
 								/>
-								<div className={styles.transitFolder}>
-									<div className={styles.transitFolderHeader}>
-										<span className={styles.transitFolderHeaderDot} aria-hidden />
-										<span>In transit</span>
+								<div className={styles.carrierPhaseStack}>
+									<div className={styles.carrierPhaseHeader}>
+										<span className={styles.carrierPhaseHeaderContent}>
+											<span className={styles.carrierPhaseHeaderDot} aria-hidden />
+											<span className={styles.carrierPhaseHeaderLabel}>In transit</span>
+										</span>
 									</div>
-									<div className={styles.transitFolderBody}>
-										<div
-											className={cn(
-												styles.transitFolderBodyRow,
-												order.status === OrderStatusEnum.IN_TRANSIT &&
-													styles.transitFolderBodyRowClickable,
-											)}
-											onClick={
-												order.status === OrderStatusEnum.IN_TRANSIT
-													? () =>
-															setValueForm((v) =>
-																v === 'DELIVERED' ? undefined : 'DELIVERED',
-															)
-													: undefined
-											}
-											onKeyDown={
-												order.status === OrderStatusEnum.IN_TRANSIT
-													? (e) => {
-															if (e.key === 'Enter' || e.key === ' ') {
-																e.preventDefault()
-																setValueForm((v) =>
-																	v === 'DELIVERED' ? undefined : 'DELIVERED',
-																)
-															}
-														}
-													: undefined
-											}
-											role={
-												order.status === OrderStatusEnum.IN_TRANSIT ? 'button' : undefined
-											}
-											tabIndex={order.status === OrderStatusEnum.IN_TRANSIT ? 0 : undefined}
-										>
-											<Checkbox
-												className={cn(styles.carrierFlatCheckbox, 'pointer-events-none')}
-												value={
-													order.status >= OrderStatusEnum.DELIVERED ||
-													valueForm === 'DELIVERED'
-												}
-												disabledWithoutCss
-												disabled={order.status !== OrderStatusEnum.IN_TRANSIT}
-											/>
-											<span>{deliveredToLabel}</span>
-											<div
-												className={cn(
-													styles.transitDeliveredIconWrap,
-													order.status === OrderStatusEnum.PICKUP_DONE &&
-														styles.transitDeliveredIconWrapPending,
-													order.status >= OrderStatusEnum.DELIVERED &&
-														styles.transitDeliveredIconWrapDone,
-												)}
-											>
-												<Icon type="vehicle_right" size={22} />
-											</div>
-										</div>
-									</div>
+									<CarrierFlatRow
+										clickable={order.status === OrderStatusEnum.IN_TRANSIT}
+										checkbox
+										checked={
+											order.status >= OrderStatusEnum.DELIVERED ||
+											valueForm === 'DELIVERED'
+										}
+										onActivate={() =>
+											setValueForm((v) => (v === 'DELIVERED' ? undefined : 'DELIVERED'))
+										}
+										label={deliveredToLabel}
+										iconType="vehicle_right"
+										done={order.status >= OrderStatusEnum.DELIVERED}
+										iconPending={order.status === OrderStatusEnum.PICKUP_DONE}
+									/>
 								</div>
 								<CarrierFlatRow
 									muted
@@ -415,7 +376,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 							</>
 						) : (
 							<>
-								<div className={styles.carrierAwaitingStack}>
+								<div className={styles.carrierPhaseStack}>
 									<div className={styles.carrierPhaseHeader}>
 										<span className={styles.carrierPhaseHeaderContent}>
 											<span className={styles.carrierPhaseHeaderDot} aria-hidden />
@@ -431,6 +392,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 										}
 										label="Pickup done"
 										iconType="up_box"
+										iconPending={valueForm !== 'PICKUP_DONE'}
 									/>
 								</div>
 								<div className={styles.carrierAwaitingBelow}>
