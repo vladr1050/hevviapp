@@ -71,7 +71,7 @@ const CarrierFlatRow: FC<CarrierFlatRowProps> = ({
 	>
 		{checkbox ? (
 			<Checkbox
-				className="pointer-events-none"
+				className={cn(styles.carrierFlatCheckbox, 'pointer-events-none')}
 				value={checked}
 				disabledWithoutCss
 				disabled={!clickable}
@@ -119,6 +119,9 @@ const useDeliveryCountdown = (paidDate: string | undefined, deliveredDate: strin
 export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId, csrfToken }) => {
 	const [valueForm, setValueForm] = useState<'PICKUP_DONE' | 'DELIVERED'>()
 	const countdown = useDeliveryCountdown(order.paid_date, order.delivered_date)
+	const deliveredToLabel = order.address?.to?.trim()
+		? `Delivered to ${order.address.to.trim()}`
+		: 'Delivered'
 
 	return (
 		<div
@@ -253,7 +256,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 							</div>
 						) : (
 							<CircleChart
-								size={150}
+								size={170}
 								percent={countdown.percent}
 								title={countdown.timeLabel}
 								subtitle={countdown.subtitle}
@@ -277,7 +280,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 									done
 									checkbox
 									checked
-									label="Delivered"
+									label={deliveredToLabel}
 									iconType="vehicle_right"
 								/>
 								<div className={cn(styles.line, styles.big)} />
@@ -303,29 +306,29 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 									done
 									checkbox
 									checked
-									label="Delivered"
+									label={deliveredToLabel}
 									iconType="vehicle_right"
 								/>
 								<div className={cn(styles.line, styles.big)} />
 								<div className={styles.transitFolder}>
 									<div className={styles.transitFolderHeader}>
 										<span className={styles.transitFolderHeaderDot} aria-hidden />
-										<span>Pending admin approval</span>
+										<span>Pending approval</span>
 									</div>
 									<div className={styles.transitFolderBody}>
 										<div
 											className={cn(
 												styles.transitFolderBodyRow,
-												'text-black/45 opacity-80',
+												styles.transitFolderBodyRowMuted,
 											)}
 										>
 											<Checkbox
-												className="pointer-events-none"
+												className={cn(styles.carrierFlatCheckbox, 'pointer-events-none')}
 												value={false}
 												disabledWithoutCss
 												disabled
 											/>
-											<span>Approved</span>
+											<span>Approved by Sender</span>
 											<div className={styles.transitDeliveredIconWrap}>
 												<Icon type="check_circle_1" size={22} />
 											</div>
@@ -394,7 +397,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 											tabIndex={order.status === OrderStatusEnum.IN_TRANSIT ? 0 : undefined}
 										>
 											<Checkbox
-												className="pointer-events-none"
+												className={cn(styles.carrierFlatCheckbox, 'pointer-events-none')}
 												value={
 													order.status >= OrderStatusEnum.DELIVERED ||
 													valueForm === 'DELIVERED'
@@ -402,7 +405,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 												disabledWithoutCss
 												disabled={order.status !== OrderStatusEnum.IN_TRANSIT}
 											/>
-											<span>Delivered</span>
+											<span>{deliveredToLabel}</span>
 											<div
 												className={cn(
 													styles.transitDeliveredIconWrap,
@@ -445,7 +448,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 									muted
 									checkbox
 									checked={false}
-									label="Delivered"
+									label={deliveredToLabel}
 									iconType="vehicle_right"
 								/>
 								<div className={styles.line} />
