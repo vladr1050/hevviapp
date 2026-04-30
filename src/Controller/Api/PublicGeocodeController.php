@@ -150,17 +150,19 @@ final class PublicGeocodeController extends AbstractController
         $restrict = $s?->isRestrictGeographicSearch() ?? false;
         $codes = $restrict ? $this->parseCountryCodes($s?->getNominatimCountryCodes()) : [];
 
-        /** @var list<string> $primaryTypes */
-        $primaryTypes = ['street_address', 'premise', 'subpremise'];
+        // Do not set includedPrimaryTypes here: legacy "address" behaviour is hard to mirror with
+        // five primary types only; a narrow list often yields zero predictions for partial street input.
 
         $fragment = [
-            'includedPrimaryTypes' => $primaryTypes,
-            'regionCode'             => $codes[0] ?? 'lv',
+            'regionCode' => $codes[0] ?? 'lv',
         ];
 
         if ($codes !== []) {
             $fragment['includedRegionCodes'] = $codes;
         }
+
+        // Prefer Latvian UI strings when search is LV-only (or unrestricted default region LV).
+        $fragment['languageCode'] = ($codes === [] || $codes === ['lv']) ? 'lv' : 'en';
 
         if ($restrict && $s !== null && $s->hasCompleteBoundingBox()) {
             $minLat = $s->getBboxMinLatitude();
