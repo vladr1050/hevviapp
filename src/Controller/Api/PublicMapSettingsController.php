@@ -10,6 +10,7 @@
 namespace App\Controller\Api;
 
 use App\Repository\AppSettingsRepository;
+use App\Service\Map\GoogleGeocodeProxyService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,6 +24,7 @@ final class PublicMapSettingsController extends AbstractController
     public function __construct(
         private readonly AppSettingsRepository $appSettingsRepository,
         private readonly ParameterBagInterface $parameterBag,
+        private readonly GoogleGeocodeProxyService $googleGeocodeProxy,
     ) {
     }
 
@@ -66,7 +68,8 @@ final class PublicMapSettingsController extends AbstractController
                 'zoom'      => $defaultZoom,
                 'maxBounds' => $maxBounds,
             ],
-            'nominatimApiUrl' => $this->parameterBag->get('app.map.nominatim_api_url'),
+            'nominatimApiUrl'      => $this->parameterBag->get('app.map.nominatim_api_url'),
+            'googleAddressSearch' => $this->googleGeocodeProxy->isConfigured(),
         ]);
     }
 }

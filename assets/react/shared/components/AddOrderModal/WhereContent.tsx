@@ -8,7 +8,14 @@ import {
 } from 'react-hook-form'
 import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from 'react-leaflet'
 
-import { DEFAULT_LAT, DEFAULT_LNG, PUBLIC_MAP_SETTINGS_URL } from '@config/constants'
+import {
+	DEFAULT_LAT,
+	DEFAULT_LNG,
+	PUBLIC_GEOCODE_AUTOCOMPLETE_URL,
+	PUBLIC_GEOCODE_PLACE_URL,
+	PUBLIC_GEOCODE_REVERSE_URL,
+	PUBLIC_MAP_SETTINGS_URL,
+} from '@config/constants'
 import { Icon } from '@ui/Icon/Icon'
 import { cn } from '@utils/cn'
 // @ts-ignore
@@ -40,6 +47,8 @@ export interface PublicMapSettings {
 		maxBounds: [[number, number], [number, number]] | null
 	}
 	nominatimApiUrl: string
+	/** When true, address search and reverse geocode use the Symfony Google proxy (see geocode URLs in constants). */
+	googleAddressSearch?: boolean
 }
 
 interface WhereContentProps {
@@ -71,6 +80,7 @@ const defaultMapSettings = (): PublicMapSettings => ({
 		maxBounds: null,
 	},
 	nominatimApiUrl: 'https://nominatim.openstreetmap.org',
+	googleAddressSearch: false,
 })
 
 async function fetchPublicMapSettings(): Promise<PublicMapSettings> {
@@ -137,6 +147,33 @@ function validateCountryCodes(
 	return null
 }
 
+interface GeocodePrediction {
+	description: string
+	placeId: string
+}
+
+interface GeocodeResolved {
+	displayLine: string
+	latitude: number
+	longitude: number
+	countryCode: string | null
+}
+
+type AddressSuggestion =
+	| { source: 'nominatim'; data: NominatimResult }
+	| { source: 'google'; data: GeocodePrediction }
+
+function newGeocodeSessionToken(): string {
+	try {
+		if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+			return crypto.randomUUID()
+		}
+	} catch {
+		/* ignore */
+	}
+	return `${Date.now()}-${Math.random().toString(36).slice(2, 12)}`
+}
+
 interface NominatimResult {
 	place_id: number
 	display_name: string
@@ -181,6 +218,27 @@ const formatNominatimAddress = (result: NominatimResult): string => {
 	}
 
 	return parts.length > 0 ? parts.join(', ') : result.display_name
+}
+
+async function reverseGeocodeGoogle(lat: number, lng: number): Promise<GeocodeResolved | null> {
+	const params = new URLSearchParams({ lat: String(lat), lng: String(lng) })
+	try {
+		const res = await fetch(`${PUBLIC_GEOCODE_REVERSE_URL}?${params}`, { credentials: 'same-origin' })
+		if (!res.ok) {
+			return null
+		}
+		const data = (await res.json()) as Partial<GeocodeResolved>
+		if (
+			typeof data.displayLine !== 'string' ||
+			typeof data.latitude !== 'number' ||
+			typeof data.longitude !== 'number'
+		) {
+			return null
+		}
+		return data as GeocodeResolved
+	} catch {
+		return null
+	}
 }
 
 async function reverseGeocode(
@@ -262,13 +320,22 @@ export const WhereContent: FC<WhereContentProps> = ({
 				setGeoHint(bboxErr)
 				return
 			}
-			const rev = await reverseGeocode(settings.nominatimApiUrl, lat, lng)
+			const useGoogle = settings.googleAddressSearch === true
+			const rev = useGoogle
+				? await reverseGeocodeGoogle(lat, lng)
+				: await reverseGeocode(settings.nominatimApiUrl, lat, lng)
 			if (!rev) {
 				setGeoHint('Could not resolve address for this point. Try again later.')
 				return
 			}
-			const addrText = formatNominatimAddress(rev)
-			const countryErr = validateCountryCodes(settings, rev.address ?? null)
+			const addrText = useGoogle
+				? (rev as GeocodeResolved).displayLine
+				: formatNominatimAddress(rev as NominatimResult)
+			const countryErr = useGoogle
+				? validateCountryCodes(settings, {
+						country_code: (rev as GeocodeResolved).countryCode ?? undefined,
+				  })
+				: validateCountryCodes(settings, (rev as NominatimResult).address ?? null)
 			if (countryErr) {
 				setGeoHint(countryErr)
 				return
@@ -508,9 +575,10 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 	placeholder,
 	disabled,
 }) => {
-	const [suggestions, setSuggestions] = useState<NominatimResult[]>([])
+	const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([])
 	const [showSuggestions, setShowSuggestions] = useState(false)
 	const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+	const sessionTokenRef = useRef<string>(newGeocodeSessionToken())
 
 	const searchAddress = async (query: string) => {
 		if (query.length < 2) {
@@ -518,7 +586,30 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 			setShowSuggestions(false)
 			return
 		}
+		const googleMode = mapSettings.googleAddressSearch === true
 		try {
+			if (googleMode) {
+				const res = await fetch(PUBLIC_GEOCODE_AUTOCOMPLETE_URL, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					credentials: 'same-origin',
+					body: JSON.stringify({
+						input: query,
+						sessionToken: sessionTokenRef.current,
+					}),
+				})
+				if (!res.ok) {
+					setSuggestions([])
+					setShowSuggestions(false)
+					return
+				}
+				const json = (await res.json()) as { predictions?: GeocodePrediction[] }
+				const list = Array.isArray(json.predictions) ? json.predictions : []
+				setSuggestions(list.map((p) => ({ source: 'google' as const, data: p })))
+				setShowSuggestions(list.length > 0)
+				return
+			}
+
 			const root = mapSettings.nominatimApiUrl.replace(/\/$/, '')
 			const params = new URLSearchParams({
 				q: query,
@@ -545,10 +636,12 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 				headers: { 'User-Agent': NOMINATIM_BROWSER_USER_AGENT },
 			})
 			const data: NominatimResult[] = await res.json()
-			setSuggestions(Array.isArray(data) ? data : [])
-			setShowSuggestions(Array.isArray(data) && data.length > 0)
+			const rows = Array.isArray(data) ? data : []
+			setSuggestions(rows.map((r) => ({ source: 'nominatim' as const, data: r })))
+			setShowSuggestions(rows.length > 0)
 		} catch {
 			setSuggestions([])
+			setShowSuggestions(false)
 		}
 	}
 
@@ -557,6 +650,9 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 		onChange(val)
 		onGeoHint(null)
 		if (!val.trim()) {
+			if (mapSettings.googleAddressSearch === true) {
+				sessionTokenRef.current = newGeocodeSessionToken()
+			}
 			setSuggestions([])
 			setShowSuggestions(false)
 			onClear?.()
@@ -565,12 +661,73 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 		if (debounceRef.current) {
 			clearTimeout(debounceRef.current)
 		}
-		debounceRef.current = setTimeout(() => searchAddress(val), 400)
+		debounceRef.current = setTimeout(() => void searchAddress(val), 400)
 	}
 
-	const handleSelect = (result: NominatimResult) => {
-		const lat = parseFloat(result.lat)
-		const lng = parseFloat(result.lon)
+	const handleSelect = async (item: AddressSuggestion) => {
+		if (item.source === 'nominatim') {
+			const result = item.data
+			const lat = parseFloat(result.lat)
+			const lng = parseFloat(result.lon)
+			const bboxErr = validateBbox(mapSettings, lat, lng)
+			if (bboxErr) {
+				onGeoHint(bboxErr)
+				setSuggestions([])
+				setShowSuggestions(false)
+				return
+			}
+			const countryErr = validateCountryCodes(mapSettings, result.address ?? null)
+			if (countryErr) {
+				onGeoHint(countryErr)
+				setSuggestions([])
+				setShowSuggestions(false)
+				return
+			}
+			const addr = formatNominatimAddress(result)
+			onChange(addr)
+			onSelect(addr, lat, lng)
+			onGeoHint(null)
+			setSuggestions([])
+			setShowSuggestions(false)
+			return
+		}
+
+		const prediction = item.data
+		let res: Response
+		try {
+			res = await fetch(PUBLIC_GEOCODE_PLACE_URL, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				credentials: 'same-origin',
+				body: JSON.stringify({
+					placeId: prediction.placeId,
+					sessionToken: sessionTokenRef.current,
+				}),
+			})
+		} catch {
+			onGeoHint('Could not resolve this address. Try again later.')
+			setSuggestions([])
+			setShowSuggestions(false)
+			return
+		}
+		if (!res.ok) {
+			let msg = 'Could not resolve this address. Try again later.'
+			try {
+				const errBody = (await res.json()) as { error?: string }
+				if (typeof errBody.error === 'string' && errBody.error) {
+					msg = errBody.error
+				}
+			} catch {
+				/* ignore */
+			}
+			onGeoHint(msg)
+			setSuggestions([])
+			setShowSuggestions(false)
+			return
+		}
+		const dto = (await res.json()) as GeocodeResolved
+		const lat = dto.latitude
+		const lng = dto.longitude
 		const bboxErr = validateBbox(mapSettings, lat, lng)
 		if (bboxErr) {
 			onGeoHint(bboxErr)
@@ -578,19 +735,21 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 			setShowSuggestions(false)
 			return
 		}
-		const countryErr = validateCountryCodes(mapSettings, result.address ?? null)
+		const countryErr = validateCountryCodes(mapSettings, {
+			country_code: dto.countryCode ?? undefined,
+		})
 		if (countryErr) {
 			onGeoHint(countryErr)
 			setSuggestions([])
 			setShowSuggestions(false)
 			return
 		}
-		const addr = formatNominatimAddress(result)
-		onChange(addr)
-		onSelect(addr, lat, lng)
+		onChange(dto.displayLine)
+		onSelect(dto.displayLine, lat, lng)
 		onGeoHint(null)
 		setSuggestions([])
 		setShowSuggestions(false)
+		sessionTokenRef.current = newGeocodeSessionToken()
 	}
 
 	return (
@@ -603,7 +762,7 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 					onKeyDown={(e) => {
 						if (e.key === 'Enter' && suggestions.length > 0) {
 							e.preventDefault()
-							handleSelect(suggestions[0])
+							void handleSelect(suggestions[0])
 						}
 					}}
 					onFocus={() => {
@@ -621,8 +780,12 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 			{showSuggestions && suggestions.length > 0 && (
 				<div className={styles.suggestions}>
 					{suggestions.map((s) => (
-						<div key={s.place_id} className={styles.suggestion} onMouseDown={() => handleSelect(s)}>
-							{s.display_name}
+						<div
+							key={s.source === 'google' ? s.data.placeId : String(s.data.place_id)}
+							className={styles.suggestion}
+							onMouseDown={() => void handleSelect(s)}
+						>
+							{s.source === 'google' ? s.data.description : s.data.display_name}
 						</div>
 					))}
 				</div>

@@ -191,3 +191,8 @@ export const DEFAULT_LNG = 24.106075
 
 /** Public JSON for map defaults and geographic restrictions (Sonata-configurable). */
 export const PUBLIC_MAP_SETTINGS_URL = '/api/public/map-settings'
+
+/** Google geocoding proxy (enabled when `googleAddressSearch` in map settings). */
+export const PUBLIC_GEOCODE_AUTOCOMPLETE_URL = '/api/public/geocode/autocomplete'
+export const PUBLIC_GEOCODE_PLACE_URL = '/api/public/geocode/place'
+export const PUBLIC_GEOCODE_REVERSE_URL = '/api/public/geocode/reverse'

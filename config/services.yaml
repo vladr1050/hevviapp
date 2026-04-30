@@ -137,6 +137,10 @@ services:
         arguments:
             $supportManagerEmail: '%app.support_contact.manager_email%'
 
+    App\Service\Map\GoogleGeocodeProxyService:
+        arguments:
+            $apiKey: '%env(GOOGLE_MAPS_API_KEY)%'
+
     # Email Services
     App\Service\Email\Contract\EmailServiceInterface:
         class: App\Service\Email\MailjetEmailService
