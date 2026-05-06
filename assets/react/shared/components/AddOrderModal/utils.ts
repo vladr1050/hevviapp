@@ -6,7 +6,7 @@ import { CargoItemType, PickupTimeT, PickupTypeT } from './types'
 // import { CargoItemType, PickupTimeT, PickupTypeT } from '../RequestsUser/types'
 
 export const formatDate = (d: Date | undefined): string | null =>
-	d ? d.toISOString().split('T')[0] : null
+	d ? format(d, 'yyyy-MM-dd') : null
 
 export const dimensionsCm = (
 	width: number | undefined,
