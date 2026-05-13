@@ -17,6 +17,7 @@
 
 namespace FRPC\SonataAuthorization\Admin;
 
+use App\Admin\SonataPlainPasswordAdminTrait;
 use App\Entity\Manager;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -45,6 +46,8 @@ use FRPC\SonataAuthorization\Form\Type\RolesMatrixType;
  */
 class ManagerAdmin extends BaseAdmin
 {
+    use SonataPlainPasswordAdminTrait;
+
     protected function configureRoutes(RouteCollectionInterface $collection): void
     {
         $collection
@@ -178,6 +181,7 @@ class ManagerAdmin extends BaseAdmin
     protected function preUpdate(object $object): void
     {
         $this->ensureBaselineManagerRoles($object);
+        $this->applyPlainPasswordFromAdminForm($object);
     }
 
     /**

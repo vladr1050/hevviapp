@@ -17,44 +17,23 @@
 namespace App\Listener;
 
 use App\Entity\BaseSecurityDBO;
+use App\Service\Security\PlainPasswordMutationHandler;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class PlainPasswordListener
 {
-    private UserPasswordHasherInterface $hasher;
-
-    public function __construct(UserPasswordHasherInterface $hasher)
-    {
-        $this->hasher = $hasher;
+    public function __construct(
+        private readonly PlainPasswordMutationHandler $plainPasswordMutationHandler,
+    ) {
     }
 
     public function prePersist(BaseSecurityDBO $securityEntity): void
     {
-        $this->password($securityEntity);
+        $this->plainPasswordMutationHandler->apply($securityEntity);
     }
 
     public function preUpdate(BaseSecurityDBO $securityEntity, PreUpdateEventArgs $event): void
     {
-        $this->password($securityEntity);
-    }
-
-    private function password(BaseSecurityDBO $securityEntity): void
-    {
-        $plain = $securityEntity->getPlainPassword();
-        if ($plain === null) {
-            return;
-        }
-        // Sonata / HTML forms submit "" when the field is left blank; only null was skipped before,
-        // which hashed an empty password and broke login (Sender/Carrier admin edit).
-        $trimmed = trim($plain);
-        if ($trimmed === '') {
-            $securityEntity->setPlainPassword(null);
-
-            return;
-        }
-
-        $securityEntity->setPassword($this->hasher->hashPassword($securityEntity, $trimmed));
-        $securityEntity->setPlainPassword(null);
+        $this->plainPasswordMutationHandler->apply($securityEntity);
     }
 }

@@ -40,7 +40,7 @@ services:
     ### LISTENERS ###
     App\Listener\PlainPasswordListener:
         arguments:
-            - '@security.user_password_hasher'
+            - '@App\Service\Security\PlainPasswordMutationHandler'
         tags:
             - { name: doctrine.orm.entity_listener }
 

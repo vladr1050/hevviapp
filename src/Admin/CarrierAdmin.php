@@ -30,6 +30,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class CarrierAdmin extends BaseAdmin
 {
+    use SonataPlainPasswordAdminTrait;
+
     protected function configureDefaultSortValues(array &$sortValues): void
     {
         $sortValues[DatagridInterface::SORT_BY] = 'createdAt';
@@ -170,6 +172,7 @@ class CarrierAdmin extends BaseAdmin
     protected function preUpdate(object $object): void
     {
         $this->ensureCarrierRole($object);
+        $this->applyPlainPasswordFromAdminForm($object);
     }
 
     /** /carrier/* requires ROLE_CARRIER in the JWT. */

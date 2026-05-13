@@ -29,6 +29,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class UserAdmin extends BaseAdmin
 {
+    use SonataPlainPasswordAdminTrait;
+
     protected function configureListFields(ListMapper $list): void
     {
         $list
@@ -159,6 +161,7 @@ class UserAdmin extends BaseAdmin
     protected function preUpdate(object $object): void
     {
         $this->ensureSenderRole($object);
+        $this->applyPlainPasswordFromAdminForm($object);
     }
 
     /**
