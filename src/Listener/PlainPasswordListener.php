@@ -41,10 +41,20 @@ class PlainPasswordListener
 
     private function password(BaseSecurityDBO $securityEntity): void
     {
-        if (null === $securityEntity->getPlainPassword()) {
+        $plain = $securityEntity->getPlainPassword();
+        if ($plain === null) {
             return;
         }
-        $securityEntity->setPassword($this->hasher->hashPassword($securityEntity, $securityEntity->getPlainPassword()));
+        // Sonata / HTML forms submit "" when the field is left blank; only null was skipped before,
+        // which hashed an empty password and broke login (Sender/Carrier admin edit).
+        $trimmed = trim($plain);
+        if ($trimmed === '') {
+            $securityEntity->setPlainPassword(null);
+
+            return;
+        }
+
+        $securityEntity->setPassword($this->hasher->hashPassword($securityEntity, $trimmed));
         $securityEntity->setPlainPassword(null);
     }
 }
