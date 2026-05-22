@@ -1,21 +1,16 @@
 {#
-/**
- * Template for displaying delivery gross price from latest OrderOffer in Sonata Admin list view
- */
+    Delivery gross price for sender (freight + platform fee + both VAT parts).
 #}
 {% extends '@SonataAdmin/CRUD/base_list_field.html.twig' %}
 
 {% block field %}
-    {# Показываем количество offers #}
     <span class="badge badge-info">
         {{ 'list.label_offers'|trans({}, 'AppBundle') }}: {{ object.offers|length }}
     </span>
 
-    {# Получаем последний offer через метод getLatestOffer() #}
     {% set latestOffer = object.latestOffer %}
 
     {% if latestOffer is not null %}
-        {# Получаем текст статуса с переводом #}
         {% set status = latestOffer.status %}
         {% set class = 'default' %}
         {% if status == 2 %}
@@ -31,16 +26,12 @@
             {% set statusText = 'Unknown' %}
         {% endif %}
 
-        {# Отображаем статус как текст #}
         <br><br><span class="badge badge-{{ class }}">{{ statusText }}</span>
 
-        {# Отображаем цену #}
-        {% if latestOffer.brutto is not null %}
-            {% set brutto = latestOffer.brutto %}
+        {% set grossCents = sender_delivery_gross_cents(object, latestOffer) %}
+        {% if grossCents is not null %}
             {% set currency = object.currency ?? 'EUR' %}
-            {% set amount = brutto / 100 %}
-            <br><span
-            class="text-success font-weight-bold">{{ amount|number_format(2, '.', ' ') }} {{ currency }}</span>
+            <br><span class="text-success font-weight-bold">{{ grossCents|currency_convert(currency) }}</span>
         {% else %}
             <br><span class="text-muted">—</span>
         {% endif %}

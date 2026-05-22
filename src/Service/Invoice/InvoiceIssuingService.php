@@ -116,7 +116,7 @@ final class InvoiceIssuingService
             $freight = 0;
         }
 
-        $splitPayable = $this->senderOrderPayableTotalCentsCalculator->computePayableGrossAndVatCents($offer);
+        $splitPayable = $this->senderOrderPayableTotalCentsCalculator->computePayableGrossAndVatCents($offer, $order);
         if ($splitPayable !== null) {
             $vatAmount = $splitPayable['vat_cents'];
             $gross = $splitPayable['gross_cents'];

@@ -402,6 +402,7 @@ form:
     label_fee:                         Commission Amount
     label_vat:                         VAT Amount
     label_offer_status:                Offer Status
+    label_sender_delivery_price:       Delivery price for sender
     label_cancel_reason:               Cancel Reason
     label_help_cancel_reason:          Reason given by the carrier when the order was cancelled.
     label_help_carrier_readonly:       Carrier is assigned automatically via Order Assignments. To change the carrier, reject the current assignment in the Assignments tab.
@@ -617,6 +618,23 @@ REJECTED:  Rejected
 ASSIGNED:  Assigned
 # ACCEPTED for OrderAssignment will also be "Accepted"
 # REJECTED for OrderAssignment will also be "Rejected"
+
+# Sender delivery price breakdown (admin + portal)
+sender_price:
+    no_offer_data:           No offer data available.
+    total_delivery_gross:    Total delivery price (gross)
+    section_freight:         1) Freight cost
+    section_platform:        2) Platform commission
+    carrier_profile:         Carrier VAT profile — %name%
+    issuer_profile:          Invoice issuer (operator) — %name%
+    freight_vat_fallback:    Carrier not assigned or no VAT rate on carrier profile — default VAT rate from environment is used for freight.
+    net:                     Net (excl. VAT)
+    vat_rate:                VAT rate
+    vat_amount:              VAT amount
+    gross:                   Gross (incl. VAT)
+    fee_percent:             Commission
+    of_freight_net:          of freight net
+    db_snapshot_hint:        'Stored offer snapshot (legacy single VAT on subtotal):'
 
 # OrderOffer component
 order_offer:

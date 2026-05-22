@@ -476,7 +476,8 @@ class UserController extends AbstractController
     private function computeSenderOrderTotalDisplay(Order $order): ?string
     {
         $totalCents = $this->senderOrderPayableTotalCentsCalculator->computePayableGrossCents(
-            $order->getLatestOffer()
+            $order->getLatestOffer(),
+            $order,
         );
         if ($totalCents === null) {
             return null;

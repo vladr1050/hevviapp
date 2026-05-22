@@ -408,6 +408,7 @@ form:
     label_invoice_email_error:       Ошибка email
     label_currency:              Валюта
     label_offer_status:        Статус предложения
+    label_sender_delivery_price: Цена доставки для заказчика
     label_add_offer:           Добавить предложение
     label_upload_files:        PDF-документы
     label_cancel_reason:      Причина отмены
@@ -595,6 +596,23 @@ REJECTED:  Отклонено
 ASSIGNED:  Назначено
 # ACCEPTED для OrderAssignment также будет "Принято"
 # REJECTED для OrderAssignment также будет "Отклонено"
+
+# Разбивка цены доставки для заказчика (админка + портал)
+sender_price:
+    no_offer_data:           Нет данных по предложению.
+    total_delivery_gross:    Итоговая цена доставки (брутто)
+    section_freight:         1) Стоимость перевозки
+    section_platform:        2) Комиссия платформы
+    carrier_profile:         Профиль НДС перевозчика — %name%
+    issuer_profile:          Выставитель счёта (оператор) — %name%
+    freight_vat_fallback:    Перевозчик не назначен или без ставки НДС в профиле — для перевозки используется ставка НДС по умолчанию из окружения.
+    net:                     Нетто (без НДС)
+    vat_rate:                Ставка НДС
+    vat_amount:              Сумма НДС
+    gross:                   Брутто (с НДС)
+    fee_percent:             Комиссия
+    of_freight_net:          от нетто перевозки
+    db_snapshot_hint:        'Снимок в БД (устаревший единый НДС на субтотал):'
 
 # OrderOffer компонент
 order_offer:

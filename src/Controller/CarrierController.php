@@ -491,12 +491,15 @@ class CarrierController extends AbstractController
     private function buildCarrierFreightPriceBreakdown(Order $order): array
     {
         $currency = $order->getCurrency() ?? 'EUR';
+        $offer = $order->getLatestOffer();
         $parts = $this->senderOrderPayableTotalCentsCalculator->computeCarrierFreightOnlyVatAndGrossCents(
-            $order->getLatestOffer()
+            $offer,
+            $order,
         );
+        $breakdown = $this->senderOrderPayableTotalCentsCalculator->buildBreakdown($order, $offer);
 
         return [
-            'carrier_freight_vat_rate_display' => '21%',
+            'carrier_freight_vat_rate_display' => $breakdown?->freightVatPercentLabel ?? '—',
             'carrier_freight_vat' => $parts !== null
                 ? $this->moneyExtension->currencyConvert($parts['vat_cents'], $currency)
                 : null,

@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\OrderOfferRepository;
-use App\Twig\Extension\Filter\MoneyExtension;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: OrderOfferRepository::class)]
@@ -95,18 +94,10 @@ class OrderOffer extends BaseUUID
 
     public function __toString(): string
     {
-        $money = new MoneyExtension();
-        $currency = $this->getRelatedOrder()?->getCurrency() ?? 'EUR';
-        $gross = $money->currencyConvert($this->brutto ?? 0, $currency);
-        $net = $money->currencyConvert($this->netto ?? 0, $currency);
-        $vat = $money->currencyConvert($this->vat ?? 0, $currency);
+        $statusKey = array_search($this->status, self::STATUS, true);
+        $statusLabel = is_string($statusKey) ? $statusKey : (string) ($this->status ?? '');
 
-        return sprintf(
-            'Gross: %s | Net: %s | VAT: %s',
-            $gross,
-            $net,
-            $vat,
-        );
+        return sprintf('Offer (%s)', $statusLabel);
     }
 
     public function getFee(): ?int

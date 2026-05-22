@@ -61,17 +61,10 @@ class OrderOfferAdmin extends BaseAdmin
     {
         $show
             ->add('id')
-            ->add('netto', null, [
-                'label' => 'show.label_netto',
-            ])
-            ->add('fee', null, [
-                'label' => 'show.label_fee',
-            ])
-            ->add('vat', null, [
-                'label' => 'show.label_vat',
-            ])
-            ->add('brutto', null, [
-                'label' => 'show.label_brutto',
+            ->add('_sender_price_breakdown', null, [
+                'label'    => 'show.label_sender_delivery_price',
+                'template' => 'admin/CRUD/show_sender_order_price_breakdown.html.twig',
+                'virtual_field' => true,
             ])
             ->add('status', 'choice', [
                 'label' => 'show.label_offer_status',
