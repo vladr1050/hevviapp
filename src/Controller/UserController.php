@@ -146,7 +146,8 @@ class UserController extends AbstractController
                 'reference' => $order->getReference(),
                 'status' => $order->getStatus(),
                 'status_text' => $this->translator->trans('order.status_' . $order->getStatus(), domain: 'AppBundle', locale: $user->getLocale()),
-                'price' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
+                'price' => $this->computeSenderOrderTotalDisplay($order)
+                    ?? $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
                 'address' => [
                     'from' => $order->getPickupAddress(),
                     'to' => $order->getDropoutAddress(),

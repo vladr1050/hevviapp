@@ -286,7 +286,8 @@ class CarrierController extends AbstractController
                 'reference' => $order->getReference(),
                 'status' => $order->getStatus(),
                 'status_text' => $this->translator->trans('order.status_' . $order->getStatus(), domain: 'AppBundle', locale: $user->getLocale()),
-                'price' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
+                'price' => $this->computeCarrierFreightTotalDisplay($order)
+                    ?? $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
                 'address' => [
                     'from' => $order->getPickupAddress(),
                     'to' => $order->getDropoutAddress(),
@@ -507,6 +508,23 @@ class CarrierController extends AbstractController
                 ? $this->moneyExtension->currencyConvert($parts['gross_cents'], $currency)
                 : null,
         ];
+    }
+
+    /**
+     * Сумма, которую получает перевозчик за заказ:
+     * базовый фрахт + НДС на фрахт (без комиссии платформы).
+     */
+    private function computeCarrierFreightTotalDisplay(Order $order): ?string
+    {
+        $parts = $this->senderOrderPayableTotalCentsCalculator->computeCarrierFreightOnlyVatAndGrossCents(
+            $order->getLatestOffer(),
+            $order,
+        );
+        if ($parts === null) {
+            return null;
+        }
+
+        return $this->moneyExtension->currencyConvert($parts['gross_cents'], $order->getCurrency());
     }
 
     /**
