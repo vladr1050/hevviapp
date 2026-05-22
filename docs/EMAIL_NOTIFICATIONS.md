@@ -47,7 +47,7 @@
 3. **OrderHistorySubscriber** (`src/EventSubscriber/OrderHistorySubscriber.php`)
    - После сохранения истории статуса вызывает **`NotificationDispatchService`** для событий `ORDER_STATUS_CHANGED_TO_*` (см. список ключей в `App\Notification\NotificationEventKey`).
 
-4. **OrderAssignmentSubscriber** — уведомление перевозчику при принятии назначения (`ORDER_ASSIGNED_TO_CARRIER`).
+4. **OrderAssignmentSubscriber** — уведомление перевозчику при создании нового запроса (`postPersist` `OrderAssignment` со статусом `ASSIGNED`) → `ORDER_ASSIGNED_TO_CARRIER`. Перевозчик получает извещение **до** того, как подтвердит заказ.
 
 ## Настройка
 
@@ -89,7 +89,7 @@ MAILJET_ENABLED=true
 5. **IN_TRANSIT** → `ORDER_STATUS_CHANGED_TO_IN_TRANSIT`
 6. **DELIVERED** → `ORDER_STATUS_CHANGED_TO_DELIVERED`
 
-Дополнительно: **назначение перевозчика** (принятие `OrderAssignment`) → `ORDER_ASSIGNED_TO_CARRIER`; **счёт после подтверждения цены** → `ORDER_PRICE_CONFIRMED` (синхронно, с PDF).
+Дополнительно: **создание `OrderAssignment` (`ASSIGNED`)** → `ORDER_ASSIGNED_TO_CARRIER` (carrier видит новый запрос до подтверждения); **счёт после подтверждения цены** → `ORDER_PRICE_CONFIRMED` (синхронно, с PDF).
 
 ## Шаблоны
 
