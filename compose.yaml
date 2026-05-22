@@ -43,6 +43,7 @@ services:
       DATABASE_URL: "${DATABASE_URL:-postgresql://app:!ChangeMe!@database:5432/app?serverVersion=16&charset=utf8}"
       APP_DEBUG: 1
       APP_SECRET: ${APP_SECRET}
+      TZ: Europe/Riga
     networks:
       - hevii
       - shared-network

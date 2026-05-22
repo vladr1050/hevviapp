@@ -213,13 +213,16 @@ final class NotificationContextFactory
 
     /**
      * Planned delivery deadline: 48 hours from payment-related anchor (prefer PAID history).
-     * Format: d.m.Y and 24-hour clock (H:i). Falls back to order delivery date/window if no anchor exists.
+     * Format: d.m.Y and 24-hour clock (H:i), Europe/Riga.
+     * Falls back to order delivery date/window if no anchor exists.
      */
     private function buildEta(Order $order): string
     {
         $anchor = $this->resolveEtaAnchorFromPaymentTimeline($order);
         if ($anchor !== null) {
-            return $anchor->modify('+48 hours')->format('d.m.Y H:i');
+            $eta = $anchor->modify('+48 hours')->setTimezone(new \DateTimeZone('Europe/Riga'));
+
+            return $eta->format('d.m.Y H:i');
         }
 
         $date = $this->formatDate($order->getDeliveryDate());

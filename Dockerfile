@@ -27,6 +27,7 @@ RUN apk add --no-cache \
     g++ \
     autoconf \
     pkgconf \
+    tzdata \
     $PHPIZE_DEPS \
     nodejs \
     npm \
@@ -35,6 +36,11 @@ RUN apk add --no-cache \
     rabbitmq-c \
     rabbitmq-c-dev \
     openssl-dev
+
+# Часовой пояс контейнера: Europe/Riga для приложения (Латвия).
+# Влияет на системное время в логах FPM/Chromium; PHP-таймзону задаём отдельно через date.timezone.
+ENV TZ=Europe/Riga
+RUN cp /usr/share/zoneinfo/Europe/Riga /etc/localtime && echo "Europe/Riga" > /etc/timezone
 
 # Сборка падает, если пакет chromium не попал в образ (иначе на проде тихий сбой PDF).
 RUN chromium --version
@@ -73,6 +79,7 @@ RUN mkdir -p /usr/local/log/php && \
       echo 'allow_url_fopen = On'; \
       echo 'upload_max_filesize = 25M'; \
       echo 'post_max_size = 30M'; \
+      echo 'date.timezone = Europe/Riga'; \
     } > /usr/local/etc/php/conf.d/php.ini && \
     if [ "$APP_MODE" = "dev" ]; then \
       { \

@@ -1,6 +1,11 @@
 twig:
     file_name_pattern: '*.twig'
-    
+
+    date:
+        # Все Twig-фильтры |date / |format_datetime по умолчанию рендерятся в латвийском времени.
+        timezone: 'Europe/Riga'
+        format: 'd.m.Y H:i'
+
     form_themes:
         - 'form/address_with_map_widget.html.twig'
         - 'form/geo_area_selection_widget.html.twig'

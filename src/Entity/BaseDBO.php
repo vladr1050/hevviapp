@@ -69,14 +69,24 @@ class BaseDBO
     #[ORM\PrePersist]
     public function prePersist(): void
     {
-        $this->setCreatedAt(new \DateTimeImmutable());
-        $this->setUpdatedAt(new \DateTimeImmutable());
+        $now = self::nowInAppTimezone();
+        $this->setCreatedAt($now);
+        $this->setUpdatedAt($now);
     }
 
     #[ORM\PreUpdate]
     public function preUpdate(): void
     {
-        $this->setUpdatedAt(new \DateTimeImmutable());
+        $this->setUpdatedAt(self::nowInAppTimezone());
+    }
+
+    /**
+     * Все таймштампы доменных сущностей фиксируются в Europe/Riga,
+     * чтобы отображение в админке/портале/инвойсах совпадало с латвийским временем.
+     */
+    private static function nowInAppTimezone(): \DateTimeImmutable
+    {
+        return new \DateTimeImmutable('now', new \DateTimeZone('Europe/Riga'));
     }
 
     public function __toString(): string
