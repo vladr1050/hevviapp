@@ -99,7 +99,22 @@ class ServiceAreaAdmin extends BaseAdmin
             ])
             ->add('carrier', ModelAutocompleteType::class, [
                 'required' => false,
-                'property' => 'legalName',
+                'property' => ['legalName', 'email', 'registrationNumber'],
+                'to_string_callback' => static fn ($entity): string => (string) $entity->getLegalName(),
+                'callback' => static function ($admin, $property, $value): void {
+                    $datagrid = $admin->getDatagrid();
+                    $queryBuilder = $datagrid->getQuery();
+                    $rootAlias = current($queryBuilder->getRootAliases());
+                    $queryBuilder
+                        ->andWhere(
+                            $queryBuilder->expr()->orX(
+                                $queryBuilder->expr()->like('LOWER('.$rootAlias.'.legalName)', ':search'),
+                                $queryBuilder->expr()->like('LOWER('.$rootAlias.'.email)', ':search'),
+                                $queryBuilder->expr()->like('LOWER('.$rootAlias.'.registrationNumber)', ':search'),
+                            )
+                        )
+                        ->setParameter('search', '%'.mb_strtolower($value).'%');
+                },
                 'label' => 'form.label_service_area_carrier',
                 'help' => 'form.help_service_area_carrier',
             ])
