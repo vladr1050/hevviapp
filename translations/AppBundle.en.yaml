@@ -12,6 +12,7 @@ action:
     notification_replay:         Resend
     notification_replay_confirm: Resend this notification now? Send-once rules will be ignored.
     notification_rule_copy:      Copy rule
+    service_area_copy:           Copy service area
     document_open_pdf:           Open PDF
     document_download_pdf:     Download PDF
 
@@ -20,8 +21,12 @@ flash:
     notification_replay_result: 'Replay finished: sent %sent%, failed %failed%, skipped %skipped%.'
     notification_replay_error: 'Replay failed: %message%'
     notification_rule_copied: A copy of the rule was created. Change the recipient (and the name if needed), then enable the rule.
+    service_area_copied: A copy of the service area was created. Pick a different carrier (and adjust home zone if needed).
 
 notification_rule:
+    copy_name_suffix: (copy)
+
+service_area:
     copy_name_suffix: (copy)
 
 menu:

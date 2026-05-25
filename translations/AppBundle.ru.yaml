@@ -12,6 +12,7 @@ action:
     notification_replay:         Повторить отправку
     notification_replay_confirm: Повторить отправку этого уведомления? Ограничение «один раз на заказ» будет проигнорировано.
     notification_rule_copy:      Скопировать правило
+    service_area_copy:           Скопировать зону
     document_open_pdf:           Открыть PDF
     document_download_pdf:     Скачать PDF
 
@@ -20,8 +21,12 @@ flash:
     notification_replay_result: 'Повтор: отправлено %sent%, ошибок %failed%, пропущено %skipped%.'
     notification_replay_error: 'Ошибка повтора: %message%'
     notification_rule_copied: Создана копия правила. Измените получателя (и при необходимости название), затем включите правило.
+    service_area_copied: Создана копия зоны обслуживания. Выберите другого перевозчика (и при необходимости задайте home zone).
 
 notification_rule:
+    copy_name_suffix: (копия)
+
+service_area:
     copy_name_suffix: (копия)
 
 menu:

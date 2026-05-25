@@ -26,6 +26,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Form\Type\AdminType;
+use Sonata\AdminBundle\Route\RouteCollectionInterface;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\Form\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -34,6 +35,12 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class ServiceAreaAdmin extends BaseAdmin
 {
+    protected function configureRoutes(RouteCollectionInterface $collection): void
+    {
+        parent::configureRoutes($collection);
+        $collection->add('copy');
+    }
+
     protected function configureDatagridFilters(DatagridMapper $datagrid): void
     {
         $datagrid
@@ -61,7 +68,19 @@ class ServiceAreaAdmin extends BaseAdmin
             ->add('createdAt', 'datetime', [
                 'format' => self::BASE_LIST_DATETIME_FORMAT,
             ]);
-        parent::configureListFields($list);
+
+        if ($this->hasSameRole()) {
+            $list->add('_action', 'actions', [
+                'actions' => [
+                    'edit' => [],
+                    'show' => [],
+                    'delete' => [],
+                    'copy' => [
+                        'template' => 'admin/service_area/list__action_copy.html.twig',
+                    ],
+                ],
+            ]);
+        }
     }
 
     protected function configureShowFields(ShowMapper $show): void
