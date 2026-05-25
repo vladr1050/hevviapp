@@ -34,6 +34,7 @@ menu:
     order_assignments: Order Assignments
     settings:          Settings
     appsettings:       Map & address settings
+    pricing_settings:  Delivery pricing
     companies:         Companies
     service_areas:     Service Areas
     matrix_items:      Matrix Items

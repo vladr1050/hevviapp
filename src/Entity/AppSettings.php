@@ -10,7 +10,6 @@
 namespace App\Entity;
 
 use App\Repository\AppSettingsRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -47,10 +46,6 @@ class AppSettings extends BaseUUID
 
     #[ORM\Column(nullable: true)]
     private ?int $defaultMapZoom = null;
-
-    /** Global multiplier on base freight when carrier has no local coefficient. */
-    #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 4, options: ['default' => '1.0000'])]
-    private string $defaultPriceCoefficient = '1.0000';
 
     public function isRestrictGeographicSearch(): bool
     {
@@ -164,18 +159,6 @@ class AppSettings extends BaseUUID
     public function setDefaultMapZoom(?int $defaultMapZoom): static
     {
         $this->defaultMapZoom = $defaultMapZoom;
-
-        return $this;
-    }
-
-    public function getDefaultPriceCoefficient(): string
-    {
-        return $this->defaultPriceCoefficient;
-    }
-
-    public function setDefaultPriceCoefficient(string $defaultPriceCoefficient): static
-    {
-        $this->defaultPriceCoefficient = $defaultPriceCoefficient;
 
         return $this;
     }

@@ -40,7 +40,6 @@ class AppSettingsAdmin extends BaseAdmin
             ->add('defaultMapLatitude', null, ['label' => 'show.label_appsettings_default_lat'])
             ->add('defaultMapLongitude', null, ['label' => 'show.label_appsettings_default_lng'])
             ->add('defaultMapZoom', null, ['label' => 'show.label_appsettings_default_zoom'])
-            ->add('defaultPriceCoefficient', null, ['label' => 'show.label_default_price_coefficient'])
             ->add('createdAt')
             ->add('updatedAt');
     }
@@ -48,7 +47,6 @@ class AppSettingsAdmin extends BaseAdmin
     protected function configureFormFields(FormMapper $form): void
     {
         $form
-            ->tab('appsettings_tab_map', ['label' => 'form.tab_appsettings_map'])
             ->with('appsettings_geocoding', ['class' => 'col-md-12', 'label' => 'form.group_appsettings_geocoding'])
             ->add('restrictGeographicSearch', CheckboxType::class, [
                 'required' => false,
@@ -106,18 +104,6 @@ class AppSettingsAdmin extends BaseAdmin
                 'required' => false,
                 'label' => 'form.label_appsettings_default_zoom',
             ])
-            ->end()
-            ->end()
-            ->tab('appsettings_tab_pricing', ['label' => 'form.tab_appsettings_pricing'])
-            ->with('appsettings_pricing', ['class' => 'col-md-12', 'label' => 'form.group_appsettings_pricing'])
-            ->add('defaultPriceCoefficient', NumberType::class, [
-                'required' => true,
-                'scale' => 4,
-                'html5' => true,
-                'label' => 'form.label_default_price_coefficient',
-                'help' => 'form.help_default_price_coefficient',
-            ])
-            ->end()
             ->end();
     }
 

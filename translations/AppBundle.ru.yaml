@@ -34,6 +34,7 @@ menu:
     order_assignments: Назначения заказов
     settings:          Настройки
     appsettings:       Карта и адреса
+    pricing_settings:  Тарифы доставки
     companies:         Компании
     service_areas:     Зоны обслуживания
     matrix_items:      Элементы матрицы

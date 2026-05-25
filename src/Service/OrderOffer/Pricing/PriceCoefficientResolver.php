@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Service\OrderOffer\Pricing;
 
 use App\Entity\Carrier;
-use App\Repository\AppSettingsRepository;
+use App\Repository\PricingSettingsRepository;
 
 final class PriceCoefficientResolver
 {
     public function __construct(
-        private readonly AppSettingsRepository $appSettingsRepository,
+        private readonly PricingSettingsRepository $pricingSettingsRepository,
     ) {
     }
 
@@ -23,7 +23,7 @@ final class PriceCoefficientResolver
             }
         }
 
-        $settings = $this->appSettingsRepository->getSingleton();
+        $settings = $this->pricingSettingsRepository->getSingleton();
         $global = $settings?->getDefaultPriceCoefficient() ?? '1.0000';
 
         return $this->normalizeCoefficient((float) $global);
