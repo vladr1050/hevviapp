@@ -12,8 +12,8 @@ use App\Repository\OrderHistoryRepository;
  *
  * Rules (Europe/Riga, 48h SLA from cargo readiness):
  * - pickupDate is null → anchor = first PAID history createdAt;
- * - pickupDate is set  → anchor = pickupDate at pickupTimeFrom (fallback 09:00) Europe/Riga
- *   (strict; payment timing does not shift this anchor).
+ * - pickupDate is set  → anchor = max(paidAt, pickupDate at pickupTimeFrom or 09:00),
+ *   so a late payment cannot retroactively shrink the SLA window.
  * - deadline = anchor + DELIVERY_SLA_HOURS.
  *
  * Returns null when no PAID history exists yet (timer should not run).
@@ -40,12 +40,16 @@ final class DeliveryDeadlineCalculator
             return null;
         }
 
-        $pickupDate = $order->getPickupDate();
-        if ($pickupDate === null) {
-            return $paidAt->setTimezone(new \DateTimeZone(self::APP_TZ));
+        $tz = new \DateTimeZone(self::APP_TZ);
+        $paidAtRiga = $paidAt->setTimezone($tz);
+
+        if ($order->getPickupDate() === null) {
+            return $paidAtRiga;
         }
 
-        return $this->buildPickupAnchor($order);
+        $pickupAnchor = $this->buildPickupAnchor($order);
+
+        return $paidAtRiga > $pickupAnchor ? $paidAtRiga : $pickupAnchor;
     }
 
     /**
