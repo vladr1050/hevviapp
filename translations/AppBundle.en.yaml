@@ -339,6 +339,8 @@ form:
     group_matrix_items_list:           Matrix Items List
     group_carrier_pricing:             Delivery pricing
     group_appsettings_pricing:         Delivery pricing (global)
+    tab_appsettings_map:               Geocoding & Map
+    tab_appsettings_pricing:           Delivery pricing
     label_default_for_pricing:         Default carrier for pricing
     help_default_for_pricing:          New orders use this carrier's tariffs until a carrier is assigned on the order.
     label_pricing_algorithm:           Pricing algorithm

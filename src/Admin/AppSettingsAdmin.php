@@ -48,6 +48,7 @@ class AppSettingsAdmin extends BaseAdmin
     protected function configureFormFields(FormMapper $form): void
     {
         $form
+            ->tab('appsettings_tab_map', ['label' => 'form.tab_appsettings_map'])
             ->with('appsettings_geocoding', ['class' => 'col-md-12', 'label' => 'form.group_appsettings_geocoding'])
             ->add('restrictGeographicSearch', CheckboxType::class, [
                 'required' => false,
@@ -106,6 +107,8 @@ class AppSettingsAdmin extends BaseAdmin
                 'label' => 'form.label_appsettings_default_zoom',
             ])
             ->end()
+            ->end()
+            ->tab('appsettings_tab_pricing', ['label' => 'form.tab_appsettings_pricing'])
             ->with('appsettings_pricing', ['class' => 'col-md-12', 'label' => 'form.group_appsettings_pricing'])
             ->add('defaultPriceCoefficient', NumberType::class, [
                 'required' => true,
@@ -114,6 +117,7 @@ class AppSettingsAdmin extends BaseAdmin
                 'label' => 'form.label_default_price_coefficient',
                 'help' => 'form.help_default_price_coefficient',
             ])
+            ->end()
             ->end();
     }
 

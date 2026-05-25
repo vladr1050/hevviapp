@@ -325,6 +325,8 @@ form:
     group_matrix_items_list:   Список элементов матрицы
     group_carrier_pricing:     Ценообразование доставки
     group_appsettings_pricing: Ценообразование (глобально)
+    tab_appsettings_map:       Геокодирование и карта
+    tab_appsettings_pricing:   Ценообразование доставки
     label_default_for_pricing: Перевозчик по умолчанию для расчёта цены
     help_default_for_pricing:  Новые заказы считаются по тарифам этого перевозчика, пока на заказ не назначен другой.
     label_pricing_algorithm:   Алгоритм расчёта цены
