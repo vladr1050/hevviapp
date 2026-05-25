@@ -756,5 +756,6 @@ api:
         coordinates_outside_bounding_box: Pickup or delivery coordinates are outside the allowed map area.
         coordinates_outside_allowed_countries: Pickup or delivery location is outside the allowed countries.
         coordinates_country_check_failed: Could not verify the country for the selected coordinates. Try again later.
+        delivery_date_too_early: Delivery date must be at least 48 hours after pickup date (pickup + 2 days).
 
 

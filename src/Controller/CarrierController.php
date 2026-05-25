@@ -26,6 +26,7 @@ use App\Entity\OrderHistory;
 use App\Entity\OrderOffer;
 use App\Repository\OrderAssignmentRepository;
 use App\Repository\OrderRepository;
+use App\Service\Order\DeliveryDeadlineCalculator;
 use App\Service\Order\SenderOrderPayableTotalCentsCalculator;
 use App\Twig\Extension\Filter\MoneyExtension;
 use Doctrine\ORM\EntityManagerInterface;
@@ -49,6 +50,7 @@ class CarrierController extends AbstractController
         private readonly TranslatorInterface       $translator,
         private readonly EntityManagerInterface    $em,
         private readonly SenderOrderPayableTotalCentsCalculator $senderOrderPayableTotalCentsCalculator,
+        private readonly DeliveryDeadlineCalculator $deliveryDeadlineCalculator,
     )
     {
     }
@@ -347,6 +349,8 @@ class CarrierController extends AbstractController
             'pickup_date' => false !== $history ? $history->getCreatedAt()->format('d.m.Y') : null,
             'paid_date' => false !== $paidHistory ? $paidHistory->getCreatedAt()->format(\DateTimeInterface::ATOM) : null,
             'delivered_date' => false !== $deliveredHistory ? $deliveredHistory->getCreatedAt()->format(\DateTimeInterface::ATOM) : null,
+            'pickup_ready_at' => $this->deliveryDeadlineCalculator->resolveAnchor($order)?->format(\DateTimeInterface::ATOM),
+            'deadline_at' => $this->deliveryDeadlineCalculator->resolveDeadline($order)?->format(\DateTimeInterface::ATOM),
             'carrier' => $order->getCarrier()?->getLegalName(),
             'pickup_latitude' => $order->getPickupLatitude(),
             'pickup_longitude' => $order->getPickupLongitude(),

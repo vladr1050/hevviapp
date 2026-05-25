@@ -150,6 +150,10 @@ export type OrderType = {
 	carrier?: string
 	paid_date?: string
 	delivered_date?: string
+	/** ISO timestamp when cargo becomes available for pickup (anchor for the 48h SLA). */
+	pickup_ready_at?: string
+	/** ISO timestamp by which the order must be delivered (= pickup_ready_at + 48h). */
+	deadline_at?: string
 	type?: string
 	vat?: string
 	brutto?: string

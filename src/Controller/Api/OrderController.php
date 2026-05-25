@@ -168,6 +168,13 @@ class OrderController extends AbstractController
             );
         }
 
+        if ($this->isDeliveryBeforeMinimumLeadTime($order->getPickupDate(), $order->getDeliveryDate())) {
+            return $this->json(
+                ['error' => $this->translator->trans('api.order.delivery_date_too_early', [], 'AppBundle', $locale)],
+                JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
         // Build each Cargo and attach via addCargo() so the in-memory collection
         // is populated before postPersist fires (the offer calculator iterates
         // $order->getCargo() to compute total weight across all cargo items).
@@ -282,6 +289,13 @@ class OrderController extends AbstractController
         if ($coordErrorKey !== null) {
             return $this->json(
                 ['error' => $this->translator->trans($coordErrorKey, [], 'AppBundle', $locale)],
+                JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        if ($this->isDeliveryBeforeMinimumLeadTime($order->getPickupDate(), $order->getDeliveryDate())) {
+            return $this->json(
+                ['error' => $this->translator->trans('api.order.delivery_date_too_early', [], 'AppBundle', $locale)],
                 JsonResponse::HTTP_UNPROCESSABLE_ENTITY
             );
         }
@@ -420,6 +434,24 @@ class OrderController extends AbstractController
                     : null
             );
         }
+    }
+
+    /**
+     * Sender form contract: when both dates are set, deliveryDate must be at least
+     * pickupDate + 2 calendar days (48-hour SLA from pickup at 09:00).
+     * Returns true if the constraint is violated.
+     */
+    private function isDeliveryBeforeMinimumLeadTime(?\DateTimeInterface $pickupDate, ?\DateTimeInterface $deliveryDate): bool
+    {
+        if ($pickupDate === null || $deliveryDate === null) {
+            return false;
+        }
+
+        $pickup = (new \DateTimeImmutable($pickupDate->format('Y-m-d')))->setTime(0, 0);
+        $delivery = (new \DateTimeImmutable($deliveryDate->format('Y-m-d')))->setTime(0, 0);
+        $earliestDelivery = $pickup->modify('+2 days');
+
+        return $delivery < $earliestDelivery;
     }
 
     /**

@@ -694,4 +694,5 @@ api:
         coordinates_outside_bounding_box: Координаты забора или доставки вне разрешённой области карты.
         coordinates_outside_allowed_countries: Точка забора или доставки вне разрешённых стран.
         coordinates_country_check_failed: Не удалось проверить страну для выбранных координат. Попробуйте позже.
+        delivery_date_too_early: Дата доставки должна быть минимум через 48 часов после забора (забор + 2 дня).
 

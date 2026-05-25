@@ -63,6 +63,20 @@
 						0 6.53px 58.75px rgba(0, 0, 0, 0.029),
 						inset 0 0 0 1px rgba(255, 255, 255, 0.15);
 				}
+
+				/* Pickup pending plate: shown before the cargo readiness anchor (no countdown yet). */
+				& .carrierPickupPending {
+					@apply flex h-[120px] w-[150px] shrink-0 flex-col items-center justify-center self-center
+					rounded-2xl bg-[#F2F2F2] text-center text-black;
+				}
+
+				& .carrierPickupPendingTitle {
+					@apply text-xs font-medium uppercase tracking-wide text-[#717171];
+				}
+
+				& .carrierPickupPendingValue {
+					@apply mt-1 text-base font-bold leading-tight;
+				}
 			}
 
 			& .bottom {

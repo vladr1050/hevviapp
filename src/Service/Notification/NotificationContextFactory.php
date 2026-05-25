@@ -9,10 +9,10 @@ use App\Entity\Order;
 use App\Entity\User;
 use App\Enum\DocumentType;
 use App\Repository\DocumentRepository;
-use App\Repository\InvoiceRepository;
 use App\Repository\OrderHistoryRepository;
 use App\Service\Document\DocumentNumberFormatter;
 use App\Service\Invoice\InvoiceMoneyFormatter;
+use App\Service\Order\DeliveryDeadlineCalculator;
 
 /**
  * Builds placeholder map for notification templates (see docs/EMAIL_NOTIFICATIONS.md).
@@ -24,7 +24,7 @@ final class NotificationContextFactory
         private readonly DocumentRepository $documentRepository,
         private readonly DocumentNumberFormatter $documentNumberFormatter,
         private readonly OrderHistoryRepository $orderHistoryRepository,
-        private readonly InvoiceRepository $invoiceRepository,
+        private readonly DeliveryDeadlineCalculator $deliveryDeadlineCalculator,
     ) {
     }
 
@@ -212,17 +212,16 @@ final class NotificationContextFactory
     }
 
     /**
-     * Planned delivery deadline: 48 hours from payment-related anchor (prefer PAID history).
-     * Format: d.m.Y and 24-hour clock (H:i), Europe/Riga.
-     * Falls back to order delivery date/window if no anchor exists.
+     * Planned delivery deadline produced by {@see DeliveryDeadlineCalculator}.
+     * Falls back to order delivery date/window if no PAID history exists yet.
      */
     private function buildEta(Order $order): string
     {
-        $anchor = $this->resolveEtaAnchorFromPaymentTimeline($order);
-        if ($anchor !== null) {
-            $eta = $anchor->modify('+48 hours')->setTimezone(new \DateTimeZone('Europe/Riga'));
-
-            return $eta->format('d.m.Y H:i');
+        $deadline = $this->deliveryDeadlineCalculator->resolveDeadline($order);
+        if ($deadline !== null) {
+            return $deadline
+                ->setTimezone(new \DateTimeZone('Europe/Riga'))
+                ->format('d.m.Y H:i');
         }
 
         $date = $this->formatDate($order->getDeliveryDate());
@@ -235,36 +234,6 @@ final class NotificationContextFactory
         }
 
         return $date.' '.$tw;
-    }
-
-    /**
-     * Prefer first PAID history (true payment); then INVOICED (invoice issued); then first invoice issue date at 00:00.
-     */
-    private function resolveEtaAnchorFromPaymentTimeline(Order $order): ?\DateTimeImmutable
-    {
-        $paidHistory = $this->orderHistoryRepository->findEarliestForOrderAndStatus(
-            $order,
-            Order::STATUS['PAID'],
-        );
-        if ($paidHistory?->getCreatedAt() !== null) {
-            return $paidHistory->getCreatedAt();
-        }
-
-        $invoicedHistory = $this->orderHistoryRepository->findEarliestForOrderAndStatus(
-            $order,
-            Order::STATUS['INVOICED'],
-        );
-        if ($invoicedHistory?->getCreatedAt() !== null) {
-            return $invoicedHistory->getCreatedAt();
-        }
-
-        $invoice = $this->invoiceRepository->findEarliestByRelatedOrder($order);
-        $issueDate = $invoice?->getIssueDate();
-        if ($issueDate !== null) {
-            return $issueDate->setTime(0, 0);
-        }
-
-        return null;
     }
 
     private function buildCargoDescription(Order $order): string

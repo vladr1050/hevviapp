@@ -28,6 +28,10 @@ interface StatusOrderProps {
 
 const DELIVERY_LIMIT_MS = 48 * 60 * 60 * 1000
 
+type CountdownState =
+	| { phase: 'pending'; opensAtLabel: string }
+	| { phase: 'running'; percent: number; timeLabel: string; subtitle: string }
+
 type CarrierFlatRowProps = {
 	muted?: boolean
 	done?: boolean
@@ -96,39 +100,68 @@ const CarrierFlatRow: FC<CarrierFlatRowProps> = ({
 	</div>
 )
 
-const useDeliveryCountdown = (paidDate: string | undefined, deliveredDate: string | undefined) => {
-	const getRemaining = () => {
-		if (!paidDate) return 0
-		const deadline = new Date(paidDate).getTime() + DELIVERY_LIMIT_MS
-		const referenceTime = deliveredDate ? new Date(deliveredDate).getTime() : Date.now()
-		return Math.max(0, deadline - referenceTime)
+const formatPickupOpensAt = (iso: string): string => {
+	const date = new Date(iso)
+	if (Number.isNaN(date.getTime())) return ''
+	const pad = (n: number) => String(n).padStart(2, '0')
+	return `${pad(date.getDate())}.${pad(date.getMonth() + 1)} ${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
+
+const useDeliveryCountdown = (
+	pickupReadyAt: string | undefined,
+	deadlineAt: string | undefined,
+	deliveredDate: string | undefined,
+): CountdownState | null => {
+	const compute = (): CountdownState | null => {
+		if (!deadlineAt || !pickupReadyAt) return null
+
+		const anchorMs = new Date(pickupReadyAt).getTime()
+		const deadlineMs = new Date(deadlineAt).getTime()
+		if (Number.isNaN(anchorMs) || Number.isNaN(deadlineMs)) return null
+
+		const referenceMs = deliveredDate ? new Date(deliveredDate).getTime() : Date.now()
+
+		if (referenceMs < anchorMs) {
+			return { phase: 'pending', opensAtLabel: formatPickupOpensAt(pickupReadyAt) }
+		}
+
+		const remainingMs = Math.max(0, deadlineMs - referenceMs)
+		const isExpired = remainingMs === 0
+		const percent = (remainingMs / DELIVERY_LIMIT_MS) * 100
+
+		const hours = Math.floor(remainingMs / 3_600_000)
+		const minutes = Math.floor((remainingMs % 3_600_000) / 60_000)
+		const seconds = Math.floor((remainingMs % 60_000) / 1_000)
+
+		const pad = (n: number) => String(n).padStart(2, '0')
+		const timeLabel = isExpired ? '00:00:00' : `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
+		const subtitle = deliveredDate ? 'remaining' : isExpired ? "Time's up" : 'left'
+
+		return { phase: 'running', percent, timeLabel, subtitle }
 	}
 
-	const [remainingMs, setRemainingMs] = useState(getRemaining)
+	const [state, setState] = useState<CountdownState | null>(compute)
 
 	useEffect(() => {
-		if (!paidDate || deliveredDate) return
-		const interval = setInterval(() => setRemainingMs(getRemaining()), 1000)
+		if (!deadlineAt || !pickupReadyAt || deliveredDate) {
+			setState(compute())
+			return
+		}
+		setState(compute())
+		const interval = setInterval(() => setState(compute()), 1000)
 		return () => clearInterval(interval)
-	}, [paidDate, deliveredDate])
+	}, [pickupReadyAt, deadlineAt, deliveredDate])
 
-	const isExpired = remainingMs === 0
-	const percent = paidDate ? (remainingMs / DELIVERY_LIMIT_MS) * 100 : 0
-
-	const hours = Math.floor(remainingMs / 3_600_000)
-	const minutes = Math.floor((remainingMs % 3_600_000) / 60_000)
-	const seconds = Math.floor((remainingMs % 60_000) / 1_000)
-
-	const pad = (n: number) => String(n).padStart(2, '0')
-	const timeLabel = isExpired ? '00:00:00' : `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
-	const subtitle = deliveredDate ? 'remaining' : isExpired ? "Time's up" : 'left'
-
-	return { percent, timeLabel, subtitle }
+	return state
 }
 
 export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId, csrfToken }) => {
 	const [valueForm, setValueForm] = useState<'PICKUP_DONE' | 'DELIVERED'>()
-	const countdown = useDeliveryCountdown(order.paid_date, order.delivered_date)
+	const countdown = useDeliveryCountdown(
+		order.pickup_ready_at,
+		order.deadline_at,
+		order.delivered_date,
+	)
 	const deliveredToLabel = order.address?.to?.trim()
 		? `Delivered to ${order.address.to.trim()}`
 		: 'Delivered'
@@ -264,7 +297,15 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 							<div className={styles.carrierHeroApproved}>
 								<Icon type="vehicle_check" size={54} />
 							</div>
-						) : (
+						) : countdown?.phase === 'pending' ? (
+							<div className={styles.carrierPickupPending}>
+								<Icon type="clock_1_light" size={36} />
+								<span className={styles.carrierPickupPendingTitle}>Pickup opens at</span>
+								<span className={styles.carrierPickupPendingValue}>
+									{countdown.opensAtLabel}
+								</span>
+							</div>
+						) : countdown?.phase === 'running' ? (
 							<CircleChart
 								size={170}
 								percent={countdown.percent}
@@ -273,6 +314,11 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 								subtitle={countdown.subtitle}
 								countdown
 							/>
+						) : (
+							<div className={styles.carrierPickupPending}>
+								<Icon type="clock_1_light" size={36} />
+								<span className={styles.carrierPickupPendingTitle}>Awaiting payment</span>
+							</div>
 						)}
 					</div>
 
