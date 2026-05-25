@@ -107,6 +107,9 @@ list:
     label_dropout_address:      Адрес доставки
     label_cargo_count:          Количество грузов
     label_delivery_gross_price: Цена доставки (Брутто)
+    label_default_for_pricing:  Цена по умолчанию
+    label_pricing_algorithm:    Алгоритм цены
+    label_is_home_zone:         Главная зона
     label_order_assignments:    Назначения
     label_no_assignments:       Нет назначений
     label_assigned_by:          Назначено
@@ -320,6 +323,20 @@ form:
     group_service_area_info:   Информация о зоне обслуживания
     group_geo_areas_selection: Выбор гео-зон
     group_matrix_items_list:   Список элементов матрицы
+    group_carrier_pricing:     Ценообразование доставки
+    group_appsettings_pricing: Ценообразование (глобально)
+    label_default_for_pricing: Перевозчик по умолчанию для расчёта цены
+    help_default_for_pricing:  Новые заказы считаются по тарифам этого перевозчика, пока на заказ не назначен другой.
+    label_pricing_algorithm:   Алгоритм расчёта цены
+    label_price_coefficient:   Коэффициент цены (локальный)
+    help_price_coefficient:    Множитель к базовому фрахту (без НДС). Пусто — глобальный коэффициент из Settings.
+    label_service_area_carrier: Перевозчик
+    help_service_area_carrier:  Пусто — устаревшие общие зоны (плоский расчёт по точке доставки).
+    label_service_area_country: Страна
+    label_is_home_zone:         Главная зона (hub)
+    help_is_home_zone:          Hub для hub-and-spoke в этой стране (напр. Рига для LV). Одна на перевозчика и страну.
+    label_default_price_coefficient: Глобальный коэффициент цены
+    help_default_price_coefficient:  Если у перевозчика нет локального коэффициента. Множитель к фрахту до комиссии и НДС.
     group_tabs_address:        Адрес
     group_tabs_contacts:       Контакты
     group_tabs_invoicing:      Счета
@@ -614,6 +631,10 @@ sender_price:
     of_freight_net:          от нетто перевозки
     db_snapshot_hint:        'Снимок в БД (устаревший единый НДС на субтотал):'
 
+pricing_algorithm:
+    flat_by_drop_off_zone: По зоне доставки (как раньше)
+    hub_and_spoke:         Hub-and-spoke (через главную зону)
+
 # OrderOffer компонент
 order_offer:
     button:
@@ -628,12 +649,17 @@ order_offer:
         service_area_not_found:              Не найдена зона обслуживания для указанного адреса доставки
         missing_coordinates_for_calculation: Для автоматического расчета стоимости выберите адрес доставки на карте
     error:
-        missing_coordinates:    Отсутствуют координаты адреса доставки
-        service_area_not_found: Не найдена зона обслуживания для указанного адреса
-        no_cargo_weight:        В заказе отсутствуют грузы или их вес равен нулю
-        matrix_item_not_found:  Не найден тарифный план для указанного веса груза
-        calculation_failed:     Ошибка при расчете стоимости доставки
-        unknown:                Неизвестная ошибка
+        missing_coordinates:              Отсутствуют координаты адреса доставки
+        missing_pickup_coordinates:       Отсутствуют координаты адреса загрузки (нужны для hub-and-spoke)
+        service_area_not_found:           Не найдена зона обслуживания для указанного адреса
+        out_of_coverage:                  Точка загрузки или доставки вне зон обслуживания перевозчика
+        cross_country_not_supported:      Маршруты между странами пока не поддерживаются
+        home_zone_not_configured:         Не настроена главная зона (home) для перевозчика и страны
+        carrier_required_for_hub_pricing:   Для hub-and-spoke нужен перевозчик
+        no_cargo_weight:                  В заказе отсутствуют грузы или их вес равен нулю
+        matrix_item_not_found:            Не найден тарифный план для указанного веса груза
+        calculation_failed:               Ошибка при расчете стоимости доставки
+        unknown:                          Неизвестная ошибка
     help:
         brutto_info:      Итоговая цена с учетом НДС
         netto_info:       Промежуточная цена без НДС (базовый фрахт + комиссия платформы)

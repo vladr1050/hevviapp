@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\Carrier;
 use App\Entity\ServiceArea;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<ServiceArea>
@@ -30,16 +33,21 @@ class ServiceAreaRepository extends ServiceEntityRepository
      * 
      * @return ServiceArea|null Найденная ServiceArea или null если не найдена
      */
-    public function findByCoordinates(float $latitude, float $longitude): ?ServiceArea
+    public function findByCoordinates(float $latitude, float $longitude, ?Carrier $carrier = null): ?ServiceArea
     {
         $conn = $this->getEntityManager()->getConnection();
-        
-        // Создаем точку в формате WKT (Well-Known Text) для PostGIS
-        // SRID 4326 - это стандартная система координат WGS84 (используется в GPS)
+
         $point = sprintf('POINT(%f %f)', $longitude, $latitude);
-        
-        // SQL запрос с использованием PostGIS функции ST_Contains
-        // ST_Contains проверяет, содержится ли точка внутри полигона
+
+        $carrierFilter = '';
+        $params = ['point' => $point];
+        if ($carrier !== null && $carrier->getId() !== null) {
+            $carrierFilter = ' AND sa.carrier_id = :carrier_id';
+            $params['carrier_id'] = $carrier->getId()->toRfc4122();
+        } else {
+            $carrierFilter = ' AND sa.carrier_id IS NULL';
+        }
+
         $sql = '
             SELECT DISTINCT sa.id
             FROM service_area sa
@@ -49,25 +57,67 @@ class ServiceAreaRepository extends ServiceEntityRepository
                 ga.geometry,
                 ST_SetSRID(ST_GeomFromText(:point), 4326)
             )
+            '.$carrierFilter.'
             LIMIT 1
         ';
-        
-        $result = $conn->executeQuery($sql, [
-            'point' => $point,
-        ]);
-        
+
+        $result = $conn->executeQuery($sql, $params);
+
         $row = $result->fetchAssociative();
-        
+
         if (!$row) {
             return null;
         }
-        
-        // Загружаем полную сущность ServiceArea с её связями
+
+        return $this->loadServiceAreaWithMatrix($row['id']);
+    }
+
+    public function findHomeZoneForCarrier(Carrier $carrier, string $country): ?ServiceArea
+    {
+        return $this->createQueryBuilder('sa')
+            ->leftJoin('sa.matrixItems', 'mi')
+            ->addSelect('mi')
+            ->where('sa.carrier = :carrier')
+            ->andWhere('sa.country = :country')
+            ->andWhere('sa.isHomeZone = true')
+            ->setParameter('carrier', $carrier)
+            ->setParameter('country', strtoupper($country))
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * Clears is_home_zone on other service areas for the same carrier + country.
+     */
+    public function demoteOtherHomeZones(Carrier $carrier, string $country, ?Uuid $exceptId): void
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder()
+            ->update(ServiceArea::class, 'sa')
+            ->set('sa.isHomeZone', ':false')
+            ->where('sa.carrier = :carrier')
+            ->andWhere('sa.country = :country')
+            ->andWhere('sa.isHomeZone = :true')
+            ->setParameter('false', false)
+            ->setParameter('true', true)
+            ->setParameter('carrier', $carrier)
+            ->setParameter('country', strtoupper($country));
+
+        if ($exceptId !== null) {
+            $qb->andWhere('sa.id <> :id')
+                ->setParameter('id', $exceptId, UuidType::NAME);
+        }
+
+        $qb->getQuery()->execute();
+    }
+
+    private function loadServiceAreaWithMatrix(mixed $id): ?ServiceArea
+    {
         return $this->createQueryBuilder('sa')
             ->leftJoin('sa.matrixItems', 'mi')
             ->addSelect('mi')
             ->where('sa.id = :id')
-            ->setParameter('id', $row['id'])
+            ->setParameter('id', $id)
             ->getQuery()
             ->getOneOrNullResult();
     }

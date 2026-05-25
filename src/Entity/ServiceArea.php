@@ -34,6 +34,18 @@ class ServiceArea extends BaseUUID
     #[ORM\Column(length: 255)]
     private ?string $currency = self::CURRENCY['EUR'];
 
+    #[ORM\ManyToOne(inversedBy: 'serviceAreas')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    private ?Carrier $carrier = null;
+
+    /** ISO 3166-1 alpha-2 (e.g. LV). Used for hub-and-spoke home zone per country. */
+    #[ORM\Column(length: 2, options: ['default' => 'LV'])]
+    private string $country = 'LV';
+
+    /** Hub zone for this carrier in {@see $country} (e.g. Riga). At most one per (carrier, country). */
+    #[ORM\Column(options: ['default' => false])]
+    private bool $isHomeZone = false;
+
     public function __construct()
     {
         $this->matrixItems = new ArrayCollection();
@@ -119,6 +131,42 @@ class ServiceArea extends BaseUUID
     public function setCurrency(string $currency): static
     {
         $this->currency = $currency;
+
+        return $this;
+    }
+
+    public function getCarrier(): ?Carrier
+    {
+        return $this->carrier;
+    }
+
+    public function setCarrier(?Carrier $carrier): static
+    {
+        $this->carrier = $carrier;
+
+        return $this;
+    }
+
+    public function getCountry(): string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(string $country): static
+    {
+        $this->country = strtoupper($country);
+
+        return $this;
+    }
+
+    public function isHomeZone(): bool
+    {
+        return $this->isHomeZone;
+    }
+
+    public function setIsHomeZone(bool $isHomeZone): static
+    {
+        $this->isHomeZone = $isHomeZone;
 
         return $this;
     }

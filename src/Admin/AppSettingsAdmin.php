@@ -40,6 +40,7 @@ class AppSettingsAdmin extends BaseAdmin
             ->add('defaultMapLatitude', null, ['label' => 'show.label_appsettings_default_lat'])
             ->add('defaultMapLongitude', null, ['label' => 'show.label_appsettings_default_lng'])
             ->add('defaultMapZoom', null, ['label' => 'show.label_appsettings_default_zoom'])
+            ->add('defaultPriceCoefficient', null, ['label' => 'show.label_default_price_coefficient'])
             ->add('createdAt')
             ->add('updatedAt');
     }
@@ -103,6 +104,15 @@ class AppSettingsAdmin extends BaseAdmin
             ->add('defaultMapZoom', IntegerType::class, [
                 'required' => false,
                 'label' => 'form.label_appsettings_default_zoom',
+            ])
+            ->end()
+            ->with('appsettings_pricing', ['class' => 'col-md-12', 'label' => 'form.group_appsettings_pricing'])
+            ->add('defaultPriceCoefficient', NumberType::class, [
+                'required' => true,
+                'scale' => 4,
+                'html5' => true,
+                'label' => 'form.label_default_price_coefficient',
+                'help' => 'form.help_default_price_coefficient',
             ])
             ->end();
     }

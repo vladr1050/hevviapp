@@ -19,6 +19,8 @@ namespace App\Admin;
 
 use App\Entity\BaseDBO;
 use App\Entity\Carrier;
+use App\Enum\PricingAlgorithm;
+use App\Repository\CarrierRepository;
 use Doctrine\DBAL\Types\TextType;
 use FRPC\SonataAuthorization\Admin\BaseAdmin;
 use FRPC\SonataAuthorization\Form\Type\PlainPasswordType;
@@ -26,7 +28,9 @@ use Sonata\AdminBundle\Datagrid\DatagridInterface;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 class CarrierAdmin extends BaseAdmin
 {
@@ -54,6 +58,13 @@ class CarrierAdmin extends BaseAdmin
             ->add('email')
             ->add('phone')
             ->add('registrationNumber')
+            ->add('isDefaultForPricing', null, [
+                'label' => 'list.label_default_for_pricing',
+            ])
+            ->add('pricingAlgorithm', null, [
+                'label' => 'list.label_pricing_algorithm',
+                'accessor' => static fn (Carrier $c): string => $c->getPricingAlgorithm()->value,
+            ])
             ->add('vatNumber', null, [
                 'label' => 'list.label_vat_number',
             ])
@@ -81,6 +92,18 @@ class CarrierAdmin extends BaseAdmin
             ->add('vatRate', null, [
                 'label' => 'form.label_carrier_vat_rate_percent',
             ])
+            ->add('isDefaultForPricing')
+            ->add('pricingAlgorithm', 'choice', [
+                'label' => 'form.label_pricing_algorithm',
+                'catalogue' => 'AppBundle',
+                'choices' => array_flip(array_map(
+                    static fn (PricingAlgorithm $a): string => $a->value,
+                    PricingAlgorithm::cases(),
+                )),
+                'choice_translation_domain' => 'AppBundle',
+                'choice_label' => static fn (string $value): string => PricingAlgorithm::from($value)->labelKey(),
+            ])
+            ->add('priceCoefficient')
             ->add('iban')
             ->add('bankAccountHolder')
             ->add('locale')
@@ -134,6 +157,29 @@ class CarrierAdmin extends BaseAdmin
                 'required' => false,
             ])
             ->end()
+            ->with('pricing', [
+                'class' => 'col-md-12',
+                'label' => 'form.group_carrier_pricing',
+            ])
+            ->add('isDefaultForPricing', CheckboxType::class, [
+                'required' => false,
+                'label' => 'form.label_default_for_pricing',
+                'help' => 'form.help_default_for_pricing',
+            ])
+            ->add('pricingAlgorithm', ChoiceType::class, [
+                'choices' => PricingAlgorithm::choices(),
+                'choice_translation_domain' => 'AppBundle',
+                'required' => true,
+                'label' => 'form.label_pricing_algorithm',
+            ])
+            ->add('priceCoefficient', NumberType::class, [
+                'required' => false,
+                'scale' => 4,
+                'html5' => true,
+                'label' => 'form.label_price_coefficient',
+                'help' => 'form.help_price_coefficient',
+            ])
+            ->end()
             ->with('general', [
                 'class' => 'col-md-12',
             ])
@@ -167,12 +213,30 @@ class CarrierAdmin extends BaseAdmin
     protected function prePersist(object $object): void
     {
         $this->ensureCarrierRole($object);
+        if ($object instanceof Carrier) {
+            $this->ensureSingleDefaultForPricing($object);
+        }
     }
 
     protected function preUpdate(object $object): void
     {
         $this->ensureCarrierRole($object);
         $this->applyPlainPasswordFromAdminForm($object);
+        if ($object instanceof Carrier) {
+            $this->ensureSingleDefaultForPricing($object);
+        }
+    }
+
+    private function ensureSingleDefaultForPricing(Carrier $carrier): void
+    {
+        if (!$carrier->isDefaultForPricing()) {
+            return;
+        }
+        $em = $this->getModelManager()->getEntityManager(Carrier::class);
+        $repo = $em->getRepository(Carrier::class);
+        if ($repo instanceof CarrierRepository) {
+            $repo->demoteOtherDefaultForPricing($carrier->getId());
+        }
     }
 
     /** /carrier/* requires ROLE_CARRIER in the JWT. */

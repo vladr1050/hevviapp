@@ -4,66 +4,50 @@
  *
  * Copyright (C) 2026 SIA SLYFOX.
  * All Rights Reserved.
- *
- * NOTICE:  All information contained herein is, and remains
- * the property of SIA SLYFOX, its suppliers and Customers,
- * if any.  The intellectual and technical concepts contained
- * herein are proprietary to SIA SLYFOX
- * its Suppliers and Customers are protected by trade secret or copyright law.
- *
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained.
  */
+
+declare(strict_types=1);
 
 namespace App\Service\OrderOffer;
 
 use App\Entity\Cargo;
-use App\Entity\MatrixItem;
 use App\Entity\Order;
-use App\Entity\ServiceArea;
-use App\Repository\ServiceAreaRepository;
+use App\Enum\PricingAlgorithm;
 use App\Service\Billing\IssuingCompanyResolver;
 use App\Service\OrderOffer\Contract\OrderOfferCalculatorInterface;
 use App\Service\OrderOffer\DTO\OrderOfferCalculationResultDto;
+use App\Service\OrderOffer\Pricing\DTO\PricingCalculationContext;
+use App\Service\OrderOffer\Pricing\PriceCoefficientResolver;
+use App\Service\OrderOffer\Pricing\PricingCarrierResolver;
+use App\Service\OrderOffer\Pricing\PricingStrategyRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
- * Class OrderOfferCalculatorService
- *
- * Сервис для расчета стоимости доставки заказа.
- * Следует принципам SOLID:
- * - Single Responsibility: отвечает только за расчет стоимости
- * - Open/Closed: расширяем через наследование, закрыт для модификации
- * - Liskov Substitution: реализует интерфейс OrderOfferCalculatorInterface
- * - Interface Segregation: использует специфичные интерфейсы
- * - Dependency Inversion: зависит от абстракций (интерфейсов)
+ * Orchestrates freight pricing: carrier + strategy → base freight → coefficient → fee → VAT → brutto.
  */
 final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
 {
     public function __construct(
-        private readonly ServiceAreaRepository $serviceAreaRepository,
-        private readonly LoggerInterface       $logger,
+        private readonly PricingCarrierResolver $pricingCarrierResolver,
+        private readonly PricingStrategyRegistry $pricingStrategyRegistry,
+        private readonly PriceCoefficientResolver $priceCoefficientResolver,
         private readonly IssuingCompanyResolver $issuingCompanyResolver,
+        private readonly LoggerInterface $logger,
         #[Autowire('%env(int:TAX_VAT)%')]
-        private readonly int                   $defaultVatPercent,
+        private readonly int $defaultVatPercent,
         #[Autowire('%env(int:PLATFORM_FEE_PERCENT)%')]
-        private readonly int                   $defaultPlatformFeePercent,
-    )
-    {
+        private readonly int $defaultPlatformFeePercent,
+    ) {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function calculate(Order $order): OrderOfferCalculationResultDto
     {
         try {
-            // Шаг 1: Проверить наличие координат точки доставки
-            $latitude = $order->getDropoutLatitude();
-            $longitude = $order->getDropoutLongitude();
+            $dropLat = $order->getDropoutLatitude();
+            $dropLng = $order->getDropoutLongitude();
 
-            if (!$latitude || !$longitude) {
+            if ($dropLat === null || $dropLng === null || $dropLat === '' || $dropLng === '') {
                 $this->logger->warning('Order missing dropout coordinates', [
                     'order_id' => $order->getId()?->toRfc4122(),
                 ]);
@@ -74,81 +58,81 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
                 );
             }
 
-            // Шаг 2: Найти ServiceArea по координатам
-            $serviceArea = $this->serviceAreaRepository->findByCoordinates(
-                (float)$latitude,
-                (float)$longitude
-            );
+            $pickLat = $order->getPickupLatitude();
+            $pickLng = $order->getPickupLongitude();
 
-            if (!$serviceArea) {
-                $this->logger->warning('ServiceArea not found for coordinates', [
-                    'order_id' => $order->getId()?->toRfc4122(),
-                    'latitude' => $latitude,
-                    'longitude' => $longitude,
-                ]);
+            $carrier = $this->pricingCarrierResolver->resolveForOrder($order);
+            $algorithm = $carrier?->getPricingAlgorithm() ?? PricingAlgorithm::FLAT_BY_DROP_OFF_ZONE;
 
+            if ($algorithm === PricingAlgorithm::HUB_AND_SPOKE
+                && ($pickLat === null || $pickLng === null || $pickLat === '' || $pickLng === '')) {
                 return OrderOfferCalculationResultDto::error(
-                    errorMessage: 'order_offer.error.service_area_not_found',
-                    errorCode: 'SERVICE_AREA_NOT_FOUND',
+                    errorMessage: 'order_offer.error.missing_pickup_coordinates',
+                    errorCode: 'MISSING_PICKUP_COORDINATES',
                 );
             }
 
-            // Шаг 3: Вычислить общий вес всех грузов
             $totalWeight = $this->calculateTotalWeight($order);
-
             if ($totalWeight <= 0) {
-                $this->logger->warning('Order has no cargo or zero weight', [
-                    'order_id' => $order->getId()?->toRfc4122(),
-                ]);
-
                 return OrderOfferCalculationResultDto::error(
                     errorMessage: 'order_offer.error.no_cargo_weight',
                     errorCode: 'NO_CARGO_WEIGHT',
                 );
             }
 
-            // Шаг 4: Найти подходящий MatrixItem по весу
-            $matrixItem = $this->findMatrixItemByWeight($serviceArea, $totalWeight);
+            $context = new PricingCalculationContext(
+                order: $order,
+                carrier: $carrier,
+                totalWeightKg: $totalWeight,
+                pickupLatitude: (float) ($pickLat ?? $dropLat),
+                pickupLongitude: (float) ($pickLng ?? $dropLng),
+                dropoutLatitude: (float) $dropLat,
+                dropoutLongitude: (float) $dropLng,
+            );
 
-            if (!$matrixItem) {
-                $this->logger->warning('MatrixItem not found for weight', [
+            $freightResult = $this->pricingStrategyRegistry
+                ->get($algorithm)
+                ->resolveBaseFreight($context);
+
+            if (!$freightResult->success) {
+                $this->logger->warning('Freight resolution failed', [
                     'order_id' => $order->getId()?->toRfc4122(),
-                    'service_area_id' => $serviceArea->getId()?->toRfc4122(),
-                    'total_weight' => $totalWeight,
+                    'algorithm' => $algorithm->value,
+                    'error_code' => $freightResult->errorCode,
                 ]);
 
                 return OrderOfferCalculationResultDto::error(
-                    errorMessage: 'order_offer.error.matrix_item_not_found',
-                    errorCode: 'MATRIX_ITEM_NOT_FOUND',
+                    errorMessage: $freightResult->errorMessage ?? 'order_offer.error.calculation_failed',
+                    errorCode: $freightResult->errorCode ?? 'CALCULATION_FAILED',
                 );
             }
 
-            // Шаг 5: Получить базовый фрахт из матрицы (цена уже без НДС и без комиссии)
-            $baseNetto = $matrixItem->getPrice();
+            $currencyArea = $freightResult->currencyArea;
+            if ($currencyArea === null) {
+                return OrderOfferCalculationResultDto::error(
+                    errorMessage: 'order_offer.error.calculation_failed',
+                    errorCode: 'CALCULATION_FAILED',
+                );
+            }
 
-            // Шаг 6: Процент комиссии — из компании «Issues invoices», иначе PLATFORM_FEE_PERCENT
+            $coefficient = $this->priceCoefficientResolver->resolve($carrier);
+            $baseNetto = (int) round((float) $freightResult->baseFreightCents * $coefficient);
+
             $feePercent = $this->resolvePlatformFeePercent();
-
-            // fee = baseNetto × FEE%
-            $feeAmount = $this->calculateFeeAmount($baseNetto, $feePercent);
-
-            // Шаг 7: Нетто с комиссией (Subtotal no VAT)
-            // netto = baseNetto + fee
+            $feeAmount = (int) round($baseNetto * $feePercent / 100.0);
             $nettoPrice = $baseNetto + $feeAmount;
-
-            // Шаг 8: Ставка НДС — из компании, помеченной как выставляющая счета, иначе из TAX_VAT
             $vatRatePercent = $this->resolveVatRatePercent();
-
-            // Шаг 9: Сумма НДС от нетто с комиссией
-            $vatAmount = (int) round($nettoPrice * $vatRatePercent / 100);
-
-            // Шаг 10: Брутто = нетто + НДС
+            $vatAmount = (int) round($nettoPrice * $vatRatePercent / 100.0);
             $bruttoPrice = $nettoPrice + $vatAmount;
 
             $this->logger->info('Successfully calculated order offer', [
                 'order_id' => $order->getId()?->toRfc4122(),
-                'service_area' => $serviceArea->getName(),
+                'carrier_id' => $carrier?->getId()?->toRfc4122(),
+                'algorithm' => $algorithm->value,
+                'service_area' => $currencyArea->getName(),
                 'total_weight' => $totalWeight,
+                'raw_base_freight' => $freightResult->baseFreightCents,
+                'coefficient' => $coefficient,
                 'base_netto' => $baseNetto,
                 'fee_percent' => $feePercent,
                 'fee_amount' => $feeAmount,
@@ -159,7 +143,7 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
             ]);
 
             return OrderOfferCalculationResultDto::success(
-                currency: $serviceArea->getCurrency(),
+                currency: $currencyArea->getCurrency() ?? 'EUR',
                 bruttoPrice: $bruttoPrice,
                 nettoPrice: $nettoPrice,
                 vatPercent: $vatRatePercent,
@@ -171,7 +155,6 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
             $this->logger->error('Error calculating order offer', [
                 'order_id' => $order->getId()?->toRfc4122(),
                 'exception' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
             ]);
 
             return OrderOfferCalculationResultDto::error(
@@ -181,13 +164,6 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
         }
     }
 
-    /**
-     * Вычислить общий вес всех грузов в заказе.
-     *
-     * @param Order $order Заказ
-     *
-     * @return int Общий вес в килограммах
-     */
     private function calculateTotalWeight(Order $order): int
     {
         $totalWeight = 0;
@@ -202,49 +178,6 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
         return $totalWeight;
     }
 
-    /**
-     * Найти подходящий MatrixItem по весу груза.
-     *
-     * MatrixItem подходит, если:
-     * - weightFrom <= totalWeight < weightTo
-     *
-     * @param ServiceArea $serviceArea Зона обслуживания
-     * @param int $totalWeight Общий вес груза в кг
-     *
-     * @return MatrixItem|null Найденный MatrixItem или null
-     */
-    private function findMatrixItemByWeight(ServiceArea $serviceArea, int $totalWeight): ?MatrixItem
-    {
-        foreach ($serviceArea->getMatrixItems() as $matrixItem) {
-            $weightFrom = $matrixItem->getWeightFrom() ?? 0;
-            $weightTo = $matrixItem->getWeightTo() ?? PHP_INT_MAX;
-
-            if ($totalWeight >= $weightFrom && $totalWeight <= $weightTo) {
-                return $matrixItem;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Рассчитать сумму комиссии платформы от базового нетто.
-     *
-     * Формула: fee = round(baseNetto * feePercent / 100)
-     *
-     * @param int $baseNetto   Базовая нетто-цена (без VAT)
-     * @param float $feePercent Процент комиссии платформы
-     *
-     * @return int Сумма комиссии, округлённая до целого
-     */
-    private function calculateFeeAmount(int $baseNetto, float $feePercent): int
-    {
-        return (int) round($baseNetto * $feePercent / 100);
-    }
-
-    /**
-     * Процент комиссии из BillingCompany с «Issues invoices», иначе env PLATFORM_FEE_PERCENT.
-     */
     private function resolvePlatformFeePercent(): float
     {
         $issuer = $this->issuingCompanyResolver->getIssuingCompany();
@@ -258,9 +191,6 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
         return (float) $this->defaultPlatformFeePercent;
     }
 
-    /**
-     * Процент НДС из BillingCompany с «Issues invoices», иначе значение env TAX_VAT.
-     */
     private function resolveVatRatePercent(): float
     {
         $issuer = $this->issuingCompanyResolver->getIssuingCompany();

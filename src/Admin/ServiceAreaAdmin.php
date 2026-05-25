@@ -19,13 +19,16 @@ namespace App\Admin;
 
 use App\Entity\ServiceArea;
 use App\Form\Type\GeoAreaSelectionType;
+use App\Repository\ServiceAreaRepository;
 use FRPC\SonataAuthorization\Admin\BaseAdmin;
+use Sonata\AdminBundle\Form\Type\ModelAutocompleteType;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Form\Type\AdminType;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\Form\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
@@ -41,6 +44,11 @@ class ServiceAreaAdmin extends BaseAdmin
     {
         $list
             ->add('name')
+            ->add('carrier')
+            ->add('country')
+            ->add('isHomeZone', null, [
+                'label' => 'list.label_is_home_zone',
+            ])
             ->add('currency')
             ->add('geoAreas', null, [
                 'label' => 'list.label_geo_areas_count',
@@ -61,6 +69,11 @@ class ServiceAreaAdmin extends BaseAdmin
         $show
             ->add('id')
             ->add('name')
+            ->add('carrier')
+            ->add('country')
+            ->add('isHomeZone', null, [
+                'label' => 'show.label_is_home_zone',
+            ])
             ->add('currency')
             ->add('geoAreas', null, [
                 'template' => 'admin/fields/geo_areas_show.html.twig',
@@ -83,6 +96,24 @@ class ServiceAreaAdmin extends BaseAdmin
             ->add('currency', ChoiceType::class, [
                 'choices' => ServiceArea::CURRENCY,
                 'required' => true,
+            ])
+            ->add('carrier', ModelAutocompleteType::class, [
+                'required' => false,
+                'property' => 'legalName',
+                'label' => 'form.label_service_area_carrier',
+                'help' => 'form.help_service_area_carrier',
+            ])
+            ->add('country', ChoiceType::class, [
+                'choices' => [
+                    'Latvia (LV)' => 'LV',
+                ],
+                'required' => true,
+                'label' => 'form.label_service_area_country',
+            ])
+            ->add('isHomeZone', CheckboxType::class, [
+                'required' => false,
+                'label' => 'form.label_is_home_zone',
+                'help' => 'form.help_is_home_zone',
             ])
             ->end()
             ->end()
@@ -111,5 +142,31 @@ class ServiceAreaAdmin extends BaseAdmin
             ])
             ->end()
             ->end();
+    }
+
+    protected function prePersist(object $object): void
+    {
+        if ($object instanceof ServiceArea) {
+            $this->ensureSingleHomeZone($object);
+        }
+    }
+
+    protected function preUpdate(object $object): void
+    {
+        if ($object instanceof ServiceArea) {
+            $this->ensureSingleHomeZone($object);
+        }
+    }
+
+    private function ensureSingleHomeZone(ServiceArea $area): void
+    {
+        if (!$area->isHomeZone() || $area->getCarrier() === null) {
+            return;
+        }
+        $em = $this->getModelManager()->getEntityManager(ServiceArea::class);
+        $repo = $em->getRepository(ServiceArea::class);
+        if ($repo instanceof ServiceAreaRepository) {
+            $repo->demoteOtherHomeZones($area->getCarrier(), $area->getCountry(), $area->getId());
+        }
     }
 }

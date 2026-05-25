@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\PricingAlgorithm;
 use App\Repository\CarrierRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -68,10 +69,28 @@ class Carrier extends BaseSecurityDBO
     #[ORM\OneToMany(targetEntity: OrderAssignment::class, mappedBy: 'carrier')]
     private Collection $orderAssignments;
 
+    /** When true, new orders use this carrier's tariff until a carrier is assigned on the order. */
+    #[ORM\Column(options: ['default' => false])]
+    private bool $isDefaultForPricing = false;
+
+    #[ORM\Column(length: 32, enumType: PricingAlgorithm::class, options: ['default' => 'flat_by_drop_off_zone'])]
+    private PricingAlgorithm $pricingAlgorithm = PricingAlgorithm::FLAT_BY_DROP_OFF_ZONE;
+
+    /** Local multiplier on base freight (excl. VAT). Null = use AppSettings.defaultPriceCoefficient. */
+    #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 4, nullable: true)]
+    private ?string $priceCoefficient = null;
+
+    /**
+     * @var Collection<int, ServiceArea>
+     */
+    #[ORM\OneToMany(targetEntity: ServiceArea::class, mappedBy: 'carrier')]
+    private Collection $serviceAreas;
+
     public function __construct()
     {
         $this->orders = new ArrayCollection();
         $this->orderAssignments = new ArrayCollection();
+        $this->serviceAreas = new ArrayCollection();
     }
 
     public function getPhone(): ?string
@@ -317,6 +336,71 @@ class Carrier extends BaseSecurityDBO
             // set the owning side to null (unless already changed)
             if ($orderAssignment->getCarrier() === $this) {
                 $orderAssignment->setCarrier(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function isDefaultForPricing(): bool
+    {
+        return $this->isDefaultForPricing;
+    }
+
+    public function setIsDefaultForPricing(bool $isDefaultForPricing): static
+    {
+        $this->isDefaultForPricing = $isDefaultForPricing;
+
+        return $this;
+    }
+
+    public function getPricingAlgorithm(): PricingAlgorithm
+    {
+        return $this->pricingAlgorithm;
+    }
+
+    public function setPricingAlgorithm(PricingAlgorithm $pricingAlgorithm): static
+    {
+        $this->pricingAlgorithm = $pricingAlgorithm;
+
+        return $this;
+    }
+
+    public function getPriceCoefficient(): ?string
+    {
+        return $this->priceCoefficient;
+    }
+
+    public function setPriceCoefficient(?string $priceCoefficient): static
+    {
+        $this->priceCoefficient = $priceCoefficient;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ServiceArea>
+     */
+    public function getServiceAreas(): Collection
+    {
+        return $this->serviceAreas;
+    }
+
+    public function addServiceArea(ServiceArea $serviceArea): static
+    {
+        if (!$this->serviceAreas->contains($serviceArea)) {
+            $this->serviceAreas->add($serviceArea);
+            $serviceArea->setCarrier($this);
+        }
+
+        return $this;
+    }
+
+    public function removeServiceArea(ServiceArea $serviceArea): static
+    {
+        if ($this->serviceAreas->removeElement($serviceArea)) {
+            if ($serviceArea->getCarrier() === $this) {
+                $serviceArea->setCarrier(null);
             }
         }
 

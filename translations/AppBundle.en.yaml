@@ -112,6 +112,9 @@ list:
     label_dropout_address:      Dropout Address
     label_cargo_count:          Cargo Items
     label_delivery_gross_price: Delivery Gross Price
+    label_default_for_pricing:  Default pricing
+    label_pricing_algorithm:    Pricing algorithm
+    label_is_home_zone:       Home zone
     label_order_assignments:    Assignments
     label_no_assignments:       No assignments
     label_assigned_by:          Assigned By
@@ -334,6 +337,20 @@ form:
     group_service_area_info:           Service Area Information
     group_geo_areas_selection:         Geo Areas Selection
     group_matrix_items_list:           Matrix Items List
+    group_carrier_pricing:             Delivery pricing
+    group_appsettings_pricing:         Delivery pricing (global)
+    label_default_for_pricing:         Default carrier for pricing
+    help_default_for_pricing:          New orders use this carrier's tariffs until a carrier is assigned on the order.
+    label_pricing_algorithm:           Pricing algorithm
+    label_price_coefficient:           Price coefficient (local)
+    help_price_coefficient:            Multiplier on base freight (excl. VAT). Empty = use global coefficient from Settings.
+    label_service_area_carrier:        Carrier
+    help_service_area_carrier:         Leave empty for legacy shared zones (flat drop-off pricing without carrier).
+    label_service_area_country:        Country
+    label_is_home_zone:                Home zone (hub)
+    help_is_home_zone:                 Hub for hub-and-spoke pricing in this country (e.g. Riga for LV). Only one per carrier and country.
+    label_default_price_coefficient:   Default price coefficient
+    help_default_price_coefficient:    Applied when carrier has no local coefficient. Multiplier on base freight before fee and VAT.
     group_tabs_address:                Address
     group_tabs_contacts:               Contacts
     group_tabs_invoicing:              Invoicing
@@ -636,6 +653,10 @@ sender_price:
     of_freight_net:          of freight net
     db_snapshot_hint:        'Stored offer snapshot (legacy single VAT on subtotal):'
 
+pricing_algorithm:
+    flat_by_drop_off_zone: Flat by delivery zone (legacy)
+    hub_and_spoke:         Hub and spoke (via home zone)
+
 # OrderOffer component
 order_offer:
     button:
@@ -649,12 +670,17 @@ order_offer:
         auto_create_failed:     'Failed to automatically create offer. Reason: %reason%'
         service_area_not_found: Service area not found for the specified delivery address
     error:
-        missing_coordinates:    Missing delivery address coordinates
-        service_area_not_found: Service area not found for specified address
-        no_cargo_weight:        Order has no cargo or cargo weight is zero
-        matrix_item_not_found:  Pricing plan not found for specified cargo weight
-        calculation_failed:     Error calculating delivery cost
-        unknown:                Unknown error
+        missing_coordinates:         Missing delivery address coordinates
+        missing_pickup_coordinates:    Missing pickup address coordinates (required for hub-and-spoke pricing)
+        service_area_not_found:        Service area not found for specified address
+        out_of_coverage:               Pickup or delivery point is outside carrier service areas
+        cross_country_not_supported:   Cross-country routes are not supported yet
+        home_zone_not_configured:      Home zone is not configured for this carrier and country
+        carrier_required_for_hub_pricing: Carrier is required for hub-and-spoke pricing
+        no_cargo_weight:               Order has no cargo or cargo weight is zero
+        matrix_item_not_found:         Pricing plan not found for specified cargo weight
+        calculation_failed:            Error calculating delivery cost
+        unknown:                       Unknown error
     help:
         brutto_info:      Price including VAT
         netto_info:       Subtotal price excluding VAT (base freight + commission)

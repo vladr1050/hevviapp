@@ -52,7 +52,7 @@ class MatrixItem extends BaseUUID
         $price = $money->currencyConvert($this->price ?? 0, $this->serviceArea?->getCurrency() ?? 'EUR');
 
         return sprintf(
-            '%d-%d km: %s',
+            '%d-%d kg: %s',
             $this->weightFrom ?? 0,
             $this->weightTo ?? 0,
             $price,
