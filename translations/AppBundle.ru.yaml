@@ -523,6 +523,7 @@ geo_area_view:
         custom_area:  Кастомная зона
         municipality: Муниципалитет
         parish:       Приход
+        district:     Район (legacy)
     help:
         map_info: Отображаются границы всех выбранных гео-зон
     message:
@@ -538,6 +539,7 @@ geo_area_selection:
         city:           Город
         municipality:   Муниципалитет (например novads)
         parish:         Приход (например pagasts)
+        district:       Район (legacy)
         custom_area:    Кастомная зона
         selected_areas: Выбранные зоны
     select:
@@ -545,6 +547,7 @@ geo_area_selection:
         no_city:         -- Выберите город --
         no_municipality: -- Выберите муниципалитет --
         no_parish:       -- Выберите приход --
+        no_district:     -- Выберите район --
         no_custom_area:  -- Выберите кастомную зону --
     button:
         add:                Добавить
@@ -556,6 +559,7 @@ geo_area_selection:
         select_city:          Выберите страну, затем город и нажмите "+" для добавления на карту
         select_municipality:  Выберите муниципалитет (например novads) и нажмите "+" для добавления на карту
         select_parish:        Выберите приход (например pagasts). Если выбран муниципалитет — список фильтруется по нему.
+        select_district:      Опционально. Выберите устаревший район (legacy "город" из старого импорта — для совместимости со старыми тарифами).
         select_custom_area:   Выберите существующую кастомную зону или создайте новую
         map_info:             Выбранные гео-зоны отображаются на карте в виде полигонов
     message:
@@ -576,12 +580,14 @@ geo_area_selection:
         load_cities:         Не удалось загрузить список городов
         load_municipalities: Не удалось загрузить список муниципалитетов
         load_parishes:       Не удалось загрузить список приходов
+        load_districts:      Не удалось загрузить список районов
         load_geometry:       Не удалось загрузить геометрию зоны
         area_already_added:  Эта зона уже добавлена
     status:
         loading_cities:         Загрузка городов...
         loading_municipalities: Загрузка муниципалитетов...
         loading_parishes:       Загрузка приходов...
+        loading_districts:      Загрузка районов...
 
 # Custom Area Modal
 custom_area:

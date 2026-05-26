@@ -222,6 +222,36 @@ class GeoAreaController extends AbstractController
     }
 
     /**
+     * Получение списка районов (бывшие районы Латвии, scope=6) по ISO3 коду страны.
+     */
+    #[Route('/districts', name: 'districts', methods: ['GET'])]
+    public function getDistrictsByCountry(Request $request): JsonResponse
+    {
+        $countryISO3 = $request->query->get('countryISO3');
+
+        if (!$countryISO3) {
+            return $this->json(['error' => 'countryISO3 parameter is required'], 400);
+        }
+
+        $items = $this->geoAreaRepository->findByScopeAndCountryISO3(
+            GeoArea::SCOPE['DISTRICT'],
+            (string)$countryISO3,
+        );
+
+        return $this->json(
+            array_map(
+                static fn(GeoArea $area) => [
+                    'id' => (string) $area->getId(),
+                    'name' => $area->getName(),
+                    'countryISO3' => $area->getCountryISO3(),
+                    'scope' => $area->getScope(),
+                ],
+                $items,
+            )
+        );
+    }
+
+    /**
      * Получение списка кастомных зон по ISO3 коду страны
      */
     #[Route('/custom-areas', name: 'custom_areas', methods: ['GET'])]

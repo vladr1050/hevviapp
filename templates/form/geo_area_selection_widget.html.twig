@@ -23,6 +23,7 @@
              data-geo-area-map-api-cities-url-value="{{ path('api_geo_area_cities') }}"
              data-geo-area-map-api-municipalities-url-value="{{ path('api_geo_area_municipalities') }}"
              data-geo-area-map-api-parishes-url-value="{{ path('api_geo_area_parishes') }}"
+             data-geo-area-map-api-districts-url-value="{{ path('api_geo_area_districts') }}"
              data-geo-area-map-api-geometry-url-value="{{ path('api_geo_area_geometry', {'id': '__ID__'}) }}"
              data-geo-area-map-api-custom-areas-url-value="{{ path('api_geo_area_custom_areas') }}"
              data-geo-area-map-api-custom-area-create-url-value="{{ path('api_geo_area_custom_area_create') }}"
@@ -33,10 +34,13 @@
              data-geo-area-map-translation-no-city-value="{{ 'geo_area_selection.select.no_city'|trans({}, 'AppBundle') }}"
              data-geo-area-map-translation-no-municipality-value="{{ 'geo_area_selection.select.no_municipality'|trans({}, 'AppBundle') }}"
              data-geo-area-map-translation-no-parish-value="{{ 'geo_area_selection.select.no_parish'|trans({}, 'AppBundle') }}"
+             data-geo-area-map-translation-no-district-value="{{ 'geo_area_selection.select.no_district'|trans({}, 'AppBundle') }}"
              data-geo-area-map-translation-loading-municipalities-value="{{ 'geo_area_selection.status.loading_municipalities'|trans({}, 'AppBundle') }}"
              data-geo-area-map-translation-loading-parishes-value="{{ 'geo_area_selection.status.loading_parishes'|trans({}, 'AppBundle') }}"
+             data-geo-area-map-translation-loading-districts-value="{{ 'geo_area_selection.status.loading_districts'|trans({}, 'AppBundle') }}"
              data-geo-area-map-translation-error-load-municipalities-value="{{ 'geo_area_selection.error.load_municipalities'|trans({}, 'AppBundle') }}"
              data-geo-area-map-translation-error-load-parishes-value="{{ 'geo_area_selection.error.load_parishes'|trans({}, 'AppBundle') }}"
+             data-geo-area-map-translation-error-load-districts-value="{{ 'geo_area_selection.error.load_districts'|trans({}, 'AppBundle') }}"
              data-geo-area-map-translation-loading-cities-value="{{ 'geo_area_selection.status.loading_cities'|trans({}, 'AppBundle') }}"
              data-geo-area-map-translation-error-load-countries-value="{{ 'geo_area_selection.error.load_countries'|trans({}, 'AppBundle') }}"
              data-geo-area-map-translation-error-load-cities-value="{{ 'geo_area_selection.error.load_cities'|trans({}, 'AppBundle') }}"
@@ -152,6 +156,32 @@
                         </div>
                         <small class="form-text text-muted">
                             {{ 'geo_area_selection.help.select_parish'|trans({}, 'AppBundle') }}
+                        </small>
+                    </div>
+
+                    {# Селект бывших районов (legacy, scope=6) — необязательный #}
+                    <div class="form-group" data-geo-area-map-target="districtSelectWrapper">
+                        <label>{{ 'geo_area_selection.label.district'|trans({}, 'AppBundle') }}</label>
+                        <div class="input-group">
+                            <select class="form-select"
+                                    data-geo-area-map-target="districtSelect"
+                                    data-placeholder="{{ 'geo_area_selection.select.no_district'|trans({}, 'AppBundle') }}"
+                                    disabled>
+                                <option value="">{{ 'geo_area_selection.select.no_district'|trans({}, 'AppBundle') }}</option>
+                            </select>
+                            <span class="input-group-btn">
+                                <button type="button"
+                                        class="btn btn-success"
+                                        data-geo-area-map-target="addDistrictButton"
+                                        data-action="geo-area-map#addDistrict"
+                                        disabled
+                                        title="{{ 'geo_area_selection.button.add'|trans({}, 'AppBundle') }}">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </span>
+                        </div>
+                        <small class="form-text text-muted">
+                            {{ 'geo_area_selection.help.select_district'|trans({}, 'AppBundle') }}
                         </small>
                     </div>
 

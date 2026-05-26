@@ -38,6 +38,7 @@
                                         3: 'geo_area_view.scope.custom_area',
                                         4: 'geo_area_view.scope.municipality',
                                         5: 'geo_area_view.scope.parish',
+                                        6: 'geo_area_view.scope.district',
                                     }[area.scope] | default('geo_area_view.scope.city') -%}
                                     {{ scope_key|trans({}, 'AppBundle') }}
                                 </span>

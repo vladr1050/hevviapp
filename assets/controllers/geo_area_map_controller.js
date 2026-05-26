@@ -29,6 +29,7 @@ export default class extends Controller {
         apiCitiesUrl: String,
         apiMunicipalitiesUrl: String,
         apiParishesUrl: String,
+        apiDistrictsUrl: String,
         apiGeometryUrl: String,
         apiCustomAreasUrl: String,
         apiCustomAreaCreateUrl: String,
@@ -41,13 +42,16 @@ export default class extends Controller {
         translationNoCity: String,
         translationNoMunicipality: String,
         translationNoParish: String,
+        translationNoDistrict: String,
         translationLoadingCities: String,
         translationLoadingMunicipalities: String,
         translationLoadingParishes: String,
+        translationLoadingDistricts: String,
         translationErrorLoadCountries: String,
         translationErrorLoadCities: String,
         translationErrorLoadMunicipalities: String,
         translationErrorLoadParishes: String,
+        translationErrorLoadDistricts: String,
         translationErrorLoadGeometry: String,
         translationErrorAreaAlreadyAdded: String,
         translationAddButton: String,
@@ -80,6 +84,9 @@ export default class extends Controller {
         'parishSelect',
         'parishSelectWrapper',
         'addParishButton',
+        'districtSelect',
+        'districtSelectWrapper',
+        'addDistrictButton',
         'customAreaSelect',
         'customAreaSelectWrapper',
         'addCustomAreaButton',
@@ -123,6 +130,7 @@ export default class extends Controller {
             customAreaCreateUrl: this.apiCustomAreaCreateUrlValue,
             municipalitiesUrl: this.apiMunicipalitiesUrlValue,
             parishesUrl: this.apiParishesUrlValue,
+            districtsUrl: this.hasApiDistrictsUrlValue ? this.apiDistrictsUrlValue : '',
         });
 
         this.geoAreaService = new GeoAreaService();
@@ -170,6 +178,9 @@ export default class extends Controller {
             }
             if (this.hasParishSelectTarget) {
                 jQuery(this.parishSelectTarget).off('select2:select.geoAreaMap change.geoAreaMap');
+            }
+            if (this.hasDistrictSelectTarget) {
+                jQuery(this.districtSelectTarget).off('select2:select.geoAreaMap change.geoAreaMap');
             }
         }
 
@@ -348,6 +359,19 @@ export default class extends Controller {
                 });
         }
 
+        // Селект district (бывшие районы LVA).
+        if (this.hasDistrictSelectTarget) {
+            $(this.districtSelectTarget)
+                .on('select2:select.geoAreaMap', (e) => {
+                    this._handleDistrictChange(e.params.data);
+                })
+                .on('change.geoAreaMap', (e) => {
+                    if (!$(e.target).hasClass('select2-hidden-accessible')) {
+                        this._handleDistrictChange({ id: e.target.value });
+                    }
+                });
+        }
+
         console.log('[GeoAreaMap] Select2 listeners configured');
     }
 
@@ -386,6 +410,7 @@ export default class extends Controller {
         await this._loadCities(this.currentCountryISO3);
         await this._loadMunicipalities(this.currentCountryISO3);
         await this._loadParishes({ countryISO3: this.currentCountryISO3 });
+        await this._loadDistricts(this.currentCountryISO3);
         await this._loadCustomAreas(this.currentCountryISO3);
 
         // Активируем кнопку создания кастомной зоны
@@ -437,6 +462,17 @@ export default class extends Controller {
         const parishId = data?.id || '';
         if (this.hasAddParishButtonTarget) {
             this.addParishButtonTarget.disabled = !parishId;
+        }
+    }
+
+    /**
+     * Изменение district: активируем/деактивируем кнопку добавления.
+     * @private
+     */
+    _handleDistrictChange(data) {
+        const districtId = data?.id || '';
+        if (this.hasAddDistrictButtonTarget) {
+            this.addDistrictButtonTarget.disabled = !districtId;
         }
     }
 
@@ -624,6 +660,18 @@ export default class extends Controller {
             select: this.hasParishSelectTarget ? this.parishSelectTarget : null,
             addButton: this.hasAddParishButtonTarget ? this.addParishButtonTarget : null,
             color: '#6a1b9a',
+        });
+    }
+
+    /**
+     * Добавление выбранного district (бывшего района) на карту.
+     */
+    async addDistrict(event) {
+        event.preventDefault();
+        await this._addAdminUnit({
+            select: this.hasDistrictSelectTarget ? this.districtSelectTarget : null,
+            addButton: this.hasAddDistrictButtonTarget ? this.addDistrictButtonTarget : null,
+            color: '#c2185b',
         });
     }
 
@@ -949,6 +997,54 @@ export default class extends Controller {
         } catch (error) {
             console.error('[GeoAreaMap] Error loading municipalities:', error);
             const errorMsg = this.translationErrorLoadMunicipalitiesValue;
+            if (errorMsg) {
+                alert(errorMsg);
+            }
+            select.innerHTML = `<option value="">${placeholder}</option>`;
+            select.disabled = true;
+            this._updateSelect2(select);
+        }
+    }
+
+    /**
+     * Загрузка бывших районов (legacy LVA, scope=6).
+     * @private
+     */
+    async _loadDistricts(countryISO3) {
+        if (!this.hasDistrictSelectTarget) {
+            return;
+        }
+
+        const select = this.districtSelectTarget;
+        const placeholder = this.translationNoDistrictValue || 'Select district';
+        const loading = this.translationLoadingDistrictsValue || 'Loading...';
+
+        select.innerHTML = `<option value="">${loading}</option>`;
+        select.disabled = true;
+        if (this.hasAddDistrictButtonTarget) {
+            this.addDistrictButtonTarget.disabled = true;
+        }
+        this._updateSelect2(select);
+
+        try {
+            const items = await this.apiService.getDistricts(countryISO3);
+
+            select.innerHTML = `<option value="">${placeholder}</option>`;
+            items.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item.name;
+                if (this.geoAreaService.hasArea(item.id)) {
+                    option.disabled = true;
+                }
+                select.appendChild(option);
+            });
+
+            select.disabled = false;
+            this._updateSelect2(select);
+        } catch (error) {
+            console.error('[GeoAreaMap] Error loading districts:', error);
+            const errorMsg = this.translationErrorLoadDistrictsValue;
             if (errorMsg) {
                 alert(errorMsg);
             }

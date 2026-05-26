@@ -545,6 +545,7 @@ geo_area_view:
         custom_area:  Custom area
         municipality: Municipality
         parish:       Parish
+        district:     District (legacy)
     help:
         map_info: Displays boundaries of all selected geo areas
     message:
@@ -560,6 +561,7 @@ geo_area_selection:
         city:           City
         municipality:   Municipality (e.g. novads)
         parish:         Parish (e.g. pagasts)
+        district:       District (legacy)
         custom_area:    Custom Area
         selected_areas: Selected Areas
     select:
@@ -567,6 +569,7 @@ geo_area_selection:
         no_city:         -- Select City --
         no_municipality: -- Select Municipality --
         no_parish:       -- Select Parish --
+        no_district:     -- Select District --
         no_custom_area:  -- Select Custom Area --
     button:
         add:                Add
@@ -578,6 +581,7 @@ geo_area_selection:
         select_city:          Select a country, then a city and click "+" to add to the map
         select_municipality:  Pick a municipality (e.g. novads) and click "+" to add it to the map
         select_parish:        Pick a parish (e.g. pagasts). If a municipality is selected, only its parishes are listed.
+        select_district:      Optional. Pick a legacy district (pre-OSM "city" used for old pricing data).
         select_custom_area:   Select an existing custom area or create a new one
         map_info:             Selected geo areas are displayed on the map as polygons
     message:
@@ -598,12 +602,14 @@ geo_area_selection:
         load_cities:          Failed to load cities list
         load_municipalities:  Failed to load municipalities list
         load_parishes:        Failed to load parishes list
+        load_districts:       Failed to load districts list
         load_geometry:        Failed to load area geometry
         area_already_added:   This area has already been added
     status:
         loading_cities:         Loading cities...
         loading_municipalities: Loading municipalities...
         loading_parishes:       Loading parishes...
+        loading_districts:      Loading districts...
 
 # Custom Area Modal
 custom_area:

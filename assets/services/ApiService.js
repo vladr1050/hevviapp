@@ -25,6 +25,7 @@ export class ApiService {
         this.customAreaCreateUrl = config.customAreaCreateUrl || '';
         this.municipalitiesUrl = config.municipalitiesUrl || '';
         this.parishesUrl = config.parishesUrl || '';
+        this.districtsUrl = config.districtsUrl || '';
     }
 
     /**
@@ -183,6 +184,33 @@ export class ApiService {
             return data;
         } catch (error) {
             console.error('[ApiService] Error loading parishes:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Получить список бывших районов (legacy LVA, scope=6).
+     * @param {string} countryISO3 - ISO3 код страны
+     * @returns {Promise<Array>}
+     */
+    async getDistricts(countryISO3) {
+        if (!this.districtsUrl) {
+            return [];
+        }
+
+        try {
+            const url = `${this.districtsUrl}?countryISO3=${encodeURIComponent(countryISO3)}`;
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            console.log('[ApiService] Loaded districts:', data.length, 'for', countryISO3);
+            return data;
+        } catch (error) {
+            console.error('[ApiService] Error loading districts:', error);
             throw error;
         }
     }
