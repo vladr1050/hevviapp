@@ -70,6 +70,10 @@ class OsmGeometryParser implements GeometryParserInterface
         $formattedRings = [];
         
         foreach ($rings as $ring) {
+            if (!$this->isValidRing($ring)) {
+                throw new \InvalidArgumentException('Polygon ring must have at least 4 distinct points');
+            }
+
             $points = [];
             
             foreach ($ring as $point) {
@@ -84,5 +88,45 @@ class OsmGeometryParser implements GeometryParserInterface
         }
 
         return '(' . implode(',', $formattedRings) . ')';
+    }
+
+    /**
+     * PostGIS requires at least 4 points per ring; OSM sometimes yields degenerate boundaries.
+     */
+    private function isValidRing(array $ring): bool
+    {
+        if (count($ring) < 4) {
+            return false;
+        }
+
+        $distinct = [];
+        foreach ($ring as $point) {
+            if (!isset($point[0], $point[1])) {
+                return false;
+            }
+            $distinct[sprintf('%.6F,%.6F', (float)$point[0], (float)$point[1])] = true;
+        }
+
+        if (count($distinct) < 3) {
+            return false;
+        }
+
+        $lons = array_map(static fn(array $p): float => (float)$p[0], $ring);
+        $lats = array_map(static fn(array $p): float => (float)$p[1], $ring);
+
+        if (max($lons) === min($lons) && max($lats) === min($lats)) {
+            return false;
+        }
+
+        // OSM иногда отдаёт «заглушку» (1,1) или точку вне Латвии для pagasts без polygon boundary.
+        $minLon = 20.0;
+        $maxLon = 29.0;
+        $minLat = 55.0;
+        $maxLat = 59.0;
+
+        return max($lons) >= $minLon
+            && min($lons) <= $maxLon
+            && max($lats) >= $minLat
+            && min($lats) <= $maxLat;
     }
 }

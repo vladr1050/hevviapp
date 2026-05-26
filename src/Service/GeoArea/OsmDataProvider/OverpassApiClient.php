@@ -509,7 +509,7 @@ class OverpassApiClient implements OsmDataProviderInterface
             
             return [
                 'type' => 'MultiPolygon',
-                'coordinates' => [[$polygonRings]], // MultiPolygon всегда для консистентности
+                'coordinates' => [$polygonRings],
             ];
         } else {
             // Несколько outer rings - MultiPolygon
