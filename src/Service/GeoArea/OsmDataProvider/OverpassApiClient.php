@@ -233,6 +233,41 @@ class OverpassApiClient implements OsmDataProviderInterface
         return $units;
     }
 
+    public function getSingleAdminUnit(string $relationId): ?array
+    {
+        $query = sprintf(
+            '[out:json][timeout:%d];relation(%s);out geom;',
+            self::REQUEST_TIMEOUT,
+            $relationId,
+        );
+
+        $this->logger->info('Fetching single admin unit geometry from OSM', [
+            'relation_id' => $relationId,
+            'query' => $query,
+        ]);
+
+        $response = $this->executeQueryWithRetry($query);
+
+        foreach ($response['elements'] ?? [] as $element) {
+            if (($element['type'] ?? '') !== 'relation') {
+                continue;
+            }
+
+            try {
+                return $this->convertToGeoJson($element);
+            } catch (\Exception $e) {
+                $this->logger->warning('Failed to process single admin unit', [
+                    'name' => $element['tags']['name'] ?? 'Unknown',
+                    'relation_id' => $element['id'] ?? $relationId,
+                    'error' => $e->getMessage(),
+                ]);
+                return null;
+            }
+        }
+
+        return null;
+    }
+
     private function buildAdminUnitRelationFilter(
         int $adminLevel,
         ?string $excludeBorderType,

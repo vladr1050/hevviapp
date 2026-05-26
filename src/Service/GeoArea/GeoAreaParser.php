@@ -161,6 +161,61 @@ class GeoAreaParser
     }
 
     /**
+     * Точечная дозагрузка одной административной единицы по OSM relation ID.
+     * Используется когда юнит не попал в массовый импорт (например, в OSM у
+     * него admin_level отличается от ожидаемого).
+     *
+     * @return OsmAreaDto[] Один элемент в массиве, либо пустой массив, если OSM не отдал геометрию
+     */
+    public function parseSingleAdminUnit(
+        CountryConfigDto $config,
+        string $osmRelationId,
+        int $scope,
+        string $kind,
+    ): array {
+        $this->logger->info('Fetching single admin unit', [
+            'country' => $config->name,
+            'osm_relation_id' => $osmRelationId,
+            'scope' => $scope,
+            'kind' => $kind,
+        ]);
+
+        $feature = $this->osmDataProvider->getSingleAdminUnit($osmRelationId);
+        if ($feature === null) {
+            $this->logger->warning('OSM returned no geometry for relation', [
+                'osm_relation_id' => $osmRelationId,
+            ]);
+
+            return [];
+        }
+
+        try {
+            $geometryWkt = $this->geometryParser->geoJsonToWkt($feature);
+        } catch (\Exception $e) {
+            $this->logger->warning('Failed to convert single admin unit geometry', [
+                'osm_relation_id' => $osmRelationId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return [];
+        }
+
+        $name = $feature['properties']['name']
+            ?? $feature['properties']['name:en']
+            ?? 'Unknown ' . ucfirst($kind);
+
+        return [
+            new OsmAreaDto(
+                name: $name,
+                countryISO3: $config->iso3Code,
+                scope: $scope,
+                geometryWkt: $geometryWkt,
+                osmId: (string)($feature['properties']['osm_id'] ?? $osmRelationId),
+            ),
+        ];
+    }
+
+    /**
      * Парсить только parish-уровень (например pagasti для Латвии).
      *
      * @return OsmAreaDto[]

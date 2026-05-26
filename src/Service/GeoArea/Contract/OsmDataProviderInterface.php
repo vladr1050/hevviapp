@@ -57,4 +57,15 @@ interface OsmDataProviderInterface
         ?string $excludeBorderType = null,
         ?string $nameRegex = null,
     ): array;
+
+    /**
+     * Получить геометрию одной административной единицы OSM по её relation ID.
+     *
+     * Удобно для точечной дозагрузки юнита, который не попал в выдачу
+     * getAdminUnitsInCountry (например, отличается admin_level в OSM).
+     *
+     * @param string $relationId OSM relation ID
+     * @return array|null GeoJSON Feature (MultiPolygon) или null если relation не найден / не имеет геометрии
+     */
+    public function getSingleAdminUnit(string $relationId): ?array;
 }

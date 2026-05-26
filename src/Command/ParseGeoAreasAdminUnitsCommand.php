@@ -79,6 +79,12 @@ class ParseGeoAreasAdminUnitsCommand extends Command
                 InputOption::VALUE_REQUIRED,
                 'Override OSM admin_level (defaults: municipality=adminLevelMunicipality, parish=adminLevelParish)',
             )
+            ->addOption(
+                'only-osm-id',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Fetch exactly one OSM relation by its ID (bypasses listing). Useful when a unit is missing because its admin_level differs in OSM.',
+            )
             ->setHelp(
                 <<<'HELP'
 The <info>%command.name%</info> imports administrative units from OSM as new GeoArea rows.
@@ -93,6 +99,9 @@ Import Latvian pagasti (admin_level=7, scope=PARISH):
 
 Override admin_level explicitly:
   <info>php %command.full_name% municipality latvia --admin-level=5</info>
+
+Fetch ONE specific OSM relation (e.g. Olaines novads = 13047948):
+  <info>php %command.full_name% municipality latvia --only-osm-id=13047948</info>
 
 Output: SQL files placed under docker/dumps/geo_areas/.
 The header contains a commented-out TRUNCATE for the country — uncomment it if you want a clean re-import.
@@ -149,13 +158,24 @@ HELP
             ? GeoArea::SCOPE['MUNICIPALITY']
             : GeoArea::SCOPE['PARISH'];
 
+        $onlyOsmId = $input->getOption('only-osm-id');
+        if ($onlyOsmId !== null) {
+            $onlyOsmId = trim((string)$onlyOsmId);
+            if (!ctype_digit($onlyOsmId)) {
+                $io->error('--only-osm-id must be a numeric OSM relation ID');
+
+                return Command::INVALID;
+            }
+        }
+
         $io->section('Parameters');
         $io->definitionList(
             ['Country' => sprintf('%s (%s)', $config->name, $config->iso3Code)],
             ['OSM relation' => $config->osmRelationId],
             ['Kind' => $kind],
-            ['admin_level' => $adminLevel],
+            ['admin_level' => $onlyOsmId !== null ? 'ignored (direct fetch)' : $adminLevel],
             ['Scope id' => $scope],
+            ['Only OSM ID' => $onlyOsmId ?? '—'],
         );
 
         $outputPath = (string)$input->getOption('output');
@@ -163,6 +183,9 @@ HELP
             $outputPath = $this->projectDir . '/' . $outputPath;
         }
         $outputPath = $this->injectKindIntoPath($outputPath, $kind);
+        if ($onlyOsmId !== null) {
+            $outputPath = $this->appendSuffixToPath($outputPath, 'osm' . $onlyOsmId);
+        }
         $io->info('Output base path: ' . $outputPath);
 
         if (!$io->confirm('Start parsing?', true)) {
@@ -174,10 +197,20 @@ HELP
         try {
             $io->section('Fetching from Overpass...');
 
-            /** @var OsmAreaDto[] $units */
-            $units = $kind === self::KIND_MUNICIPALITY
-                ? $this->geoAreaParser->parseMunicipalities($this->withAdminLevel($config, $adminLevel, self::KIND_MUNICIPALITY))
-                : $this->geoAreaParser->parseParishes($this->withAdminLevel($config, $adminLevel, self::KIND_PARISH));
+            if ($onlyOsmId !== null) {
+                /** @var OsmAreaDto[] $units */
+                $units = $this->geoAreaParser->parseSingleAdminUnit(
+                    $config,
+                    $onlyOsmId,
+                    $scope,
+                    $kind,
+                );
+            } else {
+                /** @var OsmAreaDto[] $units */
+                $units = $kind === self::KIND_MUNICIPALITY
+                    ? $this->geoAreaParser->parseMunicipalities($this->withAdminLevel($config, $adminLevel, self::KIND_MUNICIPALITY))
+                    : $this->geoAreaParser->parseParishes($this->withAdminLevel($config, $adminLevel, self::KIND_PARISH));
+            }
 
             if (empty($units)) {
                 $io->warning('Overpass returned no units. Nothing to dump.');
@@ -239,5 +272,18 @@ HELP
         $ext = $info['extension'] ?? 'sql';
 
         return sprintf('%s/%s_%s.%s', $dir, $base, $kind, $ext);
+    }
+
+    /**
+     * Append an arbitrary suffix to the filename (keeps directory + extension).
+     */
+    private function appendSuffixToPath(string $path, string $suffix): string
+    {
+        $info = pathinfo($path);
+        $dir = $info['dirname'] ?? '.';
+        $base = $info['filename'] ?? 'geo_areas_admin_units_dump';
+        $ext = $info['extension'] ?? 'sql';
+
+        return sprintf('%s/%s_%s.%s', $dir, $base, $suffix, $ext);
     }
 }
