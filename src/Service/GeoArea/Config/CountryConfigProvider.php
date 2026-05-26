@@ -33,7 +33,7 @@ class CountryConfigProvider
      * - https://www.openstreetmap.org/
      * - Или через Nominatim API: https://nominatim.openstreetmap.org/
      * 
-     * @var array<string, array{name: string, iso3: string, osmRelationId: string, adminLevelCity: int}>
+     * @var array<string, array{name: string, iso3: string, osmRelationId: string, adminLevelCity: int, adminLevelMunicipality?: int, adminLevelParish?: int}>
      */
     private const COUNTRIES = [
         'latvia' => [
@@ -43,7 +43,8 @@ class CountryConfigProvider
             'adminLevelCity' => 5, // Государственные города (valstspilsētas)
             // admin_level=5 + border_type="city" дает 7 государственных городов:
             // Rīga, Daugavpils, Liepāja, Jelgava, Jūrmala, Ventspils, Rēzekne
-            // Это именно крупные города с цельными polygon boundaries
+            'adminLevelMunicipality' => 6, // novadi (после реформы 2021) ≈ 36 единиц
+            'adminLevelParish' => 7, // pagasti (≈500), плюс пилсетные/циемные территории внутри novads
         ],
         // Добавьте другие страны здесь по мере необходимости:
         // 'estonia' => [
@@ -76,6 +77,8 @@ class CountryConfigProvider
             iso3Code: $config['iso3'],
             osmRelationId: $config['osmRelationId'],
             adminLevelCity: $config['adminLevelCity'],
+            adminLevelMunicipality: $config['adminLevelMunicipality'] ?? 6,
+            adminLevelParish: $config['adminLevelParish'] ?? 7,
         );
     }
 

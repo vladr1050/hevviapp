@@ -21,6 +21,8 @@
              data-controller="geo-area-map"
              data-geo-area-map-api-countries-url-value="{{ path('api_geo_area_countries') }}"
              data-geo-area-map-api-cities-url-value="{{ path('api_geo_area_cities') }}"
+             data-geo-area-map-api-municipalities-url-value="{{ path('api_geo_area_municipalities') }}"
+             data-geo-area-map-api-parishes-url-value="{{ path('api_geo_area_parishes') }}"
              data-geo-area-map-api-geometry-url-value="{{ path('api_geo_area_geometry', {'id': '__ID__'}) }}"
              data-geo-area-map-api-custom-areas-url-value="{{ path('api_geo_area_custom_areas') }}"
              data-geo-area-map-api-custom-area-create-url-value="{{ path('api_geo_area_custom_area_create') }}"
@@ -29,6 +31,12 @@
              data-geo-area-map-default-zoom-value="{{ map_config.default_zoom }}"
              data-geo-area-map-translation-no-country-value="{{ 'geo_area_selection.select.no_country'|trans({}, 'AppBundle') }}"
              data-geo-area-map-translation-no-city-value="{{ 'geo_area_selection.select.no_city'|trans({}, 'AppBundle') }}"
+             data-geo-area-map-translation-no-municipality-value="{{ 'geo_area_selection.select.no_municipality'|trans({}, 'AppBundle') }}"
+             data-geo-area-map-translation-no-parish-value="{{ 'geo_area_selection.select.no_parish'|trans({}, 'AppBundle') }}"
+             data-geo-area-map-translation-loading-municipalities-value="{{ 'geo_area_selection.status.loading_municipalities'|trans({}, 'AppBundle') }}"
+             data-geo-area-map-translation-loading-parishes-value="{{ 'geo_area_selection.status.loading_parishes'|trans({}, 'AppBundle') }}"
+             data-geo-area-map-translation-error-load-municipalities-value="{{ 'geo_area_selection.error.load_municipalities'|trans({}, 'AppBundle') }}"
+             data-geo-area-map-translation-error-load-parishes-value="{{ 'geo_area_selection.error.load_parishes'|trans({}, 'AppBundle') }}"
              data-geo-area-map-translation-loading-cities-value="{{ 'geo_area_selection.status.loading_cities'|trans({}, 'AppBundle') }}"
              data-geo-area-map-translation-error-load-countries-value="{{ 'geo_area_selection.error.load_countries'|trans({}, 'AppBundle') }}"
              data-geo-area-map-translation-error-load-cities-value="{{ 'geo_area_selection.error.load_cities'|trans({}, 'AppBundle') }}"
@@ -92,6 +100,58 @@
                         </div>
                         <small class="form-text text-muted">
                             {{ 'geo_area_selection.help.select_city'|trans({}, 'AppBundle') }}
+                        </small>
+                    </div>
+
+                    {# Селект муниципалитетов (например novadi) с кнопкой добавления #}
+                    <div class="form-group" data-geo-area-map-target="municipalitySelectWrapper">
+                        <label>{{ 'geo_area_selection.label.municipality'|trans({}, 'AppBundle') }}</label>
+                        <div class="input-group">
+                            <select class="form-select"
+                                    data-geo-area-map-target="municipalitySelect"
+                                    data-placeholder="{{ 'geo_area_selection.select.no_municipality'|trans({}, 'AppBundle') }}"
+                                    disabled>
+                                <option value="">{{ 'geo_area_selection.select.no_municipality'|trans({}, 'AppBundle') }}</option>
+                            </select>
+                            <span class="input-group-btn">
+                                <button type="button"
+                                        class="btn btn-success"
+                                        data-geo-area-map-target="addMunicipalityButton"
+                                        data-action="geo-area-map#addMunicipality"
+                                        disabled
+                                        title="{{ 'geo_area_selection.button.add'|trans({}, 'AppBundle') }}">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </span>
+                        </div>
+                        <small class="form-text text-muted">
+                            {{ 'geo_area_selection.help.select_municipality'|trans({}, 'AppBundle') }}
+                        </small>
+                    </div>
+
+                    {# Селект parish (например pagasti). Если выбран муниципалитет — список фильтруется по нему. #}
+                    <div class="form-group" data-geo-area-map-target="parishSelectWrapper">
+                        <label>{{ 'geo_area_selection.label.parish'|trans({}, 'AppBundle') }}</label>
+                        <div class="input-group">
+                            <select class="form-select"
+                                    data-geo-area-map-target="parishSelect"
+                                    data-placeholder="{{ 'geo_area_selection.select.no_parish'|trans({}, 'AppBundle') }}"
+                                    disabled>
+                                <option value="">{{ 'geo_area_selection.select.no_parish'|trans({}, 'AppBundle') }}</option>
+                            </select>
+                            <span class="input-group-btn">
+                                <button type="button"
+                                        class="btn btn-success"
+                                        data-geo-area-map-target="addParishButton"
+                                        data-action="geo-area-map#addParish"
+                                        disabled
+                                        title="{{ 'geo_area_selection.button.add'|trans({}, 'AppBundle') }}">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </span>
+                        </div>
+                        <small class="form-text text-muted">
+                            {{ 'geo_area_selection.help.select_parish'|trans({}, 'AppBundle') }}
                         </small>
                     </div>
 

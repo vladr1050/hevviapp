@@ -518,8 +518,11 @@ geo_area_view:
         selected_areas: Выбранные гео-зоны
         map:            Карта зон
     scope:
-        country: Страна
-        city:    Город
+        country:      Страна
+        city:         Город
+        custom_area:  Кастомная зона
+        municipality: Муниципалитет
+        parish:       Приход
     help:
         map_info: Отображаются границы всех выбранных гео-зон
     message:
@@ -533,12 +536,16 @@ geo_area_selection:
     label:
         country:        Страна
         city:           Город
+        municipality:   Муниципалитет (например novads)
+        parish:         Приход (например pagasts)
         custom_area:    Кастомная зона
         selected_areas: Выбранные зоны
     select:
-        no_country:     -- Выберите страну --
-        no_city:        -- Выберите город --
-        no_custom_area: -- Выберите кастомную зону --
+        no_country:      -- Выберите страну --
+        no_city:         -- Выберите город --
+        no_municipality: -- Выберите муниципалитет --
+        no_parish:       -- Выберите приход --
+        no_custom_area:  -- Выберите кастомную зону --
     button:
         add:                Добавить
         remove:             Удалить
@@ -547,6 +554,8 @@ geo_area_selection:
     help:
         select_country_first: Сначала выберите страну для загрузки списка городов
         select_city:          Выберите страну, затем город и нажмите "+" для добавления на карту
+        select_municipality:  Выберите муниципалитет (например novads) и нажмите "+" для добавления на карту
+        select_parish:        Выберите приход (например pagasts). Если выбран муниципалитет — список фильтруется по нему.
         select_custom_area:   Выберите существующую кастомную зону или создайте новую
         map_info:             Выбранные гео-зоны отображаются на карте в виде полигонов
     message:
@@ -563,12 +572,16 @@ geo_area_selection:
         instruction_edit:       используйте инструменты редактирования полигона ИЛИ включите сетку чтобы добавить новые гексагоны
         instruction_edit_title: При редактировании
     error:
-        load_countries:     Не удалось загрузить список стран
-        load_cities:        Не удалось загрузить список городов
-        load_geometry:      Не удалось загрузить геометрию зоны
-        area_already_added: Эта зона уже добавлена
+        load_countries:      Не удалось загрузить список стран
+        load_cities:         Не удалось загрузить список городов
+        load_municipalities: Не удалось загрузить список муниципалитетов
+        load_parishes:       Не удалось загрузить список приходов
+        load_geometry:       Не удалось загрузить геометрию зоны
+        area_already_added:  Эта зона уже добавлена
     status:
-        loading_cities: Загрузка городов...
+        loading_cities:         Загрузка городов...
+        loading_municipalities: Загрузка муниципалитетов...
+        loading_parishes:       Загрузка приходов...
 
 # Custom Area Modal
 custom_area:

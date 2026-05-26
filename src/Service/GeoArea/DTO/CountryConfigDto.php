@@ -27,6 +27,10 @@ readonly class CountryConfigDto
         public string $iso3Code,
         public string $osmRelationId,
         public int $adminLevelCity = 8,
+        /** OSM admin_level for first-tier sub-units (e.g. novadi in LV → 6). */
+        public int $adminLevelMunicipality = 6,
+        /** OSM admin_level for second-tier sub-units (e.g. pagasti in LV → 7). */
+        public int $adminLevelParish = 7,
     ) {
     }
 }

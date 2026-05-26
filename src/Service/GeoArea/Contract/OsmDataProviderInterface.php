@@ -38,4 +38,16 @@ interface OsmDataProviderInterface
      * @return array Массив GeoJSON данных городов
      */
     public function getCitiesInCountry(string $countryRelationId, int $adminLevel = 8): array;
+
+    /**
+     * Получить произвольные административные единицы страны по admin_level.
+     *
+     * В отличие от getCitiesInCountry() здесь не применяется фильтр border_type=city,
+     * что позволяет получать все юниты заданного уровня (например novadi, pagasti).
+     *
+     * @param string $countryRelationId ID relation страны в OSM
+     * @param int $adminLevel Уровень административной единицы (например 6 для novadi, 7 для pagasti в Латвии)
+     * @return array<int, array> Массив GeoJSON Feature (MultiPolygon)
+     */
+    public function getAdminUnitsInCountry(string $countryRelationId, int $adminLevel): array;
 }

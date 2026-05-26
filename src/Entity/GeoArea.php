@@ -18,6 +18,8 @@ class GeoArea extends BaseUUID
         'COUNTRY' => 1,
         'CITY' => 2,
         'CUSTOM_AREA' => 3,
+        'MUNICIPALITY' => 4,
+        'PARISH' => 5,
     ];
 
     #[ORM\Column(length: 255)]

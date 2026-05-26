@@ -32,7 +32,14 @@
                                     <strong>{{ area.name }}</strong>
                                 </div>
                                 <span class="badge bg-secondary">
-                                                {{ area.scope == 1 ? 'geo_area_view.scope.country'|trans({}, 'AppBundle') : 'geo_area_view.scope.city'|trans({}, 'AppBundle') }}
+                                    {%- set scope_key = {
+                                        1: 'geo_area_view.scope.country',
+                                        2: 'geo_area_view.scope.city',
+                                        3: 'geo_area_view.scope.custom_area',
+                                        4: 'geo_area_view.scope.municipality',
+                                        5: 'geo_area_view.scope.parish',
+                                    }[area.scope] | default('geo_area_view.scope.city') -%}
+                                    {{ scope_key|trans({}, 'AppBundle') }}
                                 </span>
                             </div>
                         {% endfor %}

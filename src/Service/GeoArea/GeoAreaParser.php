@@ -144,6 +144,116 @@ class GeoAreaParser
     }
 
     /**
+     * Парсить только муниципальные единицы (например novadi для Латвии).
+     *
+     * @return OsmAreaDto[]
+     */
+    public function parseMunicipalities(CountryConfigDto $config): array
+    {
+        return $this->parseAdminUnits(
+            $config,
+            $config->adminLevelMunicipality,
+            GeoArea::SCOPE['MUNICIPALITY'],
+            'municipality',
+        );
+    }
+
+    /**
+     * Парсить только parish-уровень (например pagasti для Латвии).
+     *
+     * @return OsmAreaDto[]
+     */
+    public function parseParishes(CountryConfigDto $config): array
+    {
+        return $this->parseAdminUnits(
+            $config,
+            $config->adminLevelParish,
+            GeoArea::SCOPE['PARISH'],
+            'parish',
+        );
+    }
+
+    /**
+     * Универсальный парсер административных единиц через Overpass.
+     *
+     * @return OsmAreaDto[]
+     */
+    private function parseAdminUnits(CountryConfigDto $config, int $adminLevel, int $scope, string $kind): array
+    {
+        $this->logger->info('Fetching admin units', [
+            'country' => $config->name,
+            'admin_level' => $adminLevel,
+            'kind' => $kind,
+        ]);
+
+        $featureCollection = $this->osmDataProvider->getAdminUnitsInCountry(
+            $config->osmRelationId,
+            $adminLevel,
+        );
+
+        $units = [];
+        $seenOsmIds = [];
+
+        foreach ($featureCollection as $feature) {
+            try {
+                $osmId = (string)($feature['properties']['osm_id'] ?? '');
+
+                if (!empty($osmId) && isset($seenOsmIds[$osmId])) {
+                    $this->logger->debug('Skipping duplicate admin unit', [
+                        'name' => $feature['properties']['name'] ?? 'Unknown',
+                        'osm_id' => $osmId,
+                        'kind' => $kind,
+                    ]);
+                    continue;
+                }
+
+                $geometryWkt = $this->geometryParser->geoJsonToWkt($feature);
+
+                // Для novadi/pagasti оригинальное латвийское название важнее английской транслитерации,
+                // поэтому предпочитаем 'name', затем 'name:en'.
+                $name = $feature['properties']['name']
+                    ?? $feature['properties']['name:en']
+                    ?? 'Unknown ' . ucfirst($kind);
+
+                $units[] = new OsmAreaDto(
+                    name: $name,
+                    countryISO3: $config->iso3Code,
+                    scope: $scope,
+                    geometryWkt: $geometryWkt,
+                    osmId: $osmId,
+                );
+
+                if (!empty($osmId)) {
+                    $seenOsmIds[$osmId] = true;
+                }
+
+                $this->logger->debug('Admin unit parsed', [
+                    'name' => $name,
+                    'osm_id' => $osmId,
+                    'kind' => $kind,
+                ]);
+            } catch (\Exception $e) {
+                $this->logger->warning('Failed to parse admin unit', [
+                    'name' => $feature['properties']['name'] ?? 'Unknown',
+                    'kind' => $kind,
+                    'error' => $e->getMessage(),
+                ]);
+
+                continue;
+            }
+        }
+
+        $this->logger->info('Admin units parsed', [
+            'country' => $config->name,
+            'admin_level' => $adminLevel,
+            'kind' => $kind,
+            'count' => count($units),
+        ]);
+
+        return $units;
+    }
+
+    /**
      * Парсить города страны
      *
      * @return OsmAreaDto[]

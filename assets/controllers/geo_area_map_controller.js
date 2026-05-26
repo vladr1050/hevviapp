@@ -27,6 +27,8 @@ export default class extends Controller {
     static values = {
         apiCountriesUrl: String,
         apiCitiesUrl: String,
+        apiMunicipalitiesUrl: String,
+        apiParishesUrl: String,
         apiGeometryUrl: String,
         apiCustomAreasUrl: String,
         apiCustomAreaCreateUrl: String,
@@ -37,9 +39,15 @@ export default class extends Controller {
         // Translations
         translationNoCountry: String,
         translationNoCity: String,
+        translationNoMunicipality: String,
+        translationNoParish: String,
         translationLoadingCities: String,
+        translationLoadingMunicipalities: String,
+        translationLoadingParishes: String,
         translationErrorLoadCountries: String,
         translationErrorLoadCities: String,
+        translationErrorLoadMunicipalities: String,
+        translationErrorLoadParishes: String,
         translationErrorLoadGeometry: String,
         translationErrorAreaAlreadyAdded: String,
         translationAddButton: String,
@@ -66,6 +74,12 @@ export default class extends Controller {
         'citySelect',
         'citySelectWrapper',
         'addButton',
+        'municipalitySelect',
+        'municipalitySelectWrapper',
+        'addMunicipalityButton',
+        'parishSelect',
+        'parishSelectWrapper',
+        'addParishButton',
         'customAreaSelect',
         'customAreaSelectWrapper',
         'addCustomAreaButton',
@@ -106,7 +120,9 @@ export default class extends Controller {
             citiesUrl: this.apiCitiesUrlValue,
             geometryUrl: this.apiGeometryUrlValue,
             customAreasUrl: this.apiCustomAreasUrlValue,
-            customAreaCreateUrl: this.apiCustomAreaCreateUrlValue
+            customAreaCreateUrl: this.apiCustomAreaCreateUrlValue,
+            municipalitiesUrl: this.apiMunicipalitiesUrlValue,
+            parishesUrl: this.apiParishesUrlValue,
         });
 
         this.geoAreaService = new GeoAreaService();
@@ -149,6 +165,12 @@ export default class extends Controller {
         if (window.jQuery) {
             jQuery(this.countrySelectTarget).off('select2:select.geoAreaMap change.geoAreaMap');
             jQuery(this.citySelectTarget).off('select2:select.geoAreaMap change.geoAreaMap');
+            if (this.hasMunicipalitySelectTarget) {
+                jQuery(this.municipalitySelectTarget).off('select2:select.geoAreaMap change.geoAreaMap');
+            }
+            if (this.hasParishSelectTarget) {
+                jQuery(this.parishSelectTarget).off('select2:select.geoAreaMap change.geoAreaMap');
+            }
         }
 
         // Очищаем сервисы
@@ -298,6 +320,34 @@ export default class extends Controller {
                 }
             });
 
+        // Селект муниципалитета (например novads). При выборе:
+        //  - активируем add-кнопку,
+        //  - каскадно перегружаем parishes по родителю.
+        if (this.hasMunicipalitySelectTarget) {
+            $(this.municipalitySelectTarget)
+                .on('select2:select.geoAreaMap', (e) => {
+                    this._handleMunicipalityChange(e.params.data);
+                })
+                .on('change.geoAreaMap', (e) => {
+                    if (!$(e.target).hasClass('select2-hidden-accessible')) {
+                        this._handleMunicipalityChange({ id: e.target.value });
+                    }
+                });
+        }
+
+        // Селект parish (например pagasts).
+        if (this.hasParishSelectTarget) {
+            $(this.parishSelectTarget)
+                .on('select2:select.geoAreaMap', (e) => {
+                    this._handleParishChange(e.params.data);
+                })
+                .on('change.geoAreaMap', (e) => {
+                    if (!$(e.target).hasClass('select2-hidden-accessible')) {
+                        this._handleParishChange({ id: e.target.value });
+                    }
+                });
+        }
+
         console.log('[GeoAreaMap] Select2 listeners configured');
     }
 
@@ -334,6 +384,8 @@ export default class extends Controller {
         });
 
         await this._loadCities(this.currentCountryISO3);
+        await this._loadMunicipalities(this.currentCountryISO3);
+        await this._loadParishes({ countryISO3: this.currentCountryISO3 });
         await this._loadCustomAreas(this.currentCountryISO3);
 
         // Активируем кнопку создания кастомной зоны
@@ -352,6 +404,40 @@ export default class extends Controller {
         this.addButtonTarget.disabled = !cityId;
 
         console.log('[GeoAreaMap] City selected:', cityId);
+    }
+
+    /**
+     * Изменение муниципалитета: разрешаем кнопку добавления и каскадно
+     * перезагружаем parish-список под выбранный родитель.
+     * Если выбор очищен — возвращаем полный список parish для текущей страны.
+     * @private
+     */
+    async _handleMunicipalityChange(data) {
+        const municipalityId = data?.id || '';
+        if (this.hasAddMunicipalityButtonTarget) {
+            this.addMunicipalityButtonTarget.disabled = !municipalityId;
+        }
+
+        if (!this.hasParishSelectTarget) {
+            return;
+        }
+
+        if (municipalityId) {
+            await this._loadParishes({ parentId: municipalityId });
+        } else if (this.currentCountryISO3) {
+            await this._loadParishes({ countryISO3: this.currentCountryISO3 });
+        }
+    }
+
+    /**
+     * Изменение parish: только активируем/деактивируем кнопку добавления.
+     * @private
+     */
+    _handleParishChange(data) {
+        const parishId = data?.id || '';
+        if (this.hasAddParishButtonTarget) {
+            this.addParishButtonTarget.disabled = !parishId;
+        }
     }
 
     /**
@@ -445,11 +531,13 @@ export default class extends Controller {
         // Удаляем из GeoAreaService
         this.geoAreaService.removeArea(areaId);
 
-        // Включаем эту опцию обратно в селекте
+        // Включаем эту опцию обратно во всех релевантных селектах
         if (isCustomArea) {
             this._enableCustomAreaOption(areaId);
         } else {
             this._enableCityOption(areaId);
+            this._enableOptionInSelect(this.hasMunicipalitySelectTarget ? this.municipalitySelectTarget : null, areaId);
+            this._enableOptionInSelect(this.hasParishSelectTarget ? this.parishSelectTarget : null, areaId);
         }
 
         // Обновляем отображение
@@ -513,6 +601,77 @@ export default class extends Controller {
 
         // Сбрасываем выбор кастомной зоны
         this._resetCustomAreaSelection();
+    }
+
+    /**
+     * Добавление выбранного муниципалитета (например novads) на карту.
+     */
+    async addMunicipality(event) {
+        event.preventDefault();
+        await this._addAdminUnit({
+            select: this.hasMunicipalitySelectTarget ? this.municipalitySelectTarget : null,
+            addButton: this.hasAddMunicipalityButtonTarget ? this.addMunicipalityButtonTarget : null,
+            color: '#2e7d32',
+        });
+    }
+
+    /**
+     * Добавление выбранного parish (например pagasts) на карту.
+     */
+    async addParish(event) {
+        event.preventDefault();
+        await this._addAdminUnit({
+            select: this.hasParishSelectTarget ? this.parishSelectTarget : null,
+            addButton: this.hasAddParishButtonTarget ? this.addParishButtonTarget : null,
+            color: '#6a1b9a',
+        });
+    }
+
+    /**
+     * Общий путь добавления админ-юнита (муниципалитет/parish): дедупликация,
+     * регистрация в GeoAreaService, отображение на карте, синхронизация скрытого поля,
+     * блокировка опции в селекте и сброс выбора.
+     * @private
+     */
+    async _addAdminUnit({ select, addButton, color }) {
+        if (!select) {
+            return;
+        }
+        const id = select.value;
+        if (!id) {
+            return;
+        }
+
+        if (this.geoAreaService.hasArea(id)) {
+            alert(this.translationErrorAreaAlreadyAddedValue || 'Эта зона уже добавлена');
+            return;
+        }
+
+        const name = select.options[select.selectedIndex].text;
+
+        this.geoAreaService.addArea(id, {
+            id,
+            name,
+            countryISO3: this.currentCountryISO3,
+        });
+
+        await this._loadAndDisplayGeometry(id, true, color);
+
+        this._updateSelectedList();
+        this._updateHiddenInput();
+
+        const option = select.querySelector(`option[value="${id}"]`);
+        if (option) {
+            option.disabled = true;
+        }
+
+        select.value = '';
+        if (addButton) {
+            addButton.disabled = true;
+        }
+        if (window.jQuery && window.jQuery(select).hasClass('select2-hidden-accessible')) {
+            window.jQuery(select).val('').trigger('change.select2');
+        }
     }
 
     /**
@@ -752,19 +911,133 @@ export default class extends Controller {
     }
 
     /**
+     * Загрузка муниципалитетов (например novadi).
+     * @private
+     */
+    async _loadMunicipalities(countryISO3) {
+        if (!this.hasMunicipalitySelectTarget) {
+            return;
+        }
+
+        const select = this.municipalitySelectTarget;
+        const placeholder = this.translationNoMunicipalityValue || 'Select municipality';
+        const loading = this.translationLoadingMunicipalitiesValue || 'Loading...';
+
+        select.innerHTML = `<option value="">${loading}</option>`;
+        select.disabled = true;
+        if (this.hasAddMunicipalityButtonTarget) {
+            this.addMunicipalityButtonTarget.disabled = true;
+        }
+        this._updateSelect2(select);
+
+        try {
+            const items = await this.apiService.getMunicipalities(countryISO3);
+
+            select.innerHTML = `<option value="">${placeholder}</option>`;
+            items.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item.name;
+                if (this.geoAreaService.hasArea(item.id)) {
+                    option.disabled = true;
+                }
+                select.appendChild(option);
+            });
+
+            select.disabled = false;
+            this._updateSelect2(select);
+        } catch (error) {
+            console.error('[GeoAreaMap] Error loading municipalities:', error);
+            const errorMsg = this.translationErrorLoadMunicipalitiesValue;
+            if (errorMsg) {
+                alert(errorMsg);
+            }
+            select.innerHTML = `<option value="">${placeholder}</option>`;
+            select.disabled = true;
+            this._updateSelect2(select);
+        }
+    }
+
+    /**
+     * Загрузка parish-уровня. Если задан parentId — каскад по родителю.
+     * @private
+     */
+    async _loadParishes({ countryISO3, parentId } = {}) {
+        if (!this.hasParishSelectTarget) {
+            return;
+        }
+
+        const select = this.parishSelectTarget;
+        const placeholder = this.translationNoParishValue || 'Select parish';
+        const loading = this.translationLoadingParishesValue || 'Loading...';
+
+        select.innerHTML = `<option value="">${loading}</option>`;
+        select.disabled = true;
+        if (this.hasAddParishButtonTarget) {
+            this.addParishButtonTarget.disabled = true;
+        }
+        this._updateSelect2(select);
+
+        try {
+            const items = await this.apiService.getParishes({ countryISO3, parentId });
+
+            select.innerHTML = `<option value="">${placeholder}</option>`;
+            items.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item.name;
+                if (this.geoAreaService.hasArea(item.id)) {
+                    option.disabled = true;
+                }
+                select.appendChild(option);
+            });
+
+            select.disabled = false;
+            this._updateSelect2(select);
+        } catch (error) {
+            console.error('[GeoAreaMap] Error loading parishes:', error);
+            const errorMsg = this.translationErrorLoadParishesValue;
+            if (errorMsg) {
+                alert(errorMsg);
+            }
+            select.innerHTML = `<option value="">${placeholder}</option>`;
+            select.disabled = true;
+            this._updateSelect2(select);
+        }
+    }
+
+    /**
+     * Re-enable a specific option by value in the given select (no-op if select missing or option not found).
+     * @private
+     */
+    _enableOptionInSelect(selectEl, optionValue) {
+        if (!selectEl || !optionValue) {
+            return;
+        }
+        const option = selectEl.querySelector(`option[value="${optionValue}"]`);
+        if (option) {
+            option.disabled = false;
+            if (window.jQuery && window.jQuery(selectEl).hasClass('select2-hidden-accessible')) {
+                window.jQuery(selectEl).trigger('change.select2');
+            }
+        }
+    }
+
+    /**
      * Загрузка и отображение геометрии через сервисы
      * @private
      * @param {string} areaId - UUID зоны
      * @param {boolean} autoZoom - Автоматически зумить после добавления (по умолчанию true)
+     * @param {string} [color] - Опциональный цвет полигона (например для разных scope)
      */
-    async _loadAndDisplayGeometry(areaId, autoZoom = true) {
+    async _loadAndDisplayGeometry(areaId, autoZoom = true, color = '#3388ff') {
         try {
             // Загружаем геометрию через ApiService
             const data = await this.apiService.getGeometry(areaId);
 
             // Добавляем на карту через MapService
             this.mapService.addGeoJsonLayer(areaId, data.geometry, {
-                color: '#3388ff',
+                color,
                 weight: 2,
                 opacity: 0.8,
                 fillOpacity: 0.3,

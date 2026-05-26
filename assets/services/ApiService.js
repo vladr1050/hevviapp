@@ -23,6 +23,8 @@ export class ApiService {
         this.geometryUrl = config.geometryUrl;
         this.customAreasUrl = config.customAreasUrl || '';
         this.customAreaCreateUrl = config.customAreaCreateUrl || '';
+        this.municipalitiesUrl = config.municipalitiesUrl || '';
+        this.parishesUrl = config.parishesUrl || '';
     }
 
     /**
@@ -119,6 +121,68 @@ export class ApiService {
             return successful;
         } catch (error) {
             console.error('[ApiService] Error loading multiple geometries:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Получить список муниципалитетов (например novadi для Латвии).
+     * @param {string} countryISO3 - ISO3 код страны
+     * @returns {Promise<Array>}
+     */
+    async getMunicipalities(countryISO3) {
+        if (!this.municipalitiesUrl) {
+            return [];
+        }
+
+        try {
+            const url = `${this.municipalitiesUrl}?countryISO3=${encodeURIComponent(countryISO3)}`;
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            console.log('[ApiService] Loaded municipalities:', data.length, 'for', countryISO3);
+            return data;
+        } catch (error) {
+            console.error('[ApiService] Error loading municipalities:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Получить parish-уровень. Если задан parentId — каскад по родительскому муниципалитету.
+     * @param {{countryISO3?: string, parentId?: string}} params
+     * @returns {Promise<Array>}
+     */
+    async getParishes({ countryISO3, parentId } = {}) {
+        if (!this.parishesUrl) {
+            return [];
+        }
+
+        try {
+            const params = new URLSearchParams();
+            if (parentId) {
+                params.set('parentId', parentId);
+            } else if (countryISO3) {
+                params.set('countryISO3', countryISO3);
+            } else {
+                throw new Error('getParishes requires countryISO3 or parentId');
+            }
+
+            const response = await fetch(`${this.parishesUrl}?${params.toString()}`);
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            console.log('[ApiService] Loaded parishes:', data.length, parentId ? `for parent ${parentId}` : `for ${countryISO3}`);
+            return data;
+        } catch (error) {
+            console.error('[ApiService] Error loading parishes:', error);
             throw error;
         }
     }

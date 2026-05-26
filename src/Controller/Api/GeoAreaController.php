@@ -138,6 +138,90 @@ class GeoAreaController extends AbstractController
     }
 
     /**
+     * Получение списка муниципалитетов (например novadi для Латвии) по ISO3 коду страны.
+     */
+    #[Route('/municipalities', name: 'municipalities', methods: ['GET'])]
+    public function getMunicipalitiesByCountry(Request $request): JsonResponse
+    {
+        $countryISO3 = $request->query->get('countryISO3');
+
+        if (!$countryISO3) {
+            return $this->json(['error' => 'countryISO3 parameter is required'], 400);
+        }
+
+        $items = $this->geoAreaRepository->findByScopeAndCountryISO3(
+            GeoArea::SCOPE['MUNICIPALITY'],
+            (string)$countryISO3,
+        );
+
+        return $this->json(
+            array_map(
+                static fn(GeoArea $area) => [
+                    'id' => (string) $area->getId(),
+                    'name' => $area->getName(),
+                    'countryISO3' => $area->getCountryISO3(),
+                    'scope' => $area->getScope(),
+                ],
+                $items,
+            )
+        );
+    }
+
+    /**
+     * Получение списка parish-уровня (например pagasti).
+     *
+     * Если передан parentId — возвращаются только те parish, чьи геометрии лежат
+     * внутри геометрии указанного муниципалитета (для UX каскадного выбора).
+     * Иначе — все parish внутри страны.
+     */
+    #[Route('/parishes', name: 'parishes', methods: ['GET'])]
+    public function getParishes(Request $request): JsonResponse
+    {
+        $parentId = $request->query->get('parentId');
+
+        if ($parentId !== null && $parentId !== '') {
+            $rows = $this->geoAreaRepository->findChildrenWithinParent(
+                (string)$parentId,
+                GeoArea::SCOPE['PARISH'],
+            );
+
+            return $this->json(
+                array_map(
+                    static fn(array $row) => [
+                        'id' => $row['id'],
+                        'name' => $row['name'],
+                        'countryISO3' => $row['country_iso3'],
+                        'scope' => (int)$row['scope'],
+                    ],
+                    $rows,
+                )
+            );
+        }
+
+        $countryISO3 = $request->query->get('countryISO3');
+        if (!$countryISO3) {
+            return $this->json(['error' => 'countryISO3 or parentId is required'], 400);
+        }
+
+        $items = $this->geoAreaRepository->findByScopeAndCountryISO3(
+            GeoArea::SCOPE['PARISH'],
+            (string)$countryISO3,
+        );
+
+        return $this->json(
+            array_map(
+                static fn(GeoArea $area) => [
+                    'id' => (string) $area->getId(),
+                    'name' => $area->getName(),
+                    'countryISO3' => $area->getCountryISO3(),
+                    'scope' => $area->getScope(),
+                ],
+                $items,
+            )
+        );
+    }
+
+    /**
      * Получение списка кастомных зон по ISO3 коду страны
      */
     #[Route('/custom-areas', name: 'custom_areas', methods: ['GET'])]

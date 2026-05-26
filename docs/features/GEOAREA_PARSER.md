@@ -203,10 +203,36 @@ CREATE INDEX idx_geo_area_country_iso3 ON geo_area(country_iso3);
 
 ```php
 class GeoArea {
-    const SCOPE_COUNTRY = 1;
-    const SCOPE_CITY = 2;
+    public const SCOPE = [
+        'COUNTRY'      => 1,
+        'CITY'         => 2,
+        'CUSTOM_AREA'  => 3,
+        'MUNICIPALITY' => 4, // novadi (LV admin_level=6) и аналоги
+        'PARISH'       => 5, // pagasti (LV admin_level=7) и аналоги
+    ];
 }
 ```
+
+---
+
+## 🧩 Импорт novadi и pagasti (admin units)
+
+Большие полигоны (напр. одна Рига) можно расщепить на готовые административные единицы и собирать из них зоны в Sonata Admin.
+
+```bash
+# Импорт novadi (admin_level=6 для Латвии) — добавится как scope=MUNICIPALITY
+docker compose exec php php bin/console app:parse-geo-areas-admin-units municipality latvia
+
+# Импорт pagasti (admin_level=7 для Латвии) — добавится как scope=PARISH
+docker compose exec php php bin/console app:parse-geo-areas-admin-units parish latvia
+```
+
+Команда сгенерирует SQL-дамп под `docker/dumps/geo_areas/geo_areas_admin_units_dump_<kind>_<iso3>_NN.sql`.
+В шапке файла лежит закомментированный `TRUNCATE` по `country_iso3` — раскомментируйте, если нужен чистый ре-импорт.
+
+После применения дампа:
+- В админке `ServiceArea` появятся два новых селекта (Municipality, Parish).
+- Если выбрать муниципалитет — список приходов автоматически отфильтруется по `ST_CoveredBy(child.geometry, parent.geometry)`.
 
 ---
 

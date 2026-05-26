@@ -133,6 +133,63 @@ class OverpassApiClient implements OsmDataProviderInterface
         return $cities;
     }
 
+    public function getAdminUnitsInCountry(string $countryRelationId, int $adminLevel): array
+    {
+        $areaId = 3600000000 + (int)$countryRelationId;
+
+        // Без border_type фильтра — поднимаем все relations указанного admin_level.
+        // Используется для novadi (admin_level=6) и pagasti (admin_level=7) в Латвии.
+        $query = sprintf(
+            '[out:json][timeout:%d];area(%s)->.country;relation["boundary"="administrative"]["admin_level"="%d"](area.country);out geom;',
+            self::REQUEST_TIMEOUT,
+            $areaId,
+            $adminLevel
+        );
+
+        $this->logger->info('Fetching admin units from OSM', [
+            'country_relation_id' => $countryRelationId,
+            'area_id' => $areaId,
+            'admin_level' => $adminLevel,
+            'query' => $query,
+        ]);
+
+        $response = $this->executeQueryWithRetry($query);
+
+        if (empty($response['elements'])) {
+            $this->logger->warning('No admin units found', [
+                'country_relation_id' => $countryRelationId,
+                'admin_level' => $adminLevel,
+            ]);
+
+            return [];
+        }
+
+        $this->logger->info('Admin units fetched', [
+            'count' => count($response['elements']),
+            'admin_level' => $adminLevel,
+        ]);
+
+        $units = [];
+        foreach ($response['elements'] as $element) {
+            if ($element['type'] !== 'relation') {
+                continue;
+            }
+
+            try {
+                $units[] = $this->convertToGeoJson($element);
+            } catch (\Exception $e) {
+                $this->logger->warning('Failed to process admin unit', [
+                    'name' => $element['tags']['name'] ?? 'Unknown',
+                    'relation_id' => $element['id'] ?? 'Unknown',
+                    'admin_level' => $adminLevel,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        return $units;
+    }
+
     /**
      * Выполнить запрос с retry и fallback на альтернативные endpoints
      */
