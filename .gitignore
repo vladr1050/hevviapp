@@ -18,6 +18,9 @@ yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 .idea
 .vscode
+.DS_Store
+.env.tmp
+.env.local.login.bak
 
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
