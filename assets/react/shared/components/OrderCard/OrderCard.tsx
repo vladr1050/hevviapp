@@ -97,7 +97,12 @@ export const OrderCard: FC<OrderCardProps> = ({
 		<div className="grid grid-cols-5 gap-3 w-full">
 			<div className="col-span-4" aria-hidden="true" />
 			<div className={styles.item}>
-				<div className={styles.label}>Total</div>
+				<div className={styles.label}>
+					Total{' '}
+					<span className="font-normal text-[10px] whitespace-nowrap">
+						(Ar PVN un HEVVI komisiju)
+					</span>
+				</div>
 				<div className={styles.value}>
 					{order?.sender_total ?? order?.brutto ?? EMPTY_STRING}
 				</div>
