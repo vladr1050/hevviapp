@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Carrier;
+use App\Entity\GeoArea;
 use App\Entity\ServiceArea;
+use App\Service\OrderOffer\Pricing\DTO\CoordinateCoverageResult;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Types\UuidType;
@@ -35,6 +37,37 @@ class ServiceAreaRepository extends ServiceEntityRepository
      */
     public function findByCoordinates(float $latitude, float $longitude, ?Carrier $carrier = null): ?ServiceArea
     {
+        return $this->findCoverageAtCoordinates($latitude, $longitude, $carrier)?->serviceArea;
+    }
+
+    /**
+     * Resolves both the containing GeoArea and the carrier ServiceArea whose matrix applies at a point.
+     */
+    public function findCoverageAtCoordinates(
+        float $latitude,
+        float $longitude,
+        ?Carrier $carrier = null,
+    ): ?CoordinateCoverageResult {
+        $row = $this->fetchCoverageRow($latitude, $longitude, $carrier);
+        if ($row === null) {
+            return null;
+        }
+
+        $geoArea = $this->getEntityManager()->find(GeoArea::class, $row['geo_area_id']);
+        $serviceArea = $this->loadServiceAreaWithMatrix($row['service_area_id']);
+
+        if (!$geoArea instanceof GeoArea || !$serviceArea instanceof ServiceArea) {
+            return null;
+        }
+
+        return new CoordinateCoverageResult($geoArea, $serviceArea);
+    }
+
+    /**
+     * @return array{geo_area_id: string, service_area_id: string}|null
+     */
+    private function fetchCoverageRow(float $latitude, float $longitude, ?Carrier $carrier): ?array
+    {
         $conn = $this->getEntityManager()->getConnection();
 
         $point = sprintf('POINT(%f %f)', $longitude, $latitude);
@@ -49,7 +82,7 @@ class ServiceAreaRepository extends ServiceEntityRepository
         }
 
         $sql = '
-            SELECT DISTINCT sa.id
+            SELECT ga.id AS geo_area_id, sa.id AS service_area_id
             FROM service_area sa
             INNER JOIN service_area_geo_area saga ON sa.id = saga.service_area_id
             INNER JOIN geo_area ga ON saga.geo_area_id = ga.id
@@ -62,14 +95,16 @@ class ServiceAreaRepository extends ServiceEntityRepository
         ';
 
         $result = $conn->executeQuery($sql, $params);
-
         $row = $result->fetchAssociative();
 
-        if (!$row) {
+        if ($row === false) {
             return null;
         }
 
-        return $this->loadServiceAreaWithMatrix($row['id']);
+        return [
+            'geo_area_id' => (string) $row['geo_area_id'],
+            'service_area_id' => (string) $row['service_area_id'],
+        ];
     }
 
     public function findHomeZoneForCarrier(Carrier $carrier, string $country): ?ServiceArea
