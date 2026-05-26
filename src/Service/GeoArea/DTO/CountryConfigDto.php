@@ -27,10 +27,15 @@ readonly class CountryConfigDto
         public string $iso3Code,
         public string $osmRelationId,
         public int $adminLevelCity = 8,
-        /** OSM admin_level for first-tier sub-units (e.g. novadi in LV → 6). */
-        public int $adminLevelMunicipality = 6,
-        /** OSM admin_level for second-tier sub-units (e.g. pagasti in LV → 7). */
+        /** OSM admin_level for municipalities (e.g. novadi in LV → 5, same level as valstspilsētas). */
+        public int $adminLevelMunicipality = 5,
+        /** OSM admin_level for parishes (e.g. pagasti in LV → 7). */
         public int $adminLevelParish = 7,
+        /**
+         * When municipalities share admin_level with state cities, exclude relations
+         * with this border_type (LV: valstspilsētas use border_type=city at level 5).
+         */
+        public ?string $municipalityExcludeBorderType = null,
     ) {
     }
 }

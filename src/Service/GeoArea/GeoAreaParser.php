@@ -155,6 +155,7 @@ class GeoAreaParser
             $config->adminLevelMunicipality,
             GeoArea::SCOPE['MUNICIPALITY'],
             'municipality',
+            $config->municipalityExcludeBorderType,
         );
     }
 
@@ -178,17 +179,24 @@ class GeoAreaParser
      *
      * @return OsmAreaDto[]
      */
-    private function parseAdminUnits(CountryConfigDto $config, int $adminLevel, int $scope, string $kind): array
-    {
+    private function parseAdminUnits(
+        CountryConfigDto $config,
+        int $adminLevel,
+        int $scope,
+        string $kind,
+        ?string $excludeBorderType = null,
+    ): array {
         $this->logger->info('Fetching admin units', [
             'country' => $config->name,
             'admin_level' => $adminLevel,
             'kind' => $kind,
+            'exclude_border_type' => $excludeBorderType,
         ]);
 
         $featureCollection = $this->osmDataProvider->getAdminUnitsInCountry(
             $config->osmRelationId,
             $adminLevel,
+            $excludeBorderType,
         );
 
         $units = [];

@@ -133,23 +133,31 @@ class OverpassApiClient implements OsmDataProviderInterface
         return $cities;
     }
 
-    public function getAdminUnitsInCountry(string $countryRelationId, int $adminLevel): array
+    public function getAdminUnitsInCountry(string $countryRelationId, int $adminLevel, ?string $excludeBorderType = null): array
     {
         $areaId = 3600000000 + (int)$countryRelationId;
 
-        // Без border_type фильтра — поднимаем все relations указанного admin_level.
-        // Используется для novadi (admin_level=6) и pagasti (admin_level=7) в Латвии.
+        $relationFilter = sprintf(
+            'relation["boundary"="administrative"]["admin_level"="%d"]',
+            $adminLevel,
+        );
+        if ($excludeBorderType !== null && $excludeBorderType !== '') {
+            // LV: novadi и valstspilsētas оба admin_level=5; города помечены border_type=city.
+            $relationFilter .= sprintf('["border_type"!="%s"]', $excludeBorderType);
+        }
+
         $query = sprintf(
-            '[out:json][timeout:%d];area(%s)->.country;relation["boundary"="administrative"]["admin_level"="%d"](area.country);out geom;',
+            '[out:json][timeout:%d];area(%s)->.country;%s(area.country);out geom;',
             self::REQUEST_TIMEOUT,
             $areaId,
-            $adminLevel
+            $relationFilter,
         );
 
         $this->logger->info('Fetching admin units from OSM', [
             'country_relation_id' => $countryRelationId,
             'area_id' => $areaId,
             'admin_level' => $adminLevel,
+            'exclude_border_type' => $excludeBorderType,
             'query' => $query,
         ]);
 

@@ -85,14 +85,14 @@ The <info>%command.name%</info> imports administrative units from OSM as new Geo
 
 Examples:
 
-Import Latvian novadi (admin_level=6, scope=MUNICIPALITY):
+Import Latvian novadi (admin_level=5, excludes border_type=city, scope=MUNICIPALITY):
   <info>php %command.full_name% municipality latvia</info>
 
 Import Latvian pagasti (admin_level=7, scope=PARISH):
   <info>php %command.full_name% parish latvia</info>
 
 Override admin_level explicitly:
-  <info>php %command.full_name% municipality latvia --admin-level=6</info>
+  <info>php %command.full_name% municipality latvia --admin-level=5</info>
 
 Output: SQL files placed under docker/dumps/geo_areas/.
 The header contains a commented-out TRUNCATE for the country — uncomment it if you want a clean re-import.
@@ -222,6 +222,7 @@ HELP
             adminLevelCity: $config->adminLevelCity,
             adminLevelMunicipality: $kind === self::KIND_MUNICIPALITY ? $adminLevel : $config->adminLevelMunicipality,
             adminLevelParish: $kind === self::KIND_PARISH ? $adminLevel : $config->adminLevelParish,
+            municipalityExcludeBorderType: $config->municipalityExcludeBorderType,
         );
     }
 

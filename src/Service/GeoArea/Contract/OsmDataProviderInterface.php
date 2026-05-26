@@ -46,8 +46,9 @@ interface OsmDataProviderInterface
      * что позволяет получать все юниты заданного уровня (например novadi, pagasti).
      *
      * @param string $countryRelationId ID relation страны в OSM
-     * @param int $adminLevel Уровень административной единицы (например 6 для novadi, 7 для pagasti в Латвии)
+     * @param int $adminLevel Уровень административной единицы (например 5 для novadi, 7 для pagasti в Латвии)
+     * @param string|null $excludeBorderType Исключить relations с border_type (LV: city для novadi)
      * @return array<int, array> Массив GeoJSON Feature (MultiPolygon)
      */
-    public function getAdminUnitsInCountry(string $countryRelationId, int $adminLevel): array;
+    public function getAdminUnitsInCountry(string $countryRelationId, int $adminLevel, ?string $excludeBorderType = null): array;
 }

@@ -43,8 +43,10 @@ class CountryConfigProvider
             'adminLevelCity' => 5, // Государственные города (valstspilsētas)
             // admin_level=5 + border_type="city" дает 7 государственных городов:
             // Rīga, Daugavpils, Liepāja, Jelgava, Jūrmala, Ventspils, Rēzekne
-            'adminLevelMunicipality' => 6, // novadi (после реформы 2021) ≈ 36 единиц
-            'adminLevelParish' => 7, // pagasti (≈500), плюс пилсетные/циемные территории внутри novads
+            // В OSM novadi = admin_level 5 (как и 7 valstspilsētas; те отсекаем border_type=city).
+            'adminLevelMunicipality' => 5,
+            'municipalityExcludeBorderType' => 'city',
+            'adminLevelParish' => 7, // pagasti в OSM; не все ~500 имеют polygon boundary
         ],
         // Добавьте другие страны здесь по мере необходимости:
         // 'estonia' => [
@@ -77,8 +79,9 @@ class CountryConfigProvider
             iso3Code: $config['iso3'],
             osmRelationId: $config['osmRelationId'],
             adminLevelCity: $config['adminLevelCity'],
-            adminLevelMunicipality: $config['adminLevelMunicipality'] ?? 6,
+            adminLevelMunicipality: $config['adminLevelMunicipality'] ?? 5,
             adminLevelParish: $config['adminLevelParish'] ?? 7,
+            municipalityExcludeBorderType: $config['municipalityExcludeBorderType'] ?? null,
         );
     }
 
