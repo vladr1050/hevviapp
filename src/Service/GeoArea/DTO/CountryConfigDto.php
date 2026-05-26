@@ -36,6 +36,8 @@ readonly class CountryConfigDto
          * with this border_type (LV: valstspilsētas use border_type=city at level 5).
          */
         public ?string $municipalityExcludeBorderType = null,
+        /** Overpass name regex for municipalities (LV: novads$). */
+        public ?string $municipalityNameRegex = null,
     ) {
     }
 }

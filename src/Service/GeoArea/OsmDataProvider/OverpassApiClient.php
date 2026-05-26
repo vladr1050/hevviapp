@@ -133,37 +133,42 @@ class OverpassApiClient implements OsmDataProviderInterface
         return $cities;
     }
 
-    public function getAdminUnitsInCountry(string $countryRelationId, int $adminLevel, ?string $excludeBorderType = null): array
-    {
+    public function getAdminUnitsInCountry(
+        string $countryRelationId,
+        int $adminLevel,
+        ?string $excludeBorderType = null,
+        ?string $nameRegex = null,
+    ): array {
         $areaId = 3600000000 + (int)$countryRelationId;
+        $relationFilter = $this->buildAdminUnitRelationFilter($adminLevel, $excludeBorderType, $nameRegex);
 
-        $relationFilter = sprintf(
-            'relation["boundary"="administrative"]["admin_level"="%d"]',
-            $adminLevel,
-        );
-        if ($excludeBorderType !== null && $excludeBorderType !== '') {
-            // LV: novadi и valstspilsētas оба admin_level=5; города помечены border_type=city.
-            $relationFilter .= sprintf('["border_type"!="%s"]', $excludeBorderType);
-        }
-
-        $query = sprintf(
-            '[out:json][timeout:%d];area(%s)->.country;%s(area.country);out geom;',
+        // Сначала только id/tags — один большой out geom по всей стране легко съедает 128M PHP.
+        $listQuery = sprintf(
+            '[out:json][timeout:%d];area(%s)->.country;%s(area.country);out tags;',
             self::REQUEST_TIMEOUT,
             $areaId,
             $relationFilter,
         );
 
-        $this->logger->info('Fetching admin units from OSM', [
+        $this->logger->info('Listing admin unit relation IDs from OSM', [
             'country_relation_id' => $countryRelationId,
             'area_id' => $areaId,
             'admin_level' => $adminLevel,
             'exclude_border_type' => $excludeBorderType,
-            'query' => $query,
+            'name_regex' => $nameRegex,
+            'query' => $listQuery,
         ]);
 
-        $response = $this->executeQueryWithRetry($query);
+        $listResponse = $this->executeQueryWithRetry($listQuery);
+        $relationIds = [];
+        foreach ($listResponse['elements'] ?? [] as $element) {
+            if (($element['type'] ?? '') === 'relation' && isset($element['id'])) {
+                $relationIds[] = (int)$element['id'];
+            }
+        }
+        unset($listResponse);
 
-        if (empty($response['elements'])) {
+        if ($relationIds === []) {
             $this->logger->warning('No admin units found', [
                 'country_relation_id' => $countryRelationId,
                 'admin_level' => $adminLevel,
@@ -172,30 +177,80 @@ class OverpassApiClient implements OsmDataProviderInterface
             return [];
         }
 
-        $this->logger->info('Admin units fetched', [
-            'count' => count($response['elements']),
+        $this->logger->info('Fetching admin unit geometries one-by-one', [
+            'relation_count' => count($relationIds),
             'admin_level' => $adminLevel,
         ]);
 
         $units = [];
-        foreach ($response['elements'] as $element) {
-            if ($element['type'] !== 'relation') {
-                continue;
-            }
+        $lastIndex = count($relationIds) - 1;
+        foreach ($relationIds as $index => $relationId) {
+            $geomQuery = sprintf(
+                '[out:json][timeout:%d];relation(%d);out geom;',
+                self::REQUEST_TIMEOUT,
+                $relationId,
+            );
 
+            $response = null;
             try {
-                $units[] = $this->convertToGeoJson($element);
+                $response = $this->executeQueryWithRetry($geomQuery);
+
+                foreach ($response['elements'] ?? [] as $element) {
+                    if (($element['type'] ?? '') !== 'relation') {
+                        continue;
+                    }
+
+                    try {
+                        $units[] = $this->convertToGeoJson($element);
+                    } catch (\Exception $e) {
+                        $this->logger->warning('Failed to process admin unit', [
+                            'name' => $element['tags']['name'] ?? 'Unknown',
+                            'relation_id' => $element['id'] ?? 'Unknown',
+                            'admin_level' => $adminLevel,
+                            'error' => $e->getMessage(),
+                        ]);
+                    }
+                }
             } catch (\Exception $e) {
-                $this->logger->warning('Failed to process admin unit', [
-                    'name' => $element['tags']['name'] ?? 'Unknown',
-                    'relation_id' => $element['id'] ?? 'Unknown',
+                $this->logger->warning('Failed to fetch admin unit geometry', [
+                    'relation_id' => $relationId,
                     'admin_level' => $adminLevel,
                     'error' => $e->getMessage(),
                 ]);
             }
+            unset($response);
+
+            if ($index < $lastIndex) {
+                usleep(200_000);
+            }
         }
 
+        $this->logger->info('Admin units fetched', [
+            'count' => count($units),
+            'admin_level' => $adminLevel,
+        ]);
+
         return $units;
+    }
+
+    private function buildAdminUnitRelationFilter(
+        int $adminLevel,
+        ?string $excludeBorderType,
+        ?string $nameRegex,
+    ): string {
+        $relationFilter = sprintf(
+            'relation["boundary"="administrative"]["admin_level"="%d"]',
+            $adminLevel,
+        );
+        if ($excludeBorderType !== null && $excludeBorderType !== '') {
+            // LV: novadi и valstspilsētas оба admin_level=5; города помечены border_type=city.
+            $relationFilter .= sprintf('["border_type"!="%s"]', $excludeBorderType);
+        }
+        if ($nameRegex !== null && $nameRegex !== '') {
+            $relationFilter .= sprintf('["name"~"%s",i]', str_replace('"', '\\"', $nameRegex));
+        }
+
+        return $relationFilter;
     }
 
     /**

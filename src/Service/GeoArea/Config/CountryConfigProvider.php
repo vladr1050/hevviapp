@@ -46,6 +46,7 @@ class CountryConfigProvider
             // В OSM novadi = admin_level 5 (как и 7 valstspilsētas; те отсекаем border_type=city).
             'adminLevelMunicipality' => 5,
             'municipalityExcludeBorderType' => 'city',
+            'municipalityNameRegex' => 'novads$',
             'adminLevelParish' => 7, // pagasti в OSM; не все ~500 имеют polygon boundary
         ],
         // Добавьте другие страны здесь по мере необходимости:
@@ -82,6 +83,7 @@ class CountryConfigProvider
             adminLevelMunicipality: $config['adminLevelMunicipality'] ?? 5,
             adminLevelParish: $config['adminLevelParish'] ?? 7,
             municipalityExcludeBorderType: $config['municipalityExcludeBorderType'] ?? null,
+            municipalityNameRegex: $config['municipalityNameRegex'] ?? null,
         );
     }
 

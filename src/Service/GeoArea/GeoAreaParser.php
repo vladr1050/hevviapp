@@ -156,6 +156,7 @@ class GeoAreaParser
             GeoArea::SCOPE['MUNICIPALITY'],
             'municipality',
             $config->municipalityExcludeBorderType,
+            $config->municipalityNameRegex,
         );
     }
 
@@ -185,18 +186,21 @@ class GeoAreaParser
         int $scope,
         string $kind,
         ?string $excludeBorderType = null,
+        ?string $nameRegex = null,
     ): array {
         $this->logger->info('Fetching admin units', [
             'country' => $config->name,
             'admin_level' => $adminLevel,
             'kind' => $kind,
             'exclude_border_type' => $excludeBorderType,
+            'name_regex' => $nameRegex,
         ]);
 
         $featureCollection = $this->osmDataProvider->getAdminUnitsInCountry(
             $config->osmRelationId,
             $adminLevel,
             $excludeBorderType,
+            $nameRegex,
         );
 
         $units = [];

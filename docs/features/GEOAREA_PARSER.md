@@ -220,7 +220,8 @@ class GeoArea {
 Большие полигоны (напр. одна Рига) можно расщепить на готовые административные единицы и собирать из них зоны в Sonata Admin.
 
 ```bash
-# Импорт novadi (admin_level=5, без valstspilsētas border_type=city) — scope=MUNICIPALITY
+# Импорт novadi (admin_level=5, border_type!=city, name~novads$) — scope=MUNICIPALITY
+# Геометрии качаются по одной relation (~40 запросов к Overpass), чтобы не упираться в memory_limit 128M.
 docker compose exec php php bin/console app:parse-geo-areas-admin-units municipality latvia
 
 # Импорт pagasti (admin_level=7 для Латвии) — scope=PARISH (в OSM не все ~500 имеют polygon)

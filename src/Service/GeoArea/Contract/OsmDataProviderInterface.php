@@ -48,7 +48,13 @@ interface OsmDataProviderInterface
      * @param string $countryRelationId ID relation страны в OSM
      * @param int $adminLevel Уровень административной единицы (например 5 для novadi, 7 для pagasti в Латвии)
      * @param string|null $excludeBorderType Исключить relations с border_type (LV: city для novadi)
+     * @param string|null $nameRegex Overpass regex для name (LV: novads$ для novadi)
      * @return array<int, array> Массив GeoJSON Feature (MultiPolygon)
      */
-    public function getAdminUnitsInCountry(string $countryRelationId, int $adminLevel, ?string $excludeBorderType = null): array;
+    public function getAdminUnitsInCountry(
+        string $countryRelationId,
+        int $adminLevel,
+        ?string $excludeBorderType = null,
+        ?string $nameRegex = null,
+    ): array;
 }
