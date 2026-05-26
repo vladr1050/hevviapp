@@ -454,85 +454,227 @@ class OverpassApiClient implements OsmDataProviderInterface
             throw new \RuntimeException('Relation has no members');
         }
 
-        // Разделяем members на outer и inner
-        $outerRings = [];
-        $innerRings = [];
-        
+        // OSM relation membership: each "outer" / "inner" member is a *way segment*.
+        // To get a closed polygon ring we must concatenate ways that share endpoints.
+        $outerWays = [];
+        $innerWays = [];
+
         foreach ($element['members'] as $member) {
+            if (($member['type'] ?? '') !== 'way') {
+                continue;
+            }
             if (!isset($member['geometry']) || !is_array($member['geometry'])) {
                 continue;
             }
-            
+
             $coordinates = [];
             foreach ($member['geometry'] as $point) {
                 if (isset($point['lon'], $point['lat'])) {
-                    $coordinates[] = [$point['lon'], $point['lat']];
+                    $coordinates[] = [(float)$point['lon'], (float)$point['lat']];
                 }
             }
-            
-            // Замыкаем кольцо
-            if (!empty($coordinates)) {
-                $first = $coordinates[0];
-                $last = end($coordinates);
-                
-                if ($first[0] !== $last[0] || $first[1] !== $last[1]) {
-                    $coordinates[] = $first;
-                }
+
+            if (count($coordinates) < 2) {
+                continue;
             }
-            
-            // Минимум 4 точки для валидного кольца
-            if (count($coordinates) >= 4) {
-                if ($member['role'] === 'outer') {
-                    $outerRings[] = $coordinates;
-                } elseif ($member['role'] === 'inner') {
-                    $innerRings[] = $coordinates;
-                }
+
+            $role = $member['role'] ?? '';
+            if ($role === 'outer' || $role === '') {
+                $outerWays[] = $coordinates;
+            } elseif ($role === 'inner') {
+                $innerWays[] = $coordinates;
             }
         }
+
+        $outerRings = $this->assembleRings($outerWays);
+        $innerRings = $this->assembleRings($innerWays);
 
         if (empty($outerRings)) {
-            throw new \RuntimeException('No valid outer rings found in relation');
+            throw new \RuntimeException('No valid outer rings assembled from relation ways');
         }
 
-        // Строим правильный MultiPolygon
-        // Если несколько outer rings - это несколько отдельных полигонов
-        $polygons = [];
-        
-        if (count($outerRings) === 1) {
-            // Один внешний контур - строим один Polygon с дырками
-            $polygonRings = [$outerRings[0]]; // Первое кольцо - внешнее
-            
-            // Добавляем все внутренние кольца (дырки)
-            foreach ($innerRings as $innerRing) {
-                $polygonRings[] = $innerRing;
+        // Distribute inner rings into the outer ring that contains them.
+        $polygons = array_map(static fn(array $ring): array => [$ring], $outerRings);
+
+        foreach ($innerRings as $innerRing) {
+            $hostIndex = $this->findContainingPolygon($innerRing, $outerRings);
+            if ($hostIndex === null) {
+                $hostIndex = 0;
             }
-            
-            return [
-                'type' => 'MultiPolygon',
-                'coordinates' => [$polygonRings],
-            ];
-        } else {
-            // Несколько outer rings - MultiPolygon
-            // В идеале нужно распределить inner rings по outer rings,
-            // но для простоты добавляем все inner к первому outer
-            foreach ($outerRings as $index => $outerRing) {
-                if ($index === 0 && !empty($innerRings)) {
-                    // К первому полигону добавляем все дырки
-                    $polygonRings = [$outerRing];
-                    foreach ($innerRings as $innerRing) {
-                        $polygonRings[] = $innerRing;
+            $polygons[$hostIndex][] = $innerRing;
+        }
+
+        return [
+            'type' => 'MultiPolygon',
+            'coordinates' => $polygons,
+        ];
+    }
+
+    /**
+     * Stitch unordered way segments into closed rings by matching shared endpoints.
+     * Each input segment is an array of [lon, lat] points (≥2 points each).
+     *
+     * @param array<int, array<int, array{0: float, 1: float}>> $ways
+     * @return array<int, array<int, array{0: float, 1: float}>>
+     */
+    private function assembleRings(array $ways): array
+    {
+        $rings = [];
+        $used = array_fill(0, count($ways), false);
+
+        for ($i = 0, $iMax = count($ways); $i < $iMax; $i++) {
+            if ($used[$i]) {
+                continue;
+            }
+
+            $ring = $ways[$i];
+            $used[$i] = true;
+
+            $progress = true;
+            while ($progress && !$this->ringIsClosed($ring)) {
+                $progress = false;
+
+                for ($j = 0; $j < $iMax; $j++) {
+                    if ($used[$j]) {
+                        continue;
                     }
-                    $polygons[] = $polygonRings;
-                } else {
-                    // Остальные полигоны без дырок
-                    $polygons[] = [$outerRing];
+
+                    $candidate = $ways[$j];
+                    $ringStart = $ring[0];
+                    $ringEnd = end($ring);
+                    $candStart = $candidate[0];
+                    $candEnd = end($candidate);
+
+                    if ($this->pointsEqual($ringEnd, $candStart)) {
+                        array_pop($ring);
+                        foreach ($candidate as $point) {
+                            $ring[] = $point;
+                        }
+                        $used[$j] = true;
+                        $progress = true;
+                        break;
+                    }
+
+                    if ($this->pointsEqual($ringEnd, $candEnd)) {
+                        array_pop($ring);
+                        $reversed = array_reverse($candidate);
+                        foreach ($reversed as $point) {
+                            $ring[] = $point;
+                        }
+                        $used[$j] = true;
+                        $progress = true;
+                        break;
+                    }
+
+                    if ($this->pointsEqual($ringStart, $candEnd)) {
+                        $tail = $ring;
+                        $ring = $candidate;
+                        array_pop($ring);
+                        foreach ($tail as $point) {
+                            $ring[] = $point;
+                        }
+                        $used[$j] = true;
+                        $progress = true;
+                        break;
+                    }
+
+                    if ($this->pointsEqual($ringStart, $candStart)) {
+                        $reversed = array_reverse($candidate);
+                        $tail = $ring;
+                        $ring = $reversed;
+                        array_pop($ring);
+                        foreach ($tail as $point) {
+                            $ring[] = $point;
+                        }
+                        $used[$j] = true;
+                        $progress = true;
+                        break;
+                    }
                 }
             }
-            
-            return [
-                'type' => 'MultiPolygon',
-                'coordinates' => $polygons,
-            ];
+
+            if (!$this->ringIsClosed($ring)) {
+                $this->logger->warning('Skipping unclosed OSM ring', [
+                    'relation_role_points' => count($ring),
+                ]);
+                continue;
+            }
+
+            if (count($ring) >= 4) {
+                $rings[] = $ring;
+            }
         }
+
+        return $rings;
+    }
+
+    /**
+     * @param array<int, array{0: float, 1: float}> $ring
+     */
+    private function ringIsClosed(array $ring): bool
+    {
+        if (count($ring) < 4) {
+            return false;
+        }
+        $first = $ring[0];
+        $last = end($ring);
+
+        return $this->pointsEqual($first, $last);
+    }
+
+    /**
+     * @param array{0: float, 1: float} $a
+     * @param array{0: float, 1: float} $b
+     */
+    private function pointsEqual(array $a, array $b): bool
+    {
+        return abs($a[0] - $b[0]) < 1e-9 && abs($a[1] - $b[1]) < 1e-9;
+    }
+
+    /**
+     * Pick an outer ring that contains the first point of $innerRing (cheap bbox + ray-casting).
+     *
+     * @param array<int, array{0: float, 1: float}> $innerRing
+     * @param array<int, array<int, array{0: float, 1: float}>> $outerRings
+     */
+    private function findContainingPolygon(array $innerRing, array $outerRings): ?int
+    {
+        if (empty($innerRing)) {
+            return null;
+        }
+        $probe = $innerRing[0];
+
+        foreach ($outerRings as $index => $outer) {
+            if ($this->pointInRing($probe, $outer)) {
+                return $index;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param array{0: float, 1: float} $point
+     * @param array<int, array{0: float, 1: float}> $ring
+     */
+    private function pointInRing(array $point, array $ring): bool
+    {
+        $inside = false;
+        $count = count($ring);
+        for ($i = 0, $j = $count - 1; $i < $count; $j = $i++) {
+            $xi = $ring[$i][0];
+            $yi = $ring[$i][1];
+            $xj = $ring[$j][0];
+            $yj = $ring[$j][1];
+
+            $intersect = (($yi > $point[1]) !== ($yj > $point[1]))
+                && ($point[0] < ($xj - $xi) * ($point[1] - $yi) / (($yj - $yi) ?: 1e-12) + $xi);
+
+            if ($intersect) {
+                $inside = !$inside;
+            }
+        }
+
+        return $inside;
     }
 }
