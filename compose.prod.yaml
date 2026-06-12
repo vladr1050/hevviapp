@@ -4,6 +4,8 @@ services:
     # Иначе после deploy остаётся entrypoint из образа (старый schema:update на prod).
     # С монтированием ./:/var/www/app актуальный entrypoint.sh с диска сервера.
     entrypoint: ["bash", "/var/www/app/entrypoint.sh"]
+    # Контейнер сам поднимается после OOM / reboot / падения главного процесса.
+    restart: unless-stopped
     # Весь .env сервера в окружение контейнера (Mailjet, Messenger и т.д.). Иначе в prod часто
     # остаются только переменные из environment ниже — писем нет при MAILJET_ENABLED=false в образе.
     env_file:
@@ -16,3 +18,23 @@ services:
       TZ: Europe/Riga
       # Подхватывается из .env на сервере при docker compose; иначе пусто (Sentry выключен).
       SENTRY_DSN: ${SENTRY_DSN:-}
+    volumes:
+      # PHP-FPM pool tuning (max_children, max_requests, request_terminate_timeout).
+      # Override-only mount: dev остаётся на стоковых настройках. Перезапуск без ребилда.
+      - ./docker/php/zz-pool.conf:/usr/local/etc/php-fpm.d/zz-pool.conf:ro
+    # Проверяет ВЕСЬ путь nginx -> php-fpm -> Symfony изнутри сети (у php есть curl).
+    # Ровно та цепочка, что зависла в инциденте: если воркеры стоят, healthcheck
+    # становится unhealthy и это видно в `docker compose ps` + ловит cron-скрипт.
+    # Host: localhost — он в trusted_hosts (config/packages/framework.yaml).
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS --max-time 8 -H 'Host: localhost' http://nginx/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 12s
+      retries: 3
+      start_period: 90s
+
+  nginx:
+    restart: unless-stopped
+
+  database:
+    restart: unless-stopped

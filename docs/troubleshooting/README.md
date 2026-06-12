@@ -95,6 +95,18 @@ docker compose ps   # nginx и php должны быть Up
 curl -sS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8090/
 ```
 
+### Сайт «висит»: контейнеры Up, но `:8090` не отвечает (зависший PHP-FPM)
+
+**Проблема:** `docker compose ps` показывает все контейнеры Up, TLS/Caddy живы, но
+`curl http://127.0.0.1:8090/` висит до таймаута. Частая причина — все воркеры PHP-FPM
+зависли (в логах ранее `server reached pm.max_children setting`), нередко после OOM / hard reset.
+
+**Быстрый фикс:** `docker compose restart php nginx`.
+
+**Профилактика (в репозитории):** `docker/php/zz-pool.conf` (рециклинг воркеров +
+`request_terminate_timeout`), healthcheck/`restart: unless-stopped` в `compose.prod.yaml`,
+cron `scripts/hevvi-healthcheck.sh` и swap. Подробно — **[../deployment/RESILIENCE.md](../deployment/RESILIENCE.md)**.
+
 ---
 
 ## 💾 База данных
