@@ -137,7 +137,7 @@ export const RegistrationPage: FC<RegistrationProps> = ({ device }) => {
 							</div>
 
 							<p className={styles.successEmail}>{submittedEmail}</p>
-							<p className={styles.successHint}>We&apos;ll let you know when we launch!</p>
+							<p className={styles.successHint}>We&apos;ll get in touch with you!</p>
 
 							<Button
 								type="button"
