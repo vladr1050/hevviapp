@@ -16,6 +16,7 @@ use App\Enum\PricingAlgorithm;
 use App\Service\Billing\IssuingCompanyResolver;
 use App\Service\OrderOffer\Contract\OrderOfferCalculatorInterface;
 use App\Service\OrderOffer\DTO\OrderOfferCalculationResultDto;
+use App\Service\OrderOffer\Oversized\OversizedPricingWeightResolver;
 use App\Service\OrderOffer\Pricing\DTO\PricingCalculationContext;
 use App\Service\OrderOffer\Pricing\PriceCoefficientResolver;
 use App\Service\OrderOffer\Pricing\PricingCarrierResolver;
@@ -33,6 +34,7 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
         private readonly PricingStrategyRegistry $pricingStrategyRegistry,
         private readonly PriceCoefficientResolver $priceCoefficientResolver,
         private readonly IssuingCompanyResolver $issuingCompanyResolver,
+        private readonly OversizedPricingWeightResolver $oversizedPricingWeightResolver,
         private readonly LoggerInterface $logger,
         #[Autowire('%env(int:TAX_VAT)%')]
         private readonly int $defaultVatPercent,
@@ -78,6 +80,26 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
                     errorMessage: 'order_offer.error.no_cargo_weight',
                     errorCode: 'NO_CARGO_WEIGHT',
                 );
+            }
+
+            // Oversized cargo is priced by the pallet places it occupies, not by
+            // the weight entered for documents. When present, override the
+            // chargeable weight with the fixed weight from the configured tiers.
+            $oversized = $this->oversizedPricingWeightResolver->resolve($order);
+            if ($oversized->applicable) {
+                if ($oversized->errorCode !== null) {
+                    $this->logger->warning('Oversized cargo has no configured weight tier', [
+                        'order_id' => $order->getId()?->toRfc4122(),
+                        'total_pallets' => $oversized->totalPallets,
+                    ]);
+
+                    return OrderOfferCalculationResultDto::error(
+                        errorMessage: 'order_offer.error.oversized_not_priceable',
+                        errorCode: $oversized->errorCode,
+                    );
+                }
+
+                $totalWeight = (int) $oversized->weightKg;
             }
 
             $context = new PricingCalculationContext(
@@ -131,6 +153,8 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
                 'algorithm' => $algorithm->value,
                 'service_area' => $currencyArea->getName(),
                 'total_weight' => $totalWeight,
+                'oversized' => $oversized->applicable,
+                'oversized_pallets' => $oversized->totalPallets,
                 'raw_base_freight' => $freightResult->baseFreightCents,
                 'coefficient' => $coefficient,
                 'base_netto' => $baseNetto,

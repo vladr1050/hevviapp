@@ -40,6 +40,7 @@ menu:
     settings:          Настройки
     appsettings:       Карта и адреса
     pricing_settings:  Тарифы доставки
+    oversized_weight_tiers: Тарифы веса негабарита
     companies:         Компании
     service_areas:     Зоны обслуживания
     matrix_items:      Элементы матрицы
@@ -685,6 +686,7 @@ order_offer:
         home_zone_not_configured:         Не настроена главная зона (home) для перевозчика и страны
         carrier_required_for_hub_pricing:   Для hub-and-spoke нужен перевозчик
         no_cargo_weight:                  В заказе отсутствуют грузы или их вес равен нулю
+        oversized_not_priceable:          Негабаритный груз нельзя рассчитать автоматически — свяжитесь с оператором
         matrix_item_not_found:            Не найден тарифный план для указанного веса груза
         calculation_failed:               Ошибка при расчете стоимости доставки
         unknown:                          Неизвестная ошибка

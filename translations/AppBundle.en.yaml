@@ -40,6 +40,7 @@ menu:
     settings:          Settings
     appsettings:       Map & address settings
     pricing_settings:  Delivery pricing
+    oversized_weight_tiers: Oversized weight tiers
     companies:         Companies
     service_areas:     Service Areas
     matrix_items:      Matrix Items
@@ -706,6 +707,7 @@ order_offer:
         home_zone_not_configured:      Home zone is not configured for this carrier and country
         carrier_required_for_hub_pricing: Carrier is required for hub-and-spoke pricing
         no_cargo_weight:               Order has no cargo or cargo weight is zero
+        oversized_not_priceable:       Oversized cargo cannot be priced automatically — please contact the operator
         matrix_item_not_found:         Pricing plan not found for specified cargo weight
         calculation_failed:            Error calculating delivery cost
         unknown:                       Unknown error
