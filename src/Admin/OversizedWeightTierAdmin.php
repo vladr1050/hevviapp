@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Admin;
 
 use FRPC\SonataAuthorization\Admin\BaseAdmin;
+use Sonata\AdminBundle\Datagrid\DatagridInterface;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -15,6 +16,12 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class OversizedWeightTierAdmin extends BaseAdmin
 {
+    protected function configureDefaultSortValues(array &$sortValues): void
+    {
+        $sortValues[DatagridInterface::SORT_BY] = 'pallets';
+        $sortValues[DatagridInterface::SORT_ORDER] = 'ASC';
+    }
+
     protected function configureDatagridFilters(DatagridMapper $datagrid): void
     {
         $datagrid
