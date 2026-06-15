@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 class NotificationLog extends BaseUUID
 {
     #[ORM\ManyToOne(inversedBy: 'notificationLogs')]
-    #[ORM\JoinColumn(name: 'related_order_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'related_order_id', referencedColumnName: 'id', nullable: true, onDelete: 'CASCADE')]
     private ?Order $relatedOrder = null;
 
     #[ORM\ManyToOne]

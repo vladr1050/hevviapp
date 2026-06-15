@@ -20,8 +20,8 @@ interface HeaderProps {
 	device?: DeviceType
 }
 
-/** Set to `true` to show the "Register" link on `/login` again. Registration page still works by URL. */
-const SHOW_REGISTER_IN_HEADER_ON_LOGIN = false
+/** Set to `false` to hide the auth link in the header on login/registration pages. */
+const SHOW_AUTH_LINK_IN_HEADER = true
 
 export const Header: FC<HeaderProps> = ({ user, isCarrier, device }) => {
 	const { push, pathname } = useLocation()
@@ -71,12 +71,16 @@ export const Header: FC<HeaderProps> = ({ user, isCarrier, device }) => {
 						<div className={styles.right}>
 							{typeof user === 'undefined' ? (
 								<div>
-									{(pathname !== Routes.LOGIN || SHOW_REGISTER_IN_HEADER_ON_LOGIN) && (
+									{SHOW_AUTH_LINK_IN_HEADER && (
 										<a
 											className={styles.link}
-											href={pathname === Routes.LOGIN ? Routes.REGISTRATION : Routes.LOGIN}
+											href={
+												pathname === Routes.REGISTRATION
+													? Routes.LOGIN
+													: Routes.REGISTRATION
+											}
 										>
-											{pathname === Routes.LOGIN ? 'Register' : 'Login'}
+											{pathname === Routes.REGISTRATION ? 'Login' : 'Register'}
 										</a>
 									)}
 								</div>

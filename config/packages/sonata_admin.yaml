@@ -26,6 +26,8 @@ sonata_admin:
                         label: menu.carriers
                     -   route: admin_app_portalloginconsentlog_list
                         label: menu.portal_login_consent_logs
+                    -   route: admin_app_waitinglistapplicant_list
+                        label: menu.waiting_list_applicants
             orders:
                 label:           menu.orders
                 label_catalogue: AppBundle
@@ -335,6 +337,19 @@ services:
                 controller:                ~
                 manager_type:              orm
                 label:                     menu.portal_login_consent_logs
+                label_translator_strategy: sonata.admin.label.strategy.underscore
+                show_in_roles_matrix:      false
+        calls:
+            - [ setTranslationDomain, [ 'AppBundle' ] ]
+
+    App\Admin\WaitingListApplicantAdmin:
+        tags:
+            -   name:                      sonata.admin
+                code:                      ~
+                model_class:               App\Entity\WaitingListApplicant
+                controller:                ~
+                manager_type:              orm
+                label:                     menu.waiting_list_applicants
                 label_translator_strategy: sonata.admin.label.strategy.underscore
                 show_in_roles_matrix:      false
         calls:

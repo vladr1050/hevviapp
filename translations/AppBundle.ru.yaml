@@ -49,6 +49,7 @@ menu:
     notification_rules: Правила уведомлений
     notification_logs:  Журнал уведомлений
     portal_login_consent_logs: Вход в портал и согласие с условиями
+    waiting_list_applicants: Лист ожидания
     terms_of_use:        Условия пользования (портал)
 
 breadcrumb:

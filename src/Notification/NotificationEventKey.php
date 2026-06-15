@@ -38,6 +38,12 @@ final class NotificationEventKey
      */
     public const ORDER_DELIVERED_CARRIER_DOCUMENT = 'ORDER_DELIVERED_CARRIER_DOCUMENT';
 
+    /** Waiting list: confirmation email to the applicant. */
+    public const WAITING_LIST_CONFIRMATION = 'WAITING_LIST_CONFIRMATION';
+
+    /** Waiting list: internal alert to the invoice-issuing operator company. */
+    public const WAITING_LIST_NEW_APPLICATION = 'WAITING_LIST_NEW_APPLICATION';
+
     /** @return list<string> */
     public static function all(): array
     {
@@ -52,6 +58,8 @@ final class NotificationEventKey
             self::ORDER_STATUS_CHANGED_TO_DELIVERED,
             self::ORDER_DELIVERED_SENDER_DOCUMENT,
             self::ORDER_DELIVERED_CARRIER_DOCUMENT,
+            self::WAITING_LIST_CONFIRMATION,
+            self::WAITING_LIST_NEW_APPLICATION,
         ];
     }
 }

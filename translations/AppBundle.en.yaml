@@ -49,6 +49,7 @@ menu:
     notification_rules: Notification rules
     notification_logs:  Notification log
     portal_login_consent_logs: Portal login & terms consent
+    waiting_list_applicants: Waiting list
     terms_of_use:        Terms & Conditions (portal)
 
 breadcrumb:
