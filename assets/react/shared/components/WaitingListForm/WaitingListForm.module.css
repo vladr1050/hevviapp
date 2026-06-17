@@ -1,0 +1,85 @@
+.form {
+	@apply flex flex-col gap-5 w-full;
+}
+
+.landing {
+	@apply gap-4;
+}
+
+.inputs {
+	@apply flex flex-col gap-3 w-full;
+}
+
+.honeypot {
+	@apply absolute opacity-0 pointer-events-none h-0 w-0 overflow-hidden;
+	position: absolute;
+	left: -9999px;
+}
+
+.landingHeading {
+	@apply flex items-center;
+}
+
+.badge {
+	@apply inline-flex items-center rounded-full bg-black text-white text-[20px] leading-[24px] font-semibold px-4 py-1.5;
+}
+
+.terms {
+	@apply w-full;
+}
+
+.termsText {
+	@apply text-sm text-black/80 leading-snug;
+}
+
+.termsLink {
+	@apply underline underline-offset-2 text-black font-medium;
+}
+
+.error {
+	@apply text-red-500 text-sm text-center m-0;
+}
+
+.submit {
+	@apply w-full;
+}
+
+.success {
+	@apply flex flex-col items-center gap-6 w-full animate-fade text-center;
+}
+
+.landingSuccess {
+	@apply py-6;
+}
+
+.successTitle {
+	@apply font-semibold text-2xl text-black m-0;
+}
+
+.successIcon {
+	@apply bg-primary rounded-full w-[120px] h-[120px] flex items-center justify-center text-black;
+}
+
+.successEmail {
+	@apply font-medium text-base m-0;
+}
+
+.successHint {
+	@apply text-base text-black/70 m-0;
+}
+
+.termsModal {
+	@apply flex flex-col gap-4 max-h-[70vh] overflow-y-auto p-2;
+
+	& h2 {
+		@apply text-xl font-semibold m-0;
+	}
+}
+
+.termsBody {
+	@apply text-sm leading-relaxed;
+
+	& :global(p) {
+		@apply mb-3;
+	}
+}

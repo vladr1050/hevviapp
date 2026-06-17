@@ -16,6 +16,9 @@ class WaitingListApplicant extends BaseUUID
     #[ORM\Column(length: 255)]
     private string $email = '';
 
+    #[ORM\Column(length: 32)]
+    private string $phone = '';
+
     #[ORM\Column(length: 16, enumType: WaitingListApplicantType::class)]
     private WaitingListApplicantType $type = WaitingListApplicantType::Sender;
 
@@ -27,6 +30,18 @@ class WaitingListApplicant extends BaseUUID
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function getPhone(): string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(string $phone): static
+    {
+        $this->phone = $phone;
 
         return $this;
     }
@@ -45,6 +60,10 @@ class WaitingListApplicant extends BaseUUID
 
     public function __toString(): string
     {
-        return $this->email !== '' ? $this->email : 'Waiting list applicant';
+        if ($this->email !== '') {
+            return $this->email;
+        }
+
+        return 'Waiting list applicant';
     }
 }

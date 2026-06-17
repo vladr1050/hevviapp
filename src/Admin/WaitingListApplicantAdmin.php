@@ -43,6 +43,7 @@ class WaitingListApplicantAdmin extends BaseAdmin
     {
         $list
             ->add('email')
+            ->add('phone')
             ->add('type')
             ->add('createdAt', 'datetime', [
                 'format' => self::BASE_LIST_DATETIME_FORMAT,
@@ -60,6 +61,7 @@ class WaitingListApplicantAdmin extends BaseAdmin
         $show
             ->add('id')
             ->add('email')
+            ->add('phone')
             ->add('type')
             ->add('createdAt')
             ->add('updatedAt');

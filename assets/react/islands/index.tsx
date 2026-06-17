@@ -3,6 +3,7 @@ export { Header } from './components/Header/Header'
 export { Info } from './components/Info/Info'
 
 // PAGES
+export { LandingPage } from './pages/Landing/Landing'
 export { LoginPage } from './pages/Login/Login'
 export { RegistrationPage } from './pages/Registration/Registration'
 export { RequestsPage } from './pages/Requests/Requests'

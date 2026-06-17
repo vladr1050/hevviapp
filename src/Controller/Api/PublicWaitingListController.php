@@ -45,22 +45,22 @@ final class PublicWaitingListController extends AbstractController
         }
 
         $email = trim((string) ($data['email'] ?? ''));
-        $type = WaitingListApplicantType::tryFromRequest((string) ($data['type'] ?? ''));
-        if ($type === null) {
-            return $this->json(
-                ['error' => 'Field "type" must be "sender" or "carrier".'],
-                Response::HTTP_BAD_REQUEST,
-            );
-        }
+        $phone = trim((string) ($data['phone'] ?? ''));
+        $type = WaitingListApplicantType::tryFromRequest((string) ($data['type'] ?? 'sender'))
+            ?? WaitingListApplicantType::Sender;
 
         if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return $this->json(['error' => 'A valid email address is required.'], Response::HTTP_BAD_REQUEST);
         }
 
+        if ($phone === '') {
+            return $this->json(['error' => 'Phone number is required.'], Response::HTTP_BAD_REQUEST);
+        }
+
         $this->rateLimiter->recordAttempt($clientIp);
 
         try {
-            $this->registrar->register($email, $type);
+            $this->registrar->register($email, $type, $phone);
         } catch (WaitingListEmailExistsException) {
             return $this->json(
                 ['error' => 'A user with this email already exists.', 'code' => 'EMAIL_EXISTS'],

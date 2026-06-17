@@ -1,0 +1,168 @@
+.page {
+	@apply relative min-h-screen bg-white text-black overflow-x-hidden;
+	font-family: 'Instrument_Sans', sans-serif;
+}
+
+.decoLine1,
+.decoLine2,
+.decoLine3 {
+	@apply pointer-events-none absolute select-none z-0;
+}
+
+.decoLine1 {
+	@apply w-[min(456px,40vw)] top-[420px] -left-[8%] opacity-90;
+}
+
+.decoLine2 {
+	@apply w-[min(686px,52vw)] top-[120px] -right-[12%] opacity-90;
+}
+
+.decoLine3 {
+	@apply w-[min(777px,58vw)] top-[520px] right-[8%] opacity-80;
+}
+
+.header {
+	@apply relative z-10 pt-6 md:pt-8;
+}
+
+.headerInner {
+	@apply flex items-center justify-between max-w-[1280px];
+}
+
+.logoLink {
+	@apply inline-flex;
+}
+
+.logo {
+	@apply h-[19px] w-auto md:h-[21px];
+}
+
+.loginCluster {
+	@apply inline-flex transition-opacity hover:opacity-80;
+
+	& img {
+		@apply h-8 w-auto;
+	}
+}
+
+.hero {
+	@apply relative z-10 pt-8 pb-12 md:pt-12 md:pb-20;
+}
+
+.heroInner {
+	@apply grid grid-cols-1 lg:grid-cols-[minmax(320px,520px)_minmax(0,1fr)] gap-10 lg:gap-6 items-center max-w-[1280px];
+}
+
+.heroCopy {
+	@apply flex flex-col gap-6 max-w-[558px];
+}
+
+.heroTitle {
+	@apply m-0 text-[40px] md:text-[54px] leading-[1.1] font-semibold tracking-[-0.02em];
+}
+
+.heroSubtitle {
+	@apply m-0 text-[16px] md:text-[18px] leading-[22px] font-medium text-black/80 max-w-[480px];
+}
+
+.heroCta {
+	@apply w-fit text-[16px] font-medium px-8 py-3;
+}
+
+.heroVisual {
+	@apply flex justify-center lg:justify-end w-full;
+}
+
+.heroComposite {
+	@apply w-full max-w-[1072px] h-auto object-contain;
+}
+
+.registration {
+	@apply relative z-10 py-16 md:py-24 bg-[#f3f3f3];
+}
+
+.registrationInner {
+	@apply grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start max-w-[1280px];
+}
+
+.registrationCopy {
+	@apply flex flex-col gap-4 max-w-[520px];
+
+	& h2 {
+		@apply m-0 text-[32px] leading-[39px] font-semibold;
+	}
+
+	& p {
+		@apply m-0 text-[18px] leading-[22px] font-medium text-black/80;
+	}
+}
+
+.registrationForm {
+	@apply bg-white rounded-[24px] p-6 md:p-8 shadow-[0_8px_40px_rgba(0,0,0,0.06)];
+}
+
+.footer {
+	@apply relative z-10 border-t border-black/10 py-8 bg-white;
+}
+
+.footerInner {
+	@apply flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 max-w-[1280px];
+}
+
+.footerBrand {
+	@apply flex items-center gap-3;
+}
+
+.footerLogo {
+	@apply h-[19px] w-auto;
+}
+
+.footerBeta {
+	@apply rounded-full bg-black text-white text-[10px] uppercase tracking-wide px-2 py-0.5 font-medium;
+}
+
+.footerLinks {
+	@apply flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 text-[14px] font-medium text-black/80;
+
+	& a {
+		@apply hover:text-black hover:underline;
+	}
+}
+
+.footerTerms {
+	@apply text-[14px] font-medium text-black/80 hover:text-black hover:underline bg-transparent border-0 p-0 cursor-pointer;
+}
+
+.termsModal {
+	@apply flex flex-col gap-4 max-h-[70vh] overflow-y-auto p-2;
+
+	& h2 {
+		@apply text-xl font-semibold m-0;
+	}
+}
+
+.termsBody {
+	@apply text-sm leading-relaxed;
+}
+
+.termsError {
+	@apply text-red-500 text-sm;
+}
+
+.mobile .decoLine1,
+.mobile .decoLine2,
+.mobile .decoLine3 {
+	@apply hidden;
+}
+
+.mobile .heroTitle {
+	@apply text-[40px];
+}
+
+.mobile .heroComposite {
+	@apply max-w-full;
+}
+
+.mobile .registrationInner {
+	@apply gap-8;
+}

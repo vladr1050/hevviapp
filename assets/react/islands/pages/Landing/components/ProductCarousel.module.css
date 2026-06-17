@@ -1,0 +1,68 @@
+.section {
+	@apply relative w-full max-w-[1280px] mx-auto px-4 md:px-8 py-[72px] md:py-[96px];
+}
+
+.header {
+	@apply flex items-center justify-between gap-6 mb-8 md:mb-10;
+}
+
+.title {
+	@apply m-0 text-[32px] leading-[39px] font-semibold text-black;
+	font-family: 'Instrument_Sans', sans-serif;
+}
+
+.nextButton {
+	@apply w-10 h-10 md:w-12 md:h-12 rounded-full border border-black/10 bg-white flex items-center justify-center
+		hover:bg-primary transition-colors shrink-0 p-0;
+}
+
+.nextIcon {
+	@apply w-5 h-5 md:w-6 md:h-6 object-contain;
+}
+
+.track {
+	@apply w-full;
+}
+
+.slide {
+	@apply grid grid-cols-1 lg:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)] gap-8 lg:gap-12 items-center;
+}
+
+.visual {
+	@apply flex justify-center lg:justify-start w-full overflow-hidden;
+}
+
+.slideImage {
+	@apply w-full max-w-[662px] h-auto object-contain;
+}
+
+.copy {
+	@apply flex flex-col gap-3 md:gap-4 max-w-[420px];
+
+	& h3 {
+		@apply m-0 text-[18px] leading-[22px] font-semibold text-black;
+		font-family: 'Instrument_Sans', sans-serif;
+	}
+
+	& p {
+		@apply m-0 text-[16px] leading-[22px] font-medium text-black/70;
+		font-family: 'Instrument_Sans', sans-serif;
+	}
+}
+
+.step {
+	@apply text-[32px] leading-[39px] font-semibold text-black;
+	font-family: 'Instrument_Sans', sans-serif;
+}
+
+.indicators {
+	@apply flex items-center gap-2 mt-8;
+}
+
+.indicator {
+	@apply w-2 h-2 rounded-full bg-black/15 transition-all duration-300;
+}
+
+.indicatorActive {
+	@apply w-8 bg-black;
+}

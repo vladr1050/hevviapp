@@ -7,14 +7,16 @@ export interface WaitingListApiError {
 
 export async function apiJoinWaitingList(
 	email: string,
-	type: 'sender' | 'carrier',
-	companyWebsite = ''
+	phone: string,
+	companyWebsite = '',
+	type: 'sender' | 'carrier' = 'sender'
 ): Promise<void> {
 	const res = await fetch(API_BASE, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
 			email,
+			phone,
 			type,
 			company_website: companyWebsite,
 		}),

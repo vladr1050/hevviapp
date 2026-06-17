@@ -68,6 +68,14 @@
 				@apply justify-center;
 			}
 
+			& .formShell {
+				@apply flex flex-col items-center gap-8 w-full;
+			}
+
+			& .title {
+				@apply font-semibold text-3xl text-black text-center m-0 w-full;
+			}
+
 			& .form {
 				@apply flex flex-col items-center justify-between gap-10 w-full h-full;
 			}

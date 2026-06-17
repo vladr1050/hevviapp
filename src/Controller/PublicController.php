@@ -41,7 +41,7 @@ class PublicController extends AbstractController
     #[Route('/', name: 'public_index')]
     public function index(): Response
     {
-        return $this->render('public/user/pages/login.html.twig');
+        return $this->render('public/user/pages/landing.html.twig');
     }
 
      #[Route('/login', name: 'public_login')]

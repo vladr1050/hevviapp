@@ -13,7 +13,7 @@ interface InputProps {
 	className?: string
 	disabled?: boolean
 	required?: boolean
-	type?: 'text' | 'password' | 'email' | 'search'
+	type?: 'text' | 'password' | 'email' | 'search' | 'tel'
 	error?: string | boolean
 
 	control: Control<any>

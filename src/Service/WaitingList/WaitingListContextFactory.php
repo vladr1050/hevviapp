@@ -26,6 +26,7 @@ final class WaitingListContextFactory
 
         return [
             'APPLICANT_EMAIL' => $applicant->getEmail(),
+            'APPLICANT_PHONE' => $applicant->getPhone(),
             'APPLICANT_TYPE' => $applicant->getType()->labelLv(),
             'OPERATOR_NAME' => trim((string) ($issuer?->getName() ?? '')),
             'OPERATOR_PHONE' => trim((string) ($issuer?->getPhone() ?? '')),
