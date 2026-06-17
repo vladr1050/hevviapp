@@ -1,5 +1,5 @@
 .section {
-	@apply relative w-full max-w-[1072px] mx-auto px-4 md:px-0 py-12 md:py-20;
+	@apply relative w-full max-w-[1200px] mx-auto px-4 md:px-0 py-12 md:py-20;
 }
 
 .title {
@@ -12,24 +12,73 @@
 }
 
 .slide {
-	@apply grid grid-cols-1 lg:grid-cols-[minmax(0,1.15fr)_minmax(260px,0.85fr)] gap-8 lg:gap-16 items-center;
+	@apply grid grid-cols-1 lg:grid-cols-[minmax(0,1.7fr)_minmax(260px,1fr)] gap-8 lg:gap-16 items-center;
 }
 
 .visual {
-	@apply relative flex justify-center lg:justify-start w-full;
+	@apply flex justify-center lg:justify-start w-full;
+}
+
+.visualStage {
+	@apply relative w-full max-w-[689px];
+	aspect-ratio: 689 / 407;
 }
 
 .visualAccent {
-	@apply absolute bottom-0 left-0 w-[72%] h-[58%] rounded-[32px] bg-primary -z-0;
-	transform: translate(-6%, 8%);
+	@apply absolute rounded-[32px] bg-primary;
 }
 
-.slideImage {
-	@apply relative z-10 w-full max-w-[662px] h-auto object-contain;
+.accentSlide1 {
+	left: 0;
+	top: 29.1%;
+	width: 73.7%;
+	height: 70.9%;
+}
+
+.accentSlide2 {
+	left: 0;
+	top: 28.6%;
+	width: 74%;
+	height: 71.4%;
+}
+
+.accentSlide3 {
+	left: 0;
+	top: 44%;
+	width: 57.9%;
+	height: 56%;
+}
+
+.slideLayer {
+	@apply absolute object-contain pointer-events-none select-none;
+}
+
+.slideMain {
+	left: 3.8%;
+	top: 0;
+	width: 96.2%;
+	height: 98.5%;
+	z-index: 10;
+}
+
+.slide3Map {
+	left: 3.9%;
+	top: 2.9%;
+	width: 77.2%;
+	height: 89.9%;
+	z-index: 10;
+}
+
+.slide3Phone {
+	left: 72.6%;
+	top: 0;
+	width: 27.4%;
+	height: 95.8%;
+	z-index: 20;
 }
 
 .copy {
-	@apply flex flex-col gap-3 md:gap-4 max-w-[400px] lg:pt-4;
+	@apply flex flex-col gap-3 md:gap-4 max-w-[400px] lg:max-w-[360px];
 
 	& h3 {
 		@apply m-0 text-[18px] leading-[22px] font-semibold text-black;
@@ -48,7 +97,7 @@
 }
 
 .slideNav {
-	@apply flex flex-col gap-4 mt-4 md:mt-6;
+	@apply flex flex-col gap-5 mt-2 md:mt-4;
 }
 
 .indicators {
