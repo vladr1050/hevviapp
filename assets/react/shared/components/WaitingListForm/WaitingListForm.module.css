@@ -16,12 +16,8 @@
 	left: -9999px;
 }
 
-.landingHeading {
-	@apply flex items-center;
-}
-
-.badge {
-	@apply inline-flex items-center rounded-full bg-black text-white text-[20px] leading-[24px] font-semibold px-4 py-1.5;
+.landingTitle {
+	@apply m-0 text-[20px] leading-[24px] font-semibold text-black;
 }
 
 .terms {

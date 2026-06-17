@@ -51,24 +51,12 @@ export const ProductCarousel: FC = () => {
 
 	return (
 		<section ref={sectionRef} className={styles.section} aria-label="How does it work">
-			<div className={styles.header}>
-				<h2 className={styles.title}>How does it work?</h2>
-				<button
-					type="button"
-					className={styles.nextButton}
-					aria-label="Next slide"
-					onClick={() => {
-						manualUntilRef.current = Date.now() + AUTOPLAY_MS
-						goNext()
-					}}
-				>
-					<img src={landingAssets.carouselArrow} alt="" className={styles.nextIcon} />
-				</button>
-			</div>
+			<h2 className={styles.title}>How does it work?</h2>
 
 			<div className={styles.track}>
 				<div className={styles.slide}>
 					<div className={styles.visual}>
+						<div className={styles.visualAccent} aria-hidden="true" />
 						<img
 							src={slide.image}
 							alt=""
@@ -79,23 +67,33 @@ export const ProductCarousel: FC = () => {
 					<div className={styles.copy}>
 						<span className={styles.step}>{slide.step}</span>
 						<h3>{slide.title}</h3>
-						<p>{slide.description.split('\n').map((line, i) => (
-							<span key={line}>
-								{i > 0 && <br />}
-								{line}
-							</span>
-						))}</p>
+						<p>{slide.description}</p>
+
+						<div className={styles.slideNav}>
+							<div className={styles.indicators} aria-hidden="true">
+								{landingSlides.map((item, index) => (
+									<span
+										key={item.step}
+										className={cn(styles.indicator, {
+											[styles.indicatorActive]: index === active,
+										})}
+									/>
+								))}
+							</div>
+							<button
+								type="button"
+								className={styles.nextButton}
+								aria-label="Next slide"
+								onClick={() => {
+									manualUntilRef.current = Date.now() + AUTOPLAY_MS
+									goNext()
+								}}
+							>
+								<img src={landingAssets.carouselArrow} alt="" className={styles.nextIcon} />
+							</button>
+						</div>
 					</div>
 				</div>
-			</div>
-
-			<div className={styles.indicators} aria-hidden="true">
-				{landingSlides.map((item, index) => (
-					<span
-						key={item.step}
-						className={cn(styles.indicator, { [styles.indicatorActive]: index === active })}
-					/>
-				))}
 			</div>
 		</section>
 	)

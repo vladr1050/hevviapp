@@ -158,16 +158,14 @@ export const WaitingListForm: FC<WaitingListFormProps> = ({
 				onSubmit={handleSubmit(onSubmit)}
 			>
 				{variant === 'landing' && (
-					<div className={styles.landingHeading}>
-						<span className={styles.badge}>For cargo senders</span>
-					</div>
+					<h3 className={styles.landingTitle}>For cargo senders</h3>
 				)}
 
 				<div className={styles.inputs}>
 					<Input
 						control={control}
 						name="email"
-						placeholder="janis.doe@gmail.com"
+						placeholder={variant === 'landing' ? 'you@company.com' : 'janis.doe@gmail.com'}
 						label="E-mail"
 						type="email"
 						required
@@ -175,7 +173,7 @@ export const WaitingListForm: FC<WaitingListFormProps> = ({
 					<Input
 						control={control}
 						name="phone"
-						placeholder="+371 20000000"
+						placeholder={variant === 'landing' ? '+371 XX XXX XXX' : '+371 20000000'}
 						label="Phone"
 						type="tel"
 						required

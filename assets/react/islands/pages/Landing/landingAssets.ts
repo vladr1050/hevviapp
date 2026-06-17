@@ -2,22 +2,20 @@ import carouselArrow from './images/carousel-arrow.png'
 import carouselSlide1 from './images/carousel-slide-1.png'
 import carouselSlide2 from './images/carousel-slide-2.png'
 import carouselSlide3 from './images/carousel-slide-3.png'
-import decoLine1 from './images/deco-line-1.png'
-import decoLine2 from './images/deco-line-2.png'
-import decoLine3 from './images/deco-line-3.png'
-import heroComposite from './images/hero-composite.png'
+import heroFeatures from './images/hero-features.png'
+import heroVisual from './images/hero-visual.png'
 import landingMobile from './images/landing-mobile.png'
-import loginCluster from './images/login-cluster.png'
+import logoFooter from './images/logo-footer.png'
 import logo from './images/logo.png'
+import registrationTrucks from './images/registration-trucks.png'
 
 export const landingAssets = {
 	logo,
-	loginCluster,
-	heroComposite,
+	logoFooter,
+	heroVisual,
+	heroFeatures,
+	registrationTrucks,
 	landingMobile,
-	decoLine1,
-	decoLine2,
-	decoLine3,
 	carouselArrow,
 	carouselSlide1,
 	carouselSlide2,
@@ -42,7 +40,7 @@ export const landingSlides: LandingSlide[] = [
 	{
 		step: '02',
 		title: 'Get an instant price',
-		description: 'No tenders, no phone calls.\nThe price appears immediately.',
+		description: 'No tenders, no phone calls. The price appears immediately.',
 		image: carouselSlide2,
 	},
 	{

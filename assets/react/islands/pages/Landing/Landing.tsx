@@ -61,46 +61,69 @@ export const LandingPage: FC<LandingProps> = ({ device }) => {
 
 	return (
 		<div className={cn(styles.page, { [styles.mobile]: isMobile })}>
-			<img src={landingAssets.decoLine1} alt="" className={styles.decoLine1} aria-hidden="true" />
-			<img src={landingAssets.decoLine2} alt="" className={styles.decoLine2} aria-hidden="true" />
-			<img src={landingAssets.decoLine3} alt="" className={styles.decoLine3} aria-hidden="true" />
+			<main className={styles.main}>
+				<section className={styles.heroSection}>
+					<div className={cn('tw-container', styles.heroCard)}>
+						<header className={styles.heroHeader}>
+							<a href="/" className={styles.logoLink} aria-label="Hevvi home">
+								<img src={landingAssets.logo} alt="Hevvi" className={styles.logo} />
+								<span className={styles.betaBadge}>beta</span>
+							</a>
 
-			<header className={styles.header}>
-				<div className={cn('tw-container', styles.headerInner)}>
-					<a href="/" className={styles.logoLink} aria-label="Hevvi home">
-						<img src={landingAssets.logo} alt="Hevvi" className={styles.logo} />
-					</a>
+							<div className={styles.heroNav}>
+								<a href="tel:+37126166597" className={styles.heroContact}>
+									+371 26166597
+								</a>
+								<a href="mailto:support@hevvi.app" className={styles.heroContact}>
+									support@hevvi.app
+								</a>
+								<a href="/login" className={styles.loginLink} aria-label="Login">
+									<span>Login</span>
+									<span className={styles.loginIcon} aria-hidden="true">
+										<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+											<path
+												d="M6 2H3.5C2.67 2 2 2.67 2 3.5v9c0 .83.67 1.5 1.5 1.5H6M10.5 11.5L14 8l-3.5-3.5M14 8H6"
+												stroke="currentColor"
+												strokeWidth="1.5"
+												strokeLinecap="round"
+												strokeLinejoin="round"
+											/>
+										</svg>
+									</span>
+								</a>
+							</div>
+						</header>
 
-					<a href="/login" className={styles.loginCluster} aria-label="Login">
-						<img src={landingAssets.loginCluster} alt="Login" />
-					</a>
-				</div>
-			</header>
+						<div className={styles.heroBody}>
+							<div className={styles.heroCopy}>
+								<h1 className={styles.heroTitle}>
+									Heavy cargo,
+									<br />
+									shipped in 48 hours.
+								</h1>
+								<p className={styles.heroSubtitle}>
+									Order 100kg+ cargo anywhere in Latvia — as easy as booking a taxi ride.
+								</p>
+								<Button type="button" className={styles.heroCta} onClick={scrollToEarlyAccess}>
+									Get early access
+								</Button>
+								<img
+									src={landingAssets.heroFeatures}
+									alt=""
+									className={styles.heroFeatures}
+									loading="eager"
+									aria-hidden="true"
+								/>
+							</div>
 
-			<main>
-				<section className={styles.hero}>
-					<div className={cn('tw-container', styles.heroInner)}>
-						<div className={styles.heroCopy}>
-							<h1 className={styles.heroTitle}>
-								Heavy cargo,
-								<br />
-								shipped in 48 hours.
-							</h1>
-							<p className={styles.heroSubtitle}>
-								Order 100kg+ cargo anywhere in Latvia — as easy as booking a taxi ride.
-							</p>
-							<Button type="button" className={styles.heroCta} onClick={scrollToEarlyAccess}>
-								Get early access
-							</Button>
-						</div>
-
-						<div className={styles.heroVisual}>
-							<img
-								src={landingAssets.heroComposite}
-								alt=""
-								className={styles.heroComposite}
-								loading="eager"
-							/>
+							<div className={styles.heroVisual}>
+								<img
+									src={landingAssets.heroVisual}
+									alt=""
+									className={styles.heroVisualImage}
+									loading="eager"
+								/>
+							</div>
 						</div>
 					</div>
 				</section>
@@ -108,8 +131,8 @@ export const LandingPage: FC<LandingProps> = ({ device }) => {
 				<ProductCarousel />
 
 				<section id="early-access" className={styles.registration}>
-					<div className={cn('tw-container', styles.registrationInner)}>
-						<div className={styles.registrationCopy}>
+					<div className={cn('tw-container', styles.registrationWrap)}>
+						<div className={styles.registrationHeader}>
 							<h2>Claim your early access</h2>
 							<p>
 								We are onboarding early users and testing the platform with real shipments in
@@ -117,8 +140,16 @@ export const LandingPage: FC<LandingProps> = ({ device }) => {
 							</p>
 						</div>
 
-						<div className={styles.registrationForm}>
-							<WaitingListForm variant="landing" />
+						<div className={styles.registrationPanel}>
+							<img
+								src={landingAssets.registrationTrucks}
+								alt=""
+								className={styles.registrationImage}
+								loading="lazy"
+							/>
+							<div className={styles.registrationFormCard}>
+								<WaitingListForm variant="landing" />
+							</div>
 						</div>
 					</div>
 				</section>
@@ -127,17 +158,16 @@ export const LandingPage: FC<LandingProps> = ({ device }) => {
 			<footer className={styles.footer}>
 				<div className={cn('tw-container', styles.footerInner)}>
 					<div className={styles.footerBrand}>
-						<img src={landingAssets.logo} alt="Hevvi" className={styles.footerLogo} />
-						<span className={styles.footerBeta}>beta</span>
+						<img src={landingAssets.logoFooter} alt="Hevvi" className={styles.footerLogo} />
+						<span className={styles.footerTeam}>Hevvi Operations Team</span>
 					</div>
 					<div className={styles.footerLinks}>
-						<a href="mailto:support@hevvi.app">support@hevvi.app</a>
 						<a href="tel:+37126166597">+371 26166597</a>
-						<span>Hevvi Operations Team</span>
+						<a href="mailto:support@hevvi.app">support@hevvi.app</a>
+						<button type="button" className={styles.footerTerms} onClick={() => setTermsOpen(true)}>
+							Terms &amp; Conditions
+						</button>
 					</div>
-					<button type="button" className={styles.footerTerms} onClick={() => setTermsOpen(true)}>
-						Terms &amp; Conditions
-					</button>
 				</div>
 			</footer>
 

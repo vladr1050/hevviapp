@@ -7,7 +7,10 @@
 # Node map (file key H7HtqYOoxZetHunb8PQiHN):
 #   logo              1589:652   Group 1119 / hevvi
 #   login-cluster     1589:659   Login + arrow button
-#   hero-composite    1589:681   Group 633209 (banner + app preview)
+#   hero-visual       1589:611   Group 1185 (3D cargo + map + delivery card)
+#   hero-features     1589:561   Frame 2085 (feature icons row)
+#   registration-trucks 1589:682 Banner (trucks photo)
+#   logo-footer       1589:671   Group 633216 (white logo for dark footer)
 #   carousel-slide-1  1589:706   Frame 1859 — step 01
 #   carousel-slide-2  1589:1210  Group 1166 — step 02
 #   carousel-slide-3  1589:1225  Frame 552 — step 03
@@ -23,15 +26,14 @@ mkdir -p "$OUT_DIR"
 
 declare -A NODES=(
   [logo]="1589:652"
-  [login-cluster]="1589:659"
-  [hero-composite]="1589:681"
+  [hero-visual]="1589:611"
+  [hero-features]="1589:561"
+  [registration-trucks]="1589:682"
+  [logo-footer]="1589:671"
   [carousel-slide-1]="1589:706"
   [carousel-slide-2]="1589:1210"
   [carousel-slide-3]="1589:1225"
   [carousel-arrow]="1589:1009"
-  [deco-line-1]="1589:550"
-  [deco-line-2]="1589:551"
-  [deco-line-3]="1589:552"
   [landing-mobile]="1589:1262"
 )
 
@@ -57,15 +59,14 @@ if resp.get("err"):
 images = resp.get("images", {})
 names = {
     "1589:652": "logo",
-    "1589:659": "login-cluster",
-    "1589:681": "hero-composite",
+    "1589:611": "hero-visual",
+    "1589:561": "hero-features",
+    "1589:682": "registration-trucks",
+    "1589:671": "logo-footer",
     "1589:706": "carousel-slide-1",
     "1589:1210": "carousel-slide-2",
     "1589:1225": "carousel-slide-3",
     "1589:1009": "carousel-arrow",
-    "1589:550": "deco-line-1",
-    "1589:551": "deco-line-2",
-    "1589:552": "deco-line-3",
     "1589:1262": "landing-mobile",
 }
 for nid, name in names.items():

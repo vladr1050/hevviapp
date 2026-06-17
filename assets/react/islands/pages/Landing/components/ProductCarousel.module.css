@@ -1,23 +1,10 @@
 .section {
-	@apply relative w-full max-w-[1280px] mx-auto px-4 md:px-8 py-[72px] md:py-[96px];
-}
-
-.header {
-	@apply flex items-center justify-between gap-6 mb-8 md:mb-10;
+	@apply relative w-full max-w-[1072px] mx-auto px-4 md:px-0 py-12 md:py-20;
 }
 
 .title {
-	@apply m-0 text-[32px] leading-[39px] font-semibold text-black;
+	@apply m-0 mb-8 md:mb-12 text-[32px] leading-[39px] font-semibold text-black;
 	font-family: 'Instrument_Sans', sans-serif;
-}
-
-.nextButton {
-	@apply w-10 h-10 md:w-12 md:h-12 rounded-full border border-black/10 bg-white flex items-center justify-center
-		hover:bg-primary transition-colors shrink-0 p-0;
-}
-
-.nextIcon {
-	@apply w-5 h-5 md:w-6 md:h-6 object-contain;
 }
 
 .track {
@@ -25,19 +12,24 @@
 }
 
 .slide {
-	@apply grid grid-cols-1 lg:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)] gap-8 lg:gap-12 items-center;
+	@apply grid grid-cols-1 lg:grid-cols-[minmax(0,1.15fr)_minmax(260px,0.85fr)] gap-8 lg:gap-16 items-center;
 }
 
 .visual {
-	@apply flex justify-center lg:justify-start w-full overflow-hidden;
+	@apply relative flex justify-center lg:justify-start w-full;
+}
+
+.visualAccent {
+	@apply absolute bottom-0 left-0 w-[72%] h-[58%] rounded-[32px] bg-primary -z-0;
+	transform: translate(-6%, 8%);
 }
 
 .slideImage {
-	@apply w-full max-w-[662px] h-auto object-contain;
+	@apply relative z-10 w-full max-w-[662px] h-auto object-contain;
 }
 
 .copy {
-	@apply flex flex-col gap-3 md:gap-4 max-w-[420px];
+	@apply flex flex-col gap-3 md:gap-4 max-w-[400px] lg:pt-4;
 
 	& h3 {
 		@apply m-0 text-[18px] leading-[22px] font-semibold text-black;
@@ -55,14 +47,26 @@
 	font-family: 'Instrument_Sans', sans-serif;
 }
 
+.slideNav {
+	@apply flex flex-col gap-4 mt-4 md:mt-6;
+}
+
 .indicators {
-	@apply flex items-center gap-2 mt-8;
+	@apply flex items-center gap-2;
 }
 
 .indicator {
-	@apply w-2 h-2 rounded-full bg-black/15 transition-all duration-300;
+	@apply w-2 h-2 rounded-full bg-black/15 transition-colors duration-300;
 }
 
 .indicatorActive {
-	@apply w-8 bg-black;
+	@apply bg-black;
+}
+
+.nextButton {
+	@apply w-fit p-0 bg-transparent border-0 cursor-pointer hover:opacity-70 transition-opacity;
+}
+
+.nextIcon {
+	@apply w-5 h-5 object-contain;
 }
