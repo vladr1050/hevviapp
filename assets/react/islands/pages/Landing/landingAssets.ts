@@ -1,5 +1,6 @@
 import carouselArrow from './images/carousel-arrow.png'
-import carouselSlide1 from './images/carousel-slide-1.png'
+import carouselSlide1Accent from './images/carousel-slide-1-accent.png'
+import carouselSlide1Form from './images/carousel-slide-1.png'
 import carouselSlide2 from './images/carousel-slide-2.png'
 import carouselSlide3Map from './images/carousel-slide-3-map.png'
 import carouselSlide3Phone from './images/carousel-slide-3-phone.png'
@@ -18,22 +19,31 @@ export const landingAssets = {
 	registrationTrucks,
 	landingMobile,
 	carouselArrow,
-	carouselSlide1,
+	carouselSlide1Form,
+	carouselSlide1Accent,
 	carouselSlide2,
 	carouselSlide3Map,
 	carouselSlide3Phone,
 } as const
 
+export type LandingSlideLayerClass =
+	| 'slide1Accent'
+	| 'slide1Form'
+	| 'slideMain'
+	| 'slide3Map'
+	| 'slide3Phone'
+
 export type LandingSlideLayer = {
 	image: string
-	className: 'slideMain' | 'slide3Map' | 'slide3Phone'
+	className: LandingSlideLayerClass
 }
 
 export type LandingSlide = {
 	step: string
 	title: string
 	description: string
-	accentClass: 'accentSlide1' | 'accentSlide2' | 'accentSlide3'
+	accentClass?: 'accentSlide2' | 'accentSlide3'
+	stageClass?: 'stageSlide1'
 	layers: LandingSlideLayer[]
 }
 
@@ -43,8 +53,11 @@ export const landingSlides: LandingSlide[] = [
 		title: 'Add your cargo',
 		description:
 			'Select item type, fill in dimensions, weight, and quantity. Add pickup and delivery addresses, pick a date.',
-		accentClass: 'accentSlide1',
-		layers: [{ image: carouselSlide1, className: 'slideMain' }],
+		stageClass: 'stageSlide1',
+		layers: [
+			{ image: carouselSlide1Accent, className: 'slide1Accent' },
+			{ image: carouselSlide1Form, className: 'slide1Form' },
+		],
 	},
 	{
 		step: '02',

@@ -12,6 +12,7 @@
 #   registration-trucks 1589:682 Banner (trucks photo)
 #   logo-footer       1589:671   Group 633216 (white logo for dark footer)
 #   carousel-slide-1      1589:706   Frame 1859 — step 01 form
+#   carousel-slide-1-accent 1589:554 Frame 1762 — step 01 green accent
 #   carousel-slide-2      1589:1011  Group 633214 — step 02 price card + map
 #   carousel-slide-3-map  1589:1210  Group 1166 — step 03 map
 #   carousel-slide-3-phone 1589:1225 Frame 552 — step 03 status phone
@@ -32,6 +33,7 @@ declare -A NODES=(
   [registration-trucks]="1589:682"
   [logo-footer]="1589:671"
   [carousel-slide-1]="1589:706"
+  [carousel-slide-1-accent]="1589:554"
   [carousel-slide-2]="1589:1011"
   [carousel-slide-3-map]="1589:1210"
   [carousel-slide-3-phone]="1589:1225"
@@ -66,6 +68,7 @@ names = {
     "1589:682": "registration-trucks",
     "1589:671": "logo-footer",
     "1589:706": "carousel-slide-1",
+    "1589:554": "carousel-slide-1-accent",
     "1589:1011": "carousel-slide-2",
     "1589:1210": "carousel-slide-3-map",
     "1589:1225": "carousel-slide-3-phone",

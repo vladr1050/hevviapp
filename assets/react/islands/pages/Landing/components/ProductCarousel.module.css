@@ -24,15 +24,14 @@
 	aspect-ratio: 689 / 407;
 }
 
-.visualAccent {
-	@apply absolute rounded-[32px] bg-primary;
+/* Slide 1: Frame 1762 (507×290) behind Frame 1859 (662×380), bbox 688×409 */
+.stageSlide1 {
+	max-width: 688px;
+	aspect-ratio: 688 / 409;
 }
 
-.accentSlide1 {
-	left: 0;
-	top: 29.1%;
-	width: 73.7%;
-	height: 70.9%;
+.visualAccent {
+	@apply absolute rounded-[32px] bg-primary;
 }
 
 .accentSlide2 {
@@ -51,6 +50,24 @@
 
 .slideLayer {
 	@apply absolute object-contain pointer-events-none select-none;
+}
+
+.slide1Accent {
+	left: 0;
+	top: 29.095%;
+	width: 73.692%;
+	height: 70.905%;
+	z-index: 1;
+	object-fit: fill;
+}
+
+.slide1Form {
+	left: 3.779%;
+	top: 0;
+	width: 96.221%;
+	height: 92.909%;
+	z-index: 10;
+	object-fit: fill;
 }
 
 .slideMain {
