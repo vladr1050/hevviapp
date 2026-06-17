@@ -20,18 +20,6 @@
 	@apply m-0 text-[20px] leading-[24px] font-semibold text-black;
 }
 
-.terms {
-	@apply w-full;
-}
-
-.termsText {
-	@apply text-sm text-black/80 leading-snug;
-}
-
-.termsLink {
-	@apply underline underline-offset-2 text-black font-medium;
-}
-
 .error {
 	@apply text-red-500 text-sm text-center m-0;
 }
@@ -62,20 +50,4 @@
 
 .successHint {
 	@apply text-base text-black/70 m-0;
-}
-
-.termsModal {
-	@apply flex flex-col gap-4 max-h-[70vh] overflow-y-auto p-2;
-
-	& h2 {
-		@apply text-xl font-semibold m-0;
-	}
-}
-
-.termsBody {
-	@apply text-sm leading-relaxed;
-
-	& :global(p) {
-		@apply mb-3;
-	}
 }
