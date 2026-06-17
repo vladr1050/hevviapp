@@ -1,9 +1,9 @@
 .section {
-	@apply relative w-full max-w-[1200px] mx-auto px-4 md:px-0 py-12 md:py-20;
+	@apply relative w-full max-w-[1280px] mx-auto px-4 md:px-10 py-16 md:py-20;
 }
 
 .title {
-	@apply m-0 mb-8 md:mb-12 text-[32px] leading-[39px] font-semibold text-black;
+	@apply m-0 mb-10 md:mb-12 text-[32px] leading-[39px] font-semibold text-black;
 	font-family: 'Instrument_Sans', sans-serif;
 }
 
@@ -12,7 +12,7 @@
 }
 
 .slide {
-	@apply grid grid-cols-1 lg:grid-cols-[minmax(0,1.7fr)_minmax(260px,1fr)] gap-8 lg:gap-16 items-center;
+	@apply grid grid-cols-1 lg:grid-cols-[minmax(0,1.72fr)_300px] gap-10 lg:gap-16 items-center;
 }
 
 .visual {
@@ -20,82 +20,106 @@
 }
 
 .visualStage {
-	@apply relative w-full max-w-[689px];
-	aspect-ratio: 689 / 407;
+	@apply relative w-full;
 }
 
-/* Slide 1: Frame 1762 (507×290) behind Frame 1859 (662×380), bbox 688×409 */
 .stageSlide1 {
 	max-width: 688px;
 	aspect-ratio: 688 / 409;
 }
 
-.visualAccent {
-	@apply absolute rounded-[32px] bg-primary;
+.stageSlide2 {
+	max-width: 685px;
+	aspect-ratio: 685 / 405;
 }
 
-.accentSlide2 {
-	left: 0;
-	top: 28.6%;
-	width: 74%;
-	height: 71.4%;
-}
-
-.accentSlide3 {
-	left: 0;
-	top: 44%;
-	width: 57.9%;
-	height: 56%;
+.stageSlide3 {
+	max-width: 689px;
+	aspect-ratio: 689 / 407;
 }
 
 .slideLayer {
-	@apply absolute object-contain pointer-events-none select-none;
+	@apply absolute pointer-events-none select-none;
+	object-fit: fill;
 }
 
+/* Slide 1 — Frame 1762 behind Frame 1859, bbox 688×409 */
 .slide1Accent {
 	left: 0;
 	top: 29.095%;
-	width: 73.692%;
+	width: 73.742%;
 	height: 70.905%;
 	z-index: 1;
-	object-fit: fill;
 }
 
 .slide1Form {
-	left: 3.779%;
+	left: 3.782%;
 	top: 0;
-	width: 96.221%;
-	height: 92.909%;
+	width: 96.218%;
+	height: 93.003%;
 	z-index: 10;
-	object-fit: fill;
 }
 
-.slideMain {
-	left: 3.8%;
+.slide1Cursor {
+	left: 72.142%;
+	top: 81.174%;
+	width: 2.834%;
+	height: 7.623%;
+	z-index: 20;
+}
+
+/* Slide 2 — carousel 1611:18815, bbox 685×405 */
+.slide2Accent {
+	left: 0;
+	top: 28.395%;
+	width: 74.015%;
+	height: 71.605%;
+	z-index: 1;
+}
+
+.slide2Main {
+	left: 3.796%;
 	top: 0;
-	width: 96.2%;
-	height: 98.5%;
+	width: 96.204%;
+	height: 93.833%;
 	z-index: 10;
+}
+
+.slide2Cursor {
+	left: 51.387%;
+	top: 90.864%;
+	width: 2.845%;
+	height: 7.698%;
+	z-index: 20;
+}
+
+/* Slide 3 — carousel 1611:18949, bbox 689×407 */
+.slide3Accent {
+	left: 0;
+	top: 43.98%;
+	width: 57.91%;
+	height: 56.02%;
+	z-index: 1;
 }
 
 .slide3Map {
-	left: 3.9%;
-	top: 2.9%;
-	width: 77.2%;
-	height: 89.9%;
+	left: 3.919%;
+	top: 2.948%;
+	width: 77.213%;
+	height: 89.926%;
 	z-index: 10;
 }
 
 .slide3Phone {
-	left: 72.6%;
+	left: 72.569%;
 	top: 0;
-	width: 27.4%;
-	height: 95.8%;
+	width: 27.431%;
+	height: 95.823%;
 	z-index: 20;
 }
 
 .copy {
-	@apply flex flex-col gap-3 md:gap-4 max-w-[400px] lg:max-w-[360px];
+	@apply flex flex-col gap-3 max-w-[300px];
 
 	& h3 {
 		@apply m-0 text-[18px] leading-[22px] font-semibold text-black;
@@ -114,7 +138,7 @@
 }
 
 .slideNav {
-	@apply flex flex-col gap-5 mt-2 md:mt-4;
+	@apply flex flex-col gap-5 mt-4;
 }
 
 .indicators {

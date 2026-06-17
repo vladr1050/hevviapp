@@ -56,13 +56,7 @@ export const ProductCarousel: FC = () => {
 			<div className={styles.track}>
 				<div className={styles.slide}>
 					<div className={styles.visual}>
-						<div className={cn(styles.visualStage, slide.stageClass && styles[slide.stageClass])}>
-							{slide.accentClass && (
-								<div
-									className={cn(styles.visualAccent, styles[slide.accentClass])}
-									aria-hidden="true"
-								/>
-							)}
+						<div className={cn(styles.visualStage, styles[slide.stageClass])}>
 							{slide.layers.map((layer) => (
 								<img
 									key={layer.className}

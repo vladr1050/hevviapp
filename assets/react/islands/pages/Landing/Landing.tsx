@@ -102,7 +102,7 @@ export const LandingPage: FC<LandingProps> = ({ device }) => {
 									shipped in 48 hours.
 								</h1>
 								<p className={styles.heroSubtitle}>
-									Order 100kg+ cargo anywhere in Latvia — as easy as booking a taxi ride.
+									Order 100kg+ cargo anywhere in Latvia - as easy as booking a taxi ride.
 								</p>
 								<Button type="button" className={styles.heroCta} onClick={scrollToEarlyAccess}>
 									Get early access

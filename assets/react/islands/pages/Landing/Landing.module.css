@@ -4,19 +4,19 @@
 }
 
 .main {
-	@apply flex flex-col gap-0;
+	@apply flex flex-col;
 }
 
 .heroSection {
-	@apply pt-4 pb-8 md:pt-6 md:pb-12;
+	@apply pt-6 pb-10 md:pt-10 md:pb-14;
 }
 
 .heroCard {
-	@apply max-w-[1200px] bg-white rounded-[40px] px-5 py-6 md:px-10 md:py-10 lg:px-12 lg:py-12;
+	@apply max-w-[1200px] bg-white rounded-[40px] px-6 py-8 md:px-10 md:py-10 lg:px-10 lg:py-12;
 }
 
 .heroHeader {
-	@apply flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8 md:mb-12;
+	@apply flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-10 md:mb-12;
 }
 
 .logoLink {
@@ -32,7 +32,7 @@
 }
 
 .heroNav {
-	@apply flex flex-wrap items-center gap-x-5 gap-y-2 text-[14px] font-medium text-black/70;
+	@apply flex flex-wrap items-center gap-x-6 gap-y-2 text-[14px] font-medium text-black/70;
 }
 
 .heroContact {
@@ -48,7 +48,7 @@
 }
 
 .heroBody {
-	@apply grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(320px,542px)] gap-8 lg:gap-10 items-center;
+	@apply grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_542px] gap-10 lg:gap-12 items-center;
 }
 
 .heroCopy {
@@ -56,19 +56,19 @@
 }
 
 .heroTitle {
-	@apply m-0 text-[40px] md:text-[54px] leading-[1.1] font-semibold tracking-[-0.02em];
+	@apply m-0 text-[40px] md:text-[48px] leading-[1.1] font-semibold tracking-normal;
 }
 
 .heroSubtitle {
-	@apply m-0 text-[16px] md:text-[18px] leading-[22px] font-medium text-black/70 max-w-[420px];
+	@apply m-0 text-[18px] leading-[22px] font-medium text-black/70 max-w-[353px];
 }
 
 .heroCta {
-	@apply w-fit text-[16px] font-medium px-8 py-3;
+	@apply w-fit text-[16px] leading-[20px] font-medium px-8 py-3;
 }
 
 .heroFeatures {
-	@apply w-full max-w-[472px] h-auto object-contain mt-2;
+	@apply w-full max-w-[472px] h-auto object-contain;
 }
 
 .heroVisual {
@@ -80,7 +80,7 @@
 }
 
 .registration {
-	@apply py-12 md:py-20;
+	@apply py-16 md:py-20;
 }
 
 .registrationWrap {
@@ -88,7 +88,7 @@
 }
 
 .registrationHeader {
-	@apply flex flex-col gap-4 max-w-[520px];
+	@apply flex flex-col gap-4 max-w-[439px];
 
 	& h2 {
 		@apply m-0 text-[32px] leading-[39px] font-semibold;
@@ -100,15 +100,15 @@
 }
 
 .registrationPanel {
-	@apply grid grid-cols-1 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)] gap-0 bg-[#ebebeb] rounded-[40px] overflow-hidden min-h-[320px] lg:min-h-[514px];
+	@apply relative grid grid-cols-1 lg:grid-cols-[minmax(0,707fr)_429fr] gap-0 bg-[#ebebeb] rounded-[40px] overflow-hidden min-h-[320px] lg:min-h-[514px];
 }
 
 .registrationImage {
-	@apply w-full h-full min-h-[220px] lg:min-h-0 object-cover object-center;
+	@apply w-full h-full min-h-[240px] lg:min-h-[514px] object-cover object-center;
 }
 
 .registrationFormCard {
-	@apply bg-white m-4 md:m-6 lg:m-8 lg:ml-0 rounded-[24px] p-6 md:p-8 shadow-[0_8px_40px_rgba(0,0,0,0.06)] self-center w-[calc(100%-2rem)] lg:w-auto lg:max-w-[360px] lg:justify-self-end;
+	@apply bg-white m-4 md:m-6 lg:m-8 lg:ml-0 rounded-[24px] p-6 md:p-8 shadow-[0_8px_40px_rgba(0,0,0,0.06)] self-center w-[calc(100%-2rem)] lg:w-full lg:max-w-[360px] lg:justify-self-end;
 }
 
 .footer {
@@ -116,7 +116,7 @@
 }
 
 .footerInner {
-	@apply flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 max-w-[1280px];
+	@apply flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 max-w-[1280px] px-4 md:px-10;
 }
 
 .footerBrand {
@@ -128,11 +128,11 @@
 }
 
 .footerTeam {
-	@apply text-[14px] font-medium text-white/50;
+	@apply text-[14px] leading-[17px] font-medium text-white/50;
 }
 
 .footerLinks {
-	@apply flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-8 text-[14px] font-medium text-white/50;
+	@apply flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-8 text-[14px] leading-[17px] font-medium text-white/50;
 
 	& a {
 		@apply hover:text-white transition-colors;
@@ -140,7 +140,7 @@
 }
 
 .footerTerms {
-	@apply text-left text-[14px] font-medium text-white/50 hover:text-white transition-colors bg-transparent border-0 p-0 cursor-pointer;
+	@apply text-left text-[14px] leading-[17px] font-medium text-white/50 hover:text-white transition-colors bg-transparent border-0 p-0 cursor-pointer;
 }
 
 .termsModal {

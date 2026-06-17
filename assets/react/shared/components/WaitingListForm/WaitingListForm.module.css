@@ -18,6 +18,7 @@
 
 .landingTitle {
 	@apply m-0 text-[20px] leading-[24px] font-semibold text-black;
+	font-family: 'Instrument_Sans', sans-serif;
 }
 
 .error {
