@@ -96,18 +96,20 @@ export const LandingPage: FC<LandingProps> = ({ device }) => {
 					<div className={styles.heroCardWrap}>
 						<div className={styles.heroCard}>
 							<div className={styles.heroBody}>
-							<div className={styles.heroCopy}>
-								<h1 className={styles.heroTitle}>
-									Heavy cargo,
-									<br />
-									shipped in 48 hours.
-								</h1>
-								<p className={styles.heroSubtitle}>
-									Order 100kg+ cargo anywhere in Latvia - as easy as booking a taxi ride.
-								</p>
-								<Button type="button" className={styles.heroCta} onClick={scrollToEarlyAccess}>
-									Get early access
-								</Button>
+								<div className={styles.heroCopy}>
+									<h1 className={styles.heroTitle}>
+										Heavy cargo,
+										<br />
+										shipped in 48 hours.
+									</h1>
+									<p className={styles.heroSubtitle}>
+										Order 100kg+ cargo anywhere in Latvia - as easy as booking a taxi ride.
+									</p>
+									<Button type="button" className={styles.heroCta} onClick={scrollToEarlyAccess}>
+										Get early access
+									</Button>
+								</div>
+
 								<img
 									src={landingAssets.heroFeatures}
 									alt=""
@@ -115,16 +117,15 @@ export const LandingPage: FC<LandingProps> = ({ device }) => {
 									loading="eager"
 									aria-hidden="true"
 								/>
-							</div>
 
-							<div className={styles.heroVisual}>
-								<img
-									src={landingAssets.heroVisual}
-									alt=""
-									className={styles.heroVisualImage}
-									loading="eager"
-								/>
-							</div>
+								<div className={styles.heroVisual}>
+									<img
+										src={landingAssets.heroVisual}
+										alt=""
+										className={styles.heroVisualImage}
+										loading="eager"
+									/>
+								</div>
 							</div>
 						</div>
 					</div>
