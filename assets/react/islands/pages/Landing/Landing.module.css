@@ -211,7 +211,7 @@
 @media (min-width: 1024px) {
 	.registrationPanel {
 		height: 514px;
-		margin-bottom: -63px;
+		margin-bottom: -31px;
 	}
 
 	.registrationBanner {
@@ -241,11 +241,22 @@
 .footer {
 	@apply relative z-[1] text-white;
 	background: #161616;
-	min-height: 136px;
+	height: 104px;
+	min-height: 104px;
 }
 
 .footerInner {
-	@apply w-full max-w-[1280px] mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 min-h-[136px] px-4 md:px-10 lg:px-[104px] py-8 lg:py-0;
+	@apply w-full max-w-[1280px] mx-auto flex flex-col sm:flex-row sm:justify-between px-4 md:px-10 lg:px-[104px];
+	min-height: 104px;
+	padding-top: 40px;
+}
+
+@media (min-width: 1024px) {
+	.footerInner {
+		/* 31px panel overlap + 23px below frame bottom */
+		padding-top: 54px;
+		align-items: flex-start;
+	}
 }
 
 .footerBrand {
@@ -257,19 +268,29 @@
 }
 
 .footerTeam {
-	@apply text-[14px] leading-[17px] font-medium text-white/50;
+	@apply text-[14px] font-medium leading-normal text-white/40;
+	font-family: 'Instrument_Sans', sans-serif;
 }
 
 .footerLinks {
-	@apply flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-9 text-[14px] leading-[17px] font-medium text-white/50;
+	@apply flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-9 text-[14px] font-medium leading-normal text-white/40;
+	font-family: 'Instrument_Sans', sans-serif;
 
 	& a {
-		@apply hover:text-white transition-colors;
+		@apply text-white/40 hover:text-white transition-colors;
+	}
+}
+
+@media (min-width: 1024px) {
+	.footerLinks {
+		/* 28px below frame bottom vs 23px for logo row */
+		margin-top: 5px;
 	}
 }
 
 .footerTerms {
-	@apply text-left text-[14px] leading-[17px] font-medium text-white/50 hover:text-white transition-colors bg-transparent border-0 p-0 cursor-pointer;
+	@apply text-left text-[14px] font-medium leading-normal text-white/40 hover:text-white transition-colors bg-transparent border-0 p-0 cursor-pointer;
+	font-family: 'Instrument_Sans', sans-serif;
 }
 
 .termsModal {
