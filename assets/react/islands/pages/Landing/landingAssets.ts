@@ -28,6 +28,8 @@ export type LandingSlide = {
 	description: string
 	stageClass: 'stageSlide1' | 'stageSlide2' | 'stageSlide3'
 	visual: string
+	visualWidth: number
+	visualHeight: number
 }
 
 export const landingSlides: LandingSlide[] = [
@@ -38,6 +40,8 @@ export const landingSlides: LandingSlide[] = [
 			'Select item type, fill in dimensions, weight, and quantity. Add pickup and delivery addresses, pick a date.',
 		stageClass: 'stageSlide1',
 		visual: carouselSlide1Visual,
+		visualWidth: 630,
+		visualHeight: 356,
 	},
 	{
 		step: '02',
@@ -45,6 +49,8 @@ export const landingSlides: LandingSlide[] = [
 		description: 'No tenders, no phone calls. The price appears immediately.',
 		stageClass: 'stageSlide2',
 		visual: carouselSlide2Visual,
+		visualWidth: 628,
+		visualHeight: 351,
 	},
 	{
 		step: '03',
@@ -53,5 +59,7 @@ export const landingSlides: LandingSlide[] = [
 			'Pay in one click. A matched, insured carrier picks up your pallet and delivers within 48 hours.',
 		stageClass: 'stageSlide3',
 		visual: carouselSlide3Visual,
+		visualWidth: 613,
+		visualHeight: 339,
 	},
 ]

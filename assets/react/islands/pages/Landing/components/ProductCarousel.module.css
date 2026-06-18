@@ -24,19 +24,19 @@
 }
 
 .visualImage {
-	@apply block w-full h-auto;
+	@apply block w-full h-auto max-w-full;
 }
 
 .stageSlide1 {
-	max-width: 570px;
+	max-width: 630px;
 }
 
 .stageSlide2 {
-	max-width: 623px;
+	max-width: 628px;
 }
 
 .stageSlide3 {
-	max-width: 611px;
+	max-width: 613px;
 }
 
 .copy {

@@ -60,8 +60,11 @@ export const ProductCarousel: FC = () => {
 							<img
 								src={slide.visual}
 								alt=""
+								width={slide.visualWidth}
+								height={slide.visualHeight}
 								className={styles.visualImage}
 								loading="lazy"
+								decoding="async"
 							/>
 						</div>
 					</div>
