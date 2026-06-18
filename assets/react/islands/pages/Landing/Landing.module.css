@@ -8,15 +8,19 @@
 }
 
 .heroSection {
-	@apply pt-6 pb-10 md:pt-10 md:pb-14;
-}
-
-.heroCard {
-	@apply max-w-[1200px] bg-white rounded-[40px] px-6 py-8 md:px-10 md:py-10 lg:px-10 lg:py-12;
+	@apply pb-10 md:pb-14;
 }
 
 .heroHeader {
-	@apply flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-10 md:mb-12;
+	@apply w-full max-w-[1280px] mx-auto flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pt-[21px] pb-[17px] px-4 md:px-10 lg:pl-[104px] lg:pr-[175px];
+}
+
+.heroCardWrap {
+	@apply w-full max-w-[1280px] mx-auto px-[40px];
+}
+
+.heroCard {
+	@apply w-full bg-white rounded-[40px] px-6 py-8 md:px-10 md:py-10 lg:px-10 lg:py-12;
 }
 
 .logoLink {
@@ -32,15 +36,15 @@
 }
 
 .heroNav {
-	@apply flex flex-wrap items-center gap-x-6 gap-y-2 text-[14px] font-medium text-black/70;
+	@apply flex flex-wrap items-center gap-x-6 gap-y-2;
 }
 
 .heroContact {
-	@apply hover:text-black transition-colors;
+	@apply text-[12px] font-medium leading-normal text-black/70 hover:text-black transition-colors;
 }
 
 .loginLink {
-	@apply inline-flex items-center gap-2 text-black font-medium hover:opacity-80 transition-opacity;
+	@apply inline-flex items-center gap-2 text-[14px] text-black font-medium hover:opacity-80 transition-opacity;
 }
 
 .loginIcon {
@@ -159,6 +163,14 @@
 	@apply text-red-500 text-sm;
 }
 
+.mobile .heroHeader {
+	@apply px-4 pt-4 pb-3;
+}
+
+.mobile .heroCardWrap {
+	@apply px-4;
+}
+
 .mobile .heroCard {
 	@apply rounded-[28px] px-4 py-5;
 }
@@ -184,5 +196,9 @@
 }
 
 .mobile .heroNav {
-	@apply gap-x-4 text-[13px];
+	@apply gap-x-4;
+}
+
+.mobile .heroContact {
+	@apply text-[12px];
 }

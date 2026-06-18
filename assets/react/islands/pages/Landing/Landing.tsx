@@ -63,38 +63,39 @@ export const LandingPage: FC<LandingProps> = ({ device }) => {
 		<div className={cn(styles.page, { [styles.mobile]: isMobile })}>
 			<main className={styles.main}>
 				<section className={styles.heroSection}>
-					<div className={cn('tw-container', styles.heroCard)}>
-						<header className={styles.heroHeader}>
-							<a href="/" className={styles.logoLink} aria-label="Hevvi home">
-								<img src={landingAssets.logo} alt="Hevvi" className={styles.logo} />
-								<span className={styles.betaBadge}>beta</span>
+					<header className={styles.heroHeader}>
+						<a href="/" className={styles.logoLink} aria-label="Hevvi home">
+							<img src={landingAssets.logo} alt="Hevvi" className={styles.logo} />
+							<span className={styles.betaBadge}>beta</span>
+						</a>
+
+						<div className={styles.heroNav}>
+							<a href="tel:+37126166597" className={styles.heroContact}>
+								+371 26166597
 							</a>
+							<a href="mailto:support@hevvi.app" className={styles.heroContact}>
+								support@hevvi.app
+							</a>
+							<a href="/login" className={styles.loginLink} aria-label="Login">
+								<span>Login</span>
+								<span className={styles.loginIcon} aria-hidden="true">
+									<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+										<path
+											d="M6 2H3.5C2.67 2 2 2.67 2 3.5v9c0 .83.67 1.5 1.5 1.5H6M10.5 11.5L14 8l-3.5-3.5M14 8H6"
+											stroke="currentColor"
+											strokeWidth="1.5"
+											strokeLinecap="round"
+											strokeLinejoin="round"
+										/>
+									</svg>
+								</span>
+							</a>
+						</div>
+					</header>
 
-							<div className={styles.heroNav}>
-								<a href="tel:+37126166597" className={styles.heroContact}>
-									+371 26166597
-								</a>
-								<a href="mailto:support@hevvi.app" className={styles.heroContact}>
-									support@hevvi.app
-								</a>
-								<a href="/login" className={styles.loginLink} aria-label="Login">
-									<span>Login</span>
-									<span className={styles.loginIcon} aria-hidden="true">
-										<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-											<path
-												d="M6 2H3.5C2.67 2 2 2.67 2 3.5v9c0 .83.67 1.5 1.5 1.5H6M10.5 11.5L14 8l-3.5-3.5M14 8H6"
-												stroke="currentColor"
-												strokeWidth="1.5"
-												strokeLinecap="round"
-												strokeLinejoin="round"
-											/>
-										</svg>
-									</span>
-								</a>
-							</div>
-						</header>
-
-						<div className={styles.heroBody}>
+					<div className={styles.heroCardWrap}>
+						<div className={styles.heroCard}>
+							<div className={styles.heroBody}>
 							<div className={styles.heroCopy}>
 								<h1 className={styles.heroTitle}>
 									Heavy cargo,
@@ -123,6 +124,7 @@ export const LandingPage: FC<LandingProps> = ({ device }) => {
 									className={styles.heroVisualImage}
 									loading="eager"
 								/>
+							</div>
 							</div>
 						</div>
 					</div>
