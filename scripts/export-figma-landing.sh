@@ -5,12 +5,13 @@
 #   FIGMA_TOKEN=figd_... ./scripts/export-figma-landing.sh
 #
 # File key: H7HtqYOoxZetHunb8PQiHN
-# Dev link:  https://www.figma.com/design/H7HtqYOoxZetHunb8PQiHN/Hevvi-Design?node-id=1611-18372&m=dev
+# Dev link (hero): https://www.figma.com/design/H7HtqYOoxZetHunb8PQiHN/Hevvi-Design?node-id=1611-18583&m=dev
 #
-# Node map (MacBook Air - 15 / carousel frames):
-#   logo                    1611:18471  Group 1119
-#   hero-visual             1611:18430  Group 1185
-#   hero-features           1611:18380  Frame 2085
+# Node map (MacBook Air - 17 hero / MacBook Air - 15 rest):
+#   logo                    1611:18683  Group 1119
+#   login-icon              1611:18678  Frame 2240
+#   hero-visual             1611:18635  Group 1185
+#   hero-features           1611:18585  Frame 2085 (full row)
 #   registration-trucks     1611:18501  Banner
 #   logo-footer             1611:18490  Group 633216
 #   carousel-slide-1        1611:18525  Frame 1859 — form
@@ -32,9 +33,10 @@ OUT_DIR="$(cd "$(dirname "$0")/.." && pwd)/assets/react/islands/pages/Landing/im
 mkdir -p "$OUT_DIR"
 
 declare -A NODES=(
-  [logo]="1611:18471"
-  [hero-visual]="1611:18430"
-  [hero-features]="1611:18380"
+  [logo]="1611:18683"
+  [login-icon]="1611:18678"
+  [hero-visual]="1611:18635"
+  [hero-features]="1611:18585"
   [registration-trucks]="1611:18501"
   [logo-footer]="1611:18490"
   [carousel-slide-1]="1611:18525"
@@ -71,9 +73,10 @@ if resp.get("err"):
     raise SystemExit(resp)
 images = resp.get("images", {})
 names = {
-    "1611:18471": "logo",
-    "1611:18430": "hero-visual",
-    "1611:18380": "hero-features",
+    "1611:18683": "logo",
+    "1611:18678": "login-icon",
+    "1611:18635": "hero-visual",
+    "1611:18585": "hero-features",
     "1611:18501": "registration-trucks",
     "1611:18490": "logo-footer",
     "1611:18525": "carousel-slide-1",

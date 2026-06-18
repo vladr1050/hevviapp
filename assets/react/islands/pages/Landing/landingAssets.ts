@@ -5,6 +5,7 @@ import carouselSlide3Visual from './images/carousel-slide-3-visual.png'
 import heroFeatures from './images/hero-features.png'
 import heroVisual from './images/hero-visual.png'
 import landingMobile from './images/landing-mobile.png'
+import loginIcon from './images/login-icon.png'
 import logoFooter from './images/logo-footer.png'
 import logo from './images/logo.png'
 import registrationTrucks from './images/registration-trucks.png'
@@ -12,6 +13,7 @@ import registrationTrucks from './images/registration-trucks.png'
 export const landingAssets = {
 	logo,
 	logoFooter,
+	loginIcon,
 	heroVisual,
 	heroFeatures,
 	registrationTrucks,

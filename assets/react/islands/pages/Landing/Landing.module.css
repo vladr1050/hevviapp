@@ -11,76 +11,76 @@
 	@apply pb-10 md:pb-14 lg:pb-[41px];
 }
 
-.heroHeader {
-	@apply w-full max-w-[1280px] mx-auto flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pt-[21px] pb-[17px] px-4 md:px-10 lg:pl-[104px] lg:pr-[175px];
+.heroShell {
+	@apply w-full max-w-[1280px] mx-auto;
 }
 
-.heroCardWrap {
-	@apply w-full max-w-[1280px] mx-auto px-[40px];
+.heroHeader {
+	@apply flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between px-4 pt-4 pb-3 md:px-10 lg:px-[104px] lg:pt-[21px] lg:pb-[17px];
 }
 
 .heroCard {
-	@apply w-full bg-white rounded-[40px] px-6 py-8 md:px-10 md:py-10 lg:pl-[104px] lg:pt-[148px] lg:pr-[99px] lg:pb-[60px];
+	@apply mx-4 md:mx-10 lg:mx-[40px] w-auto bg-white rounded-[40px] px-6 py-8 md:px-10 md:py-10 lg:box-border lg:mx-[40px] lg:w-[1200px] lg:max-w-[calc(100%-80px)] lg:min-h-[522px] lg:px-[64px] lg:pt-[91px] lg:pr-[20px] lg:pb-[51px];
 }
 
 .logoLink {
-	@apply inline-flex items-center gap-2.5;
+	@apply inline-flex items-center gap-1.5;
 }
 
 .logo {
-	@apply h-[19px] w-auto;
+	@apply h-[19px] w-[71px] object-contain;
 }
 
 .betaBadge {
-	@apply rounded-full bg-black text-white text-[10px] uppercase tracking-wide px-2 py-0.5 font-medium leading-none;
+	@apply rounded-full bg-black text-white text-[6px] uppercase tracking-wide px-1.5 py-0.5 font-medium leading-none;
 }
 
 .heroNav {
-	@apply flex flex-wrap items-center gap-x-6 gap-y-2;
+	@apply flex flex-wrap items-center gap-x-10 gap-y-2;
 }
 
 .heroContact {
-	@apply text-[12px] font-medium leading-normal text-black/70 hover:text-black transition-colors;
+	@apply text-[12px] font-medium leading-[15px] text-black/70 hover:text-black transition-colors;
 }
 
 .loginLink {
-	@apply inline-flex items-center gap-2 text-[14px] text-black font-medium hover:opacity-80 transition-opacity;
+	@apply inline-flex items-center gap-2 text-[12px] leading-[15px] text-black font-medium hover:opacity-80 transition-opacity;
 }
 
 .loginIcon {
-	@apply inline-flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-black shrink-0;
+	@apply w-8 h-8 shrink-0 object-contain;
 }
 
 .heroBody {
-	@apply grid grid-cols-1 gap-8 lg:grid-cols-[723px_minmax(0,1fr)] lg:grid-rows-[minmax(0,1fr)_auto] lg:gap-x-0 lg:gap-y-0 lg:items-start;
+	@apply grid grid-cols-1 gap-8 lg:grid-cols-[472px_542px] lg:justify-between lg:gap-x-[102px] lg:gap-y-0 lg:items-start;
 }
 
 .heroCopy {
-	@apply flex flex-col max-w-[385px] lg:row-start-1 lg:col-start-1;
+	@apply flex flex-col max-w-[472px] lg:col-start-1 lg:row-start-1;
 }
 
 .heroTitle {
-	@apply m-0 text-[40px] md:text-[48px] leading-[1.1] font-semibold tracking-normal;
+	@apply m-0 text-[40px] md:text-[48px] leading-[52.8px] font-semibold tracking-normal;
 }
 
 .heroSubtitle {
-	@apply m-0 mt-4 text-[18px] leading-[22px] font-medium text-black/70 max-w-[353px];
+	@apply m-0 mt-6 text-[18px] leading-[22px] font-medium text-black/70 max-w-[353px];
 }
 
 .heroCta {
-	@apply mt-8 w-fit text-[16px] leading-[20px] font-medium px-8 py-3;
+	@apply mt-8 h-12 min-w-[242px] w-fit text-[16px] leading-5 font-medium px-8;
 }
 
 .heroFeatures {
-	@apply w-full max-w-[454px] h-auto object-contain lg:row-start-2 lg:col-start-1 lg:self-end;
+	@apply w-full max-w-[472px] h-12 object-contain object-left lg:col-start-1 lg:row-start-2 lg:mt-[78px];
 }
 
 .heroVisual {
-	@apply flex justify-center lg:justify-end w-full lg:row-start-1 lg:row-span-2 lg:col-start-2 lg:self-start lg:pt-[84px];
+	@apply flex justify-center w-full lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:-mt-[34px] lg:w-[542px] lg:justify-start;
 }
 
 .heroVisualImage {
-	@apply w-full max-w-full h-auto object-contain;
+	@apply w-full max-w-[542px] h-auto object-contain;
 }
 
 .registration {
@@ -165,10 +165,6 @@
 
 .mobile .heroHeader {
 	@apply px-4 pt-4 pb-3;
-}
-
-.mobile .heroCardWrap {
-	@apply px-4;
 }
 
 .mobile .heroCard {
