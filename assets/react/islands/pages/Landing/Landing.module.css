@@ -80,11 +80,11 @@
 }
 
 .registration {
-	@apply py-16 md:py-20;
+	@apply pt-16 md:pt-20 pb-10 md:pb-12 lg:pb-0;
 }
 
 .registrationWrap {
-	@apply max-w-[1072px] flex flex-col gap-8 md:gap-10;
+	@apply w-full max-w-[1280px] mx-auto flex flex-col gap-8 md:gap-10 px-4 md:px-10 lg:px-[104px];
 }
 
 .registrationHeader {
@@ -100,7 +100,7 @@
 }
 
 .registrationPanel {
-	@apply relative grid grid-cols-1 lg:grid-cols-[minmax(0,707fr)_429fr] gap-0 bg-[#ebebeb] rounded-[40px] overflow-hidden min-h-[320px] lg:min-h-[514px];
+	@apply relative z-[2] grid grid-cols-1 lg:grid-cols-[minmax(0,707fr)_429fr] gap-0 bg-[#ebebeb] rounded-[40px] overflow-hidden min-h-[320px] lg:min-h-[514px] lg:mb-[-63px];
 }
 
 .registrationImage {
@@ -108,15 +108,15 @@
 }
 
 .registrationFormCard {
-	@apply bg-white m-4 md:m-6 lg:m-8 lg:ml-0 rounded-[24px] p-6 md:p-8 shadow-[0_8px_40px_rgba(0,0,0,0.06)] self-center w-[calc(100%-2rem)] lg:w-full lg:max-w-[360px] lg:justify-self-end;
+	@apply bg-white m-4 md:m-6 lg:m-8 lg:ml-0 rounded-[24px] p-6 md:p-8 lg:p-16 shadow-[0_8px_40px_rgba(0,0,0,0.06)] self-center w-[calc(100%-2rem)] lg:w-full lg:max-w-none lg:justify-self-stretch;
 }
 
 .footer {
-	@apply bg-[#1a1a1a] text-white py-8 md:py-10;
+	@apply relative z-[1] bg-[#1a1a1a] text-white min-h-[136px];
 }
 
 .footerInner {
-	@apply flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 max-w-[1280px] px-4 md:px-10;
+	@apply w-full max-w-[1280px] mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 min-h-[136px] px-4 md:px-10 lg:px-[104px] py-8 lg:py-0;
 }
 
 .footerBrand {

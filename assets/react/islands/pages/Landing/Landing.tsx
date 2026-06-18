@@ -131,7 +131,7 @@ export const LandingPage: FC<LandingProps> = ({ device }) => {
 				<ProductCarousel />
 
 				<section id="early-access" className={styles.registration}>
-					<div className={cn('tw-container', styles.registrationWrap)}>
+					<div className={styles.registrationWrap}>
 						<div className={styles.registrationHeader}>
 							<h2>Claim your early access</h2>
 							<p>
@@ -156,7 +156,7 @@ export const LandingPage: FC<LandingProps> = ({ device }) => {
 			</main>
 
 			<footer className={styles.footer}>
-				<div className={cn('tw-container', styles.footerInner)}>
+				<div className={styles.footerInner}>
 					<div className={styles.footerBrand}>
 						<img src={landingAssets.logoFooter} alt="Hevvi" className={styles.footerLogo} />
 						<span className={styles.footerTeam}>Hevvi Operations Team</span>
