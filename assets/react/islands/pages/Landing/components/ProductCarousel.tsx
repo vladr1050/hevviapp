@@ -57,15 +57,12 @@ export const ProductCarousel: FC = () => {
 				<div className={styles.slide}>
 					<div className={styles.visual}>
 						<div className={cn(styles.visualStage, styles[slide.stageClass])}>
-							{slide.layers.map((layer) => (
-								<img
-									key={layer.className}
-									src={layer.image}
-									alt=""
-									className={cn(styles.slideLayer, styles[layer.className])}
-									loading="lazy"
-								/>
-							))}
+							<img
+								src={slide.visual}
+								alt=""
+								className={styles.visualImage}
+								loading="lazy"
+							/>
 						</div>
 					</div>
 
