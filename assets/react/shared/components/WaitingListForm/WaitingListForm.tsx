@@ -116,6 +116,7 @@ export const WaitingListForm: FC<WaitingListFormProps> = ({
 					label="E-mail"
 					type="email"
 					required
+					className={variant === 'landing' ? styles.landingInput : undefined}
 				/>
 				<Input
 					control={control}
@@ -124,6 +125,7 @@ export const WaitingListForm: FC<WaitingListFormProps> = ({
 					label="Phone"
 					type="tel"
 					required
+					className={variant === 'landing' ? styles.landingInput : undefined}
 				/>
 
 				<input

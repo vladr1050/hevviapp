@@ -132,12 +132,16 @@ export const LandingPage: FC<LandingProps> = ({ device }) => {
 						</div>
 
 						<div className={styles.registrationPanel}>
-							<img
-								src={landingAssets.registrationTrucks}
-								alt=""
-								className={styles.registrationImage}
-								loading="lazy"
-							/>
+							<div className={styles.registrationBanner}>
+								<img
+									src={landingAssets.registrationTrucks}
+									alt=""
+									className={styles.registrationImage}
+									width={721}
+									height={851}
+									loading="lazy"
+								/>
+							</div>
 							<div className={styles.registrationFormCard}>
 								<WaitingListForm variant="landing" />
 							</div>
@@ -149,7 +153,7 @@ export const LandingPage: FC<LandingProps> = ({ device }) => {
 			<footer className={styles.footer}>
 				<div className={styles.footerInner}>
 					<div className={styles.footerBrand}>
-						<img src={landingAssets.logoFooter} alt="Hevvi" className={styles.footerLogo} />
+						<img src={landingAssets.logoFooter} alt="Hevvi" className={styles.footerLogo} width={75} height={19} />
 						<span className={styles.footerTeam}>Hevvi Operations Team</span>
 					</div>
 					<div className={styles.footerLinks}>

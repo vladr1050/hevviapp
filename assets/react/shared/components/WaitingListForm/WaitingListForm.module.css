@@ -3,11 +3,29 @@
 }
 
 .landing {
-	@apply gap-4;
+	@apply h-full w-full justify-between items-center gap-8;
 }
 
 .inputs {
 	@apply flex flex-col gap-3 w-full;
+}
+
+.landing .inputs {
+	@apply gap-4 w-[270px] max-w-full;
+}
+
+.landingInput {
+	& .label {
+		@apply ml-[18px] text-xs leading-[15px];
+	}
+
+	& .inputWrapper {
+		@apply h-12 rounded-full border-[#d9d9d9];
+
+		& .input {
+			@apply px-5 py-[10px] text-base leading-5;
+		}
+	}
 }
 
 .honeypot {
@@ -17,16 +35,20 @@
 }
 
 .landingTitle {
-	@apply m-0 text-[20px] leading-[24px] font-semibold text-black;
+	@apply m-0 w-full text-center text-[20px] leading-[24px] font-semibold text-black;
 	font-family: 'Instrument_Sans', sans-serif;
 }
 
 .error {
-	@apply text-red-500 text-sm text-center m-0;
+	@apply text-red-500 text-sm text-center m-0 w-[270px] max-w-full;
 }
 
 .submit {
 	@apply w-full;
+}
+
+.landing .submit {
+	@apply w-[270px] max-w-full h-12 rounded-3xl;
 }
 
 .success {
