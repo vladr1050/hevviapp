@@ -8,7 +8,7 @@
 }
 
 .heroSection {
-	@apply pb-10 md:pb-14;
+	@apply pb-10 md:pb-14 lg:pb-[41px];
 }
 
 .heroHeader {
@@ -20,7 +20,7 @@
 }
 
 .heroCard {
-	@apply w-full bg-white rounded-[40px] px-6 py-8 md:px-10 md:py-10 lg:px-[64px] lg:pt-[100px] lg:pb-[59px];
+	@apply w-full bg-white rounded-[40px] px-6 py-8 md:px-10 md:py-10 lg:pl-[104px] lg:pt-[148px] lg:pr-[99px] lg:pb-[60px];
 }
 
 .logoLink {
@@ -52,11 +52,11 @@
 }
 
 .heroBody {
-	@apply grid grid-cols-1 gap-8 lg:grid-cols-[454px_minmax(0,1fr)] lg:grid-rows-[minmax(0,1fr)_auto] lg:gap-x-[146px] lg:gap-y-0 lg:min-h-[355px] lg:items-start;
+	@apply grid grid-cols-1 gap-8 lg:grid-cols-[723px_minmax(0,1fr)] lg:grid-rows-[minmax(0,1fr)_auto] lg:gap-x-0 lg:gap-y-0 lg:items-start;
 }
 
 .heroCopy {
-	@apply flex flex-col max-w-[454px] lg:row-start-1 lg:col-start-1;
+	@apply flex flex-col max-w-[385px] lg:row-start-1 lg:col-start-1;
 }
 
 .heroTitle {
@@ -76,11 +76,11 @@
 }
 
 .heroVisual {
-	@apply flex justify-center lg:justify-start w-full lg:row-start-1 lg:row-span-2 lg:col-start-2 lg:self-center;
+	@apply flex justify-center lg:justify-end w-full lg:row-start-1 lg:row-span-2 lg:col-start-2 lg:self-start lg:pt-[84px];
 }
 
 .heroVisualImage {
-	@apply w-full max-w-[664px] h-auto object-contain;
+	@apply w-full max-w-full h-auto object-contain;
 }
 
 .registration {
