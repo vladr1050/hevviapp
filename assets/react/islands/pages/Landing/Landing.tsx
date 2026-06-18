@@ -7,6 +7,7 @@ import { Button } from '@ui/Button/Button'
 import { Modal } from '@ui/Modal/Modal'
 import { cn } from '@utils/cn'
 
+import { HeroVisual } from './components/HeroVisual'
 import { ProductCarousel } from './components/ProductCarousel'
 import { landingAssets } from './landingAssets'
 import styles from './Landing.module.css'
@@ -111,14 +112,7 @@ export const LandingPage: FC<LandingProps> = ({ device }) => {
 								/>
 
 								<div className={styles.heroVisual}>
-									<img
-										src={landingAssets.heroVisual}
-										alt=""
-										className={styles.heroVisualImage}
-										width={542}
-										height={474}
-										loading="eager"
-									/>
+									<HeroVisual />
 								</div>
 							</div>
 						</div>

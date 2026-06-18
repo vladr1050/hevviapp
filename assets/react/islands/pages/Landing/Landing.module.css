@@ -76,11 +76,75 @@
 }
 
 .heroVisual {
-	@apply flex justify-center w-full lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:-mt-[34px] lg:w-[542px] lg:justify-start;
+	@apply flex justify-center w-full overflow-visible lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:-mt-[34px] lg:w-[542px] lg:justify-start;
 }
 
-.heroVisualImage {
-	@apply w-full max-w-[542px] h-auto object-contain;
+.heroVisualStack {
+	position: relative;
+	width: 542px;
+	height: 473.704px;
+	max-width: 100%;
+	overflow: visible;
+}
+
+.heroVisualMapFrame {
+	position: absolute;
+	z-index: 1;
+	left: 0;
+	top: 0.12px;
+	width: 442.01px;
+	height: 289.05px;
+	border-radius: 14.545px;
+	background: #fff;
+	box-shadow:
+		0 22.589px 50.448px rgba(61, 61, 61, 0.1),
+		0 91.107px 91.107px rgba(61, 61, 61, 0.09);
+}
+
+.heroVisualMap {
+	position: absolute;
+	z-index: 2;
+	left: 13.47px;
+	top: 12.66px;
+	width: 429.47px;
+	height: 264.92px;
+	border-radius: 6.241px;
+	object-fit: cover;
+}
+
+.heroVisualGradient {
+	position: absolute;
+	z-index: 3;
+	left: 166.97px;
+	top: 0;
+	width: 165.01px;
+	height: 289.14px;
+	object-fit: fill;
+	pointer-events: none;
+}
+
+.heroVisualCargo {
+	position: absolute;
+	z-index: 4;
+	left: 27.36px;
+	top: 117.7px;
+	width: 514.64px;
+	height: 356px;
+	object-fit: contain;
+	object-position: left top;
+	pointer-events: none;
+}
+
+.heroVisualDelivery {
+	position: absolute;
+	z-index: 5;
+	left: 233.46px;
+	top: -25px;
+	width: 254.55px;
+	height: 140px;
+	object-fit: contain;
+	object-position: left top;
+	pointer-events: none;
 }
 
 .registration {
@@ -179,8 +243,56 @@
 	@apply max-w-full;
 }
 
-.mobile .heroVisualImage {
-	@apply max-w-full;
+.mobile .heroVisualStack {
+	width: min(100%, 542px);
+	height: auto;
+	aspect-ratio: 542 / 473.704;
+}
+
+.mobile .heroVisualMapFrame,
+.mobile .heroVisualMap,
+.mobile .heroVisualGradient,
+.mobile .heroVisualCargo,
+.mobile .heroVisualDelivery {
+	width: calc(var(--w) / 542 * 100%);
+	height: calc(var(--h) / 473.704 * 100%);
+	left: calc(var(--x) / 542 * 100%);
+	top: calc(var(--y) / 473.704 * 100%);
+}
+
+.mobile .heroVisualMapFrame {
+	--x: 0;
+	--y: 0.12;
+	--w: 442.01;
+	--h: 289.05;
+}
+
+.mobile .heroVisualMap {
+	--x: 13.47;
+	--y: 12.66;
+	--w: 429.47;
+	--h: 264.92;
+}
+
+.mobile .heroVisualGradient {
+	--x: 166.97;
+	--y: 0;
+	--w: 165.01;
+	--h: 289.14;
+}
+
+.mobile .heroVisualCargo {
+	--x: 27.36;
+	--y: 117.7;
+	--w: 514.64;
+	--h: 356;
+}
+
+.mobile .heroVisualDelivery {
+	--x: 233.46;
+	--y: -25;
+	--w: 254.55;
+	--h: 140;
 }
 
 .mobile .registrationPanel {

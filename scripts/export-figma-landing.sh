@@ -10,7 +10,11 @@
 # Node map (MacBook Air - 17 hero / MacBook Air - 15 rest):
 #   logo                    1611:18683  Group 1119
 #   login-icon              1611:18678  Frame 2240
-#   hero-visual             1611:18635  Group 1185
+#   hero-map-content          1611:18638  Group 1163 — map screenshot
+#   hero-map-gradient         1611:18643  Rectangle 171 — fade overlay
+#   hero-cargo                1611:18644  Group 1082 — box + pallet
+#   hero-delivery-panel       1611:18653  Group 1165 — delivery card
+#   hero-visual               1611:18635  Group 1185 — full composite fallback
 #   hero-features           1611:18585  Frame 2085 (full row)
 #   registration-trucks     1611:18501  Banner
 #   logo-footer             1611:18490  Group 633216
@@ -36,6 +40,10 @@ declare -A NODES=(
   [logo]="1611:18683"
   [login-icon]="1611:18678"
   [hero-visual]="1611:18635"
+  [hero-map-content]="1611:18638"
+  [hero-map-gradient]="1611:18643"
+  [hero-cargo]="1611:18644"
+  [hero-delivery-panel]="1611:18653"
   [hero-features]="1611:18585"
   [registration-trucks]="1611:18501"
   [logo-footer]="1611:18490"
@@ -76,6 +84,10 @@ names = {
     "1611:18683": "logo",
     "1611:18678": "login-icon",
     "1611:18635": "hero-visual",
+    "1611:18638": "hero-map-content",
+    "1611:18643": "hero-map-gradient",
+    "1611:18644": "hero-cargo",
+    "1611:18653": "hero-delivery-panel",
     "1611:18585": "hero-features",
     "1611:18501": "registration-trucks",
     "1611:18490": "logo-footer",

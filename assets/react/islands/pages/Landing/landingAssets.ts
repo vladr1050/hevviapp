@@ -2,7 +2,11 @@ import carouselArrow from './images/carousel-arrow.png'
 import carouselSlide1Visual from './images/carousel-slide-1-visual.png'
 import carouselSlide2Visual from './images/carousel-slide-2-visual.png'
 import carouselSlide3Visual from './images/carousel-slide-3-visual.png'
+import heroCargo from './images/hero-cargo.png'
+import heroDeliveryPanel from './images/hero-delivery-panel.png'
 import heroFeatures from './images/hero-features.png'
+import heroMapContent from './images/hero-map-content.png'
+import heroMapGradient from './images/hero-map-gradient.png'
 import heroVisual from './images/hero-visual.png'
 import landingMobile from './images/landing-mobile.png'
 import loginIcon from './images/login-icon.png'
@@ -15,6 +19,10 @@ export const landingAssets = {
 	logoFooter,
 	loginIcon,
 	heroVisual,
+	heroMapContent,
+	heroMapGradient,
+	heroCargo,
+	heroDeliveryPanel,
 	heroFeatures,
 	registrationTrucks,
 	landingMobile,
