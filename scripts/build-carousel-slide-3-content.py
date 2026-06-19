@@ -13,6 +13,7 @@ IMG = ROOT / "assets/react/islands/pages/Landing/images"
 
 MOCKUP_SRC = IMG / "carousel-slide-3-mockup-source.png"
 FRAME_SRC = IMG / "carousel-slide-3-frame-source.png"
+MAP_TILE_SRC = IMG / "carousel-slide-3-map-tile-source.png"
 PHONE_SRC = IMG / "carousel-slide-3-phone-source.png"
 ACCENT_SRC = IMG / "carousel-slide-3-accent-source.png"
 
@@ -23,6 +24,8 @@ CONTENT_OUT = IMG / "carousel-slide-3-content.png"
 CONTENT_W, CONTENT_H = 689, 390
 MAP_W, MAP_H = 532, 366
 MAP_X, MAP_Y = 27, 12
+MAP_TILE_W, MAP_TILE_H = 496, 346
+MAP_TILE_X, MAP_TILE_Y = 18, 10
 PHONE_W, PHONE_H = 189, 390
 PHONE_X, PHONE_Y = 500, 0
 MAP_SOURCE_W, MAP_SOURCE_H = MAP_W * 2, MAP_H * 2
@@ -97,38 +100,19 @@ def strip_light_matte(im: Image.Image) -> Image.Image:
 	return rgba
 
 
-def strip_green_accent(im: Image.Image) -> Image.Image:
-	rgba = im.convert("RGBA")
-	w, h = rgba.size
-	pixels = rgba.load()
-	seen = [[False] * w for _ in range(h)]
-
-	def is_accent(r: int, g: int, b: int, a: int) -> bool:
-		return a > 128 and g > 195 and r > 140 and b < 110 and (g - b) > 70 and abs(g - r) < 90
-
-	queue: deque[tuple[int, int]] = deque()
-	for x in range(w):
-		for y in range(h):
-			if is_accent(*pixels[x, y]) and x < w * 0.4 and y > h * 0.5:
-				seen[y][x] = True
-				queue.append((x, y))
-
-	while queue:
-		x, y = queue.popleft()
-		pixels[x, y] = (0, 0, 0, 0)
-		for nx, ny in ((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)):
-			if 0 <= nx < w and 0 <= ny < h and not seen[ny][nx] and is_accent(*pixels[nx, ny]):
-				seen[ny][nx] = True
-				queue.append((nx, ny))
-
-	return rgba
-
-
 def crop_content(im: Image.Image) -> Image.Image:
 	bbox = im.getbbox()
 	if not bbox:
 		raise SystemExit("Image is empty after matte removal")
 	return im.crop(bbox)
+
+
+def is_lime_accent(r: int, g: int, b: int, a: int) -> bool:
+	if a < 40:
+		return False
+	if g > 185 and b < 130 and (g - b) > 60 and g >= r:
+		return True
+	return False
 
 
 def detect_map_bbox(mockup: Image.Image) -> tuple[int, int, int, int]:
@@ -152,24 +136,50 @@ def detect_map_bbox(mockup: Image.Image) -> tuple[int, int, int, int]:
 	return minx - pad, miny - pad, maxx + 1 + pad, maxy + 1 + pad
 
 
+def frame_mask() -> Image.Image:
+	frame = crop_content(
+		strip_light_matte(strip_black_matte(Image.open(FRAME_SRC)))
+	).resize((MAP_W, MAP_H), Image.Resampling.LANCZOS)
+	return frame.split()[3]
+
+
+def extract_route_and_shadow(art: Image.Image) -> Image.Image:
+	layer = Image.new("RGBA", (MAP_W, MAP_H), (0, 0, 0, 0))
+	src = art.load()
+	out = layer.load()
+	for y in range(MAP_H):
+		for x in range(MAP_W):
+			r, g, b, a = src[x, y]
+			if a < 40 or is_lime_accent(r, g, b, a):
+				continue
+			if r < 75 and g < 75 and b < 75 and a > 150:
+				out[x, y] = (r, g, b, a)
+				continue
+			if r < 140 and g < 140 and b < 140 and abs(r - g) < 25 and abs(g - b) < 25 and a > 80:
+				out[x, y] = (r, g, b, min(a, 220))
+	return layer
+
+
 def build_map_card() -> Image.Image:
-	"""White frame mask + mockup art (route/pins) — no green accent, clean edges."""
 	if not MOCKUP_SRC.exists():
 		raise SystemExit(f"Missing mockup export: {MOCKUP_SRC}")
 	if not FRAME_SRC.exists():
 		raise SystemExit(f"Missing frame export: {FRAME_SRC}")
+	if not MAP_TILE_SRC.exists():
+		raise SystemExit(f"Missing map tile export: {MAP_TILE_SRC}")
 
-	frame = crop_content(
-		strip_light_matte(strip_black_matte(Image.open(FRAME_SRC)))
-	).resize((MAP_W, MAP_H), Image.Resampling.LANCZOS)
-
+	mask = frame_mask()
 	mockup = Image.open(MOCKUP_SRC).convert("RGBA")
-	art = mockup.crop(detect_map_bbox(mockup))
-	art = strip_green_accent(art).resize((MAP_W, MAP_H), Image.Resampling.LANCZOS)
+	art = mockup.crop(detect_map_bbox(mockup)).resize((MAP_W, MAP_H), Image.Resampling.LANCZOS)
 
-	mask = frame.split()[3]
+	tile = Image.open(MAP_TILE_SRC).convert("RGBA").resize(
+		(MAP_TILE_W, MAP_TILE_H), Image.Resampling.LANCZOS
+	)
+
 	card = Image.new("RGBA", (MAP_W, MAP_H), (0, 0, 0, 0))
-	card.paste(art, (0, 0), mask)
+	card.paste(Image.new("RGBA", (MAP_W, MAP_H), (255, 255, 255, 255)), (0, 0), mask)
+	card.paste(tile, (MAP_TILE_X, MAP_TILE_Y), tile)
+	card.alpha_composite(extract_route_and_shadow(art))
 	return card
 
 
@@ -196,7 +206,6 @@ def build_content() -> None:
 	if not PHONE_SRC.exists():
 		raise SystemExit(f"Missing phone source: {PHONE_SRC}")
 
-	# Map already has clean alpha — do not strip black matte (destroys card shadow).
 	map_img = Image.open(MAP_SRC).convert("RGBA").resize((MAP_W, MAP_H), Image.Resampling.LANCZOS)
 	phone_img = crop_content(strip_black_matte(Image.open(PHONE_SRC))).resize(
 		(PHONE_W, PHONE_H), Image.Resampling.LANCZOS
