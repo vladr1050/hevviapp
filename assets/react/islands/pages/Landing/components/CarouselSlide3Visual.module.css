@@ -1,4 +1,4 @@
-/* Frame 1762 + map (Frame 1933 shadow at 27/29, map art at 37/39) + phone. */
+/* Frame 1762 + Frame 1933 (27/12) + map inset 10px (37/22, 512×346) + phone. */
 .stage {
 	--stage-w: 689;
 	--stage-h: 407;
@@ -9,10 +9,11 @@
 	--frame-top: 12;
 	--frame-w: 532;
 	--frame-h: 366;
+	--map-inset: 10;
 	--map-left: 37;
-	--map-top: 2;
-	--map-w: 532;
-	--map-h: 366;
+	--map-top: 22;
+	--map-w: 512;
+	--map-h: 346;
 	--phone-left: 500;
 	--phone-w: 189;
 	--phone-h: 390;
@@ -90,9 +91,9 @@
 
 	.map {
 		left: 37px;
-		top: 2px;
-		width: 532px;
-		height: 366px;
+		top: 22px;
+		width: 512px;
+		height: 346px;
 	}
 
 	.phone {

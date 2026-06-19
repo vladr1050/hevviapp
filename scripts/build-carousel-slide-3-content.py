@@ -25,13 +25,16 @@ ACCENT_OUT = IMG / "carousel-slide-3-accent.png"
 CONTENT_OUT = IMG / "carousel-slide-3-content.png"
 
 CONTENT_W, CONTENT_H = 689, 390
-MAP_W, MAP_H = 532, 366
-MAP_X, MAP_Y = 37, 2
+FRAME_W, FRAME_H = 532, 366
 FRAME_X, FRAME_Y = 27, 12
-MAP_TILE_W, MAP_TILE_H = 496, 346
-MAP_TILE_X, MAP_TILE_Y = 18, 10
+MAP_INSET = 10
+MAP_W, MAP_H = FRAME_W - MAP_INSET * 2, FRAME_H - MAP_INSET * 2
+MAP_X, MAP_Y = FRAME_X + MAP_INSET, FRAME_Y + MAP_INSET
+MAP_TILE_W, MAP_TILE_H = MAP_W, MAP_H
+MAP_TILE_X, MAP_TILE_Y = 0, 0
 PHONE_W, PHONE_H = 189, 390
 PHONE_X, PHONE_Y = 500, 0
+FRAME_SOURCE_W, FRAME_SOURCE_H = FRAME_W * 2, FRAME_H * 2
 MAP_SOURCE_W, MAP_SOURCE_H = MAP_W * 2, MAP_H * 2
 SCALE_W, SCALE_H = CONTENT_W * 2, CONTENT_H * 2
 
@@ -143,16 +146,16 @@ def detect_map_bbox(mockup: Image.Image) -> tuple[int, int, int, int]:
 def frame_mask() -> Image.Image:
 	frame = crop_content(
 		strip_light_matte(strip_black_matte(Image.open(FRAME_SRC)))
-	).resize((MAP_W, MAP_H), Image.Resampling.LANCZOS)
+	).resize((FRAME_W, FRAME_H), Image.Resampling.LANCZOS)
 	return frame.split()[3]
 
 
-def extract_route_and_shadow(art: Image.Image) -> Image.Image:
-	layer = Image.new("RGBA", (MAP_W, MAP_H), (0, 0, 0, 0))
+def extract_route_and_shadow(art: Image.Image, width: int, height: int) -> Image.Image:
+	layer = Image.new("RGBA", (width, height), (0, 0, 0, 0))
 	src = art.load()
 	out = layer.load()
-	for y in range(MAP_H):
-		for x in range(MAP_W):
+	for y in range(height):
+		for x in range(width):
 			r, g, b, a = src[x, y]
 			if a < 40 or is_lime_accent(r, g, b, a):
 				continue
@@ -164,12 +167,12 @@ def extract_route_and_shadow(art: Image.Image) -> Image.Image:
 	return layer
 
 
-def extract_route_only(art: Image.Image) -> Image.Image:
-	layer = Image.new("RGBA", (MAP_W, MAP_H), (0, 0, 0, 0))
+def extract_route_only(art: Image.Image, width: int, height: int) -> Image.Image:
+	layer = Image.new("RGBA", (width, height), (0, 0, 0, 0))
 	src = art.load()
 	out = layer.load()
-	for y in range(MAP_H):
-		for x in range(MAP_W):
+	for y in range(height):
+		for x in range(width):
 			r, g, b, a = src[x, y]
 			if a < 40 or is_lime_accent(r, g, b, a):
 				continue
@@ -178,12 +181,12 @@ def extract_route_only(art: Image.Image) -> Image.Image:
 	return layer
 
 
-def extract_shadow_only(art: Image.Image) -> Image.Image:
-	layer = Image.new("RGBA", (MAP_W, MAP_H), (0, 0, 0, 0))
+def extract_shadow_only(art: Image.Image, width: int, height: int) -> Image.Image:
+	layer = Image.new("RGBA", (width, height), (0, 0, 0, 0))
 	src = art.load()
 	out = layer.load()
-	for y in range(MAP_H):
-		for x in range(MAP_W):
+	for y in range(height):
+		for x in range(width):
 			r, g, b, a = src[x, y]
 			if a < 40 or is_lime_accent(r, g, b, a):
 				continue
@@ -194,14 +197,14 @@ def extract_shadow_only(art: Image.Image) -> Image.Image:
 
 def mockup_art() -> Image.Image:
 	mockup = Image.open(MOCKUP_SRC).convert("RGBA")
-	return mockup.crop(detect_map_bbox(mockup)).resize((MAP_W, MAP_H), Image.Resampling.LANCZOS)
+	return mockup.crop(detect_map_bbox(mockup)).resize((FRAME_W, FRAME_H), Image.Resampling.LANCZOS)
 
 
 def build_frame_plate(art: Image.Image) -> Image.Image:
 	mask = frame_mask()
-	plate = Image.new("RGBA", (MAP_W, MAP_H), (0, 0, 0, 0))
-	plate.paste(Image.new("RGBA", (MAP_W, MAP_H), (255, 255, 255, 255)), (0, 0), mask)
-	plate.alpha_composite(extract_shadow_only(art))
+	plate = Image.new("RGBA", (FRAME_W, FRAME_H), (0, 0, 0, 0))
+	plate.paste(Image.new("RGBA", (FRAME_W, FRAME_H), (255, 255, 255, 255)), (0, 0), mask)
+	plate.alpha_composite(extract_shadow_only(art, FRAME_W, FRAME_H))
 	return plate
 
 
@@ -211,7 +214,10 @@ def build_map_layer(art: Image.Image) -> Image.Image:
 	)
 	layer = Image.new("RGBA", (MAP_W, MAP_H), (0, 0, 0, 0))
 	layer.paste(tile, (MAP_TILE_X, MAP_TILE_Y), tile)
-	layer.alpha_composite(extract_route_only(art))
+	route = extract_route_only(art, FRAME_W, FRAME_H).crop(
+		(MAP_INSET, MAP_INSET, FRAME_W - MAP_INSET, FRAME_H - MAP_INSET)
+	)
+	layer.alpha_composite(route)
 	return layer
 
 
@@ -227,13 +233,13 @@ def build_map_card() -> Image.Image:
 	art = mockup_art()
 
 	tile = Image.open(MAP_TILE_SRC).convert("RGBA").resize(
-		(MAP_TILE_W, MAP_TILE_H), Image.Resampling.LANCZOS
+		(MAP_W, MAP_H), Image.Resampling.LANCZOS
 	)
 
-	card = Image.new("RGBA", (MAP_W, MAP_H), (0, 0, 0, 0))
-	card.paste(Image.new("RGBA", (MAP_W, MAP_H), (255, 255, 255, 255)), (0, 0), mask)
-	card.paste(tile, (MAP_TILE_X, MAP_TILE_Y), tile)
-	card.alpha_composite(extract_route_and_shadow(art))
+	card = Image.new("RGBA", (FRAME_W, FRAME_H), (0, 0, 0, 0))
+	card.paste(Image.new("RGBA", (FRAME_W, FRAME_H), (255, 255, 255, 255)), (0, 0), mask)
+	card.paste(tile, (MAP_INSET, MAP_INSET), tile)
+	card.alpha_composite(extract_route_and_shadow(art, FRAME_W, FRAME_H))
 	return card
 
 
@@ -241,9 +247,9 @@ def prepare_layer_exports() -> None:
 	art = mockup_art()
 	frame = build_frame_plate(art)
 	map_layer = build_map_layer(art)
-	frame.resize((MAP_SOURCE_W, MAP_SOURCE_H), Image.Resampling.LANCZOS).save(FRAME_OUT, optimize=True)
+	frame.resize((FRAME_SOURCE_W, FRAME_SOURCE_H), Image.Resampling.LANCZOS).save(FRAME_OUT, optimize=True)
 	map_layer.resize((MAP_SOURCE_W, MAP_SOURCE_H), Image.Resampling.LANCZOS).save(MAP_OUT, optimize=True)
-	print(f"saved {FRAME_OUT} ({MAP_SOURCE_W}x{MAP_SOURCE_H})")
+	print(f"saved {FRAME_OUT} ({FRAME_SOURCE_W}x{FRAME_SOURCE_H})")
 	print(f"saved {MAP_OUT} ({MAP_SOURCE_W}x{MAP_SOURCE_H})")
 
 
@@ -261,7 +267,7 @@ def prepare_phone() -> None:
 
 def prepare_map_source() -> None:
 	card = build_map_card()
-	out = card.resize((MAP_SOURCE_W, MAP_SOURCE_H), Image.Resampling.LANCZOS)
+	out = card.resize((FRAME_SOURCE_W, FRAME_SOURCE_H), Image.Resampling.LANCZOS)
 	out.save(MAP_SRC, optimize=True)
 	print(f"saved {MAP_SRC} ({out.size[0]}x{out.size[1]})")
 
@@ -277,12 +283,12 @@ def prepare_accent() -> None:
 
 
 def build_content() -> None:
-	if not MAP_SRC.exists():
-		raise SystemExit(f"Missing map source: {MAP_SRC}")
+	if not MAP_OUT.exists():
+		raise SystemExit(f"Missing map layer: {MAP_OUT}")
 	if not PHONE_OUT.exists() and not PHONE_SRC.exists():
 		raise SystemExit(f"Missing phone source: {PHONE_SRC}")
 
-	map_img = Image.open(MAP_SRC).convert("RGBA").resize((MAP_W, MAP_H), Image.Resampling.LANCZOS)
+	map_img = Image.open(MAP_OUT).convert("RGBA").resize((MAP_W, MAP_H), Image.Resampling.LANCZOS)
 	phone_img = Image.open(PHONE_OUT).convert("RGBA").resize(
 		(PHONE_W, PHONE_H), Image.Resampling.LANCZOS
 	)

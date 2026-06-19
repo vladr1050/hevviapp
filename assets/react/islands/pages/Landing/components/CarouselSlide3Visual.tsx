@@ -30,8 +30,8 @@ export const CarouselSlide3Visual: FC = () => (
 		<img
 			src={carouselSlide3Map}
 			alt=""
-			width={1064}
-			height={732}
+			width={1024}
+			height={692}
 			className={styles.map}
 			loading="lazy"
 			decoding="async"
