@@ -46,6 +46,7 @@ jobs:
             --exclude='var/log/*' \
             --exclude='.env' \
             --exclude='.env.local' \
+            --exclude='config/jwt/*.pem' \
             --exclude='.DS_Store' \
             ./ "$RSYNC_TARGET"
 

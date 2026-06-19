@@ -178,6 +178,7 @@ RUN test -f vendor/autoload_runtime.php
 # config/jwt/*.pem в .gitignore — на CI/VPS их нет, без ключей Lexik JWT и консоль падают (exit 255).
 # Сгенерированные ключи только для прохождения build; в проде замените volume/секретами.
 RUN set -eux; \
+    mkdir -p config/jwt; \
     if [ ! -s config/jwt/private.pem ]; then \
       BUILD_PASS="$(openssl rand -hex 32)"; \
       openssl genrsa -aes256 -passout pass:"${BUILD_PASS}" -out config/jwt/private.pem 4096; \
