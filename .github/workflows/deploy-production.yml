@@ -38,7 +38,7 @@ jobs:
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
           RSYNC_TARGET="${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/"
-          rsync -az \
+          rsync -az --delete \
             -e "ssh -i $HOME/.ssh/deploy_key -o IdentitiesOnly=yes" \
             --exclude='.git' \
             --exclude='node_modules' \
