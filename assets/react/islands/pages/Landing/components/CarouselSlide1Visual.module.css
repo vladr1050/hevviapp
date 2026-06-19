@@ -1,12 +1,11 @@
-/* Frame 1859 (661.5×380.4) over Frame 1762 (507×290 at −26, 119). Stage height 409. */
+/* Frame 1859 (661.5×380.4) over Frame 1762 (507×290 at −26, 119). Stage 409px tall. */
 .stage {
 	--form-w: 661.5;
 	--form-h: 380.4;
 	--stage-h: 409;
 
 	position: relative;
-	width: 100%;
-	max-width: calc(var(--form-w) * 1px);
+	width: min(100%, calc(var(--form-w) * 1px));
 	aspect-ratio: var(--form-w) / var(--stage-h);
 	overflow: visible;
 }
@@ -34,4 +33,22 @@
 	object-fit: fill;
 	object-position: left top;
 	z-index: 2;
+}
+
+@media (min-width: 1280px) {
+	.stage {
+		width: 661.5px;
+	}
+
+	.accent {
+		left: -26px;
+		top: 119px;
+		width: 507px;
+		height: 290px;
+	}
+
+	.form {
+		width: 661.5px;
+		height: 380.4px;
+	}
 }

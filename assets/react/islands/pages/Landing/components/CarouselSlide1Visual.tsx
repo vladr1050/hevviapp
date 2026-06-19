@@ -19,8 +19,8 @@ export const CarouselSlide1Visual: FC = () => (
 		<img
 			src={carouselSlide1Form}
 			alt=""
-			width={661.5}
-			height={380.4}
+			width={1323}
+			height={761}
 			className={styles.form}
 			loading="lazy"
 			decoding="async"
