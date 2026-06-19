@@ -6,7 +6,7 @@ import carouselSlide3Map from '../images/carousel-slide-3-map.png'
 import carouselSlide3Phone from '../images/carousel-slide-3-phone.png'
 import styles from './CarouselSlide3Visual.module.css'
 
-/** Figma: Frame 1762 + Frame 1933 + map + Frame 552 (status phone). */
+/** Figma: Frame 1762 + Frame 1933 + map + Frame 552 (12px above frame, 22px above map). */
 export const CarouselSlide3Visual: FC = () => (
 	<div className={styles.stage} aria-hidden>
 		<img

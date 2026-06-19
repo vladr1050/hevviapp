@@ -1,4 +1,4 @@
-/* Frame 1762 + Frame 1933 (27/12) + map inset 10px (37/22, 512×346) + phone. */
+/* Frame 1762 + Frame 1933 (27/12) + map inset 10px (37/22) + Frame 552 (+12/+22 vs frame/map). */
 .stage {
 	--stage-w: 689;
 	--stage-h: 407;
@@ -14,9 +14,12 @@
 	--map-top: 22;
 	--map-w: 512;
 	--map-h: 346;
+	--phone-above-frame: 12;
+	--phone-above-map: 22;
+	--phone-top: calc(var(--frame-top) - var(--phone-above-frame));
 	--phone-left: 479;
 	--phone-w: 210;
-	--phone-h: 390;
+	--phone-h: calc(var(--frame-h) + var(--phone-above-frame) * 2);
 
 	position: relative;
 	width: min(100%, calc(var(--stage-w) * 1px));
@@ -63,7 +66,7 @@
 
 .phone {
 	left: calc(var(--phone-left) / var(--stage-w) * 100%);
-	top: 0;
+	top: calc(var(--phone-top) / var(--stage-h) * 100%);
 	width: calc(var(--phone-w) / var(--stage-w) * 100%);
 	height: calc(var(--phone-h) / var(--stage-h) * 100%);
 	object-fit: fill;
@@ -97,6 +100,7 @@
 	}
 
 	.phone {
+		top: 0;
 		left: 479px;
 		width: 210px;
 		height: 390px;
