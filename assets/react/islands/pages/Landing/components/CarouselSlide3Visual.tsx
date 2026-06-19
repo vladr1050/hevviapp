@@ -39,7 +39,7 @@ export const CarouselSlide3Visual: FC = () => (
 		<img
 			src={carouselSlide3Phone}
 			alt=""
-			width={378}
+			width={420}
 			height={780}
 			className={styles.phone}
 			loading="lazy"

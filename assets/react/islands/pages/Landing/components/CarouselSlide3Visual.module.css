@@ -14,8 +14,8 @@
 	--map-top: 22;
 	--map-w: 512;
 	--map-h: 346;
-	--phone-left: 500;
-	--phone-w: 189;
+	--phone-left: 479;
+	--phone-w: 210;
 	--phone-h: 390;
 
 	position: relative;
@@ -97,8 +97,8 @@
 	}
 
 	.phone {
-		left: 500px;
-		width: 189px;
+		left: 479px;
+		width: 210px;
 		height: 390px;
 	}
 }

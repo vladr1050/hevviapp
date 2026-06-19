@@ -32,8 +32,8 @@ MAP_W, MAP_H = FRAME_W - MAP_INSET * 2, FRAME_H - MAP_INSET * 2
 MAP_X, MAP_Y = FRAME_X + MAP_INSET, FRAME_Y + MAP_INSET
 MAP_TILE_W, MAP_TILE_H = MAP_W, MAP_H
 MAP_TILE_X, MAP_TILE_Y = 0, 0
-PHONE_W, PHONE_H = 189, 390
-PHONE_X, PHONE_Y = 500, 0
+PHONE_W, PHONE_H = 210, 390
+PHONE_X, PHONE_Y = 479, 0
 FRAME_SOURCE_W, FRAME_SOURCE_H = FRAME_W * 2, FRAME_H * 2
 MAP_SOURCE_W, MAP_SOURCE_H = MAP_W * 2, MAP_H * 2
 SCALE_W, SCALE_H = CONTENT_W * 2, CONTENT_H * 2
@@ -257,10 +257,12 @@ def prepare_phone() -> None:
 	if not PHONE_SRC.exists():
 		raise SystemExit(f"Missing phone source: {PHONE_SRC}")
 
-	phone_img = crop_content(strip_black_matte(Image.open(PHONE_SRC))).resize(
-		(PHONE_W, PHONE_H), Image.Resampling.LANCZOS
-	)
-	out = phone_img.resize((PHONE_W * 2, PHONE_H * 2), Image.Resampling.LANCZOS)
+	phone_img = crop_content(strip_black_matte(Image.open(PHONE_SRC)))
+	src_w, src_h = phone_img.size
+	# Keep export aspect ratio — forcing 189×390 squashes the status card horizontally.
+	scaled_w = round(src_w * PHONE_H / src_h)
+	phone_img = phone_img.resize((scaled_w, PHONE_H), Image.Resampling.LANCZOS)
+	out = phone_img.resize((scaled_w * 2, PHONE_H * 2), Image.Resampling.LANCZOS)
 	out.save(PHONE_OUT, optimize=True)
 	print(f"saved {PHONE_OUT} ({out.size[0]}x{out.size[1]})")
 
@@ -289,13 +291,15 @@ def build_content() -> None:
 		raise SystemExit(f"Missing phone source: {PHONE_SRC}")
 
 	map_img = Image.open(MAP_OUT).convert("RGBA").resize((MAP_W, MAP_H), Image.Resampling.LANCZOS)
-	phone_img = Image.open(PHONE_OUT).convert("RGBA").resize(
-		(PHONE_W, PHONE_H), Image.Resampling.LANCZOS
+	phone_full = Image.open(PHONE_OUT).convert("RGBA")
+	phone_img = phone_full.resize(
+		(phone_full.size[0] // 2, phone_full.size[1] // 2), Image.Resampling.LANCZOS
 	)
+	phone_x = CONTENT_W - phone_img.size[0]
 
 	composite = Image.new("RGBA", (CONTENT_W, CONTENT_H), (0, 0, 0, 0))
 	composite.alpha_composite(map_img, (MAP_X, MAP_Y))
-	composite.alpha_composite(phone_img, (PHONE_X, PHONE_Y))
+	composite.alpha_composite(phone_img, (phone_x, PHONE_Y))
 
 	out = composite.resize((SCALE_W, SCALE_H), Image.Resampling.LANCZOS)
 	out.save(CONTENT_OUT, optimize=True)
