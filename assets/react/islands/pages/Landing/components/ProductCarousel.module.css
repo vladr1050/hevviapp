@@ -1,5 +1,9 @@
 .section {
-	@apply relative w-full max-w-[1280px] mx-auto px-4 md:px-10 py-16 md:py-20;
+	--landing-gutter: clamp(16px, 8.125vw, 104px);
+
+	@apply relative w-full mx-auto py-16 md:py-20;
+	max-width: 1280px;
+	padding-inline: var(--landing-gutter);
 }
 
 .title {
@@ -12,7 +16,14 @@
 }
 
 .slide {
-	@apply grid grid-cols-1 lg:grid-cols-[minmax(0,1.72fr)_300px] gap-10 lg:gap-16 items-start;
+	@apply grid grid-cols-1 gap-10 items-start;
+}
+
+@media (min-width: 1024px) {
+	.slide {
+		grid-template-columns: minmax(0, 1.72fr) minmax(0, 300px);
+		gap: clamp(40px, 5vw, 64px);
+	}
 }
 
 .visual {

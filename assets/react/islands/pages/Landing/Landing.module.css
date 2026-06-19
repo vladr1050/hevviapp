@@ -1,4 +1,8 @@
 .page {
+	--landing-gutter: clamp(16px, 8.125vw, 104px);
+	--landing-card-gutter: clamp(16px, 3.125vw, 40px);
+	--landing-section-gap: clamp(24px, 3.67vw, 47px);
+
 	@apply min-h-screen bg-[#f3f3f3] text-black;
 	font-family: 'Instrument_Sans', sans-serif;
 }
@@ -8,19 +12,51 @@
 }
 
 .heroSection {
-	@apply pb-10 md:pb-14 lg:pb-[41px];
+	padding-bottom: clamp(2.5rem, 3.2vw, 41px);
 }
 
 .heroShell {
-	@apply w-full max-w-[1280px] mx-auto;
+	@apply w-full mx-auto;
+	max-width: 1280px;
 }
 
 .heroHeader {
-	@apply flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between px-4 pt-4 pb-3 md:px-10 lg:px-[104px] lg:pt-[21px] lg:pb-[17px];
+	@apply flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pt-4 pb-3 sm:pt-5;
+	padding-inline: var(--landing-gutter);
+}
+
+@media (min-width: 1024px) {
+	.heroHeader {
+		padding-top: 21px;
+		padding-bottom: 17px;
+	}
 }
 
 .heroCard {
-	@apply mx-4 md:mx-10 lg:mx-[40px] w-auto bg-white rounded-[40px] px-6 py-8 md:px-10 md:py-10 lg:box-border lg:mx-[40px] lg:w-[1200px] lg:max-w-[calc(100%-80px)] lg:min-h-[522px] lg:px-[64px] lg:pt-[91px] lg:pr-[20px] lg:pb-[51px];
+	@apply w-auto bg-white rounded-[40px] px-6 py-8 md:px-10 md:py-10;
+	margin-inline: var(--landing-card-gutter);
+}
+
+@media (min-width: 1024px) and (max-width: 1279.98px) {
+	.heroCard {
+		box-sizing: border-box;
+		width: calc(100% - 2 * var(--landing-card-gutter));
+		max-width: 1200px;
+		min-height: clamp(460px, 40.8vw, 522px);
+		padding: clamp(48px, 7.1vw, 91px) clamp(20px, 5vw, 64px) clamp(40px, 4vw, 51px)
+			clamp(32px, 5vw, 64px);
+	}
+}
+
+@media (min-width: 1280px) {
+	.heroCard {
+		box-sizing: border-box;
+		margin-inline: 40px;
+		width: 1200px;
+		max-width: calc(100% - 80px);
+		min-height: 522px;
+		padding: 91px 20px 51px 64px;
+	}
 }
 
 .logoLink {
@@ -52,48 +88,97 @@
 }
 
 .heroBody {
-	@apply grid grid-cols-1 gap-8 lg:grid-cols-[472px_542px] lg:justify-between lg:gap-x-[102px] lg:gap-y-0 lg:items-start;
+	@apply grid grid-cols-1 gap-8 items-start;
 }
 
-.heroCopy {
-	@apply flex flex-col max-w-[472px] lg:col-start-1 lg:row-start-1;
+@media (min-width: 1024px) {
+	.heroBody {
+		grid-template-columns: minmax(0, 42.3fr) minmax(0, 48.6fr);
+		column-gap: clamp(48px, 7.97vw, 102px);
+		row-gap: 0;
+	}
+
+	.heroCopy {
+		grid-column: 1;
+		grid-row: 1;
+		max-width: 472px;
+	}
+
+	.heroFeatures {
+		grid-column: 1;
+		grid-row: 2;
+		margin-top: clamp(48px, 6.1vw, 78px);
+	}
+
+	.heroVisual {
+		grid-column: 2;
+		grid-row: 1 / span 2;
+		margin-top: clamp(-24px, -2.66vw, -34px);
+		justify-content: flex-start;
+		width: 100%;
+		max-width: 542px;
+	}
 }
 
 .heroTitle {
-	@apply m-0 text-[40px] md:text-[48px] leading-[52.8px] font-semibold tracking-normal;
+	@apply m-0 font-semibold tracking-normal;
+	font-size: clamp(36px, 3.75vw, 48px);
+	line-height: 1.1;
+}
+
+@media (min-width: 1280px) {
+	.heroTitle {
+		font-size: 48px;
+		line-height: 52.8px;
+	}
 }
 
 .heroSubtitle {
-	@apply m-0 mt-6 text-[18px] leading-[22px] font-medium text-black/70 max-w-[353px];
+	@apply m-0 mt-6 text-[18px] leading-[22px] font-medium text-black/70;
+	max-width: min(353px, 100%);
 }
 
 .heroCta {
-	@apply mt-8 h-12 min-w-[242px] w-fit text-[16px] leading-5 font-medium px-8;
+	@apply mt-8 h-12 w-fit text-[16px] leading-5 font-medium px-8;
+	min-width: clamp(200px, 18.9vw, 242px);
 }
 
 .heroFeatures {
-	@apply w-full max-w-[472px] h-12 object-contain object-left lg:col-start-1 lg:row-start-2 lg:mt-[78px];
+	@apply w-full h-12 object-contain object-left;
+	max-width: 472px;
 }
 
 .heroVisual {
-	@apply flex justify-center w-full overflow-visible lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:-mt-[34px] lg:w-[542px] lg:justify-start;
+	@apply flex justify-center w-full overflow-visible;
 }
 
 .heroVisualStack {
 	position: relative;
-	width: 542px;
-	height: 473.704px;
-	max-width: 100%;
+	width: 100%;
+	max-width: 542px;
+	aspect-ratio: 542 / 473.704;
+	height: auto;
 	overflow: visible;
 }
 
-.heroVisualMapFrame {
+.heroVisualMapFrame,
+.heroVisualMap,
+.heroVisualGradient,
+.heroVisualCargo,
+.heroVisualDelivery {
 	position: absolute;
+	width: calc(var(--w) / 542 * 100%);
+	height: calc(var(--h) / 473.704 * 100%);
+	left: calc(var(--x) / 542 * 100%);
+	top: calc(var(--y) / 473.704 * 100%);
+}
+
+.heroVisualMapFrame {
+	--x: 0;
+	--y: 0.12;
+	--w: 442.01;
+	--h: 289.05;
 	z-index: 1;
-	left: 0;
-	top: 0.12px;
-	width: 442.01px;
-	height: 289.05px;
 	border-radius: 14.545px;
 	background: #fff;
 	box-shadow:
@@ -102,68 +187,84 @@
 }
 
 .heroVisualMap {
-	position: absolute;
+	--x: 13.47;
+	--y: 12.66;
+	--w: 429.47;
+	--h: 264.92;
 	z-index: 2;
-	left: 13.47px;
-	top: 12.66px;
-	width: 429.47px;
-	height: 264.92px;
 	border-radius: 6.241px;
 	object-fit: cover;
 }
 
 .heroVisualGradient {
-	position: absolute;
+	--x: 166.97;
+	--y: 0;
+	--w: 165.01;
+	--h: 289.14;
 	z-index: 3;
-	left: 166.97px;
-	top: 0;
-	width: 165.01px;
-	height: 289.14px;
 	object-fit: fill;
 	pointer-events: none;
 }
 
 .heroVisualCargo {
-	position: absolute;
+	--x: 27.36;
+	--y: 117.7;
+	--w: 514.64;
+	--h: 356;
 	z-index: 4;
-	left: 27.36px;
-	top: 117.7px;
-	width: 514.64px;
-	height: 356px;
 	object-fit: contain;
 	object-position: left top;
 	pointer-events: none;
 }
 
 .heroVisualDelivery {
-	position: absolute;
+	--x: 233.46;
+	--y: -25;
+	--w: 254.55;
+	--h: 140;
 	z-index: 5;
-	left: 233.46px;
-	top: -25px;
-	width: 254.55px;
-	height: 140px;
 	object-fit: contain;
 	object-position: left top;
 	pointer-events: none;
 }
 
 .registration {
-	@apply pt-16 md:pt-20 pb-10 md:pb-12 lg:pt-[80px] lg:pb-0;
+	@apply pb-10 md:pb-12;
+	padding-top: clamp(4rem, 6.25vw, 80px);
+}
+
+@media (min-width: 1024px) {
+	.registration {
+		padding-bottom: 0;
+	}
 }
 
 .registrationWrap {
-	@apply w-full max-w-[1280px] mx-auto flex flex-col px-4 md:px-10 lg:px-[104px] lg:gap-[47px] gap-8 md:gap-10;
+	@apply w-full mx-auto flex flex-col gap-8 md:gap-10;
+	max-width: 1280px;
+	padding-inline: var(--landing-gutter);
+}
+
+@media (min-width: 1024px) {
+	.registrationWrap {
+		gap: var(--landing-section-gap);
+	}
 }
 
 .registrationHeader {
-	@apply flex flex-col gap-[19px] max-w-[439px];
+	@apply flex flex-col max-w-[439px];
+	gap: clamp(16px, 1.48vw, 19px);
 
 	& h2 {
-		@apply m-0 text-[32px] leading-[39px] font-semibold;
+		@apply m-0 font-semibold;
+		font-size: clamp(28px, 2.5vw, 32px);
+		line-height: 1.22;
 	}
 
 	& p {
-		@apply m-0 text-[18px] leading-[22px] font-medium text-black/70;
+		@apply m-0 font-medium text-black/70;
+		font-size: clamp(16px, 1.4vw, 18px);
+		line-height: 1.22;
 	}
 }
 
@@ -210,13 +311,43 @@
 
 @media (min-width: 1024px) {
 	.registrationPanel {
-		height: 514px;
+		aspect-ratio: 1072 / 514;
+		height: auto;
 		margin-bottom: -31px;
 	}
 
 	.registrationBanner {
 		position: absolute;
 		inset: 0 auto 0 0;
+		width: 66.03%;
+		height: 100%;
+	}
+
+	.registrationImage {
+		top: -29.38%;
+		width: 67.26%;
+		height: auto;
+		aspect-ratio: 721 / 851;
+	}
+
+	.registrationFormCard {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 40.04%;
+		height: 100%;
+		padding: clamp(40px, 5vw, 64px);
+		border-radius: 30px;
+	}
+}
+
+@media (min-width: 1280px) {
+	.registrationPanel {
+		height: 514px;
+		aspect-ratio: auto;
+	}
+
+	.registrationBanner {
 		width: 707.5px;
 		height: 514px;
 	}
@@ -225,35 +356,33 @@
 		top: -151px;
 		width: 721px;
 		height: 851px;
+		aspect-ratio: auto;
 	}
 
 	.registrationFormCard {
-		position: absolute;
-		top: 0;
-		right: 0;
 		width: 429.2px;
 		height: 514px;
 		padding: 64px;
-		border-radius: 30px;
 	}
 }
 
 .footer {
 	@apply relative z-[1] text-white;
-	background: #161616;
+	background: #2a2a28;
 	height: 104px;
 	min-height: 104px;
 }
 
 .footerInner {
-	@apply w-full max-w-[1280px] mx-auto flex flex-col sm:flex-row sm:justify-between px-4 md:px-10 lg:px-[104px];
+	@apply w-full mx-auto flex flex-col sm:flex-row sm:justify-between;
+	max-width: 1280px;
 	min-height: 104px;
 	padding-top: 40px;
+	padding-inline: var(--landing-gutter);
 }
 
 @media (min-width: 1024px) {
 	.footerInner {
-		/* 31px panel overlap + 23px below frame bottom */
 		padding-top: 54px;
 		align-items: flex-start;
 	}
@@ -283,7 +412,6 @@
 
 @media (min-width: 1024px) {
 	.footerLinks {
-		/* 28px below frame bottom vs 23px for logo row */
 		margin-top: 5px;
 	}
 }
@@ -310,79 +438,51 @@
 }
 
 .mobile .heroHeader {
-	@apply px-4 pt-4 pb-3;
+	padding-inline: 16px;
+	padding-top: 16px;
+	padding-bottom: 12px;
 }
 
 .mobile .heroCard {
 	@apply rounded-[28px] px-4 py-5;
+	margin-inline: 16px;
 }
 
 .mobile .heroTitle {
-	@apply text-[36px];
+	font-size: 36px;
+	line-height: 1.1;
 }
 
 .mobile .heroFeatures {
-	@apply max-w-full;
-}
-
-.mobile .heroVisualStack {
-	width: min(100%, 542px);
-	height: auto;
-	aspect-ratio: 542 / 473.704;
-}
-
-.mobile .heroVisualMapFrame,
-.mobile .heroVisualMap,
-.mobile .heroVisualGradient,
-.mobile .heroVisualCargo,
-.mobile .heroVisualDelivery {
-	width: calc(var(--w) / 542 * 100%);
-	height: calc(var(--h) / 473.704 * 100%);
-	left: calc(var(--x) / 542 * 100%);
-	top: calc(var(--y) / 473.704 * 100%);
-}
-
-.mobile .heroVisualMapFrame {
-	--x: 0;
-	--y: 0.12;
-	--w: 442.01;
-	--h: 289.05;
-}
-
-.mobile .heroVisualMap {
-	--x: 13.47;
-	--y: 12.66;
-	--w: 429.47;
-	--h: 264.92;
-}
-
-.mobile .heroVisualGradient {
-	--x: 166.97;
-	--y: 0;
-	--w: 165.01;
-	--h: 289.14;
-}
-
-.mobile .heroVisualCargo {
-	--x: 27.36;
-	--y: 117.7;
-	--w: 514.64;
-	--h: 356;
-}
-
-.mobile .heroVisualDelivery {
-	--x: 233.46;
-	--y: -25;
-	--w: 254.55;
-	--h: 140;
+	max-width: 100%;
 }
 
 .mobile .registrationPanel {
 	border-radius: 28px;
+	margin-bottom: 0;
+	height: auto;
+	aspect-ratio: auto;
 }
 
 .mobile .registrationFormCard {
 	border-radius: 0 0 28px 28px;
+	position: relative;
+	width: 100%;
+	height: auto;
+	padding: 32px 24px;
+}
+
+.mobile .registrationBanner {
+	position: relative;
+	width: 100%;
+	height: 240px;
+}
+
+.mobile .registrationImage {
+	top: -80px;
+	width: 100%;
+	height: 320px;
+	aspect-ratio: auto;
 }
 
 .mobile .heroNav {
