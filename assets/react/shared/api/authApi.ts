@@ -1,3 +1,5 @@
+import { fetchJson } from './http'
+
 const API_BASE = '/api/auth'
 
 export interface AuthUser {
@@ -40,9 +42,8 @@ export async function apiLogin(
 	password: string,
 	consent: PortalLoginConsentPayload
 ): Promise<LoginResponse> {
-	const res = await fetch(`${API_BASE}/login`, {
+	const { data, response } = await fetchJson<LoginResponse | ApiError>(`${API_BASE}/login`, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
 			login: email,
 			password,
@@ -51,9 +52,7 @@ export async function apiLogin(
 		}),
 	})
 
-	const data = await res.json()
-
-	if (!res.ok) {
+	if (!response.ok) {
 		throw new Error((data as ApiError).error ?? 'Login failed')
 	}
 
@@ -61,15 +60,12 @@ export async function apiLogin(
 }
 
 export async function apiResetPassword(email: string): Promise<any> {
-	const res = await fetch(`${API_BASE}/reset-password`, {
+	const { data, response } = await fetchJson<LoginResponse | ApiError>(`${API_BASE}/reset-password`, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({ login: email }),
 	})
 
-	const data = await res.json()
-
-	if (!res.ok) {
+	if (!response.ok) {
 		throw new Error((data as ApiError).error ?? 'Password reset failed')
 	}
 
@@ -77,15 +73,12 @@ export async function apiResetPassword(email: string): Promise<any> {
 }
 
 export async function apiRefreshToken(refreshToken: string): Promise<RefreshResponse> {
-	const res = await fetch(`${API_BASE}/refresh`, {
+	const { data, response } = await fetchJson<RefreshResponse | ApiError>(`${API_BASE}/refresh`, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({ refresh_token: refreshToken }),
 	})
 
-	const data = await res.json()
-
-	if (!res.ok) {
+	if (!response.ok) {
 		throw new Error((data as ApiError).error ?? 'Token refresh failed')
 	}
 
@@ -93,23 +86,20 @@ export async function apiRefreshToken(refreshToken: string): Promise<RefreshResp
 }
 
 export async function apiLogout(refreshToken: string): Promise<void> {
-	await fetch(`${API_BASE}/logout`, {
+	await fetchJson(`${API_BASE}/logout`, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({ refresh_token: refreshToken }),
 	}).catch(() => {})
 }
 
 export async function apiGetMe(accessToken: string): Promise<AuthUser> {
-	const res = await fetch(`${API_BASE}/me`, {
+	const { data, response } = await fetchJson<{ user: AuthUser } | ApiError>(`${API_BASE}/me`, {
 		headers: {
 			Authorization: `Bearer ${accessToken}`,
 		},
 	})
 
-	const data = await res.json()
-
-	if (!res.ok) {
+	if (!response.ok) {
 		throw new Error((data as ApiError).error ?? 'Unauthorized')
 	}
 
