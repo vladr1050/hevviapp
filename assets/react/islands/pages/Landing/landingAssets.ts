@@ -1,6 +1,5 @@
 import carouselArrow from './images/carousel-arrow.png'
-import carouselSlide1Cursor from './images/carousel-slide-1-cursor.png'
-import carouselSlide1Visual from './images/carousel-slide-1-visual.png'
+import carouselSlide1Composite from './images/carousel-slide-1-composite.png'
 import carouselSlide2Visual from './images/carousel-slide-2-visual.png'
 import carouselSlide3Visual from './images/carousel-slide-3-visual.png'
 import heroCargo from './images/hero-cargo.png'
@@ -28,10 +27,9 @@ export const landingAssets = {
 	registrationTrucks,
 	landingMobile,
 	carouselArrow,
-	carouselSlide1Visual,
+	carouselSlide1Composite,
 	carouselSlide2Visual,
 	carouselSlide3Visual,
-	carouselSlide1Cursor,
 } as const
 
 export type LandingSlide = {
@@ -51,9 +49,9 @@ export const landingSlides: LandingSlide[] = [
 		description:
 			'Select item type, fill in dimensions, weight, and quantity. Add pickup and delivery addresses, pick a date.',
 		stageClass: 'stageSlide1',
-		visual: carouselSlide1Visual,
-		visualWidth: 661.5,
-		visualHeight: 380.4,
+		visual: carouselSlide1Composite,
+		visualWidth: 687.5,
+		visualHeight: 409,
 	},
 	{
 		step: '02',

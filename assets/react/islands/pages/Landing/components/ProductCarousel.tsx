@@ -2,7 +2,6 @@ import { type FC, useCallback, useEffect, useRef, useState } from 'react'
 
 import { cn } from '@utils/cn'
 
-import { CarouselSlide1Visual } from './CarouselSlide1Visual'
 import { landingAssets, landingSlides } from '../landingAssets'
 import styles from './ProductCarousel.module.css'
 
@@ -57,21 +56,17 @@ export const ProductCarousel: FC = () => {
 			<div className={styles.track}>
 				<div className={styles.slide}>
 					<div className={styles.visual}>
-						{slide.stageClass === 'stageSlide1' ? (
-							<CarouselSlide1Visual />
-						) : (
-							<div className={cn(styles.visualStage, styles[slide.stageClass])}>
-								<img
-									src={slide.visual}
-									alt=""
-									width={slide.visualWidth}
-									height={slide.visualHeight}
-									className={styles.visualImage}
-									loading="lazy"
-									decoding="async"
-								/>
-							</div>
-						)}
+						<div className={cn(styles.visualStage, styles[slide.stageClass])}>
+							<img
+								src={slide.visual}
+								alt=""
+								width={slide.visualWidth}
+								height={slide.visualHeight}
+								className={styles.visualImage}
+								loading="lazy"
+								decoding="async"
+							/>
+						</div>
 					</div>
 
 					<div className={styles.copy}>
