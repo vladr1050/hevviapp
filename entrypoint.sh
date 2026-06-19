@@ -61,14 +61,17 @@ ensure_jwt_keypair() {
 
     if [ "$needs_generate" = "1" ]; then
         echo "🔑 Generating JWT keypair..."
-        php bin/console lexik:jwt:generate-keypair --no-interaction --overwrite
-        chown www-data:www-data config/jwt/*.pem 2>/dev/null || true
-        echo "✅ JWT keypair ready"
+        if php bin/console lexik:jwt:generate-keypair --no-interaction --overwrite; then
+            chown www-data:www-data config/jwt/*.pem 2>/dev/null || true
+            echo "✅ JWT keypair ready"
+        else
+            echo "⚠️  JWT keypair generation failed — /api/auth/login may be broken until fixed"
+        fi
     fi
 }
 
 if [ "${APP_ENV:-dev}" != "dev" ]; then
-    ensure_jwt_keypair
+    ensure_jwt_keypair || echo "⚠️  JWT keypair check failed — continuing startup"
 fi
 
 # Загрузка GeoArea дампов (если существуют)

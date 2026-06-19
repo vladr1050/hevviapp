@@ -60,11 +60,16 @@ jobs:
             "${DEPLOY_USER}@${DEPLOY_HOST}" \
             "cd ${DEPLOY_PATH} && export COMPOSE_FILE=compose.yaml:compose.prod.yaml && \
               docker compose build php && \
+              docker compose run --rm --no-deps -T php php bin/console lexik:jwt:generate-keypair --no-interaction --skip-if-exists && \
               docker compose up -d --force-recreate php && \
+              for i in 1 2 3 4 5 6 7 8 9 10; do \
+                docker compose exec -T php true 2>/dev/null && break; \
+                sleep 3; \
+              done && \
+              docker compose ps && \
               docker compose exec -T php composer install --no-dev --optimize-autoloader --no-interaction && \
               docker compose exec -T php sh -c 'cd /var/www/app && npm install && npm run build' && \
               docker compose exec -T php php bin/console doctrine:migrations:migrate --no-interaction && \
-              docker compose exec -T php php bin/console lexik:jwt:generate-keypair --no-interaction --skip-if-exists && \
               docker compose exec -T php php bin/console cache:clear --env=prod --no-warmup && \
               docker compose restart php nginx && \
               sleep 3 && \
