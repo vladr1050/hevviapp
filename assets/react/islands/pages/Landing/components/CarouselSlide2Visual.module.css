@@ -1,0 +1,54 @@
+/* Group 1063 (659×380) over Frame 1762 (507×290 at −26, 115). Stage 405px tall. */
+.stage {
+	--card-w: 659;
+	--card-h: 380;
+	--stage-h: 405;
+
+	position: relative;
+	width: min(100%, calc(var(--card-w) * 1px));
+	aspect-ratio: var(--card-w) / var(--stage-h);
+	overflow: visible;
+}
+
+.accent,
+.card {
+	position: absolute;
+	display: block;
+	pointer-events: none;
+}
+
+.accent {
+	left: calc(-26 / var(--card-w) * 100%);
+	top: calc(115 / var(--stage-h) * 100%);
+	width: calc(507 / var(--card-w) * 100%);
+	height: calc(290 / var(--stage-h) * 100%);
+	z-index: 1;
+}
+
+.card {
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: calc(var(--card-h) / var(--stage-h) * 100%);
+	object-fit: fill;
+	object-position: left top;
+	z-index: 2;
+}
+
+@media (min-width: 1280px) {
+	.stage {
+		width: 659px;
+	}
+
+	.accent {
+		left: -26px;
+		top: 115px;
+		width: 507px;
+		height: 290px;
+	}
+
+	.card {
+		width: 659px;
+		height: 380px;
+	}
+}

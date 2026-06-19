@@ -20,8 +20,8 @@
 #   logo-footer             1611:18490  Group 633216
 #   carousel-slide-1-form      1611:18525  Frame 1859 — request form (transparent export)
 #   carousel-slide-1-accent    1611:18373  Frame 1762 — green background
-#   carousel-slide-2        1611:18817  Group 1063 — price card (carousel 1611:18815)
-#   carousel-slide-2-accent 1611:18816  Frame 1762
+#   carousel-slide-2-card      1611:18817  Group 1063 — price card (carousel 1611:18815)
+#   carousel-slide-2-accent    1611:18816  Frame 1762
 #   carousel-slide-2-cursor 1611:18944  Group 633214
 #   carousel-slide-3-map    1611:18964  Group 1166 (carousel 1611:18949)
 #   carousel-slide-3-phone  1611:18979  Frame 552
@@ -48,9 +48,8 @@ declare -A NODES=(
   [logo-footer]="1611:18490"
   [carousel-slide-1-form]="1611:18525"
   [carousel-slide-1-accent]="1611:18373"
-  [carousel-slide-2]="1611:18817"
+  [carousel-slide-2-card]="1611:18817"
   [carousel-slide-2-accent]="1611:18816"
-  [carousel-slide-2-cursor]="1611:18944"
   [carousel-slide-3-map]="1611:18964"
   [carousel-slide-3-phone]="1611:18979"
   [carousel-slide-3-accent]="1611:18950"
@@ -91,9 +90,8 @@ names = {
     "1611:18490": "logo-footer",
     "1611:18525": "carousel-slide-1-form",
     "1611:18373": "carousel-slide-1-accent",
-    "1611:18817": "carousel-slide-2",
+    "1611:18817": "carousel-slide-2-card",
     "1611:18816": "carousel-slide-2-accent",
-    "1611:18944": "carousel-slide-2-cursor",
     "1611:18964": "carousel-slide-3-map",
     "1611:18979": "carousel-slide-3-phone",
     "1611:18950": "carousel-slide-3-accent",

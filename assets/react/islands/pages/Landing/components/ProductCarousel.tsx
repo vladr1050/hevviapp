@@ -3,6 +3,7 @@ import { type FC, useCallback, useEffect, useRef, useState } from 'react'
 import { cn } from '@utils/cn'
 
 import { CarouselSlide1Visual } from './CarouselSlide1Visual'
+import { CarouselSlide2Visual } from './CarouselSlide2Visual'
 import { landingAssets, landingSlides } from '../landingAssets'
 import styles from './ProductCarousel.module.css'
 
@@ -59,6 +60,8 @@ export const ProductCarousel: FC = () => {
 					<div className={styles.visual}>
 						{slide.stageClass === 'stageSlide1' ? (
 							<CarouselSlide1Visual />
+						) : slide.stageClass === 'stageSlide2' ? (
+							<CarouselSlide2Visual />
 						) : (
 							<div className={cn(styles.visualStage, styles[slide.stageClass])}>
 								<img

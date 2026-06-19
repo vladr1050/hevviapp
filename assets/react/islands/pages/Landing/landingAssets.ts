@@ -1,5 +1,4 @@
 import carouselArrow from './images/carousel-arrow.png'
-import carouselSlide2Visual from './images/carousel-slide-2-visual.png'
 import carouselSlide3Visual from './images/carousel-slide-3-visual.png'
 import heroCargo from './images/hero-cargo.png'
 import heroDeliveryPanel from './images/hero-delivery-panel.png'
@@ -26,7 +25,6 @@ export const landingAssets = {
 	registrationTrucks,
 	landingMobile,
 	carouselArrow,
-	carouselSlide2Visual,
 	carouselSlide3Visual,
 } as const
 
@@ -56,9 +54,9 @@ export const landingSlides: LandingSlide[] = [
 		title: 'Get an instant price',
 		description: 'No tenders, no phone calls. The price appears immediately.',
 		stageClass: 'stageSlide2',
-		visual: carouselSlide2Visual,
+		visual: '',
 		visualWidth: 659,
-		visualHeight: 380,
+		visualHeight: 405,
 	},
 	{
 		step: '03',
