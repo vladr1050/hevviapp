@@ -281,6 +281,7 @@
 	position: relative;
 	width: 100%;
 	height: 240px;
+	overflow: hidden;
 	background: linear-gradient(180deg, #f8f8f8 61.06%, #efefef 100%);
 }
 
@@ -289,9 +290,10 @@
 	left: 0;
 	top: -80px;
 	width: 100%;
-	height: 320px;
+	height: auto;
 	max-width: none;
-	object-fit: cover;
+	aspect-ratio: 721 / 851;
+	object-fit: none;
 	object-position: left top;
 	pointer-events: none;
 }
@@ -321,11 +323,12 @@
 		inset: 0 auto 0 0;
 		width: 66.03%;
 		height: 100%;
+		overflow: hidden;
 	}
 
 	.registrationImage {
 		top: -29.38%;
-		width: 67.26%;
+		width: 101.98%;
 		height: auto;
 		aspect-ratio: 721 / 851;
 	}
@@ -357,6 +360,7 @@
 		width: 721px;
 		height: 851px;
 		aspect-ratio: auto;
+		object-fit: none;
 	}
 
 	.registrationFormCard {
@@ -479,10 +483,10 @@
 }
 
 .mobile .registrationImage {
-	top: -80px;
+	top: -33%;
 	width: 100%;
-	height: 320px;
-	aspect-ratio: auto;
+	height: auto;
+	aspect-ratio: 721 / 851;
 }
 
 .mobile .heroNav {
