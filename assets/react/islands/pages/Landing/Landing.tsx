@@ -137,8 +137,8 @@ export const LandingPage: FC<LandingProps> = ({ device }) => {
 									src={landingAssets.registrationTrucks}
 									alt=""
 									className={styles.registrationImage}
-									width={721}
-									height={851}
+									width={708}
+									height={514}
 									loading="lazy"
 								/>
 							</div>
