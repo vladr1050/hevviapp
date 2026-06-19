@@ -46,76 +46,60 @@
 	overflow: visible;
 }
 
-.visualLayer {
+.stageSlide2 {
+	--stage-w: 659;
+	--stage-h: 380;
+	aspect-ratio: auto;
+	max-width: none;
+}
+
+.stageSlide3 {
+	--stage-w: 613;
+	--stage-h: 339;
+	aspect-ratio: auto;
+	max-width: none;
+}
+
+.visualAccent,
+.visualMain,
+.visualCursor {
 	position: absolute;
 	width: calc(var(--w) / var(--stage-w) * 100%);
 	height: calc(var(--h) / var(--stage-h) * 100%);
 	left: calc(var(--x) / var(--stage-w) * 100%);
 	top: calc(var(--y) / var(--stage-h) * 100%);
-	object-fit: contain;
+	object-fit: fill;
 	object-position: left top;
 	pointer-events: none;
 }
 
 .visualAccent {
-	z-index: 1;
-}
-
-.visualMain {
-	z-index: 2;
-}
-
-.visualCursor {
-	z-index: 3;
-}
-
-.stageSlide1 .visualAccent {
 	--x: 0;
 	--y: 119;
 	--w: 507;
 	--h: 290;
+	z-index: 1;
 }
 
-.stageSlide1 .visualMain {
+.visualMain {
 	--x: 26;
 	--y: 0;
 	--w: 661.5;
 	--h: 380.4;
+	z-index: 2;
 }
 
-.stageSlide1 .visualCursor {
+.visualCursor {
 	--x: 496;
 	--y: 332;
 	--w: 19.5;
 	--h: 31.2;
+	z-index: 3;
 }
 
-.stageSlide2 .visualAccent {
-	--x: 0;
-	--y: 115;
-	--w: 507;
-	--h: 290;
-}
-
-.stageSlide2 .visualMain {
-	--x: 26;
-	--y: 0;
-	--w: 659;
-	--h: 380;
-}
-
-.stageSlide2 .visualCursor {
-	--x: 352;
-	--y: 368;
-	--w: 19.5;
-	--h: 31.2;
-}
-
-.stageSlide3 .visualMain {
-	--x: 0;
-	--y: 0;
-	--w: 613;
-	--h: 339;
+.visualImage {
+	@apply block h-auto w-full;
+	max-width: calc(var(--stage-w) * 1px);
 }
 
 .copy {

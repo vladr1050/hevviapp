@@ -2,7 +2,6 @@ import { type FC, useCallback, useEffect, useRef, useState } from 'react'
 
 import { cn } from '@utils/cn'
 
-import { CarouselVisual } from './CarouselVisual'
 import { landingAssets, landingSlides } from '../landingAssets'
 import styles from './ProductCarousel.module.css'
 
@@ -57,7 +56,49 @@ export const ProductCarousel: FC = () => {
 			<div className={styles.track}>
 				<div className={styles.slide}>
 					<div className={styles.visual}>
-						<CarouselVisual slide={slide} />
+						<div className={cn(styles.visualStage, styles[slide.stageClass])}>
+							{slide.layered ? (
+								<>
+									<img
+										src={landingAssets.carouselSlide1Accent}
+										alt=""
+										width={507}
+										height={290}
+										className={styles.visualAccent}
+										loading="lazy"
+										decoding="async"
+									/>
+									<img
+										src={slide.visual}
+										alt=""
+										width={slide.visualWidth}
+										height={slide.visualHeight}
+										className={styles.visualMain}
+										loading="lazy"
+										decoding="async"
+									/>
+									<img
+										src={landingAssets.carouselSlide1Cursor}
+										alt=""
+										width={19.5}
+										height={31.2}
+										className={styles.visualCursor}
+										loading="lazy"
+										decoding="async"
+									/>
+								</>
+							) : (
+								<img
+									src={slide.visual}
+									alt=""
+									width={slide.visualWidth}
+									height={slide.visualHeight}
+									className={styles.visualImage}
+									loading="lazy"
+									decoding="async"
+								/>
+							)}
+						</div>
 					</div>
 
 					<div className={styles.copy}>
