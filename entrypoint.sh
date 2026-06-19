@@ -40,6 +40,37 @@ else
     echo "ℹ️  APP_ENV=${APP_ENV:-}: пропуск schema:update (используйте doctrine:migrations:migrate)"
 fi
 
+# Host bind-mount скрывает ключи из Docker-образа; rsync их не копирует.
+# Без валидной пары config/jwt/*.pem + JWT_PASSPHRASE логин падает с JWTEncodeFailureException.
+ensure_jwt_keypair() {
+    mkdir -p config/jwt
+
+    if [ -z "${JWT_PASSPHRASE:-}" ]; then
+        echo "⚠️  JWT_PASSPHRASE is not set — /api/auth/login will fail"
+        return
+    fi
+
+    local needs_generate=0
+    if [ ! -s config/jwt/private.pem ] || [ ! -s config/jwt/public.pem ]; then
+        echo "🔑 JWT key files are missing"
+        needs_generate=1
+    elif ! openssl pkey -in config/jwt/private.pem -passin env:JWT_PASSPHRASE -noout 2>/dev/null; then
+        echo "🔑 JWT private key does not match JWT_PASSPHRASE"
+        needs_generate=1
+    fi
+
+    if [ "$needs_generate" = "1" ]; then
+        echo "🔑 Generating JWT keypair..."
+        php bin/console lexik:jwt:generate-keypair --no-interaction --overwrite
+        chown www-data:www-data config/jwt/*.pem 2>/dev/null || true
+        echo "✅ JWT keypair ready"
+    fi
+}
+
+if [ "${APP_ENV:-dev}" != "dev" ]; then
+    ensure_jwt_keypair
+fi
+
 # Загрузка GeoArea дампов (если существуют)
 # Каталог проекта = каталог этого скрипта (в Docker: /var/www/app, см. Dockerfile WORKDIR)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"

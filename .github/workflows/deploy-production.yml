@@ -64,6 +64,7 @@ jobs:
               docker compose exec -T php composer install --no-dev --optimize-autoloader --no-interaction && \
               docker compose exec -T php sh -c 'cd /var/www/app && npm install && npm run build' && \
               docker compose exec -T php php bin/console doctrine:migrations:migrate --no-interaction && \
+              docker compose exec -T php php bin/console lexik:jwt:generate-keypair --no-interaction --skip-if-exists && \
               docker compose exec -T php php bin/console cache:clear --env=prod --no-warmup && \
               docker compose restart php nginx && \
               sleep 3 && \
