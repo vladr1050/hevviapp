@@ -3,10 +3,14 @@
 
 from __future__ import annotations
 
+import sys
 from collections import deque
 from pathlib import Path
 
 from PIL import Image
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from carousel_image_utils import CAROUSEL_DPR, resize_for_carousel, save_carousel_png
 
 ROOT = Path(__file__).resolve().parents[1]
 IMG = ROOT / "assets/react/islands/pages/Landing/images"
@@ -17,7 +21,6 @@ OUT = IMG / "carousel-slide-2-card.png"
 CARD_W, CARD_H = 659, 380
 CONFIRM_W, CONFIRM_H = 312, 103
 CONFIRM_X, CONFIRM_Y = 317, 249
-SCALE_W, SCALE_H = CARD_W * 2, CARD_H * 2
 
 
 def strip_black_matte(im: Image.Image) -> Image.Image:
@@ -65,19 +68,36 @@ def main() -> None:
 	if not CONFIRM_SRC.exists():
 		raise SystemExit(f"Missing confirm export: {CONFIRM_SRC}")
 
-	card = crop_content(strip_black_matte(Image.open(CARD_SRC))).resize(
-		(CARD_W, CARD_H), Image.Resampling.LANCZOS
+	dpr = CAROUSEL_DPR
+	card = resize_for_carousel(
+		crop_content(strip_black_matte(Image.open(CARD_SRC))),
+		CARD_W,
+		CARD_H,
+		dpr=dpr,
 	)
-	confirm = crop_content(strip_black_matte(Image.open(CONFIRM_SRC))).resize(
-		(CONFIRM_W, CONFIRM_H), Image.Resampling.LANCZOS
+	confirm = resize_for_carousel(
+		crop_content(strip_black_matte(Image.open(CONFIRM_SRC))),
+		CONFIRM_W,
+		CONFIRM_H,
+		dpr=dpr,
 	)
 
+	scale = card.size[0] / CARD_W
 	composite = card.copy()
-	composite.alpha_composite(confirm, (CONFIRM_X, CONFIRM_Y))
+	composite.alpha_composite(
+		confirm,
+		(round(CONFIRM_X * scale), round(CONFIRM_Y * scale)),
+	)
 
-	out = composite.resize((SCALE_W, SCALE_H), Image.Resampling.LANCZOS)
-	out.save(OUT, optimize=True)
-	print(f"saved {OUT} ({out.size[0]}x{out.size[1]})")
+	save_carousel_png(composite, OUT)
+	effective_dpr = composite.size[0] / CARD_W
+	print(f"saved {OUT} ({composite.size[0]}x{composite.size[1]}, ~{effective_dpr:.2f}x DPR)")
+	if effective_dpr < CAROUSEL_DPR - 0.05:
+		print(
+			f"warning: source is below {CAROUSEL_DPR}x — re-export Figma carousel assets "
+			f"with scale={CAROUSEL_DPR} (scripts/export-figma-landing.sh)",
+			flush=True,
+		)
 
 
 if __name__ == "__main__":

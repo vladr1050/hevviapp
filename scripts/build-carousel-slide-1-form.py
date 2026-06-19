@@ -3,15 +3,19 @@
 
 from __future__ import annotations
 
+import sys
 from collections import deque
 from pathlib import Path
 
 from PIL import Image
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from carousel_image_utils import CAROUSEL_DPR, resize_for_carousel, save_carousel_png
+
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "assets/react/islands/pages/Landing/images/carousel-slide-1-form-source.png"
 OUT = ROOT / "assets/react/islands/pages/Landing/images/carousel-slide-1-form.png"
-SCALE_W, SCALE_H = round(661.5 * 2), round(380.4 * 2)
+FORM_W, FORM_H = 661.5, 380.4
 
 
 def strip_black_matte(im: Image.Image) -> Image.Image:
@@ -56,9 +60,16 @@ def main() -> None:
 		raise SystemExit("Form export is empty after matte removal")
 
 	cropped = im.crop(bbox)
-	out = cropped.resize((SCALE_W, SCALE_H), Image.Resampling.LANCZOS)
-	out.save(OUT, optimize=True)
-	print(f"saved {OUT} ({out.size[0]}x{out.size[1]})")
+	out = resize_for_carousel(cropped, FORM_W, FORM_H)
+	save_carousel_png(out, OUT)
+	dpr = out.size[0] / FORM_W
+	print(f"saved {OUT} ({out.size[0]}x{out.size[1]}, ~{dpr:.2f}x DPR)")
+	if dpr < CAROUSEL_DPR - 0.05:
+		print(
+			f"warning: source is below {CAROUSEL_DPR}x — re-export Figma carousel assets "
+			f"with scale={CAROUSEL_DPR} (scripts/export-figma-landing.sh)",
+			flush=True,
+		)
 
 
 if __name__ == "__main__":

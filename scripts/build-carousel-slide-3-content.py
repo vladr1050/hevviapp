@@ -3,10 +3,14 @@
 
 from __future__ import annotations
 
+import sys
 from collections import deque
 from pathlib import Path
 
 from PIL import Image
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from carousel_image_utils import CAROUSEL_DPR, resize_for_carousel, save_carousel_png
 
 ROOT = Path(__file__).resolve().parents[1]
 IMG = ROOT / "assets/react/islands/pages/Landing/images"
@@ -37,9 +41,9 @@ PHONE_Y = FRAME_Y - PHONE_ABOVE_FRAME
 PHONE_H = FRAME_H + PHONE_ABOVE_FRAME * 2
 PHONE_W = 210
 PHONE_X = CONTENT_W - PHONE_W
-FRAME_SOURCE_W, FRAME_SOURCE_H = FRAME_W * 2, FRAME_H * 2
-MAP_SOURCE_W, MAP_SOURCE_H = MAP_W * 2, MAP_H * 2
-SCALE_W, SCALE_H = CONTENT_W * 2, CONTENT_H * 2
+FRAME_SOURCE_W, FRAME_SOURCE_H = round(FRAME_W * CAROUSEL_DPR), round(FRAME_H * CAROUSEL_DPR)
+MAP_SOURCE_W, MAP_SOURCE_H = round(MAP_W * CAROUSEL_DPR), round(MAP_H * CAROUSEL_DPR)
+SCALE_W, SCALE_H = round(CONTENT_W * CAROUSEL_DPR), round(CONTENT_H * CAROUSEL_DPR)
 
 
 def strip_black_matte(im: Image.Image) -> Image.Image:
@@ -146,10 +150,10 @@ def detect_map_bbox(mockup: Image.Image) -> tuple[int, int, int, int]:
 	return minx - pad, miny - pad, maxx + 1 + pad, maxy + 1 + pad
 
 
-def frame_mask() -> Image.Image:
+def frame_mask(width: int, height: int) -> Image.Image:
 	frame = crop_content(
 		strip_light_matte(strip_black_matte(Image.open(FRAME_SRC)))
-	).resize((FRAME_W, FRAME_H), Image.Resampling.LANCZOS)
+	).resize((width, height), Image.Resampling.LANCZOS)
 	return frame.split()[3]
 
 
@@ -200,26 +204,31 @@ def extract_shadow_only(art: Image.Image, width: int, height: int) -> Image.Imag
 
 def mockup_art() -> Image.Image:
 	mockup = Image.open(MOCKUP_SRC).convert("RGBA")
-	return mockup.crop(detect_map_bbox(mockup)).resize((FRAME_W, FRAME_H), Image.Resampling.LANCZOS)
+	cropped = mockup.crop(detect_map_bbox(mockup))
+	return resize_for_carousel(cropped, FRAME_W, FRAME_H)
 
 
 def build_frame_plate(art: Image.Image) -> Image.Image:
-	mask = frame_mask()
-	plate = Image.new("RGBA", (FRAME_W, FRAME_H), (0, 0, 0, 0))
-	plate.paste(Image.new("RGBA", (FRAME_W, FRAME_H), (255, 255, 255, 255)), (0, 0), mask)
-	plate.alpha_composite(extract_shadow_only(art, FRAME_W, FRAME_H))
+	width, height = art.size
+	mask = frame_mask(width, height)
+	plate = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+	plate.paste(Image.new("RGBA", (width, height), (255, 255, 255, 255)), (0, 0), mask)
+	plate.alpha_composite(extract_shadow_only(art, width, height))
 	return plate
 
 
 def build_map_layer(art: Image.Image) -> Image.Image:
-	tile = Image.open(MAP_TILE_SRC).convert("RGBA").resize(
-		(MAP_TILE_W, MAP_TILE_H), Image.Resampling.LANCZOS
-	)
-	layer = Image.new("RGBA", (MAP_W, MAP_H), (0, 0, 0, 0))
-	layer.paste(tile, (MAP_TILE_X, MAP_TILE_Y), tile)
-	route = extract_route_only(art, FRAME_W, FRAME_H).crop(
-		(MAP_INSET, MAP_INSET, FRAME_W - MAP_INSET, FRAME_H - MAP_INSET)
-	)
+	width, height = art.size
+	inset = round(MAP_INSET * width / FRAME_W)
+	map_w, map_h = width - inset * 2, height - inset * 2
+	tile = resize_for_carousel(
+		Image.open(MAP_TILE_SRC).convert("RGBA"),
+		MAP_W,
+		MAP_H,
+	).resize((map_w, map_h), Image.Resampling.LANCZOS)
+	layer = Image.new("RGBA", (map_w, map_h), (0, 0, 0, 0))
+	layer.paste(tile, (0, 0), tile)
+	route = extract_route_only(art, width, height).crop((inset, inset, width - inset, height - inset))
 	layer.alpha_composite(route)
 	return layer
 
@@ -232,17 +241,22 @@ def build_map_card() -> Image.Image:
 	if not MAP_TILE_SRC.exists():
 		raise SystemExit(f"Missing map tile export: {MAP_TILE_SRC}")
 
-	mask = frame_mask()
 	art = mockup_art()
+	width, height = art.size
+	inset = round(MAP_INSET * width / FRAME_W)
+	map_w, map_h = width - inset * 2, height - inset * 2
+	mask = frame_mask(width, height)
 
-	tile = Image.open(MAP_TILE_SRC).convert("RGBA").resize(
-		(MAP_W, MAP_H), Image.Resampling.LANCZOS
-	)
+	tile = resize_for_carousel(
+		Image.open(MAP_TILE_SRC).convert("RGBA"),
+		MAP_W,
+		MAP_H,
+	).resize((map_w, map_h), Image.Resampling.LANCZOS)
 
-	card = Image.new("RGBA", (FRAME_W, FRAME_H), (0, 0, 0, 0))
-	card.paste(Image.new("RGBA", (FRAME_W, FRAME_H), (255, 255, 255, 255)), (0, 0), mask)
-	card.paste(tile, (MAP_INSET, MAP_INSET), tile)
-	card.alpha_composite(extract_route_and_shadow(art, FRAME_W, FRAME_H))
+	card = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+	card.paste(Image.new("RGBA", (width, height), (255, 255, 255, 255)), (0, 0), mask)
+	card.paste(tile, (inset, inset), tile)
+	card.alpha_composite(extract_route_and_shadow(art, width, height))
 	return card
 
 
@@ -250,10 +264,10 @@ def prepare_layer_exports() -> None:
 	art = mockup_art()
 	frame = build_frame_plate(art)
 	map_layer = build_map_layer(art)
-	frame.resize((FRAME_SOURCE_W, FRAME_SOURCE_H), Image.Resampling.LANCZOS).save(FRAME_OUT, optimize=True)
-	map_layer.resize((MAP_SOURCE_W, MAP_SOURCE_H), Image.Resampling.LANCZOS).save(MAP_OUT, optimize=True)
-	print(f"saved {FRAME_OUT} ({FRAME_SOURCE_W}x{FRAME_SOURCE_H})")
-	print(f"saved {MAP_OUT} ({MAP_SOURCE_W}x{MAP_SOURCE_H})")
+	save_carousel_png(frame, FRAME_OUT)
+	save_carousel_png(map_layer, MAP_OUT)
+	print(f"saved {FRAME_OUT} ({frame.size[0]}x{frame.size[1]})")
+	print(f"saved {MAP_OUT} ({map_layer.size[0]}x{map_layer.size[1]})")
 
 
 def prepare_phone() -> None:
@@ -262,19 +276,16 @@ def prepare_phone() -> None:
 
 	phone_img = crop_content(strip_black_matte(Image.open(PHONE_SRC)))
 	src_w, src_h = phone_img.size
-	# Keep export aspect ratio — forcing 189×390 squashes the status card horizontally.
-	scaled_w = round(src_w * PHONE_H / src_h)
-	phone_img = phone_img.resize((scaled_w, PHONE_H), Image.Resampling.LANCZOS)
-	out = phone_img.resize((scaled_w * 2, PHONE_H * 2), Image.Resampling.LANCZOS)
-	out.save(PHONE_OUT, optimize=True)
+	phone_w = round(src_w * PHONE_H / src_h)
+	out = resize_for_carousel(phone_img, phone_w, PHONE_H)
+	save_carousel_png(out, PHONE_OUT)
 	print(f"saved {PHONE_OUT} ({out.size[0]}x{out.size[1]})")
 
 
 def prepare_map_source() -> None:
 	card = build_map_card()
-	out = card.resize((FRAME_SOURCE_W, FRAME_SOURCE_H), Image.Resampling.LANCZOS)
-	out.save(MAP_SRC, optimize=True)
-	print(f"saved {MAP_SRC} ({out.size[0]}x{out.size[1]})")
+	save_carousel_png(card, MAP_SRC)
+	print(f"saved {MAP_SRC} ({card.size[0]}x{card.size[1]})")
 
 
 def prepare_accent() -> None:
@@ -282,8 +293,8 @@ def prepare_accent() -> None:
 		raise SystemExit(f"Missing accent export: {ACCENT_SRC}")
 
 	src = strip_black_matte(Image.open(ACCENT_SRC))
-	out = src.resize((399 * 2, 228 * 2), Image.Resampling.LANCZOS) if src.size != (798, 456) else src
-	out.save(ACCENT_OUT, optimize=True)
+	out = resize_for_carousel(src, 399, 228)
+	save_carousel_png(out, ACCENT_OUT)
 	print(f"saved {ACCENT_OUT} ({out.size[0]}x{out.size[1]})")
 
 
@@ -296,7 +307,8 @@ def build_content() -> None:
 	map_img = Image.open(MAP_OUT).convert("RGBA").resize((MAP_W, MAP_H), Image.Resampling.LANCZOS)
 	phone_full = Image.open(PHONE_OUT).convert("RGBA")
 	phone_img = phone_full.resize(
-		(phone_full.size[0] // 2, phone_full.size[1] // 2), Image.Resampling.LANCZOS
+		(round(phone_full.size[0] / CAROUSEL_DPR), round(phone_full.size[1] / CAROUSEL_DPR)),
+		Image.Resampling.LANCZOS,
 	)
 	phone_x = CONTENT_W - phone_img.size[0]
 
@@ -305,7 +317,7 @@ def build_content() -> None:
 	composite.alpha_composite(phone_img, (phone_x, PHONE_Y))
 
 	out = composite.resize((SCALE_W, SCALE_H), Image.Resampling.LANCZOS)
-	out.save(CONTENT_OUT, optimize=True)
+	save_carousel_png(out, CONTENT_OUT)
 	print(f"saved {CONTENT_OUT} ({out.size[0]}x{out.size[1]})")
 
 

@@ -28,9 +28,12 @@
 #   carousel-slide-3-accent-source 1611:18950  Frame 1762
 #   carousel-arrow          1611:18574  fi_3114931
 #   landing-mobile          1611:19016  iPhone 13 & 14 - 1
+#
+# Carousel sources target 3× DPR (see scripts/carousel_image_utils.py). Override: FIGMA_EXPORT_SCALE=2
 set -euo pipefail
 
 TOKEN="${FIGMA_TOKEN:?Set FIGMA_TOKEN}"
+FIGMA_EXPORT_SCALE="${FIGMA_EXPORT_SCALE:-3}"
 FILE_KEY="H7HtqYOoxZetHunb8PQiHN"
 OUT_DIR="$(cd "$(dirname "$0")/.." && pwd)/assets/react/islands/pages/Landing/images"
 mkdir -p "$OUT_DIR"
@@ -64,10 +67,10 @@ for id in "${NODES[@]}"; do
   IDS+="$enc"
 done
 
-echo "Requesting render URLs from Figma…"
+echo "Requesting render URLs from Figma (scale=${FIGMA_EXPORT_SCALE})…"
 sleep 2
 RESP=$(curl -sS -H "X-Figma-Token: $TOKEN" \
-  "https://api.figma.com/v1/images/${FILE_KEY}?ids=${IDS}&format=png&scale=2")
+  "https://api.figma.com/v1/images/${FILE_KEY}?ids=${IDS}&format=png&scale=${FIGMA_EXPORT_SCALE}")
 
 python3 - "$OUT_DIR" "$RESP" <<'PY'
 import json, subprocess, sys, os
@@ -88,9 +91,9 @@ names = {
     "1611:18585": "hero-features",
     "1611:18501": "registration-trucks",
     "1611:18490": "logo-footer",
-    "1611:18525": "carousel-slide-1-form",
+    "1611:18525": "carousel-slide-1-form-source",
     "1611:18373": "carousel-slide-1-accent",
-    "1611:18817": "carousel-slide-2-card",
+    "1611:18817": "carousel-slide-2-card-source",
     "1611:18816": "carousel-slide-2-accent",
     "1611:18964": "carousel-slide-3-map-source",
     "1611:18979": "carousel-slide-3-phone-source",
