@@ -1,17 +1,32 @@
-/* Map + status phone (689×390) over Frame 1762 (399×228 at 0, 179). Stage 407px tall. */
+/* Frame 1762 + map (Frame 1933 shadow at 27/29, map art at 37/39) + phone. */
 .stage {
-	--content-w: 689;
-	--content-h: 390;
+	--stage-w: 689;
 	--stage-h: 407;
+	--accent-w: 399;
+	--accent-h: 228;
+	--accent-top: 179;
+	--frame-left: 27;
+	--frame-top: 12;
+	--frame-w: 532;
+	--frame-h: 366;
+	--map-left: 37;
+	--map-top: 2;
+	--map-w: 532;
+	--map-h: 366;
+	--phone-left: 500;
+	--phone-w: 189;
+	--phone-h: 390;
 
 	position: relative;
-	width: min(100%, calc(var(--content-w) * 1px));
-	aspect-ratio: var(--content-w) / var(--stage-h);
+	width: min(100%, calc(var(--stage-w) * 1px));
+	aspect-ratio: var(--stage-w) / var(--stage-h);
 	overflow: visible;
 }
 
 .accent,
-.content {
+.frame,
+.map,
+.phone {
 	position: absolute;
 	display: block;
 	pointer-events: none;
@@ -19,20 +34,40 @@
 
 .accent {
 	left: 0;
-	top: calc(179 / var(--stage-h) * 100%);
-	width: calc(399 / var(--content-w) * 100%);
-	height: calc(228 / var(--stage-h) * 100%);
+	top: calc(var(--accent-top) / var(--stage-h) * 100%);
+	width: calc(var(--accent-w) / var(--stage-w) * 100%);
+	height: calc(var(--accent-h) / var(--stage-h) * 100%);
 	z-index: 1;
 }
 
-.content {
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: calc(var(--content-h) / var(--stage-h) * 100%);
+.frame {
+	left: calc(var(--frame-left) / var(--stage-w) * 100%);
+	top: calc(var(--frame-top) / var(--stage-h) * 100%);
+	width: calc(var(--frame-w) / var(--stage-w) * 100%);
+	height: calc(var(--frame-h) / var(--stage-h) * 100%);
 	object-fit: fill;
 	object-position: left top;
 	z-index: 2;
+}
+
+.map {
+	left: calc(var(--map-left) / var(--stage-w) * 100%);
+	top: calc(var(--map-top) / var(--stage-h) * 100%);
+	width: calc(var(--map-w) / var(--stage-w) * 100%);
+	height: calc(var(--map-h) / var(--stage-h) * 100%);
+	object-fit: fill;
+	object-position: left top;
+	z-index: 3;
+}
+
+.phone {
+	left: calc(var(--phone-left) / var(--stage-w) * 100%);
+	top: 0;
+	width: calc(var(--phone-w) / var(--stage-w) * 100%);
+	height: calc(var(--phone-h) / var(--stage-h) * 100%);
+	object-fit: fill;
+	object-position: left top;
+	z-index: 4;
 }
 
 @media (min-width: 1280px) {
@@ -46,8 +81,23 @@
 		height: 228px;
 	}
 
-	.content {
-		width: 689px;
+	.frame {
+		left: 27px;
+		top: 12px;
+		width: 532px;
+		height: 366px;
+	}
+
+	.map {
+		left: 37px;
+		top: 2px;
+		width: 532px;
+		height: 366px;
+	}
+
+	.phone {
+		left: 500px;
+		width: 189px;
 		height: 390px;
 	}
 }
