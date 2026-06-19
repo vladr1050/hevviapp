@@ -1,5 +1,9 @@
 import carouselArrow from './images/carousel-arrow.png'
+import carouselSlide1Accent from './images/carousel-slide-1-accent.png'
+import carouselSlide1Cursor from './images/carousel-slide-1-cursor.png'
 import carouselSlide1Visual from './images/carousel-slide-1-visual.png'
+import carouselSlide2Accent from './images/carousel-slide-2-accent.png'
+import carouselSlide2Cursor from './images/carousel-slide-2-cursor.png'
 import carouselSlide2Visual from './images/carousel-slide-2-visual.png'
 import carouselSlide3Visual from './images/carousel-slide-3-visual.png'
 import heroCargo from './images/hero-cargo.png'
@@ -30,16 +34,30 @@ export const landingAssets = {
 	carouselSlide1Visual,
 	carouselSlide2Visual,
 	carouselSlide3Visual,
+	carouselSlide1Accent,
+	carouselSlide2Accent,
+	carouselSlide1Cursor,
+	carouselSlide2Cursor,
 } as const
+
+export type SlideVisualLayer = {
+	className:
+		| 'visualAccent'
+		| 'visualMain'
+		| 'visualCursor'
+	src: string
+	width: number
+	height: number
+}
 
 export type LandingSlide = {
 	step: string
 	title: string
 	description: string
 	stageClass: 'stageSlide1' | 'stageSlide2' | 'stageSlide3'
-	visual: string
-	visualWidth: number
-	visualHeight: number
+	stageWidth: number
+	stageHeight: number
+	layers: SlideVisualLayer[]
 }
 
 export const landingSlides: LandingSlide[] = [
@@ -49,18 +67,56 @@ export const landingSlides: LandingSlide[] = [
 		description:
 			'Select item type, fill in dimensions, weight, and quantity. Add pickup and delivery addresses, pick a date.',
 		stageClass: 'stageSlide1',
-		visual: carouselSlide1Visual,
-		visualWidth: 630,
-		visualHeight: 356,
+		stageWidth: 687.5,
+		stageHeight: 409,
+		layers: [
+			{
+				className: 'visualAccent',
+				src: carouselSlide1Accent,
+				width: 507,
+				height: 290,
+			},
+			{
+				className: 'visualMain',
+				src: carouselSlide1Visual,
+				width: 661.5,
+				height: 380.4,
+			},
+			{
+				className: 'visualCursor',
+				src: carouselSlide1Cursor,
+				width: 19.5,
+				height: 31.2,
+			},
+		],
 	},
 	{
 		step: '02',
 		title: 'Get an instant price',
 		description: 'No tenders, no phone calls. The price appears immediately.',
 		stageClass: 'stageSlide2',
-		visual: carouselSlide2Visual,
-		visualWidth: 628,
-		visualHeight: 351,
+		stageWidth: 685,
+		stageHeight: 405,
+		layers: [
+			{
+				className: 'visualAccent',
+				src: carouselSlide2Accent,
+				width: 507,
+				height: 290,
+			},
+			{
+				className: 'visualMain',
+				src: carouselSlide2Visual,
+				width: 659,
+				height: 380,
+			},
+			{
+				className: 'visualCursor',
+				src: carouselSlide2Cursor,
+				width: 19.5,
+				height: 31.2,
+			},
+		],
 	},
 	{
 		step: '03',
@@ -68,8 +124,15 @@ export const landingSlides: LandingSlide[] = [
 		description:
 			'Pay in one click. A matched, insured carrier picks up your pallet and delivers within 48 hours.',
 		stageClass: 'stageSlide3',
-		visual: carouselSlide3Visual,
-		visualWidth: 613,
-		visualHeight: 339,
+		stageWidth: 613,
+		stageHeight: 339,
+		layers: [
+			{
+				className: 'visualMain',
+				src: carouselSlide3Visual,
+				width: 613,
+				height: 339,
+			},
+		],
 	},
 ]

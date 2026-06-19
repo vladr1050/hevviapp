@@ -2,6 +2,7 @@ import { type FC, useCallback, useEffect, useRef, useState } from 'react'
 
 import { cn } from '@utils/cn'
 
+import { CarouselVisual } from './CarouselVisual'
 import { landingAssets, landingSlides } from '../landingAssets'
 import styles from './ProductCarousel.module.css'
 
@@ -56,23 +57,15 @@ export const ProductCarousel: FC = () => {
 			<div className={styles.track}>
 				<div className={styles.slide}>
 					<div className={styles.visual}>
-						<div className={cn(styles.visualStage, styles[slide.stageClass])}>
-							<img
-								src={slide.visual}
-								alt=""
-								width={slide.visualWidth}
-								height={slide.visualHeight}
-								className={styles.visualImage}
-								loading="lazy"
-								decoding="async"
-							/>
-						</div>
+						<CarouselVisual slide={slide} />
 					</div>
 
 					<div className={styles.copy}>
-						<span className={styles.step}>{slide.step}</span>
-						<h3>{slide.title}</h3>
-						<p>{slide.description}</p>
+						<div className={styles.textBlock}>
+							<span className={styles.step}>{slide.step}</span>
+							<h3>{slide.title}</h3>
+							<p>{slide.description}</p>
+						</div>
 
 						<div className={styles.slideNav}>
 							<div className={styles.indicators} aria-hidden="true">

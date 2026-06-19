@@ -1,14 +1,17 @@
 .section {
 	--landing-gutter: clamp(16px, 8.125vw, 104px);
 
-	@apply relative w-full mx-auto py-16 md:py-20;
+	@apply relative w-full mx-auto;
 	max-width: 1280px;
 	padding-inline: var(--landing-gutter);
+	margin-top: clamp(48px, 6.72vw, 86px);
+	padding-bottom: clamp(80px, 10.94vw, 140px);
 }
 
 .title {
-	@apply m-0 mb-10 md:mb-12 text-[32px] leading-[39px] font-semibold text-black;
+	@apply m-0 text-[32px] leading-[39px] font-semibold text-black;
 	font-family: 'Instrument_Sans', sans-serif;
+	margin-bottom: clamp(40px, 4.375vw, 56px);
 }
 
 .track {
@@ -21,47 +24,118 @@
 
 @media (min-width: 1024px) {
 	.slide {
-		grid-template-columns: minmax(0, 1.72fr) minmax(0, 300px);
-		gap: clamp(40px, 5vw, 64px);
+		grid-template-columns: minmax(0, 661.5fr) minmax(0, 300fr);
+		column-gap: clamp(48px, 6.29vw, 80.5px);
+		max-width: 1042px;
 	}
 }
 
 .visual {
-	@apply flex justify-center lg:justify-start w-full;
+	@apply flex justify-center lg:justify-start w-full overflow-visible;
 }
 
 .visualStage {
-	@apply relative w-full;
+	--stage-w: 687.5;
+	--stage-h: 409;
+
+	position: relative;
+	width: 100%;
+	max-width: calc(var(--stage-w) * 1px);
+	aspect-ratio: var(--stage-w) / var(--stage-h);
+	height: auto;
+	overflow: visible;
 }
 
-.visualImage {
-	@apply block w-full h-auto max-w-full;
+.visualLayer {
+	position: absolute;
+	width: calc(var(--w) / var(--stage-w) * 100%);
+	height: calc(var(--h) / var(--stage-h) * 100%);
+	left: calc(var(--x) / var(--stage-w) * 100%);
+	top: calc(var(--y) / var(--stage-h) * 100%);
+	object-fit: contain;
+	object-position: left top;
+	pointer-events: none;
 }
 
-.stageSlide1 {
-	max-width: 630px;
+.visualAccent {
+	z-index: 1;
 }
 
-.stageSlide2 {
-	max-width: 628px;
+.visualMain {
+	z-index: 2;
 }
 
-.stageSlide3 {
-	max-width: 613px;
+.visualCursor {
+	z-index: 3;
+}
+
+.stageSlide1 .visualAccent {
+	--x: 0;
+	--y: 119;
+	--w: 507;
+	--h: 290;
+}
+
+.stageSlide1 .visualMain {
+	--x: 26;
+	--y: 0;
+	--w: 661.5;
+	--h: 380.4;
+}
+
+.stageSlide1 .visualCursor {
+	--x: 496;
+	--y: 332;
+	--w: 19.5;
+	--h: 31.2;
+}
+
+.stageSlide2 .visualAccent {
+	--x: 0;
+	--y: 115;
+	--w: 507;
+	--h: 290;
+}
+
+.stageSlide2 .visualMain {
+	--x: 26;
+	--y: 0;
+	--w: 659;
+	--h: 380;
+}
+
+.stageSlide2 .visualCursor {
+	--x: 352;
+	--y: 368;
+	--w: 19.5;
+	--h: 31.2;
+}
+
+.stageSlide3 .visualMain {
+	--x: 0;
+	--y: 0;
+	--w: 613;
+	--h: 339;
 }
 
 .copy {
-	@apply flex flex-col gap-3 max-w-[300px];
+	@apply flex flex-col max-w-[300px];
 
 	& h3 {
 		@apply m-0 text-[18px] leading-[22px] font-semibold text-black;
 		font-family: 'Instrument_Sans', sans-serif;
 	}
+}
 
-	& p {
-		@apply m-0 text-[16px] leading-[22px] font-medium text-black/70;
-		font-family: 'Instrument_Sans', sans-serif;
+@media (min-width: 1024px) {
+	.copy {
+		padding-top: 47px;
 	}
+}
+
+.textBlock {
+	@apply flex flex-col;
+	gap: 16px;
 }
 
 .step {
@@ -69,16 +143,27 @@
 	font-family: 'Instrument_Sans', sans-serif;
 }
 
+.copy p {
+	@apply m-0 text-[16px] font-medium text-black/70;
+	font-family: 'Instrument_Sans', sans-serif;
+	line-height: 19.52px;
+	max-width: 300px;
+}
+
 .slideNav {
-	@apply flex flex-col gap-5 mt-4;
+	@apply flex flex-col;
+	margin-top: 24px;
 }
 
 .indicators {
-	@apply flex items-center gap-2;
+	@apply flex items-center;
+	gap: 8px;
 }
 
 .indicator {
-	@apply w-2 h-2 rounded-full bg-black/15 transition-colors duration-300;
+	@apply rounded-full bg-black/15 transition-colors duration-300;
+	width: 8px;
+	height: 8px;
 }
 
 .indicatorActive {
@@ -87,8 +172,21 @@
 
 .nextButton {
 	@apply w-fit p-0 bg-transparent border-0 cursor-pointer hover:opacity-70 transition-opacity;
+	margin-top: 64px;
 }
 
 .nextIcon {
-	@apply w-5 h-5 object-contain;
+	width: 40px;
+	height: 40px;
+	object-fit: contain;
+}
+
+@media (max-width: 1023.98px) {
+	.copy {
+		padding-top: 0;
+	}
+
+	.nextButton {
+		margin-top: 40px;
+	}
 }
