@@ -1,5 +1,4 @@
 import carouselArrow from './images/carousel-arrow.png'
-import carouselSlide1Accent from './images/carousel-slide-1-accent.png'
 import carouselSlide1Cursor from './images/carousel-slide-1-cursor.png'
 import carouselSlide1Visual from './images/carousel-slide-1-visual.png'
 import carouselSlide2Visual from './images/carousel-slide-2-visual.png'
@@ -32,7 +31,6 @@ export const landingAssets = {
 	carouselSlide1Visual,
 	carouselSlide2Visual,
 	carouselSlide3Visual,
-	carouselSlide1Accent,
 	carouselSlide1Cursor,
 } as const
 
@@ -44,7 +42,6 @@ export type LandingSlide = {
 	visual: string
 	visualWidth: number
 	visualHeight: number
-	layered?: boolean
 }
 
 export const landingSlides: LandingSlide[] = [
@@ -57,7 +54,6 @@ export const landingSlides: LandingSlide[] = [
 		visual: carouselSlide1Visual,
 		visualWidth: 661.5,
 		visualHeight: 380.4,
-		layered: true,
 	},
 	{
 		step: '02',

@@ -35,66 +35,18 @@
 }
 
 .visualStage {
-	--stage-w: 687.5;
-	--stage-h: 409;
+	--stage-w: 659;
+	--stage-h: 380;
 
 	position: relative;
 	width: 100%;
 	max-width: calc(var(--stage-w) * 1px);
-	aspect-ratio: var(--stage-w) / var(--stage-h);
-	height: auto;
 	overflow: visible;
-}
-
-.stageSlide2 {
-	--stage-w: 659;
-	--stage-h: 380;
-	aspect-ratio: auto;
-	max-width: none;
 }
 
 .stageSlide3 {
 	--stage-w: 613;
 	--stage-h: 339;
-	aspect-ratio: auto;
-	max-width: none;
-}
-
-.visualAccent,
-.visualMain,
-.visualCursor {
-	position: absolute;
-	width: calc(var(--w) / var(--stage-w) * 100%);
-	height: calc(var(--h) / var(--stage-h) * 100%);
-	left: calc(var(--x) / var(--stage-w) * 100%);
-	top: calc(var(--y) / var(--stage-h) * 100%);
-	object-fit: fill;
-	object-position: left top;
-	pointer-events: none;
-}
-
-.visualAccent {
-	--x: 0;
-	--y: 119;
-	--w: 507;
-	--h: 290;
-	z-index: 1;
-}
-
-.visualMain {
-	--x: 26;
-	--y: 0;
-	--w: 661.5;
-	--h: 380.4;
-	z-index: 2;
-}
-
-.visualCursor {
-	--x: 496;
-	--y: 332;
-	--w: 19.5;
-	--h: 31.2;
-	z-index: 3;
 }
 
 .visualImage {

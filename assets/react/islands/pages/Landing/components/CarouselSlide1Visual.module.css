@@ -1,0 +1,70 @@
+/* Figma MacBook Air - 15 → Group 633215 / Frame 1859 + Frame 1762 + Group 1177 */
+.root {
+	--slide1-w: 661.5;
+	--slide1-h: 409;
+	--accent-x: -26;
+	--accent-y: 119;
+	--accent-w: 507;
+	--accent-h: 290;
+	--accent-radius: 42.5;
+	--cursor-x: 470;
+	--cursor-y: 332;
+	--cursor-w: 19.5;
+	--cursor-h: 31.2;
+	--form-h: 380.4;
+	--form-matte: #f3f3f3;
+
+	width: 100%;
+	max-width: calc(var(--slide1-w) * 1px);
+	overflow: visible;
+}
+
+.stage {
+	position: relative;
+	width: 100%;
+	aspect-ratio: var(--slide1-w) / var(--slide1-h);
+	overflow: visible;
+}
+
+.accent {
+	position: absolute;
+	left: calc(var(--accent-x) / var(--slide1-w) * 100%);
+	top: calc(var(--accent-y) / var(--slide1-h) * 100%);
+	width: calc(var(--accent-w) / var(--slide1-w) * 100%);
+	height: calc(var(--accent-h) / var(--slide1-h) * 100%);
+	border-radius: calc(var(--accent-radius) / var(--accent-w) * 100%);
+	background: #d7ff01;
+	z-index: 1;
+	pointer-events: none;
+}
+
+.form {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: calc(var(--form-h) / var(--slide1-h) * 100%);
+	object-fit: fill;
+	object-position: left top;
+	background: var(--form-matte);
+	z-index: 2;
+	pointer-events: none;
+}
+
+.cursor {
+	position: absolute;
+	left: calc(var(--cursor-x) / var(--slide1-w) * 100%);
+	top: calc(var(--cursor-y) / var(--slide1-h) * 100%);
+	width: calc(var(--cursor-w) / var(--slide1-w) * 100%);
+	height: calc(var(--cursor-h) / var(--slide1-h) * 100%);
+	object-fit: contain;
+	object-position: left top;
+	z-index: 3;
+	pointer-events: none;
+}
+
+@media (min-width: 1024px) and (max-width: 1279.98px) {
+	.root {
+		--slide1-w: 661.5;
+	}
+}
