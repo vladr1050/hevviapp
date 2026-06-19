@@ -23,9 +23,9 @@
 #   carousel-slide-2-card      1611:18817  Group 1063 — price card (carousel 1611:18815)
 #   carousel-slide-2-accent    1611:18816  Frame 1762
 #   carousel-slide-2-cursor 1611:18944  Group 633214
-#   carousel-slide-3-map    1611:18964  Group 1166 (carousel 1611:18949)
-#   carousel-slide-3-phone  1611:18979  Frame 552
-#   carousel-slide-3-accent 1611:18950  Frame 1762
+#   carousel-slide-3-map-source   1611:18964  Group 1166 (carousel 1611:18949)
+#   carousel-slide-3-phone-source 1611:18979  Frame 552
+#   carousel-slide-3-accent-source 1611:18950  Frame 1762
 #   carousel-arrow          1611:18574  fi_3114931
 #   landing-mobile          1611:19016  iPhone 13 & 14 - 1
 set -euo pipefail
@@ -50,9 +50,9 @@ declare -A NODES=(
   [carousel-slide-1-accent]="1611:18373"
   [carousel-slide-2-card]="1611:18817"
   [carousel-slide-2-accent]="1611:18816"
-  [carousel-slide-3-map]="1611:18964"
-  [carousel-slide-3-phone]="1611:18979"
-  [carousel-slide-3-accent]="1611:18950"
+  [carousel-slide-3-map-source]="1611:18964"
+  [carousel-slide-3-phone-source]="1611:18979"
+  [carousel-slide-3-accent-source]="1611:18950"
   [carousel-arrow]="1611:18574"
   [landing-mobile]="1611:19016"
 )
@@ -92,9 +92,9 @@ names = {
     "1611:18373": "carousel-slide-1-accent",
     "1611:18817": "carousel-slide-2-card",
     "1611:18816": "carousel-slide-2-accent",
-    "1611:18964": "carousel-slide-3-map",
-    "1611:18979": "carousel-slide-3-phone",
-    "1611:18950": "carousel-slide-3-accent",
+    "1611:18964": "carousel-slide-3-map-source",
+    "1611:18979": "carousel-slide-3-phone-source",
+    "1611:18950": "carousel-slide-3-accent-source",
     "1611:18574": "carousel-arrow",
     "1611:19016": "landing-mobile",
 }

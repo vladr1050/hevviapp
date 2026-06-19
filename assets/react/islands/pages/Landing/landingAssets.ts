@@ -1,5 +1,4 @@
 import carouselArrow from './images/carousel-arrow.png'
-import carouselSlide3Visual from './images/carousel-slide-3-visual.png'
 import heroCargo from './images/hero-cargo.png'
 import heroDeliveryPanel from './images/hero-delivery-panel.png'
 import heroFeatures from './images/hero-features.png'
@@ -25,7 +24,6 @@ export const landingAssets = {
 	registrationTrucks,
 	landingMobile,
 	carouselArrow,
-	carouselSlide3Visual,
 } as const
 
 export type LandingSlide = {
@@ -64,8 +62,8 @@ export const landingSlides: LandingSlide[] = [
 		description:
 			'Pay in one click. A matched, insured carrier picks up your pallet and delivers within 48 hours.',
 		stageClass: 'stageSlide3',
-		visual: carouselSlide3Visual,
-		visualWidth: 613,
-		visualHeight: 339,
+		visual: '',
+		visualWidth: 689,
+		visualHeight: 407,
 	},
 ]

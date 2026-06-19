@@ -1,0 +1,53 @@
+/* Map + status phone (689×390) over Frame 1762 (399×228 at 0, 179). Stage 407px tall. */
+.stage {
+	--content-w: 689;
+	--content-h: 390;
+	--stage-h: 407;
+
+	position: relative;
+	width: min(100%, calc(var(--content-w) * 1px));
+	aspect-ratio: var(--content-w) / var(--stage-h);
+	overflow: visible;
+}
+
+.accent,
+.content {
+	position: absolute;
+	display: block;
+	pointer-events: none;
+}
+
+.accent {
+	left: 0;
+	top: calc(179 / var(--stage-h) * 100%);
+	width: calc(399 / var(--content-w) * 100%);
+	height: calc(228 / var(--stage-h) * 100%);
+	z-index: 1;
+}
+
+.content {
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: calc(var(--content-h) / var(--stage-h) * 100%);
+	object-fit: fill;
+	object-position: left top;
+	z-index: 2;
+}
+
+@media (min-width: 1280px) {
+	.stage {
+		width: 689px;
+	}
+
+	.accent {
+		top: 179px;
+		width: 399px;
+		height: 228px;
+	}
+
+	.content {
+		width: 689px;
+		height: 390px;
+	}
+}

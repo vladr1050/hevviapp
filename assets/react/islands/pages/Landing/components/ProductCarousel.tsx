@@ -4,6 +4,7 @@ import { cn } from '@utils/cn'
 
 import { CarouselSlide1Visual } from './CarouselSlide1Visual'
 import { CarouselSlide2Visual } from './CarouselSlide2Visual'
+import { CarouselSlide3Visual } from './CarouselSlide3Visual'
 import { landingAssets, landingSlides } from '../landingAssets'
 import styles from './ProductCarousel.module.css'
 
@@ -63,17 +64,7 @@ export const ProductCarousel: FC = () => {
 						) : slide.stageClass === 'stageSlide2' ? (
 							<CarouselSlide2Visual />
 						) : (
-							<div className={cn(styles.visualStage, styles[slide.stageClass])}>
-								<img
-									src={slide.visual}
-									alt=""
-									width={slide.visualWidth}
-									height={slide.visualHeight}
-									className={styles.visualImage}
-									loading="lazy"
-									decoding="async"
-								/>
-							</div>
+							<CarouselSlide3Visual />
 						)}
 					</div>
 
