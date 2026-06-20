@@ -2,10 +2,10 @@
 	@apply flex flex-col min-h-[calc(100vh-90px)] h-full py-16;
 
 	&.sender {
-		@apply gap-[88px];
+		@apply gap-6;
 
 		& .mainWrapper {
-			@apply flex flex-col gap-11 justify-center;
+			@apply flex flex-col justify-center;
 
 			& .main {
 				@apply flex flex-col justify-end gap-20 
@@ -45,18 +45,6 @@
 							overflow: hidden;
 							text-overflow: ellipsis;
 						}
-					}
-				}
-			}
-
-			& .description {
-				@apply flex items-center justify-center gap-16;
-
-				& .item {
-					@apply flex items-center gap-3 text-sm text-gray-400 font-medium;
-
-					& .icon {
-						@apply w-5 h-5 flex items-center justify-center;
 					}
 				}
 			}

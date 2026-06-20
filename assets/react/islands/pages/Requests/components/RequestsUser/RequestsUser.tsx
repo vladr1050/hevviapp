@@ -150,21 +150,6 @@ export const RequestsUser: FC<RequestsUserProps> = ({ orders }) => {
 							</Button>
 						</div>
 					</div>
-
-					<div className={styles.description}>
-						<div className={styles.item}>
-							<Icon type="vehicle" size={20} className={styles.icon} />
-							500+ vehicle fleet
-						</div>
-						<div className={styles.item}>
-							<Icon type="trust" size={20} className={styles.icon} />
-							50+ trusted carriers
-						</div>
-						<div className={styles.item}>
-							<Icon type="box" size={20} className={styles.icon} />
-							10,000 m³ capacity available
-						</div>
-					</div>
 				</div>
 
 				<div className={styles.emptyOrders}>
