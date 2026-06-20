@@ -1,0 +1,51 @@
+/* Figma 316:10857 Frame 1983 — 374×343. */
+.empty {
+	@apply flex flex-col items-center;
+	width: min(100%, 374px);
+}
+
+.illustration {
+	display: block;
+	width: 227px;
+	height: 114px;
+	object-fit: contain;
+	image-rendering: -webkit-optimize-contrast;
+}
+
+.textBlock {
+	@apply flex flex-col items-center text-center;
+	width: 100%;
+	margin-top: 54px;
+	gap: 24px;
+}
+
+.heading {
+	@apply m-0 font-medium text-black;
+	font-family: 'Instrument_Sans', sans-serif;
+	font-size: 24px;
+	line-height: 29.28px;
+}
+
+.description {
+	@apply m-0 font-normal;
+	width: 100%;
+	font-family: 'Instrument_Sans', sans-serif;
+	font-size: 16px;
+	line-height: 19.52px;
+	color: #616161;
+}
+
+.cta {
+	@apply inline-flex items-center justify-center rounded-full bg-black text-white font-medium transition-colors;
+	margin-top: 54px;
+	width: 177px;
+	height: 48px;
+	font-family: 'Instrument_Sans', sans-serif;
+	font-size: 16px;
+	line-height: 19.52px;
+	text-decoration: none;
+
+	&:hover {
+		@apply opacity-90;
+	}
+}

@@ -1,94 +1,105 @@
 .page {
-	@apply flex flex-col gap-[32px] min-h-[calc(100vh-90px)] h-full py-16;
+	@apply flex flex-col min-h-[calc(100vh-91px)] h-full mx-auto w-full;
+	max-width: 1440px;
+	padding-top: 48px;
+	padding-bottom: 64px;
 
 	& .title {
-		@apply font-bold text-3xl text-black m-0;
+		@apply m-0 font-semibold text-black;
+		font-family: 'Instrument_Sans', sans-serif;
+		font-size: 32px;
+		line-height: 39.04px;
+		padding-inline: 24px;
+
+		@media (min-width: 1024px) {
+			padding-inline: 105px;
+		}
+
+		& span {
+			@apply font-semibold;
+		}
+	}
+}
+
+.emptyWrapper {
+	@apply flex flex-1 items-center justify-center;
+	padding-top: 48px;
+	padding-bottom: 48px;
+}
+
+.tableWrapper {
+	@apply flex flex-col gap-5 mt-8;
+
+	& .header,
+	& .items .item {
+		@apply grid grid-cols-[80px,1fr,60px,1fr,100px,40px,100px,240px] gap-6 items-center;
 		@apply max-lg:px-8;
 
 		@media (min-width: 1024px) {
 			padding-left: 72px;
 			padding-right: 72px;
 		}
+	}
 
+	& .header {
 		& span {
-			@apply font-normal;
+			@apply font-normal text-base text-black/50;
 		}
 	}
 
-	& .tableWrapper {
-		@apply flex flex-col gap-5;
+	& .items {
+		@apply flex flex-col gap-3;
 
-		& .header,
-		& .items .item {
-			@apply grid grid-cols-[80px,1fr,60px,1fr,100px,40px,100px,240px] gap-6 items-center;
-			@apply max-lg:px-8;
+		& .item {
+			@apply h-20 min-h-20 max-h-20 py-0 box-border overflow-hidden;
+			@apply bg-white rounded-full;
 
-			@media (min-width: 1024px) {
-				padding-left: 72px;
-				padding-right: 72px;
-			}
-		}
-
-		& .header {
 			& span {
-				@apply font-normal text-base text-black/50;
+				@apply font-medium text-base text-black min-w-0;
 			}
-		}
 
-		& .items {
-			@apply flex flex-col gap-3;
+			& .comment {
+				@apply truncate;
 
-			& .item {
-				@apply h-20 min-h-20 max-h-20 py-0 box-border overflow-hidden;
-				@apply bg-white rounded-full;
-
-				& span {
-					@apply font-medium text-base text-black min-w-0;
+				&.empty {
+					@apply text-black/30;
 				}
+			}
 
-				& .comment {
-					@apply truncate;
-
-					&.empty {
-						@apply text-black/30;
-					}
-				}
-
-				& .status {
-					@apply p-1 pl-2 rounded-full bg-black/10 text-black 
+			& .status {
+				@apply p-1 pl-2 rounded-full bg-black/10 text-black 
 					grid grid-cols-[1fr,90px] gap-2 min-h-0 max-h-[calc(80px-8px)] items-center;
 
-					&.inTransit {
-						@apply bg-primary;
+				&.inTransit {
+					@apply bg-primary;
 
-						& .text span {
-							@apply text-black;
-						}
+					& .text span {
+						@apply text-black;
+					}
+				}
+
+				&.delivered {
+					@apply bg-black/5;
+				}
+
+				& .text {
+					@apply flex items-center gap-2 text-sm w-full overflow-hidden pl-1 min-w-0;
+
+					& span {
+						@apply truncate w-full text-black font-medium;
 					}
 
-					&.delivered {
-						@apply bg-black/5;
+					& .dot {
+						@apply w-2.5 h-2.5 rounded-full bg-black/30 shrink-0;
+						animation: pulse1 1.5s infinite ease-in-out;
 					}
+				}
 
-					& .text {
-						@apply flex items-center gap-2 text-sm w-full overflow-hidden pl-1 min-w-0;
-
-						& span {
-							@apply truncate w-full text-black font-medium;
-						}
-
-						& .dot {
-							@apply w-2.5 h-2.5 rounded-full bg-black/30 shrink-0;
-							animation: pulse1 1.5s infinite ease-in-out;
-						}
-					}
-
-					& .link {
-						text-decoration: none;
-						@apply bg-white !text-black font-medium text-sm 
+				& .link {
+					text-decoration: none;
+					@apply bg-white !text-black font-medium text-sm 
 						rounded-full shadow-md py-1 px-5 transition-colors shrink-0
 						hover-hover:hover:bg-slate-100 hover-none:active:bg-slate-100;
-					}
 				}
 			}
 		}
