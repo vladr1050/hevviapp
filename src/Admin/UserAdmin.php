@@ -26,6 +26,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 class UserAdmin extends BaseAdmin
 {
@@ -73,6 +74,9 @@ class UserAdmin extends BaseAdmin
             ->add('vatNumber')
             ->add('iban')
             ->add('bankAccountHolder')
+            ->add('priceCoefficient', null, [
+                'label' => 'form.label_price_coefficient',
+            ])
             ->add('locale')
             ->add('state', TextType::class, [
                 'sortable' => false,
@@ -121,6 +125,18 @@ class UserAdmin extends BaseAdmin
             ])
             ->add('bankAccountHolder', null, [
                 'required' => false,
+            ])
+            ->end()
+            ->with('pricing', [
+                'class' => 'col-md-12',
+                'label' => 'form.group_sender_pricing',
+            ])
+            ->add('priceCoefficient', NumberType::class, [
+                'required' => false,
+                'scale' => 4,
+                'html5' => true,
+                'label' => 'form.label_price_coefficient',
+                'help' => 'form.help_sender_price_coefficient',
             ])
             ->end()
             ->with('general', [

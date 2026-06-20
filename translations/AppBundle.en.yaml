@@ -354,13 +354,15 @@ form:
     label_pricing_algorithm:           Pricing algorithm
     label_price_coefficient:           Price coefficient (local)
     help_price_coefficient:            Multiplier on base freight (excl. VAT). Empty = use global coefficient from Settings.
+    help_sender_price_coefficient:     Multiplier on base freight (excl. VAT). Empty = use global coefficient from Settings. Combined with the carrier coefficient when both are set locally.
     label_service_area_carrier:        Carrier
     help_service_area_carrier:         Leave empty for legacy shared zones (flat drop-off pricing without carrier).
     label_service_area_country:        Country
     label_is_home_zone:                Home zone (hub)
     help_is_home_zone:                 Hub for hub-and-spoke pricing in this country (e.g. Riga for LV). Only one per carrier and country.
     label_default_price_coefficient:   Default price coefficient
-    help_default_price_coefficient:    Applied when carrier has no local coefficient. Multiplier on base freight before fee and VAT.
+    help_default_price_coefficient:    Applied when carrier or sender has no local coefficient. Multiplier on base freight before fee and VAT.
+    group_sender_pricing:              Sender pricing
     group_tabs_address:                Address
     group_tabs_contacts:               Contacts
     group_tabs_invoicing:              Invoicing

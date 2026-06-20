@@ -57,6 +57,10 @@ class User extends BaseSecurityDBO
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $bankAccountHolder = null;
 
+    /** Local multiplier on base freight (excl. VAT). Null = use global default from PricingSettings. */
+    #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 4, nullable: true)]
+    private ?string $priceCoefficient = null;
+
     public function __construct()
     {
         $this->orders = new ArrayCollection();
@@ -250,6 +254,18 @@ class User extends BaseSecurityDBO
     public function setBankAccountHolder(?string $bankAccountHolder): static
     {
         $this->bankAccountHolder = $bankAccountHolder;
+
+        return $this;
+    }
+
+    public function getPriceCoefficient(): ?string
+    {
+        return $this->priceCoefficient;
+    }
+
+    public function setPriceCoefficient(?string $priceCoefficient): static
+    {
+        $this->priceCoefficient = $priceCoefficient;
 
         return $this;
     }

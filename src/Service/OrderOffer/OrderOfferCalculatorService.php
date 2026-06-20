@@ -137,7 +137,7 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
                 );
             }
 
-            $coefficient = $this->priceCoefficientResolver->resolve($carrier);
+            $coefficient = $this->priceCoefficientResolver->resolve($carrier, $order->getSender());
             $baseNetto = (int) round((float) $freightResult->baseFreightCents * $coefficient);
 
             $feePercent = $this->resolvePlatformFeePercent();
@@ -150,6 +150,7 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
             $this->logger->info('Successfully calculated order offer', [
                 'order_id' => $order->getId()?->toRfc4122(),
                 'carrier_id' => $carrier?->getId()?->toRfc4122(),
+                'sender_id' => $order->getSender()?->getId()?->toRfc4122(),
                 'algorithm' => $algorithm->value,
                 'service_area' => $currencyArea->getName(),
                 'total_weight' => $totalWeight,

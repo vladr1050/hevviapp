@@ -340,13 +340,15 @@ form:
     label_pricing_algorithm:   Алгоритм расчёта цены
     label_price_coefficient:   Коэффициент цены (локальный)
     help_price_coefficient:    Множитель к базовому фрахту (без НДС). Пусто — глобальный коэффициент из Settings.
+    help_sender_price_coefficient: Множитель к базовому фрахту (без НДС). Пусто — глобальный коэффициент из Settings. Умножается на коэффициент перевозчика, если оба заданы локально.
     label_service_area_carrier: Перевозчик
     help_service_area_carrier:  Пусто — устаревшие общие зоны (плоский расчёт по точке доставки).
     label_service_area_country: Страна
     label_is_home_zone:         Главная зона (hub)
     help_is_home_zone:          Hub для hub-and-spoke в этой стране (напр. Рига для LV). Одна на перевозчика и страну.
     label_default_price_coefficient: Глобальный коэффициент цены
-    help_default_price_coefficient:  Если у перевозчика нет локального коэффициента. Множитель к фрахту до комиссии и НДС.
+    help_default_price_coefficient:  Если у перевозчика или отправителя нет локального коэффициента. Множитель к фрахту до комиссии и НДС.
+    group_sender_pricing:            Ценообразование отправителя
     group_tabs_address:        Адрес
     group_tabs_contacts:       Контакты
     group_tabs_invoicing:      Счета
