@@ -1,25 +1,7 @@
-/* Frame 1762 + Frame 1933 (27/12) + map inset 10px (37/22) + Frame 552 (+12/+22 vs frame/map). */
+/* Figma carousel 1616:2573 — visual 1616:2574 @ 45,175 → 756.5×499 (green inset 32.75px from image left). */
 .stage {
-	--stage-w: 689;
-	--stage-h: 407;
-	--accent-w: 399;
-	--accent-h: 228;
-	--accent-top: 179;
-	--frame-left: 27;
-	--frame-top: 12;
-	--frame-w: 532;
-	--frame-h: 366;
-	--map-inset: 10;
-	--map-left: 37;
-	--map-top: 22;
-	--map-w: 512;
-	--map-h: 346;
-	--phone-above-frame: 12;
-	--phone-above-map: 22;
-	--phone-top: calc(var(--frame-top) - var(--phone-above-frame));
-	--phone-left: 479;
-	--phone-w: 210;
-	--phone-h: calc(var(--frame-h) + var(--phone-above-frame) * 2);
+	--stage-w: 756.5;
+	--stage-h: 499;
 
 	position: relative;
 	width: min(100%, calc(var(--stage-w) * 1px));
@@ -27,83 +9,20 @@
 	overflow: visible;
 }
 
-.accent,
-.frame,
-.map,
-.phone {
+.visual {
 	position: absolute;
+	inset: 0;
 	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: fill;
+	object-position: left top;
 	pointer-events: none;
 	image-rendering: -webkit-optimize-contrast;
 }
 
-.accent {
-	left: 0;
-	top: calc(var(--accent-top) / var(--stage-h) * 100%);
-	width: calc(var(--accent-w) / var(--stage-w) * 100%);
-	height: calc(var(--accent-h) / var(--stage-h) * 100%);
-	z-index: 1;
-}
-
-.frame {
-	left: calc(var(--frame-left) / var(--stage-w) * 100%);
-	top: calc(var(--frame-top) / var(--stage-h) * 100%);
-	width: calc(var(--frame-w) / var(--stage-w) * 100%);
-	height: calc(var(--frame-h) / var(--stage-h) * 100%);
-	object-fit: fill;
-	object-position: left top;
-	z-index: 2;
-}
-
-.map {
-	left: calc(var(--map-left) / var(--stage-w) * 100%);
-	top: calc(var(--map-top) / var(--stage-h) * 100%);
-	width: calc(var(--map-w) / var(--stage-w) * 100%);
-	height: calc(var(--map-h) / var(--stage-h) * 100%);
-	object-fit: fill;
-	object-position: left top;
-	z-index: 3;
-}
-
-.phone {
-	left: calc(var(--phone-left) / var(--stage-w) * 100%);
-	top: calc(var(--phone-top) / var(--stage-h) * 100%);
-	width: calc(var(--phone-w) / var(--stage-w) * 100%);
-	height: calc(var(--phone-h) / var(--stage-h) * 100%);
-	object-fit: fill;
-	object-position: left top;
-	z-index: 4;
-}
-
 @media (min-width: 1280px) {
 	.stage {
-		width: 689px;
-	}
-
-	.accent {
-		top: 179px;
-		width: 399px;
-		height: 228px;
-	}
-
-	.frame {
-		left: 27px;
-		top: 12px;
-		width: 532px;
-		height: 366px;
-	}
-
-	.map {
-		left: 37px;
-		top: 22px;
-		width: 512px;
-		height: 346px;
-	}
-
-	.phone {
-		top: 0;
-		left: 479px;
-		width: 210px;
-		height: 390px;
+		width: 756.5px;
 	}
 }

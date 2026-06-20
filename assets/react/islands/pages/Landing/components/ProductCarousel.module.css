@@ -49,26 +49,11 @@
 	.visualSlide2 {
 		margin-left: calc(43.25px - var(--landing-gutter));
 	}
-}
 
-.visualStage {
-	--stage-w: 659;
-	--stage-h: 380;
-
-	position: relative;
-	width: 100%;
-	max-width: calc(var(--stage-w) * 1px);
-	overflow: visible;
-}
-
-.stageSlide3 {
-	--stage-w: 613;
-	--stage-h: 339;
-}
-
-.visualImage {
-	@apply block h-auto w-full;
-	max-width: calc(var(--stage-w) * 1px);
+	/* Slide 3: green is ~32.75px inside the 756.5px raster (Figma 1616:2574). */
+	.visualSlide3 {
+		margin-left: calc(44.25px - var(--landing-gutter));
+	}
 }
 
 .copy {

@@ -1,47 +1,17 @@
 import { type FC } from 'react'
 
-import carouselSlide3Accent from '../images/carousel-slide-3-accent.png'
-import carouselSlide3Frame from '../images/carousel-slide-3-frame.png'
-import carouselSlide3Map from '../images/carousel-slide-3-map.png'
-import carouselSlide3Phone from '../images/carousel-slide-3-phone.png'
+import carouselSlide3Visual from '../images/carousel-slide-3-visual.png'
 import styles from './CarouselSlide3Visual.module.css'
 
-/** Figma: Frame 1762 + Frame 1933 + map + Frame 552 (12px above frame, 22px above map). */
+/** Figma 1616:2573 → 1616:2574 «03- desktop» (756.5×499). */
 export const CarouselSlide3Visual: FC = () => (
 	<div className={styles.stage} aria-hidden>
 		<img
-			src={carouselSlide3Accent}
+			src={carouselSlide3Visual}
 			alt=""
-			width={399}
-			height={228}
-			className={styles.accent}
-			loading="lazy"
-			decoding="async"
-		/>
-		<img
-			src={carouselSlide3Frame}
-			alt=""
-			width={1064}
-			height={732}
-			className={styles.frame}
-			loading="lazy"
-			decoding="async"
-		/>
-		<img
-			src={carouselSlide3Map}
-			alt=""
-			width={1024}
-			height={692}
-			className={styles.map}
-			loading="lazy"
-			decoding="async"
-		/>
-		<img
-			src={carouselSlide3Phone}
-			alt=""
-			width={469}
-			height={870}
-			className={styles.phone}
+			width={3026}
+			height={1996}
+			className={styles.visual}
 			loading="lazy"
 			decoding="async"
 		/>

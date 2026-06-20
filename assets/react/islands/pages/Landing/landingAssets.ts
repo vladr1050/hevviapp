@@ -63,7 +63,7 @@ export const landingSlides: LandingSlide[] = [
 			'Pay in one click. A matched, insured carrier picks up your pallet and delivers within 48 hours.',
 		stageClass: 'stageSlide3',
 		visual: '',
-		visualWidth: 689,
-		visualHeight: 407,
+		visualWidth: 756.5,
+		visualHeight: 499,
 	},
 ]

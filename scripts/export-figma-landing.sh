@@ -20,9 +20,7 @@
 #   logo-footer             1611:18490  Group 633216
 #   carousel-slide-1-visual       1616:2491  01- desktop (carousel 1616:2490, export at scale=4)
 #   carousel-slide-2-visual       1616:2417  02- desktop (carousel 1616:2416, export at scale=4)
-#   carousel-slide-3-map-source   1611:18964  Group 1166 (carousel 1611:18949)
-#   carousel-slide-3-phone-source 1611:18979  Frame 552
-#   carousel-slide-3-accent-source 1611:18950  Frame 1762
+#   carousel-slide-3-visual       1616:2574  03- desktop (carousel 1616:2573, export at scale=4)
 #   carousel-arrow          1611:18574  fi_3114931
 #   landing-mobile          1611:19016  iPhone 13 & 14 - 1
 #
@@ -48,9 +46,7 @@ declare -A NODES=(
   [logo-footer]="1611:18490"
   [carousel-slide-1-visual]="1616:2491"
   [carousel-slide-2-visual]="1616:2417"
-  [carousel-slide-3-map-source]="1611:18964"
-  [carousel-slide-3-phone-source]="1611:18979"
-  [carousel-slide-3-accent-source]="1611:18950"
+  [carousel-slide-3-visual]="1616:2574"
   [carousel-arrow]="1611:18574"
   [landing-mobile]="1611:19016"
 )
@@ -88,9 +84,7 @@ names = {
     "1611:18490": "logo-footer",
     "1616:2491": "carousel-slide-1-visual",
     "1616:2417": "carousel-slide-2-visual",
-    "1611:18964": "carousel-slide-3-map-source",
-    "1611:18979": "carousel-slide-3-phone-source",
-    "1611:18950": "carousel-slide-3-accent-source",
+    "1616:2574": "carousel-slide-3-visual",
     "1611:18574": "carousel-arrow",
     "1611:19016": "landing-mobile",
 }
