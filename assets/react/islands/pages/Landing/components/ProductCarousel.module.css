@@ -14,7 +14,12 @@
 .title {
 	@apply m-0 text-[32px] leading-[39px] font-semibold text-black;
 	font-family: 'Instrument_Sans', sans-serif;
-	margin-bottom: clamp(40px, 4.375vw, 56px);
+}
+
+@media (min-width: 1024px) {
+	.title {
+		margin-bottom: 26px;
+	}
 }
 
 .track {
@@ -69,7 +74,7 @@
 
 @media (min-width: 1024px) {
 	.copy {
-		padding-top: 47px;
+		padding-top: 77px;
 	}
 }
 
@@ -137,7 +142,7 @@
 	.section {
 		max-width: var(--carousel-mobile-max);
 		padding-inline: var(--carousel-mobile-gutter);
-		margin-top: 48px;
+		margin-top: 78px;
 		padding-bottom: 80px;
 	}
 

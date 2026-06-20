@@ -12,7 +12,7 @@
 }
 
 .heroSection {
-	padding-bottom: clamp(2.5rem, 3.2vw, 41px);
+	padding-bottom: 0;
 }
 
 .heroShell {
@@ -55,7 +55,7 @@
 		width: 1200px;
 		max-width: calc(100% - 80px);
 		min-height: 522px;
-		padding: 91px 20px 51px 64px;
+		padding: 100px 20px 59px 64px;
 	}
 }
 
@@ -107,7 +107,7 @@
 	.heroFeatures {
 		grid-column: 1;
 		grid-row: 2;
-		margin-top: clamp(48px, 6.1vw, 78px);
+		margin-top: clamp(48px, 7.81vw, 100px);
 	}
 
 	.heroVisual {
@@ -229,14 +229,8 @@
 }
 
 .registration {
-	@apply pb-10 md:pb-12;
-	padding-top: clamp(4rem, 6.25vw, 80px);
-}
-
-@media (min-width: 1024px) {
-	.registration {
-		padding-bottom: 0;
-	}
+	padding-top: 0;
+	padding-bottom: 0;
 }
 
 .registrationWrap {
@@ -313,7 +307,7 @@
 	.registrationPanel {
 		aspect-ratio: 1072 / 514;
 		height: auto;
-		margin-bottom: -31px;
+		margin-bottom: -63px;
 	}
 
 	.registrationBanner {
@@ -362,21 +356,20 @@
 .footer {
 	@apply relative z-[1] text-white;
 	background: #2a2a28;
-	height: 104px;
-	min-height: 104px;
+	height: 136px;
+	min-height: 136px;
 }
 
 .footerInner {
 	@apply w-full mx-auto flex flex-col sm:flex-row sm:justify-between;
 	max-width: 1280px;
-	min-height: 104px;
-	padding-top: 40px;
+	min-height: 136px;
+	padding-top: 86px;
 	padding-inline: var(--landing-gutter);
 }
 
 @media (min-width: 1024px) {
 	.footerInner {
-		padding-top: 54px;
 		align-items: flex-start;
 	}
 }
@@ -400,12 +393,6 @@
 
 	& a {
 		@apply text-white/40 hover:text-white transition-colors;
-	}
-}
-
-@media (min-width: 1024px) {
-	.footerLinks {
-		margin-top: 5px;
 	}
 }
 
@@ -433,7 +420,30 @@
 .mobile .heroHeader {
 	padding-inline: 16px;
 	padding-top: 16px;
-	padding-bottom: 12px;
+	padding-bottom: 10px;
+}
+
+.mobile .heroSection {
+	padding-bottom: 0;
+}
+
+.mobile .registration {
+	padding-top: 29px;
+}
+
+.mobile .registrationWrap {
+	gap: 24px;
+}
+
+.mobile .registrationHeader {
+	gap: 19px;
+}
+
+.mobile .registrationPanel {
+	border-radius: 28px;
+	margin-bottom: -38px;
+	height: auto;
+	aspect-ratio: auto;
 }
 
 .mobile .heroCard {
@@ -450,11 +460,14 @@
 	max-width: 100%;
 }
 
-.mobile .registrationPanel {
-	border-radius: 28px;
-	margin-bottom: 0;
-	height: auto;
-	aspect-ratio: auto;
+.mobile .footer {
+	height: 150px;
+	min-height: 150px;
+}
+
+.mobile .footerInner {
+	min-height: 150px;
+	padding-top: 64px;
 }
 
 .mobile .registrationFormCard {
