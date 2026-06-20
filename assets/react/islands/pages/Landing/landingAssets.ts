@@ -53,8 +53,8 @@ export const landingSlides: LandingSlide[] = [
 		description: 'No tenders, no phone calls. The price appears immediately.',
 		stageClass: 'stageSlide2',
 		visual: '',
-		visualWidth: 685,
-		visualHeight: 404.98,
+		visualWidth: 779,
+		visualHeight: 500.5,
 	},
 	{
 		step: '03',

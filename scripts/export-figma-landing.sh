@@ -19,9 +19,7 @@
 #   registration-trucks     1611:18501  Banner
 #   logo-footer             1611:18490  Group 633216
 #   carousel-slide-1-visual       1616:2491  01- desktop (carousel 1616:2490, export at scale=4)
-#   carousel-slide-2-card      1611:18817  Group 1063 — price card (carousel 1611:18815)
-#   carousel-slide-2-accent    1611:18816  Frame 1762
-#   carousel-slide-2-cursor 1611:18944  Group 633214
+#   carousel-slide-2-visual       1616:2417  02- desktop (carousel 1616:2416, export at scale=4)
 #   carousel-slide-3-map-source   1611:18964  Group 1166 (carousel 1611:18949)
 #   carousel-slide-3-phone-source 1611:18979  Frame 552
 #   carousel-slide-3-accent-source 1611:18950  Frame 1762
@@ -49,8 +47,7 @@ declare -A NODES=(
   [registration-trucks]="1611:18501"
   [logo-footer]="1611:18490"
   [carousel-slide-1-visual]="1616:2491"
-  [carousel-slide-2-card]="1611:18817"
-  [carousel-slide-2-accent]="1611:18816"
+  [carousel-slide-2-visual]="1616:2417"
   [carousel-slide-3-map-source]="1611:18964"
   [carousel-slide-3-phone-source]="1611:18979"
   [carousel-slide-3-accent-source]="1611:18950"
@@ -90,8 +87,7 @@ names = {
     "1611:18501": "registration-trucks",
     "1611:18490": "logo-footer",
     "1616:2491": "carousel-slide-1-visual",
-    "1611:18817": "carousel-slide-2-card-source",
-    "1611:18816": "carousel-slide-2-accent",
+    "1616:2417": "carousel-slide-2-visual",
     "1611:18964": "carousel-slide-3-map-source",
     "1611:18979": "carousel-slide-3-phone-source",
     "1611:18950": "carousel-slide-3-accent-source",

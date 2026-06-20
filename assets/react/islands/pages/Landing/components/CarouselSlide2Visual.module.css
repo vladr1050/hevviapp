@@ -1,13 +1,7 @@
-/* Group 1063 over Frame 1762: +26px left, green extends 24.98px below card bottom. */
+/* Figma carousel 1616:2416 — visual 1616:2417 @ 44,169 → 779×500.5 (green inset ~34px from image left). */
 .stage {
-	--card-w: 659;
-	--card-h: 380;
-	--accent-w: 507;
-	--accent-h: 290;
-	--accent-top: 114.98;
-	--frame-offset-left: 26;
-	--stage-w: 685;
-	--stage-h: 404.98;
+	--stage-w: 779;
+	--stage-h: 500.5;
 
 	position: relative;
 	width: min(100%, calc(var(--stage-w) * 1px));
@@ -15,46 +9,20 @@
 	overflow: visible;
 }
 
-.accent,
-.card {
+.visual {
 	position: absolute;
+	inset: 0;
 	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: fill;
+	object-position: left top;
 	pointer-events: none;
 	image-rendering: -webkit-optimize-contrast;
 }
 
-.accent {
-	left: 0;
-	top: calc(var(--accent-top) / var(--stage-h) * 100%);
-	width: calc(var(--accent-w) / var(--stage-w) * 100%);
-	height: calc(var(--accent-h) / var(--stage-h) * 100%);
-	z-index: 1;
-}
-
-.card {
-	left: calc(var(--frame-offset-left) / var(--stage-w) * 100%);
-	top: 0;
-	width: calc(var(--card-w) / var(--stage-w) * 100%);
-	height: calc(var(--card-h) / var(--stage-h) * 100%);
-	object-fit: fill;
-	object-position: left top;
-	z-index: 2;
-}
-
 @media (min-width: 1280px) {
 	.stage {
-		width: 685px;
-	}
-
-	.accent {
-		top: 114.98px;
-		width: 507px;
-		height: 290px;
-	}
-
-	.card {
-		left: 26px;
-		width: 659px;
-		height: 380px;
+		width: 779px;
 	}
 }

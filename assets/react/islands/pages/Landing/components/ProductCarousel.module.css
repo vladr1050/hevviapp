@@ -44,6 +44,11 @@
 	.visualSlide1 {
 		margin-left: calc(43px - var(--landing-gutter));
 	}
+
+	/* Slide 2: green is ~34px inside the 779px raster (Figma 1616:2417). */
+	.visualSlide2 {
+		margin-left: calc(43.25px - var(--landing-gutter));
+	}
 }
 
 .visualStage {
