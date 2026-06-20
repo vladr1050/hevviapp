@@ -21,6 +21,9 @@
 #   carousel-slide-1-visual       1616:2491  01- desktop (carousel 1616:2490, export at scale=4)
 #   carousel-slide-2-visual       1616:2417  02- desktop (carousel 1616:2416, export at scale=4)
 #   carousel-slide-3-visual       1616:2574  03- desktop (carousel 1616:2573, export at scale=4)
+#   carousel-slide-1-mobile-visual 1616:2674  01 - mobile (carousel 1616:2673, export at scale=4)
+#   carousel-slide-2-mobile-visual 1616:2658  02-mobile (carousel 1616:2657, export at scale=4)
+#   carousel-slide-3-mobile-visual 1616:2690  03 - mobile (carousel 1616:2689, export at scale=4)
 #   carousel-arrow          1611:18574  fi_3114931
 #   landing-mobile          1611:19016  iPhone 13 & 14 - 1
 #
@@ -47,6 +50,9 @@ declare -A NODES=(
   [carousel-slide-1-visual]="1616:2491"
   [carousel-slide-2-visual]="1616:2417"
   [carousel-slide-3-visual]="1616:2574"
+  [carousel-slide-1-mobile-visual]="1616:2674"
+  [carousel-slide-2-mobile-visual]="1616:2658"
+  [carousel-slide-3-mobile-visual]="1616:2690"
   [carousel-arrow]="1611:18574"
   [landing-mobile]="1611:19016"
 )
@@ -85,6 +91,9 @@ names = {
     "1616:2491": "carousel-slide-1-visual",
     "1616:2417": "carousel-slide-2-visual",
     "1616:2574": "carousel-slide-3-visual",
+    "1616:2674": "carousel-slide-1-mobile-visual",
+    "1616:2658": "carousel-slide-2-mobile-visual",
+    "1616:2690": "carousel-slide-3-mobile-visual",
     "1611:18574": "carousel-arrow",
     "1611:19016": "landing-mobile",
 }

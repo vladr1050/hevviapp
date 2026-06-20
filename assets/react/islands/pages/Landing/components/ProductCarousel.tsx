@@ -20,6 +20,11 @@ export const ProductCarousel: FC = () => {
 		setActive((prev) => (prev + 1) % landingSlides.length)
 	}, [])
 
+	const handleNext = useCallback(() => {
+		manualUntilRef.current = Date.now() + AUTOPLAY_MS
+		goNext()
+	}, [goNext])
+
 	useEffect(() => {
 		const node = sectionRef.current
 		if (!node) {
@@ -76,8 +81,20 @@ export const ProductCarousel: FC = () => {
 					</div>
 
 					<div className={styles.copy}>
-						<div className={styles.textBlock}>
+						<div className={styles.stepRow}>
 							<span className={styles.step}>{slide.step}</span>
+							<button
+								type="button"
+								className={styles.nextButtonMobile}
+								aria-label="Next slide"
+								onClick={handleNext}
+							>
+								<img src={landingAssets.carouselArrow} alt="" className={styles.nextIcon} />
+							</button>
+						</div>
+
+						<div className={styles.textBlock}>
+							<span className={cn(styles.step, styles.stepDesktop)}>{slide.step}</span>
 							<h3>{slide.title}</h3>
 							<p>{slide.description}</p>
 						</div>
@@ -97,10 +114,7 @@ export const ProductCarousel: FC = () => {
 								type="button"
 								className={styles.nextButton}
 								aria-label="Next slide"
-								onClick={() => {
-									manualUntilRef.current = Date.now() + AUTOPLAY_MS
-									goNext()
-								}}
+								onClick={handleNext}
 							>
 								<img src={landingAssets.carouselArrow} alt="" className={styles.nextIcon} />
 							</button>

@@ -34,6 +34,8 @@ export type LandingSlide = {
 	visual: string
 	visualWidth: number
 	visualHeight: number
+	mobileVisualWidth: number
+	mobileVisualHeight: number
 }
 
 export const landingSlides: LandingSlide[] = [
@@ -46,6 +48,8 @@ export const landingSlides: LandingSlide[] = [
 		visual: '',
 		visualWidth: 782,
 		visualHeight: 500.5,
+		mobileVisualWidth: 390,
+		mobileVisualHeight: 245,
 	},
 	{
 		step: '02',
@@ -55,6 +59,8 @@ export const landingSlides: LandingSlide[] = [
 		visual: '',
 		visualWidth: 779,
 		visualHeight: 500.5,
+		mobileVisualWidth: 389,
+		mobileVisualHeight: 245.5,
 	},
 	{
 		step: '03',
@@ -65,5 +71,7 @@ export const landingSlides: LandingSlide[] = [
 		visual: '',
 		visualWidth: 756.5,
 		visualHeight: 499,
+		mobileVisualWidth: 390,
+		mobileVisualHeight: 244,
 	},
 ]

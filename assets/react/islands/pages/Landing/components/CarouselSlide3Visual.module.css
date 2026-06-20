@@ -1,4 +1,4 @@
-/* Figma carousel 1616:2573 — visual 1616:2574 @ 45,175 → 756.5×499 (green inset 32.75px from image left). */
+/* Desktop: Figma 1616:2574 @ 756.5×499. Mobile: 1616:2690 @ 382×244 (+4px inset in 390 frame). */
 .stage {
 	--stage-w: 756.5;
 	--stage-h: 499;
@@ -9,16 +9,50 @@
 	overflow: visible;
 }
 
-.visual {
-	position: absolute;
-	inset: 0;
+.visualDesktop,
+.visualMobile {
 	display: block;
-	width: 100%;
-	height: 100%;
 	object-fit: fill;
 	object-position: left top;
 	pointer-events: none;
 	image-rendering: -webkit-optimize-contrast;
+}
+
+.visualDesktop {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.visualMobile {
+	display: none;
+}
+
+@media (max-width: 1023.98px) {
+	.stage {
+		--stage-w: 390;
+		--stage-h: 244;
+	}
+
+	.visualDesktop {
+		display: none;
+	}
+
+	.visualMobile {
+		display: block;
+		position: absolute;
+		top: 0;
+		left: calc(4 / var(--stage-w) * 100%);
+		width: calc(382 / var(--stage-w) * 100%);
+		height: 100%;
+	}
+}
+
+@media (min-width: 1024px) {
+	.visualMobile {
+		display: none;
+	}
 }
 
 @media (min-width: 1280px) {
