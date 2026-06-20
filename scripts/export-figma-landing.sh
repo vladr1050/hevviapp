@@ -18,8 +18,7 @@
 #   hero-features           1611:18585  Frame 2085 (full row)
 #   registration-trucks     1611:18501  Banner
 #   logo-footer             1611:18490  Group 633216
-#   carousel-slide-1-form      1611:18525  Frame 1859 — request form (transparent export)
-#   carousel-slide-1-accent    1611:18373  Frame 1762 — green background
+#   carousel-slide-1-visual       1616:2491  01- desktop (carousel 1616:2490, export at scale=4)
 #   carousel-slide-2-card      1611:18817  Group 1063 — price card (carousel 1611:18815)
 #   carousel-slide-2-accent    1611:18816  Frame 1762
 #   carousel-slide-2-cursor 1611:18944  Group 633214
@@ -49,8 +48,7 @@ declare -A NODES=(
   [hero-features]="1611:18585"
   [registration-trucks]="1611:18501"
   [logo-footer]="1611:18490"
-  [carousel-slide-1-form]="1611:18525"
-  [carousel-slide-1-accent]="1611:18373"
+  [carousel-slide-1-visual]="1616:2491"
   [carousel-slide-2-card]="1611:18817"
   [carousel-slide-2-accent]="1611:18816"
   [carousel-slide-3-map-source]="1611:18964"
@@ -91,8 +89,7 @@ names = {
     "1611:18585": "hero-features",
     "1611:18501": "registration-trucks",
     "1611:18490": "logo-footer",
-    "1611:18525": "carousel-slide-1-form-source",
-    "1611:18373": "carousel-slide-1-accent",
+    "1616:2491": "carousel-slide-1-visual",
     "1611:18817": "carousel-slide-2-card-source",
     "1611:18816": "carousel-slide-2-accent",
     "1611:18964": "carousel-slide-3-map-source",

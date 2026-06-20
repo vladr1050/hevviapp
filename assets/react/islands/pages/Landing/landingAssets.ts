@@ -44,8 +44,8 @@ export const landingSlides: LandingSlide[] = [
 			'Select item type, fill in dimensions, weight, and quantity. Add pickup and delivery addresses, pick a date.',
 		stageClass: 'stageSlide1',
 		visual: '',
-		visualWidth: 687.5,
-		visualHeight: 409.02,
+		visualWidth: 782,
+		visualHeight: 500.5,
 	},
 	{
 		step: '02',

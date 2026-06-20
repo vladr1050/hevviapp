@@ -25,9 +25,9 @@
 
 @media (min-width: 1024px) {
 	.slide {
-		grid-template-columns: minmax(0, 687.5fr) minmax(0, 300fr);
+		grid-template-columns: minmax(0, 782fr) minmax(0, 300fr);
 		column-gap: clamp(48px, 6.29vw, 80.5px);
-		max-width: 1042px;
+		max-width: 1162.5px;
 	}
 }
 
@@ -38,6 +38,11 @@
 @media (min-width: 1280px) {
 	.visual {
 		margin-left: calc(var(--carousel-accent-page-left) - var(--landing-gutter));
+	}
+
+	/* Slide 1: green is 34px inside the 782px raster (Figma 1616:2491). */
+	.visualSlide1 {
+		margin-left: calc(43px - var(--landing-gutter));
 	}
 }
 

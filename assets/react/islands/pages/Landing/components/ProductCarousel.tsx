@@ -58,7 +58,12 @@ export const ProductCarousel: FC = () => {
 
 			<div className={styles.track}>
 				<div className={styles.slide}>
-					<div className={styles.visual}>
+					<div
+						className={cn(
+							styles.visual,
+							slide.stageClass === 'stageSlide1' && styles.visualSlide1
+						)}
+					>
 						{slide.stageClass === 'stageSlide1' ? (
 							<CarouselSlide1Visual />
 						) : slide.stageClass === 'stageSlide2' ? (
