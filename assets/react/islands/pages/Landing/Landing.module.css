@@ -21,14 +21,15 @@
 }
 
 .heroHeader {
-	@apply flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pt-4 pb-3 sm:pt-5;
+	@apply flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between;
 	padding-inline: var(--landing-gutter);
+	padding-top: 15px;
+	padding-bottom: 10px;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 640px) {
 	.heroHeader {
-		padding-top: 21px;
-		padding-bottom: 17px;
+		align-items: center;
 	}
 }
 
@@ -60,27 +61,43 @@
 }
 
 .logoLink {
-	@apply inline-flex items-center gap-1.5;
+	@apply inline-flex items-center;
+	gap: 6px;
 }
 
 .logo {
-	@apply h-[19px] w-[71px] object-contain;
+	width: 71.3px;
+	height: 19px;
+	@apply object-contain;
 }
 
 .betaBadge {
-	@apply rounded-full bg-black text-white text-[6px] uppercase tracking-wide px-1.5 py-0.5 font-medium leading-none;
+	@apply inline-flex items-center justify-center rounded-full bg-black text-white uppercase font-medium;
+	min-width: 26px;
+	height: 10.8px;
+	padding-inline: 4px;
+	font-size: 6.08px;
+	line-height: 7.42px;
+	letter-spacing: 0;
 }
 
 .heroNav {
-	@apply flex flex-wrap items-center gap-x-10 gap-y-2;
+	@apply flex flex-wrap items-center;
+	column-gap: 40px;
+	row-gap: 8px;
 }
 
 .heroContact {
-	@apply text-[12px] font-medium leading-[15px] text-black/70 hover:text-black transition-colors;
+	@apply text-[12px] font-medium text-black/70 hover:text-black transition-colors;
+	font-family: 'Instrument_Sans', sans-serif;
+	line-height: 14.64px;
 }
 
 .loginLink {
-	@apply inline-flex items-center gap-2 text-[12px] leading-[15px] text-black font-medium hover:opacity-80 transition-opacity;
+	@apply inline-flex items-center text-[12px] text-black font-medium hover:opacity-80 transition-opacity;
+	gap: 9px;
+	font-family: 'Instrument_Sans', sans-serif;
+	line-height: 14.64px;
 }
 
 .loginIcon {
@@ -355,7 +372,7 @@
 
 .footer {
 	@apply relative z-[1] text-white;
-	background: #2a2a28;
+	background: #161616;
 	height: 136px;
 	min-height: 136px;
 }
@@ -375,21 +392,29 @@
 }
 
 .footerBrand {
-	@apply flex flex-row items-center gap-5;
+	@apply flex flex-row items-start;
+	gap: 20px;
 }
 
 .footerLogo {
-	@apply h-[19px] w-[75px] object-contain object-left;
+	width: 74.8px;
+	height: 19px;
+	@apply object-contain object-left;
 }
 
 .footerTeam {
-	@apply text-[14px] font-medium leading-normal text-white/40;
+	@apply text-[14px] font-medium text-white/40;
+	padding-top: 5px;
 	font-family: 'Instrument_Sans', sans-serif;
+	line-height: 17.08px;
 }
 
 .footerLinks {
-	@apply flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-9 text-[14px] font-medium leading-normal text-white/40;
+	@apply flex flex-col sm:flex-row sm:items-center text-[14px] font-medium text-white/40;
+	column-gap: 36px;
+	row-gap: 12px;
 	font-family: 'Instrument_Sans', sans-serif;
+	line-height: 17.08px;
 
 	& a {
 		@apply text-white/40 hover:text-white transition-colors;
@@ -397,8 +422,9 @@
 }
 
 .footerTerms {
-	@apply text-left text-[14px] font-medium leading-normal text-white/40 hover:text-white transition-colors bg-transparent border-0 p-0 cursor-pointer;
+	@apply text-left text-[14px] font-medium text-white/40 hover:text-white transition-colors bg-transparent border-0 p-0 cursor-pointer;
 	font-family: 'Instrument_Sans', sans-serif;
+	line-height: 17.08px;
 }
 
 .termsModal {
@@ -418,9 +444,25 @@
 }
 
 .mobile .heroHeader {
-	padding-inline: 16px;
-	padding-top: 16px;
-	padding-bottom: 10px;
+	padding-inline: 24px;
+	padding-top: 14px;
+	padding-bottom: 0;
+}
+
+.mobile .heroNav {
+	column-gap: 0;
+}
+
+.mobile .heroContact {
+	display: none;
+}
+
+.mobile .loginLink {
+	gap: 0;
+}
+
+.mobile .loginLink span {
+	display: none;
 }
 
 .mobile .heroSection {
@@ -466,8 +508,51 @@
 }
 
 .mobile .footerInner {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	grid-template-areas:
+		'team phone'
+		'. email'
+		'logo terms';
+	row-gap: 4px;
 	min-height: 150px;
 	padding-top: 64px;
+	padding-inline: 24px;
+	align-items: start;
+}
+
+.mobile .footerBrand {
+	display: contents;
+}
+
+.mobile .footerLogo {
+	grid-area: logo;
+	width: 74.8px;
+	height: 19px;
+}
+
+.mobile .footerTeam {
+	grid-area: team;
+	padding-top: 0;
+}
+
+.mobile .footerLinks {
+	display: contents;
+}
+
+.mobile .footerLinks a:first-child {
+	grid-area: phone;
+	justify-self: end;
+}
+
+.mobile .footerLinks a:last-of-type {
+	grid-area: email;
+	justify-self: end;
+}
+
+.mobile .footerTerms {
+	grid-area: terms;
+	justify-self: end;
 }
 
 .mobile .registrationFormCard {
@@ -482,12 +567,4 @@
 	position: relative;
 	width: 100%;
 	height: 240px;
-}
-
-.mobile .heroNav {
-	@apply gap-x-4;
-}
-
-.mobile .heroContact {
-	@apply text-[12px];
 }
