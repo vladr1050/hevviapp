@@ -13,16 +13,15 @@ namespace App\Service\OrderOffer;
 use App\Entity\Cargo;
 use App\Entity\Order;
 use App\Enum\PricingAlgorithm;
-use App\Service\Billing\IssuingCompanyResolver;
 use App\Service\OrderOffer\Contract\OrderOfferCalculatorInterface;
 use App\Service\OrderOffer\DTO\OrderOfferCalculationResultDto;
 use App\Service\OrderOffer\Oversized\OversizedPricingWeightResolver;
 use App\Service\OrderOffer\Pricing\DTO\PricingCalculationContext;
 use App\Service\OrderOffer\Pricing\PriceCoefficientResolver;
+use App\Service\OrderOffer\Pricing\PricingAmountBuilder;
 use App\Service\OrderOffer\Pricing\PricingCarrierResolver;
 use App\Service\OrderOffer\Pricing\PricingStrategyRegistry;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Orchestrates freight pricing: carrier + strategy → base freight → coefficient → fee → VAT → brutto.
@@ -33,13 +32,9 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
         private readonly PricingCarrierResolver $pricingCarrierResolver,
         private readonly PricingStrategyRegistry $pricingStrategyRegistry,
         private readonly PriceCoefficientResolver $priceCoefficientResolver,
-        private readonly IssuingCompanyResolver $issuingCompanyResolver,
         private readonly OversizedPricingWeightResolver $oversizedPricingWeightResolver,
+        private readonly PricingAmountBuilder $pricingAmountBuilder,
         private readonly LoggerInterface $logger,
-        #[Autowire('%env(int:TAX_VAT)%')]
-        private readonly int $defaultVatPercent,
-        #[Autowire('%env(int:PLATFORM_FEE_PERCENT)%')]
-        private readonly int $defaultPlatformFeePercent,
     ) {
     }
 
@@ -145,13 +140,13 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
 
             $coefficient = $this->priceCoefficientResolver->resolve($carrier, $order->getSender());
             $baseNetto = (int) round((float) $freightResult->baseFreightCents * $coefficient);
-
-            $feePercent = $this->resolvePlatformFeePercent();
-            $feeAmount = (int) round($baseNetto * $feePercent / 100.0);
-            $nettoPrice = $baseNetto + $feeAmount;
-            $vatRatePercent = $this->resolveVatRatePercent();
-            $vatAmount = (int) round($nettoPrice * $vatRatePercent / 100.0);
-            $bruttoPrice = $nettoPrice + $vatAmount;
+            $amounts = $this->pricingAmountBuilder->buildFromBaseFreightCents($baseNetto);
+            $feePercent = $amounts->feePercent;
+            $feeAmount = $amounts->feeCents;
+            $nettoPrice = $amounts->nettoCents;
+            $vatRatePercent = $amounts->vatPercent;
+            $vatAmount = $amounts->vatCents;
+            $bruttoPrice = $amounts->bruttoCents;
 
             $this->logger->info('Successfully calculated order offer', [
                 'order_id' => $order->getId()?->toRfc4122(),
@@ -207,31 +202,5 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
         }
 
         return $totalWeight;
-    }
-
-    private function resolvePlatformFeePercent(): float
-    {
-        $issuer = $this->issuingCompanyResolver->getIssuingCompany();
-        if ($issuer !== null) {
-            $p = $issuer->getPlatformFeePercent();
-            if ($p !== null && $p !== '') {
-                return (float) $p;
-            }
-        }
-
-        return (float) $this->defaultPlatformFeePercent;
-    }
-
-    private function resolveVatRatePercent(): float
-    {
-        $issuer = $this->issuingCompanyResolver->getIssuingCompany();
-        if ($issuer !== null) {
-            $rate = $issuer->getVatRate();
-            if ($rate !== null && $rate !== '') {
-                return (float) $rate;
-            }
-        }
-
-        return (float) $this->defaultVatPercent;
     }
 }

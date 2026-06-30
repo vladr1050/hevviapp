@@ -1641,6 +1641,134 @@
         <source>breadcrumb.link_matrix_item_create</source>
         <target>__breadcrumb.link_matrix_item_create</target>
       </trans-unit>
+      <trans-unit id="adjOfferBtn" resname="order_offer.adjust.button">
+        <source>order_offer.adjust.button</source>
+        <target>Adjust price</target>
+      </trans-unit>
+      <trans-unit id="adjOfferNotAvail" resname="order_offer.adjust.not_available">
+        <source>order_offer.adjust.not_available</source>
+        <target>Price can only be adjusted while the order is Offered and the latest offer is Draft.</target>
+      </trans-unit>
+      <trans-unit id="adjOfferPageTitle" resname="order_offer.adjust.page_title">
+        <source>order_offer.adjust.page_title</source>
+        <target>Adjust price — %reference%</target>
+      </trans-unit>
+      <trans-unit id="adjOfferPageIntro" resname="order_offer.adjust.page_intro">
+        <source>order_offer.adjust.page_intro</source>
+        <target>Creates a new draft offer for the sender. The order stays Offered; the sender confirms as usual.</target>
+      </trans-unit>
+      <trans-unit id="adjOfferCurrentPrice" resname="order_offer.adjust.current_price">
+        <source>order_offer.adjust.current_price</source>
+        <target>Current sender price</target>
+      </trans-unit>
+      <trans-unit id="adjOfferCurrentStatus" resname="order_offer.adjust.current_offer_status">
+        <source>order_offer.adjust.current_offer_status</source>
+        <target>Latest offer status: %status%</target>
+      </trans-unit>
+      <trans-unit id="adjOfferFormTitle" resname="order_offer.adjust.form_title">
+        <source>order_offer.adjust.form_title</source>
+        <target>New price</target>
+      </trans-unit>
+      <trans-unit id="adjOfferSubmit" resname="order_offer.adjust.submit">
+        <source>order_offer.adjust.submit</source>
+        <target>Apply adjustment</target>
+      </trans-unit>
+      <trans-unit id="adjOfferLabelMode" resname="order_offer.adjust.label_mode">
+        <source>order_offer.adjust.label_mode</source>
+        <target>Adjustment mode</target>
+      </trans-unit>
+      <trans-unit id="adjOfferLabelValue" resname="order_offer.adjust.label_value">
+        <source>order_offer.adjust.label_value</source>
+        <target>Value</target>
+      </trans-unit>
+      <trans-unit id="adjOfferHelpValue" resname="order_offer.adjust.help_value">
+        <source>order_offer.adjust.help_value</source>
+        <target>Target total or delta in euros; percent change for percent mode (e.g. -10 or 15).</target>
+      </trans-unit>
+      <trans-unit id="adjOfferLabelReason" resname="order_offer.adjust.label_reason">
+        <source>order_offer.adjust.label_reason</source>
+        <target>Reason (required)</target>
+      </trans-unit>
+      <trans-unit id="adjOfferModeTarget" resname="order_offer.adjust.mode.target_total">
+        <source>order_offer.adjust.mode.target_total</source>
+        <target>Set target sender total (EUR)</target>
+      </trans-unit>
+      <trans-unit id="adjOfferModePercent" resname="order_offer.adjust.mode.percent">
+        <source>order_offer.adjust.mode.percent</source>
+        <target>Change by percent</target>
+      </trans-unit>
+      <trans-unit id="adjOfferModeDelta" resname="order_offer.adjust.mode.delta">
+        <source>order_offer.adjust.mode.delta</source>
+        <target>Change by amount (EUR)</target>
+      </trans-unit>
+      <trans-unit id="adjOfferSuccess" resname="order_offer.adjust.success">
+        <source>order_offer.adjust.success</source>
+        <target>Price adjusted from %previous% %currency% to %new% %currency%.</target>
+      </trans-unit>
+      <trans-unit id="adjOfferErrUnknown" resname="order_offer.adjust.error.unknown">
+        <source>order_offer.adjust.error.unknown</source>
+        <target>Could not adjust the offer price.</target>
+      </trans-unit>
+      <trans-unit id="adjOfferErrNotAdj" resname="order_offer.adjust.error.not_adjustable">
+        <source>order_offer.adjust.error.not_adjustable</source>
+        <target>This order cannot be adjusted right now.</target>
+      </trans-unit>
+      <trans-unit id="adjOfferErrReason" resname="order_offer.adjust.error.reason_required">
+        <source>order_offer.adjust.error.reason_required</source>
+        <target>Please provide a reason (at least 3 characters).</target>
+      </trans-unit>
+      <trans-unit id="adjOfferErrNotOffered" resname="order_offer.adjust.error.order_not_offered">
+        <source>order_offer.adjust.error.order_not_offered</source>
+        <target>Order must be in Offered status.</target>
+      </trans-unit>
+      <trans-unit id="adjOfferErrNoOffer" resname="order_offer.adjust.error.no_active_offer">
+        <source>order_offer.adjust.error.no_active_offer</source>
+        <target>No active offer found.</target>
+      </trans-unit>
+      <trans-unit id="adjOfferErrNotDraft" resname="order_offer.adjust.error.offer_not_draft">
+        <source>order_offer.adjust.error.offer_not_draft</source>
+        <target>Latest offer must be Draft.</target>
+      </trans-unit>
+      <trans-unit id="adjOfferErrInvalidOffer" resname="order_offer.adjust.error.invalid_current_offer">
+        <source>order_offer.adjust.error.invalid_current_offer</source>
+        <target>Current offer amounts are invalid.</target>
+      </trans-unit>
+      <trans-unit id="adjOfferErrInvalidTarget" resname="order_offer.adjust.error.invalid_target_total">
+        <source>order_offer.adjust.error.invalid_target_total</source>
+        <target>Target total must be greater than zero.</target>
+      </trans-unit>
+      <trans-unit id="adjOfferErrInline" resname="order_offer.adjust.error.inline_edit_blocked">
+        <source>order_offer.adjust.error.inline_edit_blocked</source>
+        <target>Use "Adjust price" on the order page to change the active draft offer.</target>
+      </trans-unit>
+      <trans-unit id="adjOfferHelpForm" resname="order_offer.adjust.help.use_adjust_form">
+        <source>order_offer.adjust.help.use_adjust_form</source>
+        <target>Locked while order is Offered — use Adjust price on the order show page.</target>
+      </trans-unit>
+      <trans-unit id="showAdjOffer" resname="show.label_adjust_offer_price">
+        <source>show.label_adjust_offer_price</source>
+        <target>Price adjustment</target>
+      </trans-unit>
+      <trans-unit id="showPricingSource" resname="show.label_offer_pricing_source">
+        <source>show.label_offer_pricing_source</source>
+        <target>Pricing source</target>
+      </trans-unit>
+      <trans-unit id="showAdjReason" resname="show.label_offer_adjustment_reason">
+        <source>show.label_offer_adjustment_reason</source>
+        <target>Adjustment reason</target>
+      </trans-unit>
+      <trans-unit id="showAdjBy" resname="show.label_offer_adjusted_by">
+        <source>show.label_offer_adjusted_by</source>
+        <target>Adjusted by</target>
+      </trans-unit>
+      <trans-unit id="pricingSrcCalc" resname="order_offer.pricing_source.calculated">
+        <source>order_offer.pricing_source.calculated</source>
+        <target>Calculated</target>
+      </trans-unit>
+      <trans-unit id="pricingSrcManual" resname="order_offer.pricing_source.manual">
+        <source>order_offer.pricing_source.manual</source>
+        <target>Manual adjustment</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use App\Enum\OfferPricingSource;
 use App\Repository\OrderOfferRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: OrderOfferRepository::class)]
@@ -31,6 +33,20 @@ class OrderOffer extends BaseUUID
 
     #[ORM\Column(nullable: true)]
     private ?int $fee = null;
+
+    #[ORM\Column(length: 32, options: ['default' => 'calculated'])]
+    private string $pricingSource = 'calculated';
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $adjustmentReason = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Manager $adjustedByManager = null;
+
+    #[ORM\OneToOne(targetEntity: self::class)]
+    #[ORM\JoinColumn(name: 'superseded_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?OrderOffer $supersededBy = null;
 
     public function getBrutto(): ?int
     {
@@ -110,5 +126,59 @@ class OrderOffer extends BaseUUID
         $this->fee = $fee;
 
         return $this;
+    }
+
+    public function getPricingSource(): OfferPricingSource
+    {
+        return OfferPricingSource::from($this->pricingSource);
+    }
+
+    public function setPricingSource(OfferPricingSource $pricingSource): static
+    {
+        $this->pricingSource = $pricingSource->value;
+
+        return $this;
+    }
+
+    public function getAdjustmentReason(): ?string
+    {
+        return $this->adjustmentReason;
+    }
+
+    public function setAdjustmentReason(?string $adjustmentReason): static
+    {
+        $this->adjustmentReason = $adjustmentReason;
+
+        return $this;
+    }
+
+    public function getAdjustedByManager(): ?Manager
+    {
+        return $this->adjustedByManager;
+    }
+
+    public function setAdjustedByManager(?Manager $adjustedByManager): static
+    {
+        $this->adjustedByManager = $adjustedByManager;
+
+        return $this;
+    }
+
+    public function getSupersededBy(): ?OrderOffer
+    {
+        return $this->supersededBy;
+    }
+
+    public function setSupersededBy(?OrderOffer $supersededBy): static
+    {
+        $this->supersededBy = $supersededBy;
+
+        return $this;
+    }
+
+    public function isActiveDraftForOfferedOrder(): bool
+    {
+        return $this->status === self::STATUS['DRAFT']
+            && $this->relatedOrder?->getStatus() === Order::STATUS['OFFERED'];
     }
 }

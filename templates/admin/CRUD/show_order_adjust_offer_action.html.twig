@@ -1,0 +1,17 @@
+{#
+    Adjust-offer action on Order show page (OFFERED + DRAFT offer only).
+    @var object App\Entity\Order
+#}
+{% set latestOffer = object.latestOffer %}
+{% set canAdjust = object.status == constant('App\\Entity\\Order::STATUS')['OFFERED']
+    and latestOffer is not null
+    and latestOffer.status == constant('App\\Entity\\OrderOffer::STATUS')['DRAFT'] %}
+
+{% if canAdjust %}
+    <a class="btn btn-warning" href="{{ path('admin_order_adjust_offer', {id: object.id.toRfc4122()}) }}">
+        <i class="fas fa-euro-sign"></i>
+        {{ 'order_offer.adjust.button'|trans({}, 'AppBundle') }}
+    </a>
+{% else %}
+    <p class="text-muted">{{ 'order_offer.adjust.not_available'|trans({}, 'AppBundle') }}</p>
+{% endif %}

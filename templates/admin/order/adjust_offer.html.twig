@@ -1,0 +1,62 @@
+{% extends '@SonataAdmin/standard_layout.html.twig' %}
+
+{% block title %}
+    {{ 'order_offer.adjust.page_title'|trans({'%reference%': order.reference}, 'AppBundle') }}
+{% endblock %}
+
+{% block sonata_page_content %}
+    <section class="content-header">
+        <h1>{{ 'order_offer.adjust.page_title'|trans({'%reference%': order.reference}, 'AppBundle') }}</h1>
+        <p class="text-muted">{{ 'order_offer.adjust.page_intro'|trans({}, 'AppBundle') }}</p>
+    </section>
+
+    <section class="content">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{ 'order_offer.adjust.current_price'|trans({}, 'AppBundle') }}</h3>
+                    </div>
+                    <div class="box-body">
+                        {% if breakdown is not null %}
+                            <p class="lead">
+                                <strong>{{ 'sender_price.total_delivery_gross'|trans({}, 'AppBundle') }}:</strong>
+                                {{ breakdown.senderTotalGrossCents|currency_convert(currency) }}
+                            </p>
+                            <p class="text-muted small">
+                                {{ 'order_offer.adjust.current_offer_status'|trans({
+                                    '%status%': 'DRAFT'|trans({}, 'AppBundle')
+                                }, 'AppBundle') }}
+                            </p>
+                        {% else %}
+                            <p class="text-muted">{{ 'sender_price.no_offer_data'|trans({}, 'AppBundle') }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-7">
+                <div class="box box-warning">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{ 'order_offer.adjust.form_title'|trans({}, 'AppBundle') }}</h3>
+                    </div>
+                    <div class="box-body">
+                        {{ form_start(form) }}
+                        {{ form_row(form.mode) }}
+                        {{ form_row(form.numericValue) }}
+                        {{ form_row(form.reason) }}
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-warning">
+                                {{ 'order_offer.adjust.submit'|trans({}, 'AppBundle') }}
+                            </button>
+                            <a href="{{ orderAdmin.generateObjectUrl('show', order) }}" class="btn btn-default">
+                                {{ 'link_action_show'|trans({}, 'SonataAdminBundle') }}
+                            </a>
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

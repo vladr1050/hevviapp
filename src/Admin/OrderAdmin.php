@@ -337,6 +337,11 @@ class OrderAdmin extends BaseAdmin
                     return ucfirst(strtolower(array_flip(Order::STATUS)[$object->getStatus()]));
                 },
             ])
+            ->add('_adjust_offer_action', null, [
+                'label' => 'show.label_adjust_offer_price',
+                'template' => 'admin/CRUD/show_order_adjust_offer_action.html.twig',
+                'virtual_field' => true,
+            ])
             ->add('sender', null, [
                 'associated_property' => function ($carrier) {
                     return sprintf('%s %s (%s)', $carrier->getFirstName(), $carrier->getLastName(), $carrier->getEmail());
