@@ -10,6 +10,7 @@ use App\Entity\OrderOffer;
 use App\Enum\OfferPriceAdjustmentMode;
 use App\Form\Type\OfferPriceAdjustmentType;
 use App\Service\Order\SenderOrderPayableTotalCentsCalculator;
+use App\Repository\OrderRepository;
 use App\Service\OrderOffer\DTO\OfferPriceAdjustmentInput;
 use App\Service\OrderOffer\OfferPriceAdjustmentService;
 use Sonata\AdminBundle\Admin\Pool;
@@ -27,14 +28,20 @@ final class OrderOfferAdjustmentController extends AbstractController
     public function __construct(
         private readonly OfferPriceAdjustmentService $adjustmentService,
         private readonly SenderOrderPayableTotalCentsCalculator $senderOrderPayableTotalCentsCalculator,
+        private readonly OrderRepository $orderRepository,
         private readonly Pool $adminPool,
         private readonly TranslatorInterface $translator,
     ) {
     }
 
     #[Route('/{id}/adjust-offer', name: 'adjust_offer', methods: ['GET', 'POST'])]
-    public function adjustOffer(Request $request, Order $order): Response
+    public function adjustOffer(Request $request, string $id): Response
     {
+        $order = $this->orderRepository->find($id);
+        if (!$order instanceof Order) {
+            throw $this->createNotFoundException();
+        }
+
         if (!$this->canAdjust($order)) {
             $this->addFlash('sonata_flash_error', $this->translator->trans('order_offer.adjust.error.not_adjustable', [], 'AppBundle'));
 

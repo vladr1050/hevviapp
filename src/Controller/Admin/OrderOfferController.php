@@ -19,6 +19,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Order;
 use App\Entity\OrderOffer;
+use App\Repository\OrderRepository;
 use App\Service\OrderOffer\Contract\OrderOfferCalculatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,6 +42,7 @@ class OrderOfferController extends AbstractController
     public function __construct(
         private readonly OrderOfferCalculatorInterface $calculator,
         private readonly EntityManagerInterface $entityManager,
+        private readonly OrderRepository $orderRepository,
         private readonly TranslatorInterface $translator,
     ) {
     }
@@ -55,8 +57,13 @@ class OrderOfferController extends AbstractController
      * @return JsonResponse JSON ответ с результатом
      */
     #[Route('/calculate/{id}', name: 'calculate', methods: ['POST'])]
-    public function calculate(Order $order): JsonResponse
+    public function calculate(string $id): JsonResponse
     {
+        $order = $this->orderRepository->find($id);
+        if (!$order instanceof Order) {
+            return $this->json(['success' => false, 'message' => 'Order not found'], Response::HTTP_NOT_FOUND);
+        }
+
         // Расчет стоимости
         $result = $this->calculator->calculate($order);
 
@@ -115,8 +122,13 @@ class OrderOfferController extends AbstractController
      * @return JsonResponse JSON ответ с результатом проверки
      */
     #[Route('/check/{id}', name: 'check', methods: ['GET'])]
-    public function check(Order $order): JsonResponse
+    public function check(string $id): JsonResponse
     {
+        $order = $this->orderRepository->find($id);
+        if (!$order instanceof Order) {
+            return $this->json(['success' => false, 'canCalculate' => false, 'message' => 'Order not found'], Response::HTTP_NOT_FOUND);
+        }
+
         $result = $this->calculator->calculate($order);
 
         return $this->json([
