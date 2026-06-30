@@ -185,7 +185,9 @@ export type AccountType = 'Sender' | 'Carrier'
 
 export const MAX_WIDTH = 1000
 export const MAX_LENGTH = 1000
-export const MAX_HEIGHT = 1000
+/** Maximum cargo height (cm). Values 251+ are rejected. */
+export const MAX_CARGO_HEIGHT = 250
+export const MAX_HEIGHT = MAX_CARGO_HEIGHT
 export const MIN_WEIGHT = 150
 // export const MAX_WEIGHT = 700
 export const MAX_QUANTITY = 100

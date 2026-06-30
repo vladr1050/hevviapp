@@ -83,7 +83,7 @@ export const RequestsUser: FC<RequestsUserProps> = ({ orders }) => {
 					name: item.name,
 					quantity: item.quantity,
 					weightKg: item.weight,
-					dimensionsCm: dimensionsCm(item.width, item.length, item.height),
+					dimensionsCm: dimensionsCm(item.length, item.width, item.height),
 				})),
 				stackable: values.stackable,
 				manipulatorNeeded: values.manipulatorNeeded,

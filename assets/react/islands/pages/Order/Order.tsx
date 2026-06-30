@@ -122,7 +122,7 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 					name: item.name,
 					quantity: item.quantity,
 					weightKg: item.weight,
-					dimensionsCm: dimensionsCm(item.width, item.length, item.height),
+					dimensionsCm: dimensionsCm(item.length, item.width, item.height),
 				})),
 				keepAttachments: values.keepAttachments || [],
 			}

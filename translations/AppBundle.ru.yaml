@@ -689,6 +689,7 @@ order_offer:
         carrier_required_for_hub_pricing:   Для hub-and-spoke нужен перевозчик
         no_cargo_weight:                  В заказе отсутствуют грузы или их вес равен нулю
         oversized_not_priceable:          Негабаритный груз нельзя рассчитать автоматически — свяжитесь с оператором
+        height_exceeds_max:               Высота груза не может превышать 250 см — измените габариты
         matrix_item_not_found:            Не найден тарифный план для указанного веса груза
         calculation_failed:               Ошибка при расчете стоимости доставки
         unknown:                          Неизвестная ошибка

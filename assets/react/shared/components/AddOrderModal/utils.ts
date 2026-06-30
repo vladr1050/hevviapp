@@ -9,10 +9,10 @@ export const formatDate = (d: Date | undefined): string | null =>
 	d ? format(d, 'yyyy-MM-dd') : null
 
 export const dimensionsCm = (
-	width: number | undefined,
 	length: number | undefined,
+	width: number | undefined,
 	height: number | undefined
-) => (width && length && height ? `${width}x${length}x${height}` : null)
+) => (length && width && height ? `${length}x${width}x${height}` : null)
 
 export const whatLabel = (cargos: CargoItemType[]) => {
 	if (!cargos.length) return undefined

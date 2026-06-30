@@ -23,6 +23,8 @@ final class OversizedPricingWeightResolver
 {
     public const string ERROR_NOT_PRICEABLE = 'OVERSIZED_NOT_PRICEABLE';
 
+    public const string ERROR_HEIGHT_EXCEEDS_MAX = 'HEIGHT_EXCEEDS_MAX';
+
     public function __construct(
         private readonly OversizedCargoCalculator $calculator,
         private readonly OversizedWeightTierRepository $tierRepository,
@@ -42,6 +44,10 @@ final class OversizedPricingWeightResolver
             }
 
             $dimensions = $cargo->getDimensionsCm();
+
+            if ($this->calculator->exceedsMaxAllowedHeight($dimensions)) {
+                return OversizedWeightResolution::error(self::ERROR_HEIGHT_EXCEEDS_MAX, 0);
+            }
 
             if ($this->calculator->isOversized($dimensions)) {
                 $hasOversized = true;

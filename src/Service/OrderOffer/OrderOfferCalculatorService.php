@@ -82,19 +82,25 @@ final class OrderOfferCalculatorService implements OrderOfferCalculatorInterface
                 );
             }
 
-            // Oversized cargo is priced by the pallet places it occupies, not by
+            // Oversized cargo is priced by pallet footprint area (L × W), not by
             // the weight entered for documents. When present, override the
             // chargeable weight with the fixed weight from the configured tiers.
             $oversized = $this->oversizedPricingWeightResolver->resolve($order);
             if ($oversized->applicable) {
                 if ($oversized->errorCode !== null) {
-                    $this->logger->warning('Oversized cargo has no configured weight tier', [
+                    $errorMessage = match ($oversized->errorCode) {
+                        OversizedPricingWeightResolver::ERROR_HEIGHT_EXCEEDS_MAX => 'order_offer.error.height_exceeds_max',
+                        default => 'order_offer.error.oversized_not_priceable',
+                    };
+
+                    $this->logger->warning('Oversized cargo pricing precondition failed', [
                         'order_id' => $order->getId()?->toRfc4122(),
                         'total_pallets' => $oversized->totalPallets,
+                        'error_code' => $oversized->errorCode,
                     ]);
 
                     return OrderOfferCalculationResultDto::error(
-                        errorMessage: 'order_offer.error.oversized_not_priceable',
+                        errorMessage: $errorMessage,
                         errorCode: $oversized->errorCode,
                     );
                 }

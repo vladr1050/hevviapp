@@ -13,7 +13,7 @@ import {
 
 import {
 	EMPTY_STRING,
-	MAX_HEIGHT,
+	MAX_CARGO_HEIGHT,
 	MAX_LENGTH,
 	MAX_QUANTITY,
 	MAX_WIDTH,
@@ -120,8 +120,8 @@ const Item: FC<{
 }> = ({ idx, item: _item, remove, isNew, append, update, onClose }) => {
 	const [item, setItem] = useState<CargoItemType>({
 		name: '',
-		width: 120,
-		length: 80,
+		length: 120,
+		width: 80,
 		height: 150,
 		weight: 500,
 		quantity: 1,
@@ -131,12 +131,18 @@ const Item: FC<{
 	const [expand, setExpand] = useState(isNew ?? false)
 
 	const [error, setError] = useState(false)
+	const [heightError, setHeightError] = useState(false)
 
 	const commitItem = () => {
 		if (!item.name.length) {
 			return setError(true)
 		}
+		if (item.height > MAX_CARGO_HEIGHT) {
+			setError(false)
+			return setHeightError(true)
+		}
 		setError(false)
+		setHeightError(false)
 
 		if (isNew) {
 			append?.(item)
@@ -164,7 +170,7 @@ const Item: FC<{
 						) : (
 							<>
 								<span>
-									{item.width} x {item.length} x {item.height} cm
+									{item.length} x {item.width} x {item.height} cm
 								</span>
 								<span>{item.weight} kg</span>
 							</>
@@ -274,23 +280,22 @@ const Item: FC<{
 						</div>
 
 						<div className={styles.row}>
-							<div className={styles.rowTitle}>Dimensions W x L x H</div>
+							<div className={styles.rowTitle}>Dimensions L x W x H</div>
 							<div className={styles.dimensions}>
 								<div className={styles.inputWrapper}>
 									<input
 										className={cn(styles.input, '!rounded-l-full')}
-										value={item.width}
+										value={item.length}
 										onChange={(e) => {
 											const v = Number(e.target.value)
-											const width = v > MAX_WIDTH ? MAX_WIDTH : v < 1 ? 1 : v
-											setItem((v) => ({ ...v, width }))
+											const length = v > MAX_LENGTH ? MAX_LENGTH : v < 1 ? 1 : v
+											setItem((prev) => ({ ...prev, length }))
 										}}
 										type="number"
 										placeholder="0"
 										min={1}
-										max={MAX_WIDTH}
+										max={MAX_LENGTH}
 									/>
-
 									<div className={styles.info}>
 										<span>cm</span>
 										<Icon type="arrow_left_right" size={16} />
@@ -302,16 +307,16 @@ const Item: FC<{
 								<div className={cn(styles.inputWrapper)}>
 									<input
 										className={styles.input}
-										value={item.length}
+										value={item.width}
 										onChange={(e) => {
 											const v = Number(e.target.value)
-											const length = v > MAX_LENGTH ? MAX_LENGTH : v < 1 ? 1 : v
-											setItem((v) => ({ ...v, length }))
+											const width = v > MAX_WIDTH ? MAX_WIDTH : v < 1 ? 1 : v
+											setItem((prev) => ({ ...prev, width }))
 										}}
 										type="number"
 										placeholder="0"
 										min={1}
-										max={MAX_LENGTH}
+										max={MAX_WIDTH}
 									/>
 									<div className={styles.info}>
 										<span>cm</span>
@@ -321,19 +326,19 @@ const Item: FC<{
 
 								<div className={styles.divider}></div>
 
-								<div className={cn(styles.inputWrapper)}>
+								<div className={cn(styles.inputWrapper, { [styles.error]: heightError })}>
 									<input
-										className={cn(styles.input, '!rounded-r-full')}
+										className={cn(styles.input, '!rounded-r-full', { [styles.error]: heightError })}
 										value={item.height}
 										onChange={(e) => {
 											const v = Number(e.target.value)
-											const height = v > MAX_HEIGHT ? MAX_HEIGHT : v < 1 ? 1 : v
-											setItem((v) => ({ ...v, height }))
+											const height = v < 1 ? 1 : v
+											setItem((prev) => ({ ...prev, height }))
+											setHeightError(height > MAX_CARGO_HEIGHT)
 										}}
 										type="number"
 										placeholder="0"
 										min={1}
-										max={MAX_HEIGHT}
 									/>
 									<div className={styles.info}>
 										<span>cm</span>
@@ -341,6 +346,11 @@ const Item: FC<{
 									</div>
 								</div>
 							</div>
+							{heightError && (
+								<div className={styles.fieldError}>
+									Maximum height is {MAX_CARGO_HEIGHT} cm
+								</div>
+							)}
 						</div>
 
 						<div className="grid grid-cols-[180px,1fr] gap-9 items-end">

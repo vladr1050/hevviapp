@@ -5,36 +5,38 @@ declare(strict_types=1);
 namespace App\Service\OrderOffer\Oversized;
 
 /**
- * Pure geometry helper for oversized cargo.
+ * Geometry helper for oversized cargo (industry order: Length × Width × Height).
  *
- * Standard pallet envelope (meters): 1.20 (L) x 0.80 (W) x 1.88 (H) = 1.8048 m³.
- * Dimensions are entered in centimeters on the order, so everything is
- * converted to meters here.
- *
- * "Oversized" is decided rotation-agnostically: the three cargo dimensions are
- * sorted and compared against the sorted envelope, so swapping/rotating sides
- * never changes the verdict. A side counts as exceeding only when it is at
- * least 0.01 m (1 cm) over its limit.
+ * Standard pallet footprint: 120 cm (L) × 80 cm (W).
+ * Standard pallet height envelope: 188 cm (H).
+ * Maximum allowed cargo height for all types: 250 cm.
  */
 final class OversizedCargoCalculator
 {
-    public const float PALLET_VOLUME_M3 = 1.8048;
+    public const float PALLET_LENGTH_CM = 120.0;
 
-    /** Sorted (descending) envelope limits in meters: 1.88, 1.20, 0.80. */
-    private const array SORTED_MAX_DIMENSIONS_M = [1.88, 1.20, 0.80];
+    public const float PALLET_WIDTH_CM = 80.0;
 
-    /** A side must exceed its limit by at least this (meters) to count. */
-    private const float DIMENSION_TOLERANCE_M = 0.01;
+    public const float PALLET_HEIGHT_CM = 188.0;
 
-    /** Guards floating-point comparisons around the volume thresholds. */
+    public const float PALLET_AREA_CM2 = self::PALLET_LENGTH_CM * self::PALLET_WIDTH_CM;
+
+    public const float MAX_CARGO_HEIGHT_CM = 250.0;
+
+    /** A dimension must exceed its limit by at least this (cm) to count. */
+    private const float DIMENSION_TOLERANCE_CM = 0.01;
+
+    /** Area must exceed a pallet footprint by at least this (cm²) to count as an extra place. */
+    private const float AREA_TOLERANCE_CM2 = 0.01;
+
     private const float EPSILON = 1.0e-9;
 
     /**
-     * Parse a "WxLxH" (or "W,L,H") centimeter string into meters.
+     * Parse "LxWxH" centimeter string (also accepts comma separators).
      *
-     * @return array{0: float, 1: float, 2: float}|null three sides in meters, or null when unparseable
+     * @return array{length: float, width: float, height: float}|null sides in centimeters
      */
-    public function parseDimensionsMeters(?string $dimensionsCm): ?array
+    public function parseDimensionsCm(?string $dimensionsCm): ?array
     {
         if ($dimensionsCm === null || trim($dimensionsCm) === '') {
             return null;
@@ -45,7 +47,7 @@ final class OversizedCargoCalculator
             return null;
         }
 
-        $meters = [];
+        $values = [];
         foreach ($parts as $part) {
             $normalized = str_replace(',', '.', trim($part));
             if (!is_numeric($normalized)) {
@@ -55,54 +57,65 @@ final class OversizedCargoCalculator
             if ($cm <= 0.0) {
                 return null;
             }
-            $meters[] = $cm / 100.0;
+            $values[] = $cm;
         }
 
-        return [$meters[0], $meters[1], $meters[2]];
+        return [
+            'length' => $values[0],
+            'width' => $values[1],
+            'height' => $values[2],
+        ];
     }
 
     /**
-     * True when at least one side exceeds the pallet envelope by >= 0.01 m,
-     * regardless of orientation.
+     * True when height is 251 cm or more (max allowed height is 250 cm).
      */
-    public function isOversized(?string $dimensionsCm): bool
+    public function exceedsMaxAllowedHeight(?string $dimensionsCm): bool
     {
-        $dimensions = $this->parseDimensionsMeters($dimensionsCm);
+        $dimensions = $this->parseDimensionsCm($dimensionsCm);
         if ($dimensions === null) {
             return false;
         }
 
-        rsort($dimensions);
-
-        foreach ($dimensions as $i => $side) {
-            $limit = self::SORTED_MAX_DIMENSIONS_M[$i];
-            if ($side - $limit >= self::DIMENSION_TOLERANCE_M - self::EPSILON) {
-                return true;
-            }
-        }
-
-        return false;
+        return $dimensions['height'] > self::MAX_CARGO_HEIGHT_CM + self::EPSILON;
     }
 
     /**
-     * Pallet places occupied by a single oversized unit, based on its volume:
-     *   V <= 1.8048            → 1
-     *   1.8048 < V <= 2·1.8048 → 2
-     *   2·1.8048 < V <= 3·…    → 3, etc.
-     *
-     * Returns at least 1. The caller decides whether the unit is oversized;
-     * for non-oversized cargo a flat 1 place per unit should be used instead.
+     * True when L, W or H exceeds the standard pallet envelope by >= 0.01 cm.
+     */
+    public function isOversized(?string $dimensionsCm): bool
+    {
+        $dimensions = $this->parseDimensionsCm($dimensionsCm);
+        if ($dimensions === null) {
+            return false;
+        }
+
+        return $this->exceedsLimit($dimensions['length'], self::PALLET_LENGTH_CM)
+            || $this->exceedsLimit($dimensions['width'], self::PALLET_WIDTH_CM)
+            || $this->exceedsLimit($dimensions['height'], self::PALLET_HEIGHT_CM);
+    }
+
+    /**
+     * Pallet places for a single oversized unit from footprint area (L × W):
+     *   area <= 9600 cm²           → 1
+     *   9600 < area <= 2·9600      → 2
+     *   etc. (always rounded up).
      */
     public function palletPlacesForUnit(?string $dimensionsCm): int
     {
-        $dimensions = $this->parseDimensionsMeters($dimensionsCm);
+        $dimensions = $this->parseDimensionsCm($dimensionsCm);
         if ($dimensions === null) {
             return 1;
         }
 
-        $volume = $dimensions[0] * $dimensions[1] * $dimensions[2];
-        $places = (int) ceil($volume / self::PALLET_VOLUME_M3 - self::EPSILON);
+        $area = $dimensions['length'] * $dimensions['width'];
+        $places = (int) ceil($area / self::PALLET_AREA_CM2 - self::EPSILON);
 
         return max(1, $places);
+    }
+
+    private function exceedsLimit(float $valueCm, float $limitCm): bool
+    {
+        return $valueCm - $limitCm >= self::DIMENSION_TOLERANCE_CM - self::EPSILON;
     }
 }

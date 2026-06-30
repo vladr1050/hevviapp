@@ -710,6 +710,7 @@ order_offer:
         carrier_required_for_hub_pricing: Carrier is required for hub-and-spoke pricing
         no_cargo_weight:               Order has no cargo or cargo weight is zero
         oversized_not_priceable:       Oversized cargo cannot be priced automatically — please contact the operator
+        height_exceeds_max:            Cargo height cannot exceed 250 cm — please adjust dimensions
         matrix_item_not_found:         Pricing plan not found for specified cargo weight
         calculation_failed:            Error calculating delivery cost
         unknown:                       Unknown error

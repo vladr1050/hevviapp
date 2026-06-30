@@ -368,6 +368,10 @@
 										@apply border-black/5 !important;
 										@apply bg-[#F7F7F7];
 
+										& .inputWrapper.error {
+											@apply bg-red-50;
+										}
+
 										& .divider {
 											@apply h-full w-[1px] bg-[#d4d4d4];
 											border-top: 10px solid white;
@@ -393,6 +397,10 @@
 												}
 											}
 										}
+									}
+
+									& .fieldError {
+										@apply text-red-600 text-xs font-medium ml-4 mt-1;
 									}
 
 									& .inputKg {
