@@ -298,7 +298,7 @@ const Item: FC<{
 									/>
 									<div className={styles.info}>
 										<span>cm</span>
-										<Icon type="arrow_left_right" size={16} />
+										<Icon type="arrow_left_right" size={16} className="-rotate-45" />
 									</div>
 								</div>
 
@@ -320,7 +320,7 @@ const Item: FC<{
 									/>
 									<div className={styles.info}>
 										<span>cm</span>
-										<Icon type="arrow_left_right" size={16} className="-rotate-45" />
+										<Icon type="arrow_left_right" size={16} />
 									</div>
 								</div>
 
