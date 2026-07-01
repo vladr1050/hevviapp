@@ -24,6 +24,7 @@ if [[ "${SKIP_RSYNC:-0}" != "1" ]]; then
   rsync -az \
     --exclude='.git' \
     --exclude='node_modules' \
+    --exclude='public/build' \
     --exclude='var/cache/*' \
     --exclude='var/log/*' \
     --exclude='.env' \

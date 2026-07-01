@@ -42,6 +42,7 @@ jobs:
             -e "ssh -i $HOME/.ssh/deploy_key -o IdentitiesOnly=yes" \
             --exclude='.git' \
             --exclude='node_modules' \
+            --exclude='public/build' \
             --exclude='var/cache/*' \
             --exclude='var/log/*' \
             --exclude='.env' \

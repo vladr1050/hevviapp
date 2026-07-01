@@ -93,15 +93,10 @@ class CarrierAdmin extends BaseAdmin
                 'label' => 'form.label_carrier_vat_rate_percent',
             ])
             ->add('isDefaultForPricing')
-            ->add('pricingAlgorithm', 'choice', [
+            ->add('pricingAlgorithm', null, [
                 'label' => 'form.label_pricing_algorithm',
+                'accessor' => static fn (Carrier $c): string => $c->getPricingAlgorithm()->labelKey(),
                 'catalogue' => 'AppBundle',
-                'choices' => array_flip(array_map(
-                    static fn (PricingAlgorithm $a): string => $a->value,
-                    PricingAlgorithm::cases(),
-                )),
-                'choice_translation_domain' => 'AppBundle',
-                'choice_label' => static fn (string $value): string => PricingAlgorithm::from($value)->labelKey(),
             ])
             ->add('priceCoefficient')
             ->add('iban')
