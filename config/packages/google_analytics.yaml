@@ -1,0 +1,4 @@
+# GA4 Measurement ID (G-XXXXXXXXXX). Пусто = скрипт не подключается.
+parameters:
+    env(GOOGLE_ANALYTICS_MEASUREMENT_ID): ''
+    app.google_analytics_measurement_id: '%env(GOOGLE_ANALYTICS_MEASUREMENT_ID)%'

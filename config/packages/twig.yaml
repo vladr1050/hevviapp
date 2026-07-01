@@ -12,6 +12,7 @@ twig:
 
     globals:
         project_name:     '%env(PROJECT_NAME)%'
+        google_analytics_measurement_id: '%app.google_analytics_measurement_id%'
         map_config:
             nominatim_api_url: '%app.map.nominatim_api_url%'
             default_latitude:  '%app.map.default_latitude%'

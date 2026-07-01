@@ -16,6 +16,8 @@
     <title>{% block title %}{{ 'public_site.browser_title'|trans({}, 'AppBundle') }}{% endblock %}</title>
     <meta name="apple-mobile-web-app-title" content="{{ 'public_site.browser_title'|trans({}, 'AppBundle') }}">
 
+    {% include 'public/_google_analytics.html.twig' %}
+
     {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}
     {% endblock %}
