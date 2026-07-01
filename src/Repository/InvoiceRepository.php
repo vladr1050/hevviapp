@@ -39,6 +39,11 @@ class InvoiceRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findOneByPdfRelativePath(string $relativePath): ?Invoice
+    {
+        return $this->findOneBy(['pdfRelativePath' => $relativePath]);
+    }
+
     /**
      * First invoice for the order (by issue date) — used for ETA when status history is incomplete.
      */

@@ -27,4 +27,18 @@ class DocumentRepository extends ServiceEntityRepository
             'documentType' => $type,
         ]);
     }
+
+    /**
+     * @return list<Document>
+     */
+    public function findAllWithFilePath(): array
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.filePath IS NOT NULL')
+            ->andWhere('d.filePath != :empty')
+            ->setParameter('empty', '')
+            ->orderBy('d.issuedAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
