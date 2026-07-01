@@ -43,6 +43,8 @@ jobs:
             --exclude='.git' \
             --exclude='node_modules' \
             --exclude='public/build' \
+            --exclude='var/storage/' \
+            --exclude='var/invoices/' \
             --exclude='var/cache/*' \
             --exclude='var/log/*' \
             --exclude='.env' \

@@ -12,7 +12,7 @@
 | **`.env` только на сервере** | В репозиторий не кладём; при `rsync` исключаем `.env`. |
 | **`npm run build` на сервере** | После изменений в `assets/`, React, `package.json` — иначе UI «старый». |
 | **Без `docker compose down -v`** | Том `database_data` сотрётся вместе с БД. |
-| **Без `rsync --delete`** | На сервере могут лежать дампы в `docker/dumps/` — случайно не удалить. |
+| **Без `rsync --delete`** (или с исключениями) | На сервере: дампы `docker/dumps/`, сгенерированные PDF в `var/storage/` и `var/invoices/`, собранный фронт `public/build/`. |
 
 ---
 
@@ -49,6 +49,8 @@ ssh $DEPLOY_HOST "cd $DEPLOY_PATH && git pull origin master"
 cd /path/to/frpc_hevii-php-backoffice-service
 rsync -az \
   --exclude='.git' --exclude='node_modules' \
+  --exclude='public/build' \
+  --exclude='var/storage/' --exclude='var/invoices/' \
   --exclude='var/cache/*' --exclude='var/log/*' \
   --exclude='.env' --exclude='.env.local' \
   ./ $DEPLOY_HOST:$DEPLOY_PATH/
