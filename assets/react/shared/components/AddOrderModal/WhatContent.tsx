@@ -32,6 +32,64 @@ import styles from './ModalContent.module.css'
 
 import { CargoItemType, FormValues } from './types'
 
+type NumericField = number | ''
+
+type EditableCargoItem = Omit<CargoItemType, 'length' | 'width' | 'height' | 'weight'> & {
+	length: NumericField
+	width: NumericField
+	height: NumericField
+	weight: NumericField
+}
+
+const numericFieldValue = (value: NumericField): string => (value === '' ? '' : String(value))
+
+const parseNumericInput = (raw: string, max?: number): NumericField | null => {
+	if (raw === '') {
+		return ''
+	}
+
+	const value = Number(raw)
+	if (!Number.isFinite(value)) {
+		return null
+	}
+
+	if (max !== undefined && value > max) {
+		return max
+	}
+
+	return value
+}
+
+const toCargoItem = (item: EditableCargoItem): CargoItemType | null => {
+	const length = item.length === '' ? Number.NaN : Number(item.length)
+	const width = item.width === '' ? Number.NaN : Number(item.width)
+	const height = item.height === '' ? Number.NaN : Number(item.height)
+	const weight = item.weight === '' ? Number.NaN : Number(item.weight)
+
+	if (
+		!Number.isFinite(length) ||
+		!Number.isFinite(width) ||
+		!Number.isFinite(height) ||
+		!Number.isFinite(weight) ||
+		length < 1 ||
+		width < 1 ||
+		height < 1 ||
+		weight < MIN_WEIGHT ||
+		length > MAX_LENGTH ||
+		width > MAX_WIDTH
+	) {
+		return null
+	}
+
+	return {
+		...item,
+		length,
+		width,
+		height,
+		weight,
+	}
+}
+
 interface WhatContentProps {
 	control: Control<FormValues, any, FormValues>
 	register: UseFormRegister<FormValues>
@@ -118,7 +176,7 @@ const Item: FC<{
 	append?: UseFieldArrayAppend<FormValues, 'cargo'>
 	onClose?: () => void
 }> = ({ idx, item: _item, remove, isNew, append, update, onClose }) => {
-	const [item, setItem] = useState<CargoItemType>({
+	const [item, setItem] = useState<EditableCargoItem>({
 		name: '',
 		length: 120,
 		width: 80,
@@ -134,10 +192,11 @@ const Item: FC<{
 	const [heightError, setHeightError] = useState(false)
 
 	const commitItem = () => {
-		if (!item.name.length) {
+		const normalized = toCargoItem(item)
+		if (normalized === null || !normalized.name.length) {
 			return setError(true)
 		}
-		if (item.height > MAX_CARGO_HEIGHT) {
+		if (normalized.height > MAX_CARGO_HEIGHT) {
 			setError(false)
 			return setHeightError(true)
 		}
@@ -145,11 +204,11 @@ const Item: FC<{
 		setHeightError(false)
 
 		if (isNew) {
-			append?.(item)
+			append?.(normalized)
 			onClose?.()
 		} else {
 			if (typeof idx !== 'undefined') {
-				update?.(idx, item)
+				update?.(idx, normalized)
 			}
 
 			setExpand(false)
@@ -223,8 +282,11 @@ const Item: FC<{
 							type="button"
 							className={styles.headerButton}
 							onClick={() => {
-								if (expand && !item.name.length) {
-									return setError(true)
+								if (expand) {
+									const normalized = toCargoItem(item)
+									if (normalized === null || !normalized.name.length) {
+										return setError(true)
+									}
 								}
 								setError(false)
 
@@ -285,16 +347,17 @@ const Item: FC<{
 								<div className={styles.inputWrapper}>
 									<input
 										className={cn(styles.input, '!rounded-l-full')}
-										value={item.length}
+										value={numericFieldValue(item.length)}
 										onChange={(e) => {
-											const v = Number(e.target.value)
-											const length = v > MAX_LENGTH ? MAX_LENGTH : v < 1 ? 1 : v
+											const length = parseNumericInput(e.target.value, MAX_LENGTH)
+											if (length === null) {
+												return
+											}
 											setItem((prev) => ({ ...prev, length }))
 										}}
-										type="number"
+										type="text"
+										inputMode="numeric"
 										placeholder="0"
-										min={1}
-										max={MAX_LENGTH}
 									/>
 									<div className={styles.info}>
 										<span>cm</span>
@@ -307,16 +370,17 @@ const Item: FC<{
 								<div className={cn(styles.inputWrapper)}>
 									<input
 										className={styles.input}
-										value={item.width}
+										value={numericFieldValue(item.width)}
 										onChange={(e) => {
-											const v = Number(e.target.value)
-											const width = v > MAX_WIDTH ? MAX_WIDTH : v < 1 ? 1 : v
+											const width = parseNumericInput(e.target.value, MAX_WIDTH)
+											if (width === null) {
+												return
+											}
 											setItem((prev) => ({ ...prev, width }))
 										}}
-										type="number"
+										type="text"
+										inputMode="numeric"
 										placeholder="0"
-										min={1}
-										max={MAX_WIDTH}
 									/>
 									<div className={styles.info}>
 										<span>cm</span>
@@ -329,16 +393,18 @@ const Item: FC<{
 								<div className={cn(styles.inputWrapper, { [styles.error]: heightError })}>
 									<input
 										className={cn(styles.input, '!rounded-r-full', { [styles.error]: heightError })}
-										value={item.height}
+										value={numericFieldValue(item.height)}
 										onChange={(e) => {
-											const v = Number(e.target.value)
-											const height = v < 1 ? 1 : v
+											const height = parseNumericInput(e.target.value)
+											if (height === null) {
+												return
+											}
 											setItem((prev) => ({ ...prev, height }))
-											setHeightError(height > MAX_CARGO_HEIGHT)
+											setHeightError(typeof height === 'number' && height > MAX_CARGO_HEIGHT)
 										}}
-										type="number"
+										type="text"
+										inputMode="numeric"
 										placeholder="0"
-										min={1}
 									/>
 									<div className={styles.info}>
 										<span>cm</span>
@@ -360,16 +426,17 @@ const Item: FC<{
 								<div className={styles.inputKg}>
 									<input
 										className={cn(styles.input, '!rounded-l-full')}
-										value={item.weight}
+										value={numericFieldValue(item.weight)}
 										onChange={(e) => {
-											const v = Number(e.target.value)
-											const weight = v < 1 ? 1 : v
-											setItem((v) => ({ ...v, weight }))
+											const weight = parseNumericInput(e.target.value)
+											if (weight === null) {
+												return
+											}
+											setItem((prev) => ({ ...prev, weight }))
 										}}
-										type="number"
+										type="text"
+										inputMode="numeric"
 										placeholder="0"
-										min={MIN_WEIGHT}
-										// max={MAX_WEIGHT}
 									/>
 
 									<span className={styles.info}>kg</span>
