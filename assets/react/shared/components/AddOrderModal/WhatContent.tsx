@@ -242,13 +242,16 @@ const Item: FC<{
 						<button
 							type="button"
 							onClick={() => {
-								setItem((v) => {
-									const quantity = v.quantity === 1 ? 1 : v.quantity - 1
-									return { ...v, quantity }
-								})
+								const base = _item ?? toCargoItem(item)
+								if (!base) {
+									return
+								}
+
+								const quantity = base.quantity === 1 ? 1 : base.quantity - 1
+								setItem((v) => ({ ...v, quantity }))
 
 								if (!isNew && typeof idx !== 'undefined' && !expand) {
-									update?.(idx, { ...item, quantity: item.quantity === 1 ? 1 : item.quantity - 1 })
+									update?.(idx, { ...base, quantity })
 								}
 							}}
 						>
@@ -260,16 +263,17 @@ const Item: FC<{
 						<button
 							type="button"
 							onClick={() => {
-								setItem((v) => {
-									const quantity = v.quantity === MAX_QUANTITY ? MAX_QUANTITY : v.quantity + 1
-									return { ...v, quantity }
-								})
+								const base = _item ?? toCargoItem(item)
+								if (!base) {
+									return
+								}
+
+								const quantity =
+									base.quantity === MAX_QUANTITY ? MAX_QUANTITY : base.quantity + 1
+								setItem((v) => ({ ...v, quantity }))
 
 								if (!isNew && typeof idx !== 'undefined' && !expand) {
-									update?.(idx, {
-										...item,
-										quantity: item.quantity === MAX_QUANTITY ? MAX_QUANTITY : item.quantity + 1,
-									})
+									update?.(idx, { ...base, quantity })
 								}
 							}}
 						>
