@@ -399,7 +399,7 @@ const Item: FC<{
 										className={cn(styles.input, '!rounded-r-full', { [styles.error]: heightError })}
 										value={numericFieldValue(item.height)}
 										onChange={(e) => {
-											const height = parseNumericInput(e.target.value)
+											const height = parseNumericInput(e.target.value, MAX_CARGO_HEIGHT)
 											if (height === null) {
 												return
 											}

@@ -9,7 +9,7 @@ namespace App\Service\OrderOffer\Oversized;
  *
  * Standard pallet footprint: 120 cm (L) × 80 cm (W).
  * Standard pallet height envelope: 188 cm (H).
- * Maximum allowed cargo height for all types: 250 cm.
+ * Maximum allowed cargo height for all types: 270 cm.
  */
 final class OversizedCargoCalculator
 {
@@ -21,7 +21,7 @@ final class OversizedCargoCalculator
 
     public const float PALLET_AREA_CM2 = self::PALLET_LENGTH_CM * self::PALLET_WIDTH_CM;
 
-    public const float MAX_CARGO_HEIGHT_CM = 250.0;
+    public const float MAX_CARGO_HEIGHT_CM = 270.0;
 
     /** A dimension must exceed its limit by at least this (cm) to count. */
     private const float DIMENSION_TOLERANCE_CM = 0.01;
@@ -68,7 +68,7 @@ final class OversizedCargoCalculator
     }
 
     /**
-     * True when height is 251 cm or more (max allowed height is 250 cm).
+     * True when height exceeds the maximum allowed height (270 cm).
      */
     public function exceedsMaxAllowedHeight(?string $dimensionsCm): bool
     {
