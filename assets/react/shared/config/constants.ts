@@ -188,7 +188,7 @@ export const MAX_LENGTH = 1300
 /** Maximum cargo height (cm). Values above this are rejected. */
 export const MAX_CARGO_HEIGHT = 270
 export const MAX_HEIGHT = MAX_CARGO_HEIGHT
-export const MIN_WEIGHT = 150
+export const MIN_WEIGHT = 1
 // export const MAX_WEIGHT = 700
 export const MAX_QUANTITY = 100
 

@@ -408,6 +408,10 @@
 										@apply w-full h-full overflow-hidden relative rounded-full;
 										@apply border-black/5 !important;
 
+										&.error {
+											@apply border-red-600 !important;
+										}
+
 										/* & .input {
 											@apply h-full w-full pr-[50%] text-right
 											text-base font-medium rounded-full bg-[#F7F7F7];
@@ -416,9 +420,12 @@
 										} */
 
 										& > .input {
-											border: 1px solid red;
 											@apply h-12 w-full rounded-full bg-[#F7F7F7] px-6 text-base font-medium pr-[50%] text-right;
 											@apply border-black/5 !important;
+
+											&.error {
+												@apply border-red-600 !important;
+											}
 										}
 
 										& .info {

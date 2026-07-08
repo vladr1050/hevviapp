@@ -60,26 +60,47 @@ const parseNumericInput = (raw: string, max?: number): NumericField | null => {
 	return value
 }
 
-const toCargoItem = (item: EditableCargoItem): CargoItemType | null => {
+type CargoFieldErrors = {
+	name: boolean
+	dimensions: boolean
+	weight: boolean
+	height: boolean
+}
+
+const validateCargoItem = (item: EditableCargoItem): CargoFieldErrors => {
 	const length = item.length === '' ? Number.NaN : Number(item.length)
 	const width = item.width === '' ? Number.NaN : Number(item.width)
 	const height = item.height === '' ? Number.NaN : Number(item.height)
 	const weight = item.weight === '' ? Number.NaN : Number(item.weight)
 
-	if (
-		!Number.isFinite(length) ||
-		!Number.isFinite(width) ||
-		!Number.isFinite(height) ||
-		!Number.isFinite(weight) ||
-		length < 1 ||
-		width < 1 ||
-		height < 1 ||
-		weight < MIN_WEIGHT ||
-		length > MAX_LENGTH ||
-		width > MAX_WIDTH
-	) {
+	const heightExceeds = Number.isFinite(height) && height > MAX_CARGO_HEIGHT
+
+	return {
+		name: item.name.trim() === '',
+		dimensions:
+			!Number.isFinite(length) ||
+			length < 1 ||
+			length > MAX_LENGTH ||
+			!Number.isFinite(width) ||
+			width < 1 ||
+			width > MAX_WIDTH ||
+			!Number.isFinite(height) ||
+			(height < 1 && !heightExceeds),
+		weight: !Number.isFinite(weight) || weight < MIN_WEIGHT,
+		height: heightExceeds,
+	}
+}
+
+const toCargoItem = (item: EditableCargoItem): CargoItemType | null => {
+	const errors = validateCargoItem(item)
+	if (errors.name || errors.dimensions || errors.weight || errors.height) {
 		return null
 	}
+
+	const length = Number(item.length)
+	const width = Number(item.width)
+	const height = Number(item.height)
+	const weight = Number(item.weight)
 
 	return {
 		...item,
@@ -89,6 +110,9 @@ const toCargoItem = (item: EditableCargoItem): CargoItemType | null => {
 		weight,
 	}
 }
+
+const hasCargoFieldErrors = (errors: CargoFieldErrors): boolean =>
+	errors.name || errors.dimensions || errors.weight || errors.height
 
 interface WhatContentProps {
 	control: Control<FormValues, any, FormValues>
@@ -188,20 +212,37 @@ const Item: FC<{
 
 	const [expand, setExpand] = useState(isNew ?? false)
 
-	const [error, setError] = useState(false)
+	const [nameError, setNameError] = useState(false)
+	const [dimensionsError, setDimensionsError] = useState(false)
+	const [weightError, setWeightError] = useState(false)
 	const [heightError, setHeightError] = useState(false)
 
-	const commitItem = () => {
-		const normalized = toCargoItem(item)
-		if (normalized === null || !normalized.name.length) {
-			return setError(true)
-		}
-		if (normalized.height > MAX_CARGO_HEIGHT) {
-			setError(false)
-			return setHeightError(true)
-		}
-		setError(false)
+	const applyFieldErrors = (errors: CargoFieldErrors): void => {
+		setNameError(errors.name)
+		setDimensionsError(errors.dimensions)
+		setWeightError(errors.weight)
+		setHeightError(errors.height)
+	}
+
+	const clearFieldErrors = (): void => {
+		setNameError(false)
+		setDimensionsError(false)
+		setWeightError(false)
 		setHeightError(false)
+	}
+
+	const commitItem = () => {
+		const errors = validateCargoItem(item)
+		if (hasCargoFieldErrors(errors)) {
+			applyFieldErrors(errors)
+			return
+		}
+		clearFieldErrors()
+
+		const normalized = toCargoItem(item)
+		if (normalized === null) {
+			return
+		}
 
 		if (isNew) {
 			append?.(normalized)
@@ -287,12 +328,13 @@ const Item: FC<{
 							className={styles.headerButton}
 							onClick={() => {
 								if (expand) {
-									const normalized = toCargoItem(item)
-									if (normalized === null || !normalized.name.length) {
-										return setError(true)
+									const errors = validateCargoItem(item)
+									if (hasCargoFieldErrors(errors)) {
+										applyFieldErrors(errors)
+										return
 									}
 								}
-								setError(false)
+								clearFieldErrors()
 
 								setExpand((v) => !v)
 							}}
@@ -331,10 +373,13 @@ const Item: FC<{
 							<div className={styles.rowTitle}>Item</div>
 
 							<input
-								className={cn(styles.input, '!rounded-full', { [styles.error]: error })}
+								className={cn(styles.input, '!rounded-full', { [styles.error]: nameError })}
 								value={item.name}
 								placeholder="Add title"
-								onChange={(e) => setItem((v) => ({ ...v, name: e.target.value }))}
+								onChange={(e) => {
+									setNameError(false)
+									setItem((v) => ({ ...v, name: e.target.value }))
+								}}
 								onKeyDown={(e) => {
 									if (e.key !== 'Enter') {
 										return
@@ -343,12 +388,15 @@ const Item: FC<{
 									commitItem()
 								}}
 							/>
+							{nameError && (
+								<div className={styles.fieldError}>Enter item name</div>
+							)}
 						</div>
 
 						<div className={styles.row}>
 							<div className={styles.rowTitle}>Dimensions L x W x H</div>
-							<div className={styles.dimensions}>
-								<div className={styles.inputWrapper}>
+							<div className={cn(styles.dimensions, { [styles.error]: dimensionsError })}>
+								<div className={cn(styles.inputWrapper, { [styles.error]: dimensionsError })}>
 									<input
 										className={cn(styles.input, '!rounded-l-full')}
 										value={numericFieldValue(item.length)}
@@ -357,6 +405,8 @@ const Item: FC<{
 											if (length === null) {
 												return
 											}
+											setDimensionsError(false)
+											setHeightError(false)
 											setItem((prev) => ({ ...prev, length }))
 										}}
 										type="text"
@@ -371,7 +421,7 @@ const Item: FC<{
 
 								<div className={styles.divider}></div>
 
-								<div className={cn(styles.inputWrapper)}>
+								<div className={cn(styles.inputWrapper, { [styles.error]: dimensionsError })}>
 									<input
 										className={styles.input}
 										value={numericFieldValue(item.width)}
@@ -380,6 +430,8 @@ const Item: FC<{
 											if (width === null) {
 												return
 											}
+											setDimensionsError(false)
+											setHeightError(false)
 											setItem((prev) => ({ ...prev, width }))
 										}}
 										type="text"
@@ -394,7 +446,7 @@ const Item: FC<{
 
 								<div className={styles.divider}></div>
 
-								<div className={cn(styles.inputWrapper, { [styles.error]: heightError })}>
+								<div className={cn(styles.inputWrapper, { [styles.error]: dimensionsError || heightError })}>
 									<input
 										className={cn(styles.input, '!rounded-r-full', { [styles.error]: heightError })}
 										value={numericFieldValue(item.height)}
@@ -403,6 +455,7 @@ const Item: FC<{
 											if (height === null) {
 												return
 											}
+											setDimensionsError(false)
 											setItem((prev) => ({ ...prev, height }))
 											setHeightError(typeof height === 'number' && height > MAX_CARGO_HEIGHT)
 										}}
@@ -416,6 +469,12 @@ const Item: FC<{
 									</div>
 								</div>
 							</div>
+							{dimensionsError && (
+								<div className={styles.fieldError}>
+									Enter valid dimensions (min 1 cm, max L {MAX_LENGTH} / W {MAX_WIDTH} / H{' '}
+									{MAX_CARGO_HEIGHT})
+								</div>
+							)}
 							{heightError && (
 								<div className={styles.fieldError}>
 									Maximum height is {MAX_CARGO_HEIGHT} cm
@@ -427,15 +486,16 @@ const Item: FC<{
 							<div className={styles.row}>
 								<div className={styles.rowTitle}>Weight</div>
 
-								<div className={styles.inputKg}>
+								<div className={cn(styles.inputKg, { [styles.error]: weightError })}>
 									<input
-										className={cn(styles.input, '!rounded-l-full')}
+										className={cn(styles.input, '!rounded-l-full', { [styles.error]: weightError })}
 										value={numericFieldValue(item.weight)}
 										onChange={(e) => {
 											const weight = parseNumericInput(e.target.value)
 											if (weight === null) {
 												return
 											}
+											setWeightError(false)
 											setItem((prev) => ({ ...prev, weight }))
 										}}
 										type="text"
@@ -445,6 +505,11 @@ const Item: FC<{
 
 									<span className={styles.info}>kg</span>
 								</div>
+								{weightError && (
+									<div className={styles.fieldError}>
+										Enter weight (minimum {MIN_WEIGHT} kg)
+									</div>
+								)}
 							</div>
 
 							<Button type="button" onClick={commitItem} className={styles.addButton}>
