@@ -290,6 +290,21 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 				</div>
 			)}
 
+			{!isCarrier &&
+				order.status >= OrderStatusEnum.ACCEPTED &&
+				order.status < OrderStatusEnum.PAID && (
+					<div className={styles.senderFooter}>
+						<Button
+							type="button"
+							variant="transparent"
+							onClick={() => setModalId('cancel')}
+							className={styles.senderCancel}
+						>
+							Cancel order
+						</Button>
+					</div>
+				)}
+
 			{isCarrier && (
 				<div className={styles.statusWrapper}>
 					<div className={styles.top}>
@@ -463,32 +478,6 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 				</div>
 			)}
 
-			{!isCarrier && (
-				<>
-					<div>
-						{/* {order.status < OrderStatusEnum.PICKUP_DONE && (
-						<Button
-						type="button"
-						className="!w-full"
-						variant="transparent"
-						onClick={() => setModalId('cancel')}
-						>
-							Cancel order
-						</Button>
-					)} */}
-					</div>
-
-					{(order.status === OrderStatusEnum.PICKUP_DONE ||
-						order.status === OrderStatusEnum.IN_TRANSIT ||
-						order.status >= OrderStatusEnum.DELIVERED) && <div />}
-
-					{/* {order.status >= OrderStatusEnum.DELIVERED && (
-						<Button type="button" className="!w-full" onClick={() => setModalId('rate')}>
-							Rate delivery
-						</Button>
-					)} */}
-				</>
-			)}
 
 			{isCarrier && (
 				<>

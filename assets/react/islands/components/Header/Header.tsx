@@ -31,6 +31,7 @@ export const Header: FC<HeaderProps> = ({ user, isCarrier, device }) => {
 
 	const requestsTab = isCarrier ? Routes.CARRIER_REQUESTS : Routes.USER_REQUESTS
 	const ordersTab = isCarrier ? Routes.CARRIER_ORDERS : Routes.USER_ORDERS
+	const logoHref = typeof user !== 'undefined' ? requestsTab : Routes.HOME
 
 	const tabsDefaultValue =
 		pathname.includes(requestsTab) || pathname === Routes.HOME
@@ -43,7 +44,7 @@ export const Header: FC<HeaderProps> = ({ user, isCarrier, device }) => {
 		<div className={styles.wrapper}>
 			<div className={cn('tw-container', styles.header, { [styles.mobile]: isMobile })}>
 				<div className={styles.left}>
-					<a className={styles.logo} href={Routes.HOME} aria-label="Hevvi home">
+					<a className={styles.logo} href={logoHref} aria-label="Hevvi home">
 						<img src={logo} alt="Hevvi" width={71} height={19} className={styles.logoImage} />
 						<span className={styles.betaBadge}>beta</span>
 					</a>

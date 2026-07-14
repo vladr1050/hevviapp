@@ -40,6 +40,14 @@
 				@apply w-[3px] h-10 bg-[#A9A9A9] mr-6;
 			}
 		}
+
+		& .senderFooter {
+			@apply mt-auto flex w-full flex-col items-center pt-4;
+		}
+
+		& .senderCancel {
+			@apply mx-auto w-max min-h-0 rounded-none border-0 !border-0 bg-transparent !px-0 !py-0 text-sm font-medium !text-black underline shadow-none;
+		}
 	}
 
 	&.carrier {

@@ -281,6 +281,7 @@ class UserController extends AbstractController
             Order::STATUS['DRAFT'],
             Order::STATUS['OFFERED'],
             Order::STATUS['ACCEPTED'],
+            Order::STATUS['INVOICED'],
         ];
         if (!in_array($order->getStatus(), $cancellableStatuses, true)) {
             return $this->redirectToRoute('user_public_order', ['id' => $id]);
