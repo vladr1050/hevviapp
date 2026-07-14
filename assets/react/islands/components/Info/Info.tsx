@@ -97,8 +97,6 @@ export const Info: FC<InfoProps> = (props) => {
 								</a>
 							</div>
 						</div>
-
-						<div className={cn(styles.info, styles.infoInPopover)}>?</div>
 					</div>
 				)}
 

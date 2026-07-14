@@ -3,18 +3,19 @@
 	bottom: 1.75rem;
 	right: 1.75rem;
 	z-index: 100;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
 }
 
 .info {
-	@apply bg-black text-white font-medium text-xl flex justify-center items-center rounded-full w-12 h-12 cursor-default;
-}
-
-.infoInPopover {
-	@apply absolute bottom-3 right-3;
+	@apply bg-black text-white font-medium text-xl flex justify-center items-center rounded-full w-12 h-12 shrink-0 cursor-default;
+	/* Matches right-3 inset used for the "?" on the popup mock */
+	margin-right: 0.75rem;
 }
 
 .infoPopover {
-	@apply absolute bottom-[calc(100%+12px)] right-0 flex h-[220px] w-[390px] gap-6 rounded-3xl bg-white p-6 shadow-md;
+	@apply relative mb-3 flex h-[220px] w-[390px] gap-6 rounded-3xl bg-white p-6 shadow-md;
 
 	& .img {
 		@apply w-[150px] h-full rounded-xl overflow-hidden flex items-end justify-center;
