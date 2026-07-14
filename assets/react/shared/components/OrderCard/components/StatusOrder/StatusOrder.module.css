@@ -42,7 +42,7 @@
 		}
 
 		& .senderFooter {
-			@apply mt-auto flex w-full flex-col items-center pt-px;
+			@apply mt-auto flex w-full flex-col items-center -mt-[14px];
 		}
 
 		& .senderCancel {
