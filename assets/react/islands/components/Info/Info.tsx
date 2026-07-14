@@ -15,12 +15,16 @@ interface InfoProps {
 	}[]
 	device?: DeviceType
 }
+
+const HOVER_CLOSE_DELAY_MS = 120
+
 export const Info: FC<InfoProps> = (props) => {
 	const [currentOrder, setCurrentOrder] = useState(0)
 	const [isOpen, setIsOpen] = useState(false)
 	const [supportEmail, setSupportEmail] = useState(EMAIL)
 	const [supportPhone, setSupportPhone] = useState(PHONE)
 	const supportContactLoadedRef = useRef(false)
+	const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
 	const { orders, device } = props
 
@@ -47,24 +51,38 @@ export const Info: FC<InfoProps> = (props) => {
 			.catch(() => {})
 	}, [])
 
+	const openSupport = useCallback(() => {
+		if (closeTimerRef.current) {
+			clearTimeout(closeTimerRef.current)
+			closeTimerRef.current = null
+		}
+		setIsOpen(true)
+		loadSupportContact()
+	}, [loadSupportContact])
+
+	const scheduleClose = useCallback(() => {
+		if (closeTimerRef.current) {
+			clearTimeout(closeTimerRef.current)
+		}
+		closeTimerRef.current = setTimeout(() => {
+			setIsOpen(false)
+			closeTimerRef.current = null
+		}, HOVER_CLOSE_DELAY_MS)
+	}, [])
+
 	if (isMobile) return null
 
 	const telHref = supportPhone.replace(/\s/g, '')
-
-	const openSupport = () => {
-		setIsOpen(true)
-		loadSupportContact()
+	const hoverHandlers = {
+		onMouseEnter: openSupport,
+		onMouseLeave: scheduleClose,
 	}
 
 	return (
 		<>
-			<div
-				className={cn(styles.widget, isOpen && styles.widgetOpen)}
-				onMouseEnter={openSupport}
-				onMouseLeave={() => setIsOpen(false)}
-			>
+			<div className={styles.supportRoot}>
 				{isOpen && (
-					<div className={styles.infoPopover}>
+					<div className={styles.infoPopover} {...hoverHandlers}>
 						<div className={styles.img}>{/* <img src={user} alt="" /> */}</div>
 
 						<div className={styles.content}>
@@ -80,11 +98,13 @@ export const Info: FC<InfoProps> = (props) => {
 							</div>
 						</div>
 
-						<div className={cn(styles.infoIcon, styles.infoIconInPopover)}>?</div>
+						<div className={cn(styles.info, styles.infoInPopover)}>?</div>
 					</div>
 				)}
 
-				<div className={styles.infoIcon}>?</div>
+				<div className={styles.info} {...hoverHandlers}>
+					?
+				</div>
 			</div>
 
 			{/* {!!orders?.length && (
