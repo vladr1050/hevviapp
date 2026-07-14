@@ -1,10 +1,22 @@
-.info {
-	@apply fixed bottom-7 right-7 bg-black text-white font-medium text-xl flex justify-center items-center rounded-full w-12 h-12 cursor-pointer;
-	z-index: 100;
+.widget {
+	@apply fixed bottom-7 right-7 z-[100] relative;
+}
+
+.widgetOpen {
+	/* Keep hover active while moving from the icon up into the popup. */
+	padding-top: 232px;
+}
+
+.infoIcon {
+	@apply bg-black text-white font-medium text-xl flex justify-center items-center rounded-full w-12 h-12 shrink-0;
+}
+
+.infoIconInPopover {
+	@apply absolute bottom-3 right-3 cursor-default;
 }
 
 .infoPopover {
-	@apply relative top-[68px] right-[6px] flex gap-6 rounded-3xl;
+	@apply absolute bottom-12 right-0 flex h-[220px] w-[390px] gap-6 rounded-3xl bg-white p-6 shadow-md;
 
 	& .img {
 		@apply w-[150px] h-full rounded-xl overflow-hidden flex items-end justify-center;

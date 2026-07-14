@@ -1,9 +1,7 @@
 import { type FC, useCallback, useRef, useState } from 'react'
 
-import { EMAIL, PHONE, PUBLIC_SUPPORT_CONTACT_URL, Routes } from '@config/constants'
+import { EMAIL, PHONE, PUBLIC_SUPPORT_CONTACT_URL } from '@config/constants'
 import { DeviceType, useDevice } from '@hooks/useDevice'
-import { Popover } from '@radix-ui/themes'
-import { Icon } from '@ui/Icon/Icon'
 import { cn } from '@utils/cn'
 
 import styles from './Info.module.css'
@@ -19,6 +17,7 @@ interface InfoProps {
 }
 export const Info: FC<InfoProps> = (props) => {
 	const [currentOrder, setCurrentOrder] = useState(0)
+	const [isOpen, setIsOpen] = useState(false)
 	const [supportEmail, setSupportEmail] = useState(EMAIL)
 	const [supportPhone, setSupportPhone] = useState(PHONE)
 	const supportContactLoadedRef = useRef(false)
@@ -52,31 +51,41 @@ export const Info: FC<InfoProps> = (props) => {
 
 	const telHref = supportPhone.replace(/\s/g, '')
 
+	const openSupport = () => {
+		setIsOpen(true)
+		loadSupportContact()
+	}
+
 	return (
 		<>
-			<Popover.Root onOpenChange={(open) => open && loadSupportContact()}>
-				<Popover.Trigger>
-					<div className={styles.info}>?</div>
-				</Popover.Trigger>
-				<Popover.Content width="390px" height="220px" className={styles.infoPopover}>
-					<div className={styles.img}>{/* <img src={user} alt="" /> */}</div>
+			<div
+				className={cn(styles.widget, isOpen && styles.widgetOpen)}
+				onMouseEnter={openSupport}
+				onMouseLeave={() => setIsOpen(false)}
+			>
+				{isOpen && (
+					<div className={styles.infoPopover}>
+						<div className={styles.img}>{/* <img src={user} alt="" /> */}</div>
 
-					<div className={styles.content}>
-						<h3 className={styles.title}>Need help?</h3>
+						<div className={styles.content}>
+							<h3 className={styles.title}>Need help?</h3>
 
-						<div>
-							<a className={styles.link} href={`tel:${telHref}`}>
-								{supportPhone}
-							</a>
-							<a className={styles.link} href={`mailto:${supportEmail}`}>
-								{supportEmail}
-							</a>
+							<div>
+								<a className={styles.link} href={`tel:${telHref}`}>
+									{supportPhone}
+								</a>
+								<a className={styles.link} href={`mailto:${supportEmail}`}>
+									{supportEmail}
+								</a>
+							</div>
 						</div>
-					</div>
 
-					<div className={cn(styles.info, '!absolute !cursor-default !bottom-3 !right-3')}>?</div>
-				</Popover.Content>
-			</Popover.Root>
+						<div className={cn(styles.infoIcon, styles.infoIconInPopover)}>?</div>
+					</div>
+				)}
+
+				<div className={styles.infoIcon}>?</div>
+			</div>
 
 			{/* {!!orders?.length && (
 				<Popover.Root>
