@@ -41,15 +41,20 @@ class OrderRepository extends ServiceEntityRepository
         array $excludeStatuses,
         int $limit = 50,
         int $offset = 0,
+        ?array $includeStatuses = null,
+        string $sortDirection = 'DESC',
     ): array {
         $qb = $this->createQueryBuilder('o')
             ->where('o.sender = :user')
             ->setParameter('user', $user)
-            ->orderBy('o.createdAt', 'DESC')
+            ->orderBy('o.createdAt', 'DESC' === strtoupper($sortDirection) ? 'DESC' : 'ASC')
             ->setFirstResult($offset)
             ->setMaxResults($limit);
 
-        if ($excludeStatuses !== []) {
+        if (null !== $includeStatuses && [] !== $includeStatuses) {
+            $qb->andWhere('o.status IN (:includeStatuses)')
+                ->setParameter('includeStatuses', $includeStatuses);
+        } elseif ($excludeStatuses !== []) {
             $qb->andWhere('o.status NOT IN (:excludeStatuses)')
                 ->setParameter('excludeStatuses', $excludeStatuses);
         }
@@ -57,14 +62,20 @@ class OrderRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function countBySenderExcludingStatuses(User $user, array $excludeStatuses): int
-    {
+    public function countBySenderExcludingStatuses(
+        User $user,
+        array $excludeStatuses,
+        ?array $includeStatuses = null,
+    ): int {
         $qb = $this->createQueryBuilder('o')
             ->select('COUNT(o.id)')
             ->where('o.sender = :user')
             ->setParameter('user', $user);
 
-        if ($excludeStatuses !== []) {
+        if (null !== $includeStatuses && [] !== $includeStatuses) {
+            $qb->andWhere('o.status IN (:includeStatuses)')
+                ->setParameter('includeStatuses', $includeStatuses);
+        } elseif ($excludeStatuses !== []) {
             $qb->andWhere('o.status NOT IN (:excludeStatuses)')
                 ->setParameter('excludeStatuses', $excludeStatuses);
         }

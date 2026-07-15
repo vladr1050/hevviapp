@@ -4,16 +4,20 @@
 	padding-top: 48px;
 	padding-bottom: 64px;
 
-	& .title {
-		@apply m-0 font-semibold text-black;
-		font-family: 'Instrument_Sans', sans-serif;
-		font-size: 32px;
-		line-height: 39.04px;
+	& .pageHeader {
+		@apply flex items-center justify-between gap-6;
 		padding-inline: 24px;
 
 		@media (min-width: 1024px) {
 			padding-inline: 105px;
 		}
+	}
+
+	& .title {
+		@apply m-0 font-semibold text-black;
+		font-family: 'Instrument_Sans', sans-serif;
+		font-size: 32px;
+		line-height: 39.04px;
 
 		& span {
 			@apply font-semibold;

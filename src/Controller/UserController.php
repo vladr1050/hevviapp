@@ -137,9 +137,51 @@ class UserController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $perPage = 10;
+        $perPage = $request->query->getInt('perPage', 10);
+        if (!in_array($perPage, [10, 20, 50], true)) {
+            $perPage = 10;
+        }
+
+        $statusFilter = $request->query->getString('status', 'all');
+        if (!in_array($statusFilter, ['all', 'in_transit', 'delivered', 'awaiting'], true)) {
+            $statusFilter = 'all';
+        }
+
+        $sort = $request->query->getString('sort', 'newest');
+        $sortDirection = 'oldest' === $sort ? 'ASC' : 'DESC';
+
         $excludeStatuses = [Order::STATUS['DRAFT']];
-        $total = $this->orderRepository->countBySenderExcludingStatuses($user, $excludeStatuses);
+        $includeStatuses = null;
+
+        switch ($statusFilter) {
+            case 'in_transit':
+                $includeStatuses = [
+                    Order::STATUS['PICKUP_DONE'],
+                    Order::STATUS['IN_TRANSIT'],
+                ];
+                break;
+            case 'delivered':
+                $includeStatuses = [
+                    Order::STATUS['DELIVERED'],
+                    Order::STATUS['APPROVED'],
+                ];
+                break;
+            case 'awaiting':
+                $excludeStatuses = [
+                    Order::STATUS['DRAFT'],
+                    Order::STATUS['PICKUP_DONE'],
+                    Order::STATUS['IN_TRANSIT'],
+                    Order::STATUS['DELIVERED'],
+                    Order::STATUS['APPROVED'],
+                ];
+                break;
+        }
+
+        $total = $this->orderRepository->countBySenderExcludingStatuses(
+            $user,
+            $excludeStatuses,
+            $includeStatuses,
+        );
         $totalPages = max(1, (int) ceil($total / $perPage));
         $page = min(max(1, $request->query->getInt('page', 1)), $totalPages);
         $offset = ($page - 1) * $perPage;
@@ -150,6 +192,8 @@ class UserController extends AbstractController
             $excludeStatuses,
             $perPage,
             $offset,
+            $includeStatuses,
+            $sortDirection,
         ) as $order) {
             $history = $this->resolvePickupHistory($order);
 
@@ -183,6 +227,11 @@ class UserController extends AbstractController
                 'perPage' => $perPage,
                 'total' => $total,
                 'totalPages' => $totalPages,
+            ],
+            'filters' => [
+                'perPage' => $perPage,
+                'status' => $statusFilter,
+                'sort' => 'oldest' === $sort ? 'oldest' : 'newest',
             ],
         ]);
     }

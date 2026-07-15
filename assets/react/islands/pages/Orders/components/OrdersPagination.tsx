@@ -1,11 +1,14 @@
 import type { FC } from 'react'
 
+import { buildOrdersUrl, type OrdersFiltersState } from '../ordersQuery'
+
 import styles from './OrdersPagination.module.css'
 
 interface OrdersPaginationProps {
 	baseUrl: string
 	page: number
 	totalPages: number
+	filters?: OrdersFiltersState
 }
 
 const getVisiblePages = (current: number, total: number): number[] => {
@@ -20,10 +23,20 @@ const getVisiblePages = (current: number, total: number): number[] => {
 	return Array.from({ length: end - start + 1 }, (_, index) => start + index)
 }
 
-const pageHref = (baseUrl: string, page: number): string =>
-	page <= 1 ? baseUrl : `${baseUrl}?page=${page}`
+const pageHref = (baseUrl: string, page: number, filters?: OrdersFiltersState): string =>
+	buildOrdersUrl(baseUrl, {
+		perPage: filters?.perPage ?? 10,
+		status: filters?.status ?? 'all',
+		sort: filters?.sort ?? 'newest',
+		page: page > 1 ? page : undefined,
+	})
 
-export const OrdersPagination: FC<OrdersPaginationProps> = ({ baseUrl, page, totalPages }) => {
+export const OrdersPagination: FC<OrdersPaginationProps> = ({
+	baseUrl,
+	page,
+	totalPages,
+	filters,
+}) => {
 	if (totalPages <= 1) {
 		return null
 	}
@@ -34,7 +47,7 @@ export const OrdersPagination: FC<OrdersPaginationProps> = ({ baseUrl, page, tot
 		<nav className={styles.pagination} aria-label="Orders pagination">
 			<a
 				className={styles.arrow}
-				href={pageHref(baseUrl, page - 1)}
+				href={pageHref(baseUrl, page - 1, filters)}
 				aria-label="Previous page"
 				aria-disabled={page <= 1}
 				tabIndex={page <= 1 ? -1 : undefined}
@@ -46,7 +59,7 @@ export const OrdersPagination: FC<OrdersPaginationProps> = ({ baseUrl, page, tot
 			{visiblePages.map((pageNumber) => (
 				<a
 					key={pageNumber}
-					href={pageHref(baseUrl, pageNumber)}
+					href={pageHref(baseUrl, pageNumber, filters)}
 					className={pageNumber === page ? styles.pageActive : styles.page}
 					aria-current={pageNumber === page ? 'page' : undefined}
 				>
@@ -56,7 +69,7 @@ export const OrdersPagination: FC<OrdersPaginationProps> = ({ baseUrl, page, tot
 
 			<a
 				className={styles.arrow}
-				href={pageHref(baseUrl, page + 1)}
+				href={pageHref(baseUrl, page + 1, filters)}
 				aria-label="Next page"
 				aria-disabled={page >= totalPages}
 				tabIndex={page >= totalPages ? -1 : undefined}

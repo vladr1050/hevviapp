@@ -6,7 +6,9 @@ import { Icon } from '@ui/Icon/Icon'
 import { cn } from '@utils/cn'
 
 import { OrdersEmptyState } from './components/OrdersEmptyState'
+import { OrdersFilters } from './components/OrdersFilters'
 import { OrdersPagination } from './components/OrdersPagination'
+import type { OrdersFiltersState } from './ordersQuery'
 import styles from './Orders.module.css'
 
 import { MobilePage } from '../MobilePage/MobilePage'
@@ -23,6 +25,7 @@ interface OrdersPageProps {
 	isCarrier?: boolean
 	orders?: OrderType[]
 	pagination?: OrdersPaginationProps
+	filters?: OrdersFiltersState
 	device?: DeviceType
 }
 
@@ -38,7 +41,7 @@ const formatRoute = (order: OrderType): string => {
 }
 
 export const OrdersPage: FC<OrdersPageProps> = (props) => {
-	const { title, orders, isCarrier, pagination, device } = props
+	const { title, orders, isCarrier, pagination, filters, device } = props
 	const orderCount = pagination?.total ?? orders?.length ?? 0
 	const isEmpty = orderCount === 0
 	const ordersBaseUrl = isCarrier ? Routes.CARRIER_ORDERS : Routes.USER_ORDERS
@@ -49,9 +52,15 @@ export const OrdersPage: FC<OrdersPageProps> = (props) => {
 
 	return (
 		<div className={styles.page}>
-			<h1 className={styles.title}>
-				{title} <span>({orderCount})</span>
-			</h1>
+			<div className={styles.pageHeader}>
+				<h1 className={styles.title}>
+					{title} <span>({orderCount})</span>
+				</h1>
+
+				{filters && (
+					<OrdersFilters baseUrl={ordersBaseUrl} filters={filters} />
+				)}
+			</div>
 
 			{isEmpty ? (
 				<div className={styles.emptyWrapper}>
@@ -152,6 +161,7 @@ export const OrdersPage: FC<OrdersPageProps> = (props) => {
 							baseUrl={ordersBaseUrl}
 							page={pagination.page}
 							totalPages={pagination.totalPages}
+							filters={filters}
 						/>
 					)}
 				</div>
