@@ -1,0 +1,25 @@
+.pagination {
+	@apply mt-10 flex items-center justify-center gap-3;
+}
+
+.page,
+.pageActive,
+.arrow {
+	@apply flex h-10 w-10 items-center justify-center rounded-full text-base font-medium text-black no-underline transition-colors;
+}
+
+.page {
+	@apply text-black/70 hover:bg-black/5;
+}
+
+.pageActive {
+	@apply border border-black text-black;
+}
+
+.arrow {
+	@apply text-2xl leading-none text-black/70 hover:bg-black/5;
+}
+
+.arrow[aria-disabled='true'] {
+	@apply pointer-events-none opacity-30;
+}

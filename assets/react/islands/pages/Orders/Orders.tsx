@@ -6,14 +6,23 @@ import { Icon } from '@ui/Icon/Icon'
 import { cn } from '@utils/cn'
 
 import { OrdersEmptyState } from './components/OrdersEmptyState'
+import { OrdersPagination } from './components/OrdersPagination'
 import styles from './Orders.module.css'
 
 import { MobilePage } from '../MobilePage/MobilePage'
+
+interface OrdersPaginationProps {
+	page: number
+	perPage: number
+	total: number
+	totalPages: number
+}
 
 interface OrdersPageProps {
 	title: string
 	isCarrier?: boolean
 	orders?: OrderType[]
+	pagination?: OrdersPaginationProps
 	device?: DeviceType
 }
 
@@ -29,9 +38,10 @@ const formatRoute = (order: OrderType): string => {
 }
 
 export const OrdersPage: FC<OrdersPageProps> = (props) => {
-	const { title, orders, isCarrier, device } = props
-	const orderCount = orders?.length ?? 0
+	const { title, orders, isCarrier, pagination, device } = props
+	const orderCount = pagination?.total ?? orders?.length ?? 0
 	const isEmpty = orderCount === 0
+	const ordersBaseUrl = isCarrier ? Routes.CARRIER_ORDERS : Routes.USER_ORDERS
 
 	const { isMobile } = useDevice(device)
 
@@ -90,7 +100,7 @@ export const OrdersPage: FC<OrdersPageProps> = (props) => {
 									</span>
 									<span className={styles.cell}>{order.price || EMPTY_STRING}</span>
 
-									<span
+									<div
 										className={cn(styles.status, {
 											[styles.inTransit]:
 												order.status === OrderStatusEnum.PICKUP_DONE ||
@@ -101,7 +111,7 @@ export const OrdersPage: FC<OrdersPageProps> = (props) => {
 										})}
 										title={order?.status_text}
 									>
-										<div className={styles.text}>
+										<div className={styles.statusText}>
 											{order.status === OrderStatusEnum.PICKUP_DONE ||
 											order.status === OrderStatusEnum.IN_TRANSIT ? (
 												<div className={styles.dot} />
@@ -126,16 +136,24 @@ export const OrdersPage: FC<OrdersPageProps> = (props) => {
 										</div>
 
 										<a
-											href={`${isCarrier ? Routes.CARRIER_ORDERS : Routes.USER_ORDERS}/${order.id}`}
-											className={styles.link}
+											href={`${ordersBaseUrl}/${order.id}`}
+											className={styles.viewLink}
 										>
 											view
 										</a>
-									</span>
+									</div>
 								</div>
 							)
 						})}
 					</div>
+
+					{pagination && (
+						<OrdersPagination
+							baseUrl={ordersBaseUrl}
+							page={pagination.page}
+							totalPages={pagination.totalPages}
+						/>
+					)}
 				</div>
 			)}
 		</div>

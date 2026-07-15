@@ -36,12 +36,17 @@ class OrderRepository extends ServiceEntityRepository
     /**
      * @return Order[]
      */
-    public function findRecentBySenderExcludingStatuses(User $user, array $excludeStatuses, int $limit = 50): array
-    {
+    public function findRecentBySenderExcludingStatuses(
+        User $user,
+        array $excludeStatuses,
+        int $limit = 50,
+        int $offset = 0,
+    ): array {
         $qb = $this->createQueryBuilder('o')
             ->where('o.sender = :user')
             ->setParameter('user', $user)
             ->orderBy('o.createdAt', 'DESC')
+            ->setFirstResult($offset)
             ->setMaxResults($limit);
 
         if ($excludeStatuses !== []) {
@@ -50,6 +55,21 @@ class OrderRepository extends ServiceEntityRepository
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function countBySenderExcludingStatuses(User $user, array $excludeStatuses): int
+    {
+        $qb = $this->createQueryBuilder('o')
+            ->select('COUNT(o.id)')
+            ->where('o.sender = :user')
+            ->setParameter('user', $user);
+
+        if ($excludeStatuses !== []) {
+            $qb->andWhere('o.status NOT IN (:excludeStatuses)')
+                ->setParameter('excludeStatuses', $excludeStatuses);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     /**

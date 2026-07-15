@@ -132,15 +132,25 @@ class UserController extends AbstractController
     }
 
     #[Route('/orders', name: 'public_orders', methods: ['GET'])]
-    public function orders(): Response
+    public function orders(Request $request): Response
     {
         /** @var User $user */
         $user = $this->getUser();
 
+        $perPage = 10;
+        $excludeStatuses = [Order::STATUS['DRAFT']];
+        $total = $this->orderRepository->countBySenderExcludingStatuses($user, $excludeStatuses);
+        $totalPages = max(1, (int) ceil($total / $perPage));
+        $page = min(max(1, $request->query->getInt('page', 1)), $totalPages);
+        $offset = ($page - 1) * $perPage;
+
         $listOfOrders = [];
-        foreach ($this->orderRepository->findRecentBySenderExcludingStatuses($user, [
-            Order::STATUS['DRAFT'],
-        ]) as $order) {
+        foreach ($this->orderRepository->findRecentBySenderExcludingStatuses(
+            $user,
+            $excludeStatuses,
+            $perPage,
+            $offset,
+        ) as $order) {
             $history = $this->resolvePickupHistory($order);
 
             $listOfOrders[] = [
@@ -168,6 +178,12 @@ class UserController extends AbstractController
             'title' => $this->translator->trans('show.label_orders', domain: 'AppBundle', locale: $user->getLocale()),
             'orders' => $listOfOrders,
             'user' => $this->buildUserContext($user),
+            'pagination' => [
+                'page' => $page,
+                'perPage' => $perPage,
+                'total' => $total,
+                'totalPages' => $totalPages,
+            ],
         ]);
     }
 
