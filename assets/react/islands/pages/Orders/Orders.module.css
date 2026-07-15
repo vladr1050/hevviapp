@@ -34,15 +34,9 @@
 	& .items .item {
 		@apply grid items-center;
 		grid-template-columns:
-			108px minmax(0, 1.15fr) 56px minmax(0, 1.35fr) 108px 56px 96px 240px;
-		column-gap: 32px;
-		padding-left: 48px;
-		padding-right: 8px;
-
-		@media (max-width: 1023px) {
-			padding-left: 32px;
-			padding-right: 32px;
-		}
+			88px minmax(0, 1.15fr) 56px minmax(0, 1.35fr) 104px 56px 96px 220px;
+		column-gap: 24px;
+		padding-inline: 32px;
 	}
 
 	& .header {
@@ -55,7 +49,7 @@
 		@apply flex flex-col gap-3;
 
 		& .item {
-			@apply h-20 min-h-20 max-h-20 box-border overflow-hidden bg-white rounded-full;
+			@apply h-14 min-h-14 max-h-14 box-border overflow-hidden bg-white rounded-full;
 			box-shadow:
 				0 9px 83px rgba(0, 0, 0, 0.03),
 				0 8px 23px rgba(0, 0, 0, 0.08);
@@ -71,14 +65,18 @@
 			}
 
 			& .status {
-				@apply flex h-[72px] w-full min-w-0 items-center justify-between gap-2
-					rounded-full bg-black/10 p-1 pl-4 text-black;
+				@apply flex h-10 w-[220px] shrink-0 items-center gap-6 rounded-full bg-black/10 text-black;
+				padding: 7px 4px 7px 16px;
 
 				&.inTransit {
 					@apply bg-primary;
 
 					& .statusText span {
 						@apply text-black;
+					}
+
+					& .dot {
+						@apply bg-black/25;
 					}
 				}
 
@@ -87,7 +85,7 @@
 				}
 
 				& .statusText {
-					@apply flex min-w-0 flex-1 items-center gap-2 overflow-hidden pl-0.5;
+					@apply flex min-w-0 flex-1 items-center gap-2 overflow-hidden;
 
 					& span {
 						@apply truncate whitespace-nowrap text-sm font-medium leading-none text-black;
@@ -100,9 +98,9 @@
 				}
 
 				& .viewLink {
-					@apply inline-flex h-16 w-[88px] shrink-0 items-center justify-center
+					@apply inline-flex h-8 w-[90px] shrink-0 items-center justify-center
 						rounded-full bg-white text-sm font-medium leading-none text-black no-underline
-						shadow-[0_4px_14px_rgba(0,0,0,0.08)] transition-colors
+						shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-colors
 						hover-hover:hover:bg-slate-100 hover-none:active:bg-slate-100;
 				}
 			}
