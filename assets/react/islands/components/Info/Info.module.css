@@ -1,40 +1,47 @@
 .supportRoot {
 	position: fixed;
-	bottom: 1.75rem;
-	right: 1.75rem;
+	right: 30px;
+	bottom: 28px;
 	z-index: 100;
 }
 
-.iconAnchor {
-	position: relative;
+.supportRootOpen {
+	right: 18px;
+	bottom: 16px;
 }
 
 .infoIcon {
-	@apply flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-black text-xl font-medium text-white cursor-default;
-	position: relative;
-	z-index: 1;
-}
-
-.infoIconInPopover {
-	position: absolute;
-	bottom: 0.75rem;
-	right: 0.75rem;
-	z-index: 3;
+	@apply flex shrink-0 items-center justify-center rounded-full bg-black font-medium text-white cursor-default;
+	width: 30px;
+	height: 30px;
+	font-size: 14px;
+	line-height: 1;
 }
 
 .infoPopover {
-	position: absolute;
-	bottom: 0;
-	right: 0;
-	z-index: 2;
-	@apply flex h-[220px] w-[390px] gap-6 rounded-[32px] bg-white p-6;
+	position: relative;
+	display: flex;
+	width: 390px;
+	height: 220px;
+	gap: 12px;
+	padding: 12px;
+	border-radius: 32px;
+	background: #ffffff;
 	box-shadow:
 		0 9px 83px rgba(0, 0, 0, 0.03),
 		0 8px 23px rgba(0, 0, 0, 0.1);
 }
 
+.infoIconInPopover {
+	position: absolute;
+	right: 12px;
+	bottom: 12px;
+}
+
 .avatar {
-	@apply h-full w-[150px] shrink-0 overflow-hidden rounded-[20px];
+	@apply shrink-0 overflow-hidden rounded-[20px];
+	width: 150px;
+	height: 100%;
 	background-color: #c2c0c0;
 	background:
 		url('./user.png') no-repeat center bottom,
@@ -42,15 +49,16 @@
 }
 
 .body {
-	@apply flex min-w-0 flex-1 flex-col gap-4 pt-1;
+	@apply flex min-w-0 flex-1 flex-col justify-center;
+	padding: 17px 42px 17px 0;
 }
 
 .title {
-	@apply text-[28px] font-bold leading-tight text-black;
+	@apply m-0 text-[28px] font-bold leading-tight text-black;
 }
 
 .contacts {
-	@apply flex flex-col gap-2;
+	@apply mt-6 flex flex-col gap-2;
 }
 
 .contact {

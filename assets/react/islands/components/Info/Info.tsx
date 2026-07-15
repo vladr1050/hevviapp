@@ -79,31 +79,32 @@ export const Info: FC<InfoProps> = (props) => {
 	}
 
 	return (
-		<div className={styles.supportRoot}>
-			<div className={styles.iconAnchor} {...hoverHandlers}>
-				{isOpen && (
-					<div className={styles.infoPopover}>
-						<div className={styles.avatar} aria-hidden />
+		<div
+			className={cn(styles.supportRoot, { [styles.supportRootOpen]: isOpen })}
+			{...hoverHandlers}
+		>
+			{isOpen && (
+				<div className={styles.infoPopover}>
+					<div className={styles.avatar} aria-hidden />
 
-						<div className={styles.body}>
-							<h3 className={styles.title}>Need help?</h3>
+					<div className={styles.body}>
+						<h3 className={styles.title}>Need help?</h3>
 
-							<div className={styles.contacts}>
-								<a className={styles.contact} href={`tel:${telHref}`}>
-									{supportPhone}
-								</a>
-								<a className={styles.contact} href={`mailto:${supportEmail}`}>
-									{supportEmail}
-								</a>
-							</div>
+						<div className={styles.contacts}>
+							<a className={styles.contact} href={`tel:${telHref}`}>
+								{supportPhone}
+							</a>
+							<a className={styles.contact} href={`mailto:${supportEmail}`}>
+								{supportEmail}
+							</a>
 						</div>
-
-						<div className={cn(styles.infoIcon, styles.infoIconInPopover)}>?</div>
 					</div>
-				)}
 
-				<div className={styles.infoIcon}>?</div>
-			</div>
+					<div className={cn(styles.infoIcon, styles.infoIconInPopover)}>?</div>
+				</div>
+			)}
+
+			{!isOpen && <div className={styles.infoIcon}>?</div>}
 		</div>
 	)
 }
