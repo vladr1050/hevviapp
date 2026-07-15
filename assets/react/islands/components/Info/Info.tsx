@@ -21,7 +21,6 @@ const HOVER_CLOSE_DELAY_MS = 120
 export const Info: FC<InfoProps> = (props) => {
 	const [currentOrder, setCurrentOrder] = useState(0)
 	const [isOpen, setIsOpen] = useState(false)
-	const [supportEmail, setSupportEmail] = useState(EMAIL)
 	const [supportPhone, setSupportPhone] = useState(PHONE)
 	const supportContactLoadedRef = useRef(false)
 	const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -41,9 +40,6 @@ export const Info: FC<InfoProps> = (props) => {
 					return
 				}
 				supportContactLoadedRef.current = true
-				if (data.email?.trim()) {
-					setSupportEmail(data.email.trim())
-				}
 				if (data.phone?.trim()) {
 					setSupportPhone(data.phone.trim())
 				}
@@ -94,8 +90,8 @@ export const Info: FC<InfoProps> = (props) => {
 							<a className={styles.contact} href={`tel:${telHref}`}>
 								{supportPhone}
 							</a>
-							<a className={styles.contact} href={`mailto:${supportEmail}`}>
-								{supportEmail}
+							<a className={styles.contact} href={`mailto:${EMAIL}`}>
+								{EMAIL}
 							</a>
 						</div>
 					</div>
