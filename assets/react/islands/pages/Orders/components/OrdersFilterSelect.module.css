@@ -1,29 +1,38 @@
 .trigger {
 	@apply inline-flex h-10 w-auto min-w-0 items-center justify-between gap-3
-		rounded-full border border-black/20 bg-black/10 px-5
-		text-sm font-medium leading-none text-black whitespace-nowrap;
+		rounded-full px-5 text-sm font-medium leading-none text-black whitespace-nowrap;
+	background-color: rgba(0, 0, 0, 0.1) !important;
+	background-image: none !important;
+	border: 1px solid rgba(0, 0, 0, 0.2) !important;
 	box-shadow: none !important;
 	outline: none !important;
 
 	&:focus,
 	&:hover {
+		background-color: rgba(0, 0, 0, 0.1) !important;
 		border-color: rgba(0, 0, 0, 0.35) !important;
 	}
 }
 
 .content {
-	@apply !rounded-3xl !overflow-hidden;
+	@apply !rounded-3xl !overflow-hidden !bg-white;
+	padding: 4px !important;
 }
 
 .item {
 	@apply cursor-pointer rounded-full px-5 py-3 text-sm font-medium text-black transition-colors;
 
 	&[data-state='checked'] {
-		@apply bg-black/10;
+		background-color: #d7ff01 !important;
+		@apply text-black;
 	}
 
 	&[data-state='unchecked'] {
 		@apply bg-transparent;
+
+		&:hover {
+			@apply bg-black/5;
+		}
 	}
 
 	& span[aria-hidden='true'] {
