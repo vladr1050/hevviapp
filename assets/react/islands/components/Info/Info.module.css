@@ -22,7 +22,7 @@
 	display: flex;
 	width: 390px;
 	height: 220px;
-	gap: 12px;
+	gap: 23px;
 	padding: 12px;
 	border-radius: 32px;
 	background: #ffffff;
@@ -49,19 +49,28 @@
 
 .body {
 	@apply flex min-w-0 flex-1 flex-col justify-center;
-	padding: 17px 60px 17px 0;
+	gap: 24px;
+	padding-right: 60px;
 }
 
 .title {
-	@apply m-0 text-[28px] font-bold leading-tight text-black;
+	@apply m-0 font-bold text-black;
+	font-family: 'Instrument_Sans', sans-serif;
+	font-size: 20px;
+	font-weight: 700;
+	line-height: normal;
 }
 
 .contacts {
-	@apply mt-6 flex flex-col gap-2;
+	@apply flex flex-col;
 }
 
 .contact {
-	@apply block text-base font-normal leading-snug text-black no-underline hover:underline;
+	@apply block text-black no-underline hover:underline;
+	font-family: 'Instrument_Sans', sans-serif;
+	font-size: 16px;
+	font-weight: 400;
+	line-height: normal;
 }
 
 /*  */
