@@ -5,20 +5,28 @@
 	z-index: 100;
 }
 
+.iconAnchor {
+	position: relative;
+}
+
 .infoIcon {
 	@apply flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-black text-xl font-medium text-white cursor-default;
+	position: relative;
+	z-index: 1;
 }
 
 .infoIconInPopover {
 	position: absolute;
 	bottom: 0.75rem;
 	right: 0.75rem;
+	z-index: 3;
 }
 
 .infoPopover {
-	position: fixed;
-	bottom: 1rem;
-	right: 1rem;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	z-index: 2;
 	@apply flex h-[220px] w-[390px] gap-6 rounded-[32px] bg-white p-6;
 	box-shadow:
 		0 9px 83px rgba(0, 0, 0, 0.03),
