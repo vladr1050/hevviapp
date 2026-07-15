@@ -32,7 +32,9 @@
 
 	& .header,
 	& .items .item {
-		@apply grid grid-cols-[80px,1fr,60px,1fr,100px,40px,100px,240px] gap-6 items-center;
+		@apply grid items-center gap-6;
+		grid-template-columns:
+			112px minmax(0, 1.2fr) 64px minmax(0, 1.4fr) 108px 72px 100px 240px;
 		@apply max-lg:px-8;
 
 		@media (min-width: 1024px) {
@@ -43,7 +45,7 @@
 
 	& .header {
 		& span {
-			@apply font-normal text-base text-black/50;
+			@apply font-normal text-base text-black/50 truncate whitespace-nowrap;
 		}
 	}
 
@@ -54,21 +56,19 @@
 			@apply h-20 min-h-20 max-h-20 py-0 box-border overflow-hidden;
 			@apply bg-white rounded-full;
 
-			& span {
-				@apply font-medium text-base text-black min-w-0;
+			& .cell {
+				@apply min-w-0 truncate whitespace-nowrap font-medium text-base text-black;
 			}
 
 			& .comment {
-				@apply truncate;
-
 				&.empty {
 					@apply text-black/30;
 				}
 			}
 
 			& .status {
-				@apply p-1 pl-2 rounded-full bg-black/10 text-black 
-					grid grid-cols-[1fr,90px] gap-2 min-h-0 max-h-[calc(80px-8px)] items-center;
+				@apply min-w-0 p-1 pl-2 rounded-full bg-black/10 text-black 
+					grid grid-cols-[minmax(0,1fr),90px] gap-2 h-[72px] items-center;
 
 				&.inTransit {
 					@apply bg-primary;
@@ -86,7 +86,7 @@
 					@apply flex items-center gap-2 text-sm w-full overflow-hidden pl-1 min-w-0;
 
 					& span {
-						@apply truncate w-full text-black font-medium;
+						@apply truncate whitespace-nowrap min-w-0 text-black font-medium;
 					}
 
 					& .dot {
@@ -97,8 +97,9 @@
 
 				& .link {
 					text-decoration: none;
-					@apply bg-white !text-black font-medium text-sm 
-						rounded-full shadow-md py-1 px-5 transition-colors shrink-0
+					@apply flex h-full min-h-0 items-center justify-center self-stretch
+						bg-white !text-black font-medium text-sm leading-none
+						rounded-full shadow-md px-5 transition-colors shrink-0
 						hover-hover:hover:bg-slate-100 hover-none:active:bg-slate-100;
 				}
 			}

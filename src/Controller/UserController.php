@@ -138,7 +138,9 @@ class UserController extends AbstractController
         $user = $this->getUser();
 
         $listOfOrders = [];
-        foreach ($this->orderRepository->findRecentBySender($user) as $order) {
+        foreach ($this->orderRepository->findRecentBySenderExcludingStatuses($user, [
+            Order::STATUS['DRAFT'],
+        ]) as $order) {
             $history = $this->resolvePickupHistory($order);
 
             $listOfOrders[] = [

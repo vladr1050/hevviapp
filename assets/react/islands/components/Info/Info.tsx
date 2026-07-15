@@ -26,7 +26,7 @@ export const Info: FC<InfoProps> = (props) => {
 	const supportContactLoadedRef = useRef(false)
 	const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-	const { orders, device } = props
+	const { device } = props
 
 	const { isMobile } = useDevice(device)
 
@@ -79,103 +79,33 @@ export const Info: FC<InfoProps> = (props) => {
 	}
 
 	return (
-		<>
-			<div className={styles.supportRoot}>
-				{isOpen && (
-					<div className={styles.infoPopover} {...hoverHandlers}>
-						<div className={styles.img}>{/* <img src={user} alt="" /> */}</div>
+		<div className={styles.supportRoot}>
+			{isOpen && (
+				<div className={styles.infoPopover} {...hoverHandlers}>
+					<div className={styles.avatar} aria-hidden />
 
-						<div className={styles.content}>
-							<h3 className={styles.title}>Need help?</h3>
+					<div className={styles.body}>
+						<h3 className={styles.title}>Need help?</h3>
 
-							<div>
-								<a className={styles.link} href={`tel:${telHref}`}>
-									{supportPhone}
-								</a>
-								<a className={styles.link} href={`mailto:${supportEmail}`}>
-									{supportEmail}
-								</a>
-							</div>
+						<div className={styles.contacts}>
+							<a className={styles.contact} href={`tel:${telHref}`}>
+								{supportPhone}
+							</a>
+							<a className={styles.contact} href={`mailto:${supportEmail}`}>
+								{supportEmail}
+							</a>
 						</div>
 					</div>
-				)}
 
-				<div className={styles.info} {...hoverHandlers}>
+					<div className={cn(styles.infoIcon, styles.infoIconInPopover)}>?</div>
+				</div>
+			)}
+
+			{!isOpen && (
+				<div className={styles.infoIcon} {...hoverHandlers}>
 					?
 				</div>
-			</div>
-
-			{/* {!!orders?.length && (
-				<Popover.Root>
-					<Popover.Trigger>
-						<div className={styles.orders}>
-							<span /> {orders.length} ongoing orders
-						</div>
-					</Popover.Trigger>
-					<Popover.Content
-						width="240px"
-						height="160px"
-						className={styles.ordersPopover}
-						style={{ outlineColor: 'red' }}
-					>
-						<div
-							className={styles.leftBtn}
-							onClick={() => setCurrentOrder((v) => (v === 0 ? orders.length - 1 : v - 1))}
-						/>
-						<div
-							className={styles.rightBtn}
-							onClick={() => setCurrentOrder((v) => (v === orders.length - 1 ? 0 : v + 1))}
-						/>
-
-						<div className={styles.content}>
-							{orders[currentOrder] && (
-								<div className={styles.header} key={currentOrder}>
-									<div
-										className={cn(styles.leftBlock, {
-											['!items-center']: orders[currentOrder].status === 'Delivered',
-										})}
-									>
-										{orders[currentOrder].status === 'In Transit' && (
-											<div className={styles.circle}>
-												<span className="text-white font-medium text-xl">
-													{orders[currentOrder].hours}h
-												</span>
-												<span className="text-gray-400 font-medium text-xs">left</span>
-											</div>
-										)}
-										{orders[currentOrder].status === 'Delivered' && <Icon type="green_check" />}
-									</div>
-
-									<div className={styles.rightBlock}>
-										<div className={styles.wrapper}>
-											<span className={styles.title}>{orders[currentOrder].name}</span>
-											<span className={styles.subtitle}>{orders[currentOrder].status}</span>
-										</div>
-
-										<a
-											//
-											href={`${isCarrier ? Routes.CARRIER_ORDERS : Routes.USER_ORDERS}/${orders[currentOrder].id}`}
-											className={styles.link}
-										>
-											View details
-										</a>
-									</div>
-								</div>
-							)}
-
-							<div className={styles.footer}>
-								{orders.map((_, index) => (
-									<span
-										className={cn({ ['!bg-white']: index === currentOrder })}
-										key={index}
-										onClick={() => setCurrentOrder(index)}
-									/>
-								))}
-							</div>
-						</div>
-					</Popover.Content>
-				</Popover.Root>
-			)} */}
-		</>
+			)}
+		</div>
 	)
 }

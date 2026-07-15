@@ -3,39 +3,50 @@
 	bottom: 1.75rem;
 	right: 1.75rem;
 	z-index: 100;
-	display: flex;
-	flex-direction: column;
-	align-items: flex-end;
 }
 
-.info {
-	@apply bg-black text-white font-medium text-xl flex justify-center items-center rounded-full w-12 h-12 shrink-0 cursor-default;
-	/* Matches right-3 inset used for the "?" on the popup mock */
-	margin-right: 0.75rem;
+.infoIcon {
+	@apply flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-black text-xl font-medium text-white cursor-default;
+}
+
+.infoIconInPopover {
+	position: absolute;
+	bottom: 0.75rem;
+	right: 0.75rem;
 }
 
 .infoPopover {
-	@apply relative mb-3 flex h-[220px] w-[390px] gap-6 rounded-3xl bg-white p-6 shadow-md;
+	position: fixed;
+	bottom: 1rem;
+	right: 1rem;
+	@apply flex h-[220px] w-[390px] gap-6 rounded-[32px] bg-white p-6;
+	box-shadow:
+		0 9px 83px rgba(0, 0, 0, 0.03),
+		0 8px 23px rgba(0, 0, 0, 0.1);
+}
 
-	& .img {
-		@apply w-[150px] h-full rounded-xl overflow-hidden flex items-end justify-center;
-		background-color: #858585;
-		background:
-			url('./user.png') no-repeat center bottom,
-			linear-gradient(0deg, rgba(133, 133, 133, 1) 0%, rgba(194, 192, 192, 1) 100%);
-	}
+.avatar {
+	@apply h-full w-[150px] shrink-0 overflow-hidden rounded-[20px];
+	background-color: #c2c0c0;
+	background:
+		url('./user.png') no-repeat center bottom,
+		linear-gradient(0deg, #858585 0%, #c2c0c0 100%);
+}
 
-	& .content {
-		@apply flex flex-col gap-4;
+.body {
+	@apply flex min-w-0 flex-1 flex-col gap-4 pt-1;
+}
 
-		& .title {
-			@apply text-xl font-bold text-black;
-		}
+.title {
+	@apply text-[28px] font-bold leading-tight text-black;
+}
 
-		& .link {
-			@apply block text-base text-black !important;
-		}
-	}
+.contacts {
+	@apply flex flex-col gap-2;
+}
+
+.contact {
+	@apply block text-base font-normal leading-snug text-black no-underline hover:underline;
 }
 
 /*  */

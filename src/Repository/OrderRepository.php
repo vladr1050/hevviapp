@@ -34,7 +34,26 @@ class OrderRepository extends ServiceEntityRepository
     }
 
     /**
-     * Возвращает последние заказы отправителя, отсортированные по дате создания.
+     * @return Order[]
+     */
+    public function findRecentBySenderExcludingStatuses(User $user, array $excludeStatuses, int $limit = 50): array
+    {
+        $qb = $this->createQueryBuilder('o')
+            ->where('o.sender = :user')
+            ->setParameter('user', $user)
+            ->orderBy('o.createdAt', 'DESC')
+            ->setMaxResults($limit);
+
+        if ($excludeStatuses !== []) {
+            $qb->andWhere('o.status NOT IN (:excludeStatuses)')
+                ->setParameter('excludeStatuses', $excludeStatuses);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Возвращает последние заказы перевозчика, отсортированные по дате создания.
      *
      * @return Order[]
      */
