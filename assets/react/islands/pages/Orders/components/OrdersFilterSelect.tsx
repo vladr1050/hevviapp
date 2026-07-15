@@ -12,7 +12,7 @@ interface OrdersFilterSelectProps {
 
 export const OrdersFilterSelect: FC<OrdersFilterSelectProps> = ({ value, options, onChange }) => (
 	<RadixSelect.Root value={value} onValueChange={onChange}>
-		<RadixSelect.Trigger radius="full" color="gray" className={styles.trigger} />
+		<RadixSelect.Trigger radius="full" className={styles.trigger} />
 		<RadixSelect.Content className={styles.content} position="popper" sideOffset={8}>
 			<RadixSelect.Group>
 				{options.map((option) => (
