@@ -310,7 +310,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 											<div className={styles.label}>Loading window</div>
 											<div className={styles.value}>
 												{!order.pickup_time_from && !order.pickup_time_to
-													? EMPTY_STRING
+													? 'Anytime'
 													: `${order?.pickup_time_from} - ${order?.pickup_time_to}`}
 											</div>
 										</div>
