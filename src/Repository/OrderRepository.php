@@ -98,6 +98,56 @@ class OrderRepository extends ServiceEntityRepository
     }
 
     /**
+     * @return Order[]
+     */
+    public function findRecentByCarrierExcludingStatuses(
+        Carrier $carrier,
+        array $excludeStatuses,
+        int $limit = 50,
+        int $offset = 0,
+        ?array $includeStatuses = null,
+        string $sortDirection = 'DESC',
+    ): array {
+        $qb = $this->createQueryBuilder('o')
+            ->where('o.carrier = :carrier')
+            ->setParameter('carrier', $carrier)
+            ->orderBy('o.createdAt', 'DESC' === strtoupper($sortDirection) ? 'DESC' : 'ASC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit);
+
+        if (null !== $includeStatuses && [] !== $includeStatuses) {
+            $qb->andWhere('o.status IN (:includeStatuses)')
+                ->setParameter('includeStatuses', $includeStatuses);
+        } elseif ($excludeStatuses !== []) {
+            $qb->andWhere('o.status NOT IN (:excludeStatuses)')
+                ->setParameter('excludeStatuses', $excludeStatuses);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function countByCarrierExcludingStatuses(
+        Carrier $carrier,
+        array $excludeStatuses,
+        ?array $includeStatuses = null,
+    ): int {
+        $qb = $this->createQueryBuilder('o')
+            ->select('COUNT(o.id)')
+            ->where('o.carrier = :carrier')
+            ->setParameter('carrier', $carrier);
+
+        if (null !== $includeStatuses && [] !== $includeStatuses) {
+            $qb->andWhere('o.status IN (:includeStatuses)')
+                ->setParameter('includeStatuses', $includeStatuses);
+        } elseif ($excludeStatuses !== []) {
+            $qb->andWhere('o.status NOT IN (:excludeStatuses)')
+                ->setParameter('excludeStatuses', $excludeStatuses);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
+    /**
      * Возвращает заказы, по которым текущий перевозчик имеет назначение
      * со статусом ASSIGNED — то есть входящие запросы, ожидающие его ответа.
      *
