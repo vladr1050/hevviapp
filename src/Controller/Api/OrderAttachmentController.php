@@ -20,11 +20,11 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * API для загрузки PDF-вложений к заказу.
+ * API для загрузки PDF/PNG/JPG-вложений к заказу.
  *
  * Endpoint: POST /api/orders/{id}/attachments
  * Content-Type: multipart/form-data
- * Field: files[] (один или несколько PDF-файлов)
+ * Field: files[] (один или несколько PDF/PNG/JPG-файлов)
  *
  * После успешного создания заказа клиент делает отдельный запрос
  * на этот endpoint, передавая файлы как multipart/form-data.
@@ -41,7 +41,7 @@ class OrderAttachmentController extends AbstractController
     }
 
     /**
-     * Загружает один или несколько PDF-файлов к существующему заказу.
+     * Загружает один или несколько PDF/PNG/JPG-файлов к существующему заказу.
      *
      * Возвращает список загруженных файлов:
      * { "uploaded": [{ "salt": "...", "name": "...", "size": 12345 }, ...] }

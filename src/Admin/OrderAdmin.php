@@ -563,7 +563,7 @@ class OrderAdmin extends BaseAdmin
                 'required' => false,
                 'multiple' => true,
                 'label'    => 'form.label_upload_files',
-                'attr'     => ['accept' => 'application/pdf'],
+                'attr'     => ['accept' => 'application/pdf,image/png,image/jpeg,.pdf,.png,.jpg,.jpeg'],
                 'help'     => 'form.label_help_upload_pdf',
             ])
             ->end()

@@ -67,6 +67,7 @@ class FileController extends AbstractController
         }
 
         $originalName = $attachment->getOriginalName();
+        $contentType = $this->resolveContentType($originalName);
 
         return new StreamedResponse(
             static function () use ($absolutePath): void {
@@ -78,7 +79,7 @@ class FileController extends AbstractController
             },
             200,
             [
-                'Content-Type'        => 'application/pdf',
+                'Content-Type'        => $contentType,
                 'Content-Disposition' => sprintf('inline; filename="%s"', addslashes($originalName)),
                 'Cache-Control'       => 'private, no-store',
                 'X-Content-Type-Options' => 'nosniff',
@@ -101,5 +102,16 @@ class FileController extends AbstractController
         }
 
         return null !== $this->orderAssignmentRepository->findAssignedByOrderAndCarrier($order, $carrier);
+    }
+
+    private function resolveContentType(string $originalName): string
+    {
+        $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+
+        return match ($extension) {
+            'png' => 'image/png',
+            'jpg', 'jpeg' => 'image/jpeg',
+            default => 'application/pdf',
+        };
     }
 }

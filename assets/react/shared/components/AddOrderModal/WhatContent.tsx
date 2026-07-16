@@ -525,8 +525,24 @@ const Item: FC<{
 
 // ─── Documents Upload ─────────────────────────────────────────────────────────
 
-const ALLOWED_MIME = 'application/pdf'
+const ALLOWED_MIME_TYPES = new Set(['application/pdf', 'image/png', 'image/jpeg'])
+const ALLOWED_EXTENSIONS = new Set(['pdf', 'png', 'jpg', 'jpeg'])
+const ACCEPTED_FILE_TYPES = 'application/pdf,image/png,image/jpeg,.pdf,.png,.jpg,.jpeg'
 const MAX_FILE_SIZE_MB = 20
+
+const isAllowedAttachment = (file: File): boolean => {
+	const extension = file.name.includes('.') ? file.name.split('.').pop()!.toLowerCase() : ''
+
+	if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+		return false
+	}
+
+	if (ALLOWED_MIME_TYPES.has(file.type)) {
+		return true
+	}
+
+	return ALLOWED_EXTENSIONS.has(extension)
+}
 
 const DocumentsSection: FC<{
 	control: Control<FormValues, any, FormValues>
@@ -545,8 +561,7 @@ const DocumentsSection: FC<{
 						const existingNames = new Set(existing.map((f) => f.name))
 
 						const valid = Array.from(incoming).filter((f) => {
-							if (f.type !== ALLOWED_MIME) return false
-							if (f.size > MAX_FILE_SIZE_MB * 1024 * 1024) return false
+							if (!isAllowedAttachment(f)) return false
 							if (existingNames.has(f.name)) return false
 							return true
 						})
@@ -566,7 +581,7 @@ const DocumentsSection: FC<{
 							<input
 								ref={inputRef}
 								type="file"
-								accept="application/pdf"
+								accept={ACCEPTED_FILE_TYPES}
 								multiple
 								style={{ display: 'none' }}
 								onChange={(e) => {
@@ -588,7 +603,7 @@ const DocumentsSection: FC<{
 								onDrop={handleDrop}
 							>
 								<Icon type="x_mark" size={18} className="rotate-45" />
-								{isDragging ? 'Drop PDF files here' : 'Add or drag & drop files'}
+								{isDragging ? 'Drop PDF, PNG or JPG files here' : 'Add or drag & drop PDF, PNG or JPG files'}
 							</button>
 						</>
 					)

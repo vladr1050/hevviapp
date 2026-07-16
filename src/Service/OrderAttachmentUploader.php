@@ -26,7 +26,15 @@ class OrderAttachmentUploader
 {
     private const UPLOAD_SUBDIR   = 'uploads/orders';
     private const COMPRESS_LEVEL  = 6;
-    private const ALLOWED_MIMES   = ['application/pdf', 'application/x-pdf'];
+    private const ALLOWED_MIMES = [
+        'application/pdf',
+        'application/x-pdf',
+        'image/png',
+        'image/jpeg',
+        'image/jpg',
+    ];
+
+    private const ALLOWED_EXTENSIONS = ['pdf', 'png', 'jpg', 'jpeg'];
 
     public function __construct(
         private readonly string $publicDir,
@@ -38,18 +46,19 @@ class OrderAttachmentUploader
      * Загружает, сжимает и сохраняет файл к заказу.
      * persist вызывается внутри; flush — на стороне вызывающего кода.
      *
-     * @throws \InvalidArgumentException если файл не PDF
+     * @throws \InvalidArgumentException если файл не PDF/PNG/JPG
      * @throws \RuntimeException         если не удалось записать файл
      */
     public function upload(UploadedFile $file, Order $order): OrderAttachment
     {
-        $this->assertPdf($file);
+        $this->assertAllowedFile($file);
 
         $salt      = bin2hex(random_bytes(32));
         $targetDir = $this->publicDir . '/' . self::UPLOAD_SUBDIR;
         $this->ensureDirectoryExists($targetDir);
 
-        $relPath     = self::UPLOAD_SUBDIR . '/' . $salt . '.pdf.gz';
+        $extension   = $this->resolveStorageExtension($file);
+        $relPath     = self::UPLOAD_SUBDIR . '/' . $salt . '.' . $extension . '.gz';
         $absolutePath = $this->publicDir . '/' . $relPath;
 
         $this->compressToGzip($file->getPathname(), $absolutePath);
@@ -57,7 +66,7 @@ class OrderAttachmentUploader
         $attachment = new OrderAttachment();
         $attachment->setSalt($salt);
         $attachment->setFilePath($relPath);
-        $attachment->setOriginalName($file->getClientOriginalName() ?: 'document.pdf');
+        $attachment->setOriginalName($file->getClientOriginalName() ?: 'document.' . $extension);
         $attachment->setFileSize((int) filesize($absolutePath));
         $attachment->setRelatedOrder($order);
 
@@ -83,16 +92,44 @@ class OrderAttachmentUploader
 
     // ------------------------------------------------------------------ private
 
-    private function assertPdf(UploadedFile $file): void
+    private function assertAllowedFile(UploadedFile $file): void
     {
-        if (!in_array($file->getMimeType(), self::ALLOWED_MIMES, true)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Only PDF files are allowed. Got: "%s".',
-                    $file->getMimeType()
-                )
-            );
+        $mime = $file->getMimeType() ?? '';
+        $extension = strtolower(pathinfo($file->getClientOriginalName() ?: '', PATHINFO_EXTENSION));
+
+        if (in_array($mime, self::ALLOWED_MIMES, true)) {
+            return;
         }
+
+        if (in_array($extension, self::ALLOWED_EXTENSIONS, true)) {
+            return;
+        }
+
+        throw new \InvalidArgumentException(
+            sprintf(
+                'Only PDF, PNG, and JPG files are allowed. Got: "%s".',
+                $mime !== '' ? $mime : $extension
+            )
+        );
+    }
+
+    private function resolveStorageExtension(UploadedFile $file): string
+    {
+        $mime = $file->getMimeType() ?? '';
+        $extension = strtolower(pathinfo($file->getClientOriginalName() ?: '', PATHINFO_EXTENSION));
+
+        if ('image/png' === $mime || 'png' === $extension) {
+            return 'png';
+        }
+
+        if (
+            in_array($mime, ['image/jpeg', 'image/jpg'], true)
+            || in_array($extension, ['jpg', 'jpeg'], true)
+        ) {
+            return 'jpg';
+        }
+
+        return 'pdf';
     }
 
     private function ensureDirectoryExists(string $dir): void
