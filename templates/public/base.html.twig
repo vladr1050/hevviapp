@@ -24,8 +24,9 @@
 </head>
 <body>
     {% set device = app.request.cookies.get('device') %}
+    {% set allow_mobile = allow_mobile|default(false) %}
 
-    {% if device == 'mobile' %}
+    {% if device == 'mobile' and not allow_mobile %}
         {% include 'public/mobile_stub.html.twig' %}
     {% else %}
         {% block header %}{% endblock %}

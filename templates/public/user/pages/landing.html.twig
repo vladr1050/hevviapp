@@ -1,8 +1,14 @@
 {#
 # Public marketing landing (waiting-list funnel entry point).
+# Mobile layout is supported; do not replace with the desktop-only beta stub.
 #}
 {% extends 'public/base.html.twig' %}
 
+{% set allow_mobile = true %}
+
 {% block body %}
-    <div data-react-island="LandingPage"></div>
+    <div
+        data-react-island="LandingPage"
+        data-props='{{ { device: app.request.cookies.get('device') }|json_encode|e('html_attr') }}'
+    ></div>
 {% endblock %}
