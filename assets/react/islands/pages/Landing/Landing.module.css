@@ -21,16 +21,10 @@
 }
 
 .heroHeader {
-	@apply flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between;
+	@apply flex items-center justify-between;
 	padding-inline: var(--landing-gutter);
 	padding-top: 15px;
 	padding-bottom: 10px;
-}
-
-@media (min-width: 640px) {
-	.heroHeader {
-		align-items: center;
-	}
 }
 
 .heroCard {
@@ -444,13 +438,15 @@
 }
 
 .mobile .heroHeader {
-	padding-inline: 24px;
+	padding-inline: 22px;
 	padding-top: 14px;
 	padding-bottom: 0;
 }
 
 .mobile .heroNav {
 	column-gap: 0;
+	flex-shrink: 0;
+	flex-wrap: nowrap;
 }
 
 .mobile .heroContact {
@@ -458,11 +454,11 @@
 }
 
 .mobile .loginLink {
-	gap: 0;
+	gap: 22px;
 }
 
 .mobile .loginLink span {
-	display: none;
+	display: inline;
 }
 
 .mobile .heroSection {
