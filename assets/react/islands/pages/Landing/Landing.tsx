@@ -91,7 +91,7 @@ export const LandingPage: FC<LandingProps> = ({ device }) => {
 									<h1 className={styles.heroTitle}>
 										Heavy cargo,
 										<br />
-										delivered in 48 hours.
+										delivered in 48{'\u00A0'}hours.
 									</h1>
 									<p className={styles.heroSubtitle}>
 										Order 100kg+ cargo anywhere in Latvia - as easy as booking a taxi ride.

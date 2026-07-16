@@ -3,7 +3,7 @@ import type { FC } from 'react'
 import { Routes } from '@config/constants'
 import { DeviceType, useDevice } from '@hooks/useDevice'
 import { useLocation } from '@hooks/useLocation'
-import { Popover } from '@radix-ui/themes'
+import { HoverCard } from '@radix-ui/themes'
 import { Icon } from '@ui/Icon/Icon'
 import { Tabs } from '@ui/Tabs/Tabs'
 import { cn } from '@utils/cn'
@@ -88,8 +88,8 @@ export const Header: FC<HeaderProps> = ({ user, isCarrier, device }) => {
 									)}
 								</div>
 							) : (
-								<Popover.Root>
-									<Popover.Trigger>
+								<HoverCard.Root openDelay={100} closeDelay={150}>
+									<HoverCard.Trigger>
 										<div
 											className={cn(styles.profileWrapper, {
 												[styles.active]: pathname.includes(
@@ -114,8 +114,13 @@ export const Header: FC<HeaderProps> = ({ user, isCarrier, device }) => {
 												</div>
 											</div>
 										</div>
-									</Popover.Trigger>
-									<Popover.Content width="390px" height="220px" className={styles.popover}>
+									</HoverCard.Trigger>
+									<HoverCard.Content
+										side="bottom"
+										align="end"
+										sideOffset={8}
+										className={styles.popover}
+									>
 										<a
 											className={styles.link}
 											href={isCarrier ? Routes.CARRIER_PROFILE : Routes.USER_PROFILE}
@@ -136,8 +141,8 @@ export const Header: FC<HeaderProps> = ({ user, isCarrier, device }) => {
 											</div>
 											Logout
 										</a>
-									</Popover.Content>
-								</Popover.Root>
+									</HoverCard.Content>
+								</HoverCard.Root>
 							)}
 						</div>
 					</>
