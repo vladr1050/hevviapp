@@ -26,6 +26,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Repository\OrderRepository;
 use App\Service\GeographicOrderCoordinatesValidator;
 use App\Service\OrderAttachmentUploader;
+use App\Service\OrderOffer\OrderOfferAutoCreateService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -42,6 +43,7 @@ class OrderController extends AbstractController
         private readonly OrderAttachmentUploader $attachmentUploader,
         private readonly TranslatorInterface     $translator,
         private readonly GeographicOrderCoordinatesValidator $coordinatesValidator,
+        private readonly OrderOfferAutoCreateService         $offerAutoCreateService,
     ) {
     }
 
@@ -202,7 +204,7 @@ class OrderController extends AbstractController
      * Разрешено только владельцу заказа. Заказ обязан быть в статусе DRAFT —
      * только на этом этапе у него нет оффера и правки имеют смысл.
      *
-     * После flush автоматически срабатывает OrderOfferAutoCreateListener::postUpdate,
+     * После flush создаётся оффер через OrderOfferAutoCreateService (явно и/или через postUpdate).
      * который пересчитывает и создаёт оффер при наличии координат.
      *
      * Expected JSON body (все поля опциональны кроме cargo и keepAttachments):
@@ -333,8 +335,10 @@ class OrderController extends AbstractController
             }
         }
 
-        // flush → OrderOfferAutoCreateListener::postUpdate попробует создать оффер
         $this->em->flush();
+
+        // Cargo-only changes may not trigger Order::postUpdate; ensure offer is recalculated.
+        $this->offerAutoCreateService->createIfNeeded($order, $this->em);
 
         return $this->json(
             ['id' => $order->getId()?->toRfc4122()],
