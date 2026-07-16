@@ -12,7 +12,7 @@ import { DeviceType, useDevice } from '@hooks/useDevice'
 import { Icon } from '@ui/Icon/Icon'
 import { Modal } from '@ui/Modal/Modal'
 import { cn } from '@utils/cn'
-import { parse } from 'date-fns'
+import { isToday, parse, startOfDay } from 'date-fns'
 
 import styles from './Order.module.css'
 
@@ -29,13 +29,16 @@ interface OrderPageProps {
 	device?: DeviceType
 }
 
+const isPickupLaterDate = (date: Date): boolean =>
+	!isToday(date) && startOfDay(date) > startOfDay(new Date())
+
 const getDefaultDate = (date?: string, time?: { from?: string; to?: string }) => {
 	const curDate = date ? parse(date, 'dd.MM.yyyy', new Date()) : undefined
 
 	const curTime = (time?.from && time?.to ? `${time.from}-${time.to}` : 'anytime') as any
 
 	return {
-		pickupType: (curDate ? 'pickup_later' : 'pickup_ready') as any,
+		pickupType: (curDate && isPickupLaterDate(curDate) ? 'pickup_later' : 'pickup_ready') as any,
 		pickupDate: curDate,
 		pickupMonth: (curDate ? curDate.getMonth() : undefined) as any,
 		pickupYear: (curDate ? curDate.getFullYear().toString() : undefined) as any,
@@ -171,6 +174,16 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 					subtotal: undefined,
 				}))
 			}
+
+			const whenDefaults = getDefaultDate(orderData.pickup_request_date, {
+				from: orderData.pickup_time_from,
+				to: orderData.pickup_time_to,
+			})
+			setValue('pickupType', whenDefaults.pickupType)
+			setValue('pickupDate', whenDefaults.pickupDate)
+			setValue('pickupMonth', whenDefaults.pickupMonth)
+			setValue('pickupYear', whenDefaults.pickupYear)
+			setValue('pickupTime', whenDefaults.pickupTime)
 			setValue('_step', 3)
 			setActiveTab('when')
 		} catch (err) {

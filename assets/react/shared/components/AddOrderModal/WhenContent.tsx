@@ -22,9 +22,7 @@ interface WhenContentProps {
 }
 
 export const WhenContent: FC<WhenContentProps> = ({ control, watch }) => {
-	const [tabItem, setTabItem] = useState<'pickup_ready' | 'pickup_later'>(
-		watch('pickupType') || 'pickup_ready'
-	)
+	const pickupType = watch('pickupType') || 'pickup_ready'
 
 	const createMonthDate = () => {
 		const d = new Date()
@@ -69,8 +67,6 @@ export const WhenContent: FC<WhenContentProps> = ({ control, watch }) => {
 								classNames={{ tab: styles.tab }}
 								onChange={(v) => {
 									onChange(v)
-									// @ts-ignore
-									setTabItem(v)
 								}}
 								items={[
 									{
@@ -122,7 +118,7 @@ export const WhenContent: FC<WhenContentProps> = ({ control, watch }) => {
 			</div>
 
 			<div className={styles.right}>
-				{tabItem === 'pickup_ready' && (
+				{pickupType === 'pickup_ready' && (
 					<div className={styles.pickupReady}>
 						<img src={pickup_ready} alt="" width={345} height={320} />
 
@@ -132,9 +128,9 @@ export const WhenContent: FC<WhenContentProps> = ({ control, watch }) => {
 					</div>
 				)}
 
-				{tabItem === 'pickup_later' && (
+				{pickupType === 'pickup_later' && (
 					<div className={styles.pickupLater}>
-						<div className={styles.top} key={tabItem}>
+						<div className={styles.top} key={pickupType}>
 							<Controller
 								control={control}
 								name="pickupMonth"
@@ -181,7 +177,7 @@ export const WhenContent: FC<WhenContentProps> = ({ control, watch }) => {
 									<Calendar
 										mode="single"
 										month={calendarMonth}
-										key={tabItem}
+										key={pickupType}
 										setMonth={() => {}}
 										selected={value}
 										disableDaysAhead={1}

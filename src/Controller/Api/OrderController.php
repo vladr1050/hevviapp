@@ -145,8 +145,8 @@ class OrderController extends AbstractController
             $order->setPickupTimeTo(\DateTime::createFromFormat('H:i', $data['pickupTimeTo']) ?: null);
         }
         $pickupDate = !empty($data['pickupDate'])
-            ? (\DateTime::createFromFormat('Y-m-d', $data['pickupDate']) ?: new \DateTime('today'))
-            : new \DateTime('today');
+            ? (\DateTime::createFromFormat('Y-m-d', $data['pickupDate']) ?: null)
+            : null;
         $order->setPickupDate($pickupDate);
         if (!empty($data['deliveryDate'])) {
             $order->setDeliveryDate(\DateTime::createFromFormat('Y-m-d', $data['deliveryDate']) ?: null);
@@ -423,8 +423,12 @@ class OrderController extends AbstractController
                 : null
         );
 
-        if (!empty($data['pickupDate'])) {
-            $order->setPickupDate(\DateTime::createFromFormat('Y-m-d', $data['pickupDate']) ?: new \DateTime('today'));
+        if (array_key_exists('pickupDate', $data)) {
+            $order->setPickupDate(
+                !empty($data['pickupDate'])
+                    ? (\DateTime::createFromFormat('Y-m-d', $data['pickupDate']) ?: null)
+                    : null
+            );
         }
 
         if (array_key_exists('deliveryDate', $data)) {
