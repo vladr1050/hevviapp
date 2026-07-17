@@ -1,0 +1,60 @@
+{#
+  Shared order list box for Ops dashboard.
+  Expects: title, hint (nullable), orders, total, box_class, orderAdmin, statusLabels
+#}
+<div class="box {{ box_class|default('box-default') }}">
+    <div class="box-header with-border">
+        <h3 class="box-title">{{ title }}</h3>
+        <span class="badge">{{ total }}</span>
+        {% if hint %}
+            <p class="text-muted" style="margin: 6px 0 0; font-weight: normal; font-size: 12px;">{{ hint }}</p>
+        {% endif %}
+    </div>
+    <div class="box-body table-responsive no-padding">
+        {% if orders is empty %}
+            <p class="text-muted" style="padding: 12px;">{{ 'ops_dashboard.empty'|trans({}, 'AppBundle') }}</p>
+        {% else %}
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>{{ 'ops_dashboard.col.order'|trans({}, 'AppBundle') }}</th>
+                    <th>{{ 'ops_dashboard.col.status'|trans({}, 'AppBundle') }}</th>
+                    <th>{{ 'ops_dashboard.col.sender'|trans({}, 'AppBundle') }}</th>
+                    <th>{{ 'ops_dashboard.col.updated'|trans({}, 'AppBundle') }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>
+                            <a href="{{ orderAdmin.generateObjectUrl('show', order) }}">
+                                {{ order.reference }}
+                            </a>
+                        </td>
+                        <td>
+                            {% set statusName = statusLabels[order.status]|default(order.status) %}
+                            {{ statusName|trans({}, 'AppBundle') }}
+                        </td>
+                        <td>
+                            {% if order.sender %}
+                                {{ order.sender.email }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        <td>{{ order.updatedAt ? order.updatedAt|date('Y-m-d H:i') : '—' }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% if total > orders|length %}
+                <p class="text-muted" style="padding: 8px 12px;">
+                    {{ 'ops_dashboard.showing_of'|trans({
+                        '%shown%': orders|length,
+                        '%total%': total
+                    }, 'AppBundle') }}
+                </p>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>

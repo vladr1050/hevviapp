@@ -41,4 +41,46 @@ class NotificationLogRepository extends ServiceEntityRepository
 
         return $count > 0;
     }
+
+    /**
+     * @return list<NotificationLog>
+     */
+    public function findFailedForLiveOrdersBetween(
+        \DateTimeImmutable $from,
+        \DateTimeImmutable $to,
+        int $limit,
+    ): array {
+        return $this->createQueryBuilder('l')
+            ->innerJoin('l.relatedOrder', 'o')
+            ->addSelect('o')
+            ->andWhere('o.isTest = false')
+            ->andWhere('l.status = :failed')
+            ->andWhere('l.createdAt >= :from')
+            ->andWhere('l.createdAt < :to')
+            ->setParameter('failed', NotificationLogStatus::FAILED)
+            ->setParameter('from', $from)
+            ->setParameter('to', $to)
+            ->orderBy('l.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countFailedForLiveOrdersBetween(
+        \DateTimeImmutable $from,
+        \DateTimeImmutable $to,
+    ): int {
+        return (int) $this->createQueryBuilder('l')
+            ->select('COUNT(l.id)')
+            ->innerJoin('l.relatedOrder', 'o')
+            ->andWhere('o.isTest = false')
+            ->andWhere('l.status = :failed')
+            ->andWhere('l.createdAt >= :from')
+            ->andWhere('l.createdAt < :to')
+            ->setParameter('failed', NotificationLogStatus::FAILED)
+            ->setParameter('from', $from)
+            ->setParameter('to', $to)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

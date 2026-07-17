@@ -33,6 +33,8 @@ sonata_admin:
                 label_catalogue: AppBundle
                 icon:            '<i class="fas fa-solid fa-shopping-cart"></i>'
                 items:
+                    -   route: admin_ops_dashboard
+                        label: menu.ops_dashboard
                     -   route: admin_app_order_list
                         label: menu.orders
                     -   route: admin_app_document_list

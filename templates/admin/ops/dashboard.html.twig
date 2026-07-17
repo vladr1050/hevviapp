@@ -1,0 +1,249 @@
+{% extends '@SonataAdmin/standard_layout.html.twig' %}
+
+{% block title %}{{ 'ops_dashboard.title'|trans({}, 'AppBundle') }}{% endblock %}
+
+{% block sonata_page_content %}
+    <section class="content-header">
+        <h1>
+            {{ 'ops_dashboard.title'|trans({}, 'AppBundle') }}
+            <small class="text-muted">{{ 'ops_dashboard.live_only'|trans({}, 'AppBundle') }}</small>
+        </h1>
+        <p class="text-muted">
+            {{ 'ops_dashboard.generated_at'|trans({
+                '%time%': data.generatedAt|date('Y-m-d H:i'),
+                '%tz%': data.timezone
+            }, 'AppBundle') }}
+            · {{ 'ops_dashboard.live_total'|trans({'%count%': data.liveTotal}, 'AppBundle') }}
+        </p>
+    </section>
+
+    <section class="content">
+        {# Today KPIs #}
+        <div class="row">
+            <div class="col-md-3 col-sm-6">
+                <div class="info-box">
+                    <span class="info-box-icon bg-aqua"><i class="fas fa-plus"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">{{ 'ops_dashboard.kpi.today_new'|trans({}, 'AppBundle') }}</span>
+                        <span class="info-box-number">{{ data.todayNewCount }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="info-box">
+                    <span class="info-box-icon bg-green"><i class="fas fa-credit-card"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">{{ 'ops_dashboard.kpi.today_paid'|trans({}, 'AppBundle') }}</span>
+                        <span class="info-box-number">{{ data.todayPaidCount }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="info-box">
+                    <span class="info-box-icon bg-purple"><i class="fas fa-check"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">{{ 'ops_dashboard.kpi.today_delivered'|trans({}, 'AppBundle') }}</span>
+                        <span class="info-box-number">{{ data.todayDeliveredCount }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="info-box">
+                    <span class="info-box-icon bg-red"><i class="fas fa-envelope"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">{{ 'ops_dashboard.kpi.today_email_fail'|trans({}, 'AppBundle') }}</span>
+                        <span class="info-box-number">{{ data.todayFailedNotificationsCount }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Stuck KPIs #}
+        <div class="row">
+            <div class="col-md-3 col-sm-6">
+                <div class="info-box bg-yellow">
+                    <span class="info-box-icon"><i class="fas fa-pause"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">{{ 'ops_dashboard.kpi.stuck_paid'|trans({}, 'AppBundle') }}</span>
+                        <span class="info-box-number">{{ data.stuckPaidCount }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="info-box bg-orange">
+                    <span class="info-box-icon"><i class="fas fa-clock"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">{{ 'ops_dashboard.kpi.stuck_offered'|trans({}, 'AppBundle') }}</span>
+                        <span class="info-box-number">{{ data.stuckOfferedCount }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="info-box bg-red">
+                    <span class="info-box-icon"><i class="fas fa-exclamation-triangle"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">{{ 'ops_dashboard.kpi.sla_overdue'|trans({}, 'AppBundle') }}</span>
+                        <span class="info-box-number">{{ data.slaOverdueCount }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="info-box bg-maroon">
+                    <span class="info-box-icon"><i class="fas fa-bell-slash"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">{{ 'ops_dashboard.kpi.failed_7d'|trans({}, 'AppBundle') }}</span>
+                        <span class="info-box-number">{{ data.failedNotificationsCount }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            {# Status funnel #}
+            <div class="col-md-4">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{ 'ops_dashboard.funnel.title'|trans({}, 'AppBundle') }}</h3>
+                    </div>
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>{{ 'ops_dashboard.col.status'|trans({}, 'AppBundle') }}</th>
+                                <th class="text-right">{{ 'ops_dashboard.col.count'|trans({}, 'AppBundle') }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for name, code in statusOrder %}
+                                {% set count = data.statusCounts[code]|default(0) %}
+                                {% if count > 0 or name not in ['CANCELLED'] %}
+                                    <tr>
+                                        <td>
+                                            <a href="{{ path('admin_app_order_list', {
+                                                'filter': {
+                                                    'status': {'value': code},
+                                                    'isTest': {'value': 2}
+                                                }
+                                            }) }}">
+                                                {{ name|trans({}, 'AppBundle') }}
+                                            </a>
+                                        </td>
+                                        <td class="text-right"><strong>{{ count }}</strong></td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            {# Stuck lists #}
+            <div class="col-md-8">
+                {% include 'admin/ops/_order_table.html.twig' with {
+                    title: 'ops_dashboard.stuck_paid.title'|trans({}, 'AppBundle'),
+                    hint: 'ops_dashboard.stuck_paid.hint'|trans({}, 'AppBundle'),
+                    orders: data.stuckPaid,
+                    total: data.stuckPaidCount,
+                    box_class: 'box-warning'
+                } %}
+
+                {% include 'admin/ops/_order_table.html.twig' with {
+                    title: 'ops_dashboard.sla_overdue.title'|trans({}, 'AppBundle'),
+                    hint: 'ops_dashboard.sla_overdue.hint'|trans({}, 'AppBundle'),
+                    orders: data.slaOverdue,
+                    total: data.slaOverdueCount,
+                    box_class: 'box-danger'
+                } %}
+
+                {% include 'admin/ops/_order_table.html.twig' with {
+                    title: 'ops_dashboard.stuck_offered.title'|trans({}, 'AppBundle'),
+                    hint: 'ops_dashboard.stuck_offered.hint'|trans({}, 'AppBundle'),
+                    orders: data.stuckOffered,
+                    total: data.stuckOfferedCount,
+                    box_class: 'box-default'
+                } %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                {% include 'admin/ops/_order_table.html.twig' with {
+                    title: 'ops_dashboard.today_new.title'|trans({}, 'AppBundle'),
+                    hint: null,
+                    orders: data.todayNew,
+                    total: data.todayNewCount,
+                    box_class: 'box-info'
+                } %}
+            </div>
+            <div class="col-md-6">
+                {% include 'admin/ops/_order_table.html.twig' with {
+                    title: 'ops_dashboard.today_paid.title'|trans({}, 'AppBundle'),
+                    hint: null,
+                    orders: data.todayPaid,
+                    total: data.todayPaidCount,
+                    box_class: 'box-success'
+                } %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                {% include 'admin/ops/_order_table.html.twig' with {
+                    title: 'ops_dashboard.today_delivered.title'|trans({}, 'AppBundle'),
+                    hint: null,
+                    orders: data.todayDelivered,
+                    total: data.todayDeliveredCount,
+                    box_class: 'box-primary'
+                } %}
+            </div>
+            <div class="col-md-6">
+                <div class="box box-danger">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{ 'ops_dashboard.failed_emails.title'|trans({}, 'AppBundle') }}</h3>
+                        <span class="badge bg-red">{{ data.failedNotificationsCount }}</span>
+                    </div>
+                    <div class="box-body table-responsive no-padding">
+                        {% if data.failedNotifications is empty %}
+                            <p class="text-muted" style="padding: 12px;">{{ 'ops_dashboard.empty'|trans({}, 'AppBundle') }}</p>
+                        {% else %}
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>{{ 'ops_dashboard.col.order'|trans({}, 'AppBundle') }}</th>
+                                    <th>{{ 'ops_dashboard.col.recipient'|trans({}, 'AppBundle') }}</th>
+                                    <th>{{ 'ops_dashboard.col.event'|trans({}, 'AppBundle') }}</th>
+                                    <th>{{ 'ops_dashboard.col.when'|trans({}, 'AppBundle') }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for log in data.failedNotifications %}
+                                    {% set order = log.relatedOrder %}
+                                    <tr>
+                                        <td>
+                                            {% if order %}
+                                                <a href="{{ orderAdmin.generateObjectUrl('show', order) }}">
+                                                    {{ order.reference }}
+                                                </a>
+                                            {% else %}
+                                                —
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{{ notificationLogAdmin.generateObjectUrl('show', log) }}">
+                                                {{ log.recipientEmail }}
+                                            </a>
+                                        </td>
+                                        <td>{{ log.eventKey }}</td>
+                                        <td>{{ log.createdAt ? log.createdAt|date('Y-m-d H:i') : '—' }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

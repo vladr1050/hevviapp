@@ -187,4 +187,106 @@ class OrderRepository extends ServiceEntityRepository
 
         return $counts;
     }
+
+    /**
+     * Live orders only (is_test = false), grouped by status.
+     *
+     * @return array<int, int>
+     */
+    public function countLiveByStatus(): array
+    {
+        $result = $this->createQueryBuilder('o')
+            ->select('o.status', 'COUNT(o.id) as count')
+            ->andWhere('o.isTest = false')
+            ->groupBy('o.status')
+            ->getQuery()
+            ->getResult();
+
+        $counts = [];
+        foreach ($result as $row) {
+            $counts[(int) $row['status']] = (int) $row['count'];
+        }
+
+        return $counts;
+    }
+
+    /**
+     * @return list<Order>
+     */
+    public function findLiveByStatusOlderThan(int $status, \DateTimeImmutable $olderThan, int $limit): array
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.isTest = false')
+            ->andWhere('o.status = :status')
+            ->andWhere('o.updatedAt < :olderThan')
+            ->setParameter('status', $status)
+            ->setParameter('olderThan', $olderThan)
+            ->orderBy('o.updatedAt', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countLiveByStatusOlderThan(int $status, \DateTimeImmutable $olderThan): int
+    {
+        return (int) $this->createQueryBuilder('o')
+            ->select('COUNT(o.id)')
+            ->andWhere('o.isTest = false')
+            ->andWhere('o.status = :status')
+            ->andWhere('o.updatedAt < :olderThan')
+            ->setParameter('status', $status)
+            ->setParameter('olderThan', $olderThan)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * @param list<int> $statuses
+     *
+     * @return list<Order>
+     */
+    public function findLiveByStatuses(array $statuses, int $limit): array
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.isTest = false')
+            ->andWhere('o.status IN (:statuses)')
+            ->setParameter('statuses', $statuses)
+            ->orderBy('o.createdAt', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return list<Order>
+     */
+    public function findLiveCreatedBetween(
+        \DateTimeImmutable $from,
+        \DateTimeImmutable $to,
+        int $limit,
+    ): array {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.isTest = false')
+            ->andWhere('o.createdAt >= :from')
+            ->andWhere('o.createdAt < :to')
+            ->setParameter('from', $from)
+            ->setParameter('to', $to)
+            ->orderBy('o.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countLiveCreatedBetween(\DateTimeImmutable $from, \DateTimeImmutable $to): int
+    {
+        return (int) $this->createQueryBuilder('o')
+            ->select('COUNT(o.id)')
+            ->andWhere('o.isTest = false')
+            ->andWhere('o.createdAt >= :from')
+            ->andWhere('o.createdAt < :to')
+            ->setParameter('from', $from)
+            ->setParameter('to', $to)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

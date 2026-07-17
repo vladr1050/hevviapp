@@ -1833,6 +1833,142 @@
         <source>filter.label_order_seq</source>
         <target>Order № (digits)</target>
       </trans-unit>
+      <trans-unit id="menuOpsDash" resname="menu.ops_dashboard">
+        <source>menu.ops_dashboard</source>
+        <target>Ops dashboard</target>
+      </trans-unit>
+      <trans-unit id="opsDashTitle" resname="ops_dashboard.title">
+        <source>ops_dashboard.title</source>
+        <target>Ops dashboard</target>
+      </trans-unit>
+      <trans-unit id="opsDashLive" resname="ops_dashboard.live_only">
+        <source>ops_dashboard.live_only</source>
+        <target>Live orders only</target>
+      </trans-unit>
+      <trans-unit id="opsDashGen" resname="ops_dashboard.generated_at">
+        <source>ops_dashboard.generated_at</source>
+        <target>Updated %time% (%tz%)</target>
+      </trans-unit>
+      <trans-unit id="opsDashTotal" resname="ops_dashboard.live_total">
+        <source>ops_dashboard.live_total</source>
+        <target>%count% live orders</target>
+      </trans-unit>
+      <trans-unit id="opsDashEmpty" resname="ops_dashboard.empty">
+        <source>ops_dashboard.empty</source>
+        <target>Nothing here</target>
+      </trans-unit>
+      <trans-unit id="opsDashShowOf" resname="ops_dashboard.showing_of">
+        <source>ops_dashboard.showing_of</source>
+        <target>Showing %shown% of %total%</target>
+      </trans-unit>
+      <trans-unit id="opsKpiNew" resname="ops_dashboard.kpi.today_new">
+        <source>ops_dashboard.kpi.today_new</source>
+        <target>New today</target>
+      </trans-unit>
+      <trans-unit id="opsKpiPaid" resname="ops_dashboard.kpi.today_paid">
+        <source>ops_dashboard.kpi.today_paid</source>
+        <target>Paid today</target>
+      </trans-unit>
+      <trans-unit id="opsKpiDel" resname="ops_dashboard.kpi.today_delivered">
+        <source>ops_dashboard.kpi.today_delivered</source>
+        <target>Delivered today</target>
+      </trans-unit>
+      <trans-unit id="opsKpiMail" resname="ops_dashboard.kpi.today_email_fail">
+        <source>ops_dashboard.kpi.today_email_fail</source>
+        <target>Email fails today</target>
+      </trans-unit>
+      <trans-unit id="opsKpiStuckP" resname="ops_dashboard.kpi.stuck_paid">
+        <source>ops_dashboard.kpi.stuck_paid</source>
+        <target>Stuck PAID &gt;24h</target>
+      </trans-unit>
+      <trans-unit id="opsKpiStuckO" resname="ops_dashboard.kpi.stuck_offered">
+        <source>ops_dashboard.kpi.stuck_offered</source>
+        <target>Stuck OFFERED &gt;48h</target>
+      </trans-unit>
+      <trans-unit id="opsKpiSla" resname="ops_dashboard.kpi.sla_overdue">
+        <source>ops_dashboard.kpi.sla_overdue</source>
+        <target>48h SLA overdue</target>
+      </trans-unit>
+      <trans-unit id="opsKpiFail7" resname="ops_dashboard.kpi.failed_7d">
+        <source>ops_dashboard.kpi.failed_7d</source>
+        <target>Failed emails 7d</target>
+      </trans-unit>
+      <trans-unit id="opsFunnel" resname="ops_dashboard.funnel.title">
+        <source>ops_dashboard.funnel.title</source>
+        <target>Status funnel</target>
+      </trans-unit>
+      <trans-unit id="opsColStatus" resname="ops_dashboard.col.status">
+        <source>ops_dashboard.col.status</source>
+        <target>Status</target>
+      </trans-unit>
+      <trans-unit id="opsColCount" resname="ops_dashboard.col.count">
+        <source>ops_dashboard.col.count</source>
+        <target>Count</target>
+      </trans-unit>
+      <trans-unit id="opsColOrder" resname="ops_dashboard.col.order">
+        <source>ops_dashboard.col.order</source>
+        <target>Order</target>
+      </trans-unit>
+      <trans-unit id="opsColSender" resname="ops_dashboard.col.sender">
+        <source>ops_dashboard.col.sender</source>
+        <target>Sender</target>
+      </trans-unit>
+      <trans-unit id="opsColUpdated" resname="ops_dashboard.col.updated">
+        <source>ops_dashboard.col.updated</source>
+        <target>Updated</target>
+      </trans-unit>
+      <trans-unit id="opsColRecipient" resname="ops_dashboard.col.recipient">
+        <source>ops_dashboard.col.recipient</source>
+        <target>Recipient</target>
+      </trans-unit>
+      <trans-unit id="opsColEvent" resname="ops_dashboard.col.event">
+        <source>ops_dashboard.col.event</source>
+        <target>Event</target>
+      </trans-unit>
+      <trans-unit id="opsColWhen" resname="ops_dashboard.col.when">
+        <source>ops_dashboard.col.when</source>
+        <target>When</target>
+      </trans-unit>
+      <trans-unit id="opsStuckPaidT" resname="ops_dashboard.stuck_paid.title">
+        <source>ops_dashboard.stuck_paid.title</source>
+        <target>Stuck in PAID</target>
+      </trans-unit>
+      <trans-unit id="opsStuckPaidH" resname="ops_dashboard.stuck_paid.hint">
+        <source>ops_dashboard.stuck_paid.hint</source>
+        <target>No update for more than 24 hours</target>
+      </trans-unit>
+      <trans-unit id="opsStuckOffT" resname="ops_dashboard.stuck_offered.title">
+        <source>ops_dashboard.stuck_offered.title</source>
+        <target>Stuck in OFFERED</target>
+      </trans-unit>
+      <trans-unit id="opsStuckOffH" resname="ops_dashboard.stuck_offered.hint">
+        <source>ops_dashboard.stuck_offered.hint</source>
+        <target>No update for more than 48 hours</target>
+      </trans-unit>
+      <trans-unit id="opsSlaT" resname="ops_dashboard.sla_overdue.title">
+        <source>ops_dashboard.sla_overdue.title</source>
+        <target>48h delivery SLA overdue</target>
+      </trans-unit>
+      <trans-unit id="opsSlaH" resname="ops_dashboard.sla_overdue.hint">
+        <source>ops_dashboard.sla_overdue.hint</source>
+        <target>Past deadline, not yet delivered</target>
+      </trans-unit>
+      <trans-unit id="opsTodayNewT" resname="ops_dashboard.today_new.title">
+        <source>ops_dashboard.today_new.title</source>
+        <target>New today</target>
+      </trans-unit>
+      <trans-unit id="opsTodayPaidT" resname="ops_dashboard.today_paid.title">
+        <source>ops_dashboard.today_paid.title</source>
+        <target>Paid today</target>
+      </trans-unit>
+      <trans-unit id="opsTodayDelT" resname="ops_dashboard.today_delivered.title">
+        <source>ops_dashboard.today_delivered.title</source>
+        <target>Delivered today</target>
+      </trans-unit>
+      <trans-unit id="opsFailMailT" resname="ops_dashboard.failed_emails.title">
+        <source>ops_dashboard.failed_emails.title</source>
+        <target>Failed emails (7 days)</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

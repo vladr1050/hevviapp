@@ -49,6 +49,75 @@ class OrderHistoryRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * Distinct Live orders that entered `$status` between `$from` (inclusive) and `$to` (exclusive).
+     *
+     * @return list<Order>
+     */
+    public function findLiveOrdersWithStatusBetween(
+        int $status,
+        \DateTimeImmutable $from,
+        \DateTimeImmutable $to,
+        int $limit,
+    ): array {
+        /** @var list<OrderHistory> $rows */
+        $rows = $this->createQueryBuilder('h')
+            ->innerJoin('h.relatedOrder', 'o')
+            ->addSelect('o')
+            ->andWhere('o.isTest = false')
+            ->andWhere('h.status = :status')
+            ->andWhere('h.createdAt >= :from')
+            ->andWhere('h.createdAt < :to')
+            ->setParameter('status', $status)
+            ->setParameter('from', $from)
+            ->setParameter('to', $to)
+            ->orderBy('h.createdAt', 'DESC')
+            ->setMaxResults($limit * 5)
+            ->getQuery()
+            ->getResult();
+
+        $orders = [];
+        foreach ($rows as $history) {
+            $order = $history->getRelatedOrder();
+            if ($order === null) {
+                continue;
+            }
+            $id = $order->getId();
+            if ($id === null) {
+                continue;
+            }
+            $key = (string) $id;
+            if (isset($orders[$key])) {
+                continue;
+            }
+            $orders[$key] = $order;
+            if (count($orders) >= $limit) {
+                break;
+            }
+        }
+
+        return array_values($orders);
+    }
+
+    public function countLiveOrdersWithStatusBetween(
+        int $status,
+        \DateTimeImmutable $from,
+        \DateTimeImmutable $to,
+    ): int {
+        return (int) $this->createQueryBuilder('h')
+            ->select('COUNT(DISTINCT o.id)')
+            ->innerJoin('h.relatedOrder', 'o')
+            ->andWhere('o.isTest = false')
+            ->andWhere('h.status = :status')
+            ->andWhere('h.createdAt >= :from')
+            ->andWhere('h.createdAt < :to')
+            ->setParameter('status', $status)
+            ->setParameter('from', $from)
+            ->setParameter('to', $to)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return OrderHistory[] Returns an array of OrderHistory objects
     //     */
