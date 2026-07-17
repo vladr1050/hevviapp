@@ -158,6 +158,7 @@ list:
     label_invoice_number:       Invoice №
     label_invoice_status:       Invoice status
     label_invoice_issue_date:   Issue date
+    label_invoice_amount_gross: Gross
     label_notification_rule_name:      Rule name
     label_notification_event_key:      Event key
     label_notification_recipient_type: Recipient type

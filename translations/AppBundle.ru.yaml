@@ -150,6 +150,7 @@ list:
     label_invoice_number:       № счёта
     label_invoice_status:       Статус счёта
     label_invoice_issue_date:   Дата выставления
+    label_invoice_amount_gross: Итого
     label_notification_rule_name:      Название правила
     label_notification_event_key:      Ключ события
     label_notification_recipient_type: Тип получателя

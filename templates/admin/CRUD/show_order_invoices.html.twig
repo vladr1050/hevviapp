@@ -1,10 +1,17 @@
 {#
  # Order 360° — invoices with PDF links.
+ # Amounts are stored in cents; currency_convert formats major units (EUR).
  #}
 {% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %}
 
 {% block field %}
     {% set invoices = object.invoices %}
+    {% set status_labels = {
+        1: 'invoice.status_pdf_failed',
+        2: 'invoice.status_email_not_sent',
+        3: 'invoice.status_email_sent',
+        4: 'invoice.status_email_failed',
+    } %}
     {% if invoices is empty %}
         <span class="text-muted">{{ 'show.label_order_invoices_empty'|trans({}, 'AppBundle') }}</span>
     {% else %}
@@ -15,7 +22,7 @@
                         <th>{{ 'list.label_invoice_number'|trans({}, 'AppBundle') }}</th>
                         <th>{{ 'list.label_invoice_status'|trans({}, 'AppBundle') }}</th>
                         <th>{{ 'list.label_invoice_issue_date'|trans({}, 'AppBundle') }}</th>
-                        <th>{{ 'show.label_invoice_amount_gross'|trans({}, 'AppBundle') }}</th>
+                        <th>{{ 'list.label_invoice_amount_gross'|trans({}, 'AppBundle') }}</th>
                         <th>PDF</th>
                     </tr>
                 </thead>
@@ -31,7 +38,14 @@
                                     {{ invoice.invoiceNumber }}
                                 {% endif %}
                             </td>
-                            <td>{{ invoice.status }}</td>
+                            <td>
+                                {% set status_key = status_labels[invoice.status] ?? null %}
+                                {% if status_key %}
+                                    {{ status_key|trans({}, 'AppBundle') }}
+                                {% else %}
+                                    {{ invoice.status }}
+                                {% endif %}
+                            </td>
                             <td>
                                 {% if invoice.issueDate %}
                                     {{ invoice.issueDate|date('Y-m-d') }}
@@ -41,7 +55,7 @@
                             </td>
                             <td>
                                 {% if invoice.amountGross is not null %}
-                                    {{ invoice.amountGross }} {{ invoice.currency|default('EUR') }}
+                                    {{ invoice.amountGross|currency_convert(invoice.currency|default('EUR')) }}
                                 {% else %}
                                     —
                                 {% endif %}
