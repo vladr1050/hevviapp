@@ -1,0 +1,112 @@
+.ticker {
+	position: relative;
+	display: flex;
+	align-items: center;
+	width: 100%;
+	height: 36px;
+	background: #000;
+	color: #fff;
+	overflow: hidden;
+	font-family: 'Instrument_Sans', sans-serif;
+}
+
+.viewport {
+	flex: 1;
+	min-width: 0;
+	height: 100%;
+	overflow: hidden;
+	mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 40px), transparent);
+	-webkit-mask-image: linear-gradient(
+		90deg,
+		transparent 0,
+		#000 24px,
+		#000 calc(100% - 40px),
+		transparent
+	);
+}
+
+.track {
+	display: flex;
+	width: max-content;
+	height: 100%;
+	animation: ticker-right 40s linear infinite;
+}
+
+.group {
+	display: flex;
+	align-items: center;
+	flex-shrink: 0;
+	height: 100%;
+}
+
+.item {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	padding-inline: 28px;
+	white-space: nowrap;
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 1;
+	letter-spacing: 0.01em;
+}
+
+.item > span {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.truck {
+	color: #fff;
+	opacity: 0.95;
+}
+
+.flag {
+	display: inline-block;
+	flex-shrink: 0;
+	vertical-align: middle;
+	border-radius: 1px;
+}
+
+.close {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 2;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	padding: 0;
+	border: 0;
+	border-radius: 999px;
+	background: transparent;
+	color: #fff;
+	cursor: pointer;
+	opacity: 0.85;
+	transition: opacity 0.15s ease, background-color 0.15s ease;
+}
+
+.close:hover {
+	opacity: 1;
+	background: rgb(255 255 255 / 12%);
+}
+
+@keyframes ticker-right {
+	from {
+		transform: translateX(-50%);
+	}
+	to {
+		transform: translateX(0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.track {
+		animation: none;
+		transform: translateX(0);
+	}
+}

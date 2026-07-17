@@ -7,6 +7,7 @@ import { Button } from '@ui/Button/Button'
 import { Modal } from '@ui/Modal/Modal'
 import { cn } from '@utils/cn'
 
+import { BetaTicker } from './components/BetaTicker'
 import { HeroVisual } from './components/HeroVisual'
 import { ProductCarousel } from './components/ProductCarousel'
 import { landingAssets } from './landingAssets'
@@ -62,6 +63,7 @@ export const LandingPage: FC<LandingProps> = ({ device }) => {
 
 	return (
 		<div className={cn(styles.page, { [styles.mobile]: isMobile })}>
+			<BetaTicker />
 			<main className={styles.main}>
 				<section className={styles.heroSection}>
 					<div className={styles.heroShell}>
