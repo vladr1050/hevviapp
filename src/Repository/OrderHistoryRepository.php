@@ -50,24 +50,26 @@ class OrderHistoryRepository extends ServiceEntityRepository
     }
 
     /**
-     * Distinct Live orders that entered `$status` between `$from` (inclusive) and `$to` (exclusive).
+     * Distinct orders (by is_test) that entered `$status` between `$from` (inclusive) and `$to` (exclusive).
      *
      * @return list<Order>
      */
-    public function findLiveOrdersWithStatusBetween(
+    public function findOrdersWithStatusBetweenAndTestFlag(
         int $status,
         \DateTimeImmutable $from,
         \DateTimeImmutable $to,
+        bool $isTest,
         int $limit,
     ): array {
         /** @var list<OrderHistory> $rows */
         $rows = $this->createQueryBuilder('h')
             ->innerJoin('h.relatedOrder', 'o')
             ->addSelect('o')
-            ->andWhere('o.isTest = false')
+            ->andWhere('o.isTest = :isTest')
             ->andWhere('h.status = :status')
             ->andWhere('h.createdAt >= :from')
             ->andWhere('h.createdAt < :to')
+            ->setParameter('isTest', $isTest)
             ->setParameter('status', $status)
             ->setParameter('from', $from)
             ->setParameter('to', $to)
@@ -99,18 +101,20 @@ class OrderHistoryRepository extends ServiceEntityRepository
         return array_values($orders);
     }
 
-    public function countLiveOrdersWithStatusBetween(
+    public function countOrdersWithStatusBetweenAndTestFlag(
         int $status,
         \DateTimeImmutable $from,
         \DateTimeImmutable $to,
+        bool $isTest,
     ): int {
         return (int) $this->createQueryBuilder('h')
             ->select('COUNT(DISTINCT o.id)')
             ->innerJoin('h.relatedOrder', 'o')
-            ->andWhere('o.isTest = false')
+            ->andWhere('o.isTest = :isTest')
             ->andWhere('h.status = :status')
             ->andWhere('h.createdAt >= :from')
             ->andWhere('h.createdAt < :to')
+            ->setParameter('isTest', $isTest)
             ->setParameter('status', $status)
             ->setParameter('from', $from)
             ->setParameter('to', $to)

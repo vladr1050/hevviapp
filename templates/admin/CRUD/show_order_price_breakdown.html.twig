@@ -1,0 +1,107 @@
+{#
+    Order 360°: sender price breakdown — total, commission, freight.
+    @var object App\Entity\Order
+#}
+{% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %}
+
+{% block field %}
+    {% set offer = object.latestOffer %}
+    {% set breakdown = sender_order_price_breakdown(object, offer) %}
+    {% set currency = object.currency ?? 'EUR' %}
+
+    {% if breakdown is null %}
+        <p class="text-muted">{{ 'sender_price.no_offer_data'|trans({}, 'AppBundle') }}</p>
+    {% else %}
+        <div class="order-price-breakdown">
+            <table class="table table-condensed table-bordered" style="max-width: 520px; margin-bottom: 1.25rem;">
+                <tbody>
+                <tr>
+                    <th>{{ 'sender_price.summary_freight'|trans({}, 'AppBundle') }}</th>
+                    <td class="text-right">{{ breakdown.freightGrossCents|currency_convert(currency) }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'sender_price.summary_commission'|trans({}, 'AppBundle') }}</th>
+                    <td class="text-right">{{ breakdown.platformGrossCents|currency_convert(currency) }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'sender_price.summary_total'|trans({}, 'AppBundle') }}</th>
+                    <td class="text-right">
+                        <strong>{{ breakdown.senderTotalGrossCents|currency_convert(currency) }}</strong>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <h4>{{ 'sender_price.section_freight'|trans({}, 'AppBundle') }}</h4>
+            {% if breakdown.carrierLabel %}
+                <p class="text-muted small">
+                    {{ 'sender_price.carrier_profile'|trans({'%name%': breakdown.carrierLabel}, 'AppBundle') }}
+                    {% if not breakdown.freightVatFromCarrierProfile %}
+                        · {{ 'sender_price.freight_vat_fallback'|trans({}, 'AppBundle') }}
+                    {% endif %}
+                </p>
+            {% elseif not breakdown.freightVatFromCarrierProfile %}
+                <p class="text-muted small">{{ 'sender_price.freight_vat_fallback'|trans({}, 'AppBundle') }}</p>
+            {% endif %}
+            <table class="table table-condensed table-bordered" style="max-width: 520px;">
+                <tbody>
+                <tr>
+                    <th>{{ 'sender_price.net'|trans({}, 'AppBundle') }}</th>
+                    <td>{{ breakdown.freightNetCents|currency_convert(currency) }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'sender_price.vat_rate'|trans({}, 'AppBundle') }}</th>
+                    <td>{{ breakdown.freightVatPercentLabel }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'sender_price.vat_amount'|trans({}, 'AppBundle') }}</th>
+                    <td>{{ breakdown.freightVatCents|currency_convert(currency) }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'sender_price.gross'|trans({}, 'AppBundle') }}</th>
+                    <td><strong>{{ breakdown.freightGrossCents|currency_convert(currency) }}</strong></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <h4>{{ 'sender_price.section_platform'|trans({}, 'AppBundle') }}</h4>
+            {% if breakdown.issuerLabel %}
+                <p class="text-muted small">{{ 'sender_price.issuer_profile'|trans({'%name%': breakdown.issuerLabel}, 'AppBundle') }}</p>
+            {% endif %}
+            <table class="table table-condensed table-bordered" style="max-width: 520px;">
+                <tbody>
+                <tr>
+                    <th>{{ 'sender_price.fee_percent'|trans({}, 'AppBundle') }}</th>
+                    <td>{{ breakdown.platformFeePercentLabel }} {{ 'sender_price.of_freight_net'|trans({}, 'AppBundle') }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'sender_price.net'|trans({}, 'AppBundle') }}</th>
+                    <td>{{ breakdown.platformFeeNetCents|currency_convert(currency) }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'sender_price.vat_rate'|trans({}, 'AppBundle') }}</th>
+                    <td>{{ breakdown.platformVatPercentLabel }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'sender_price.vat_amount'|trans({}, 'AppBundle') }}</th>
+                    <td>{{ breakdown.platformVatCents|currency_convert(currency) }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'sender_price.gross'|trans({}, 'AppBundle') }}</th>
+                    <td><strong>{{ breakdown.platformGrossCents|currency_convert(currency) }}</strong></td>
+                </tr>
+                </tbody>
+            </table>
+
+            {% if offer is not null %}
+                <p class="text-muted small" style="margin-top: 1rem;">
+                    {{ 'sender_price.db_snapshot_hint'|trans({}, 'AppBundle') }}
+                    {{ 'show.label_netto'|trans({}, 'AppBundle') }}: {{ offer.netto|default(0)|currency_convert(currency) }},
+                    {{ 'show.label_fee'|trans({}, 'AppBundle') }}: {{ offer.fee|default(0)|currency_convert(currency) }},
+                    {{ 'show.label_vat'|trans({}, 'AppBundle') }}: {{ offer.vat|default(0)|currency_convert(currency) }},
+                    {{ 'show.label_brutto'|trans({}, 'AppBundle') }}: {{ offer.brutto|default(0)|currency_convert(currency) }}
+                </p>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}

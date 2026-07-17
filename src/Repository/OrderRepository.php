@@ -189,15 +189,16 @@ class OrderRepository extends ServiceEntityRepository
     }
 
     /**
-     * Live orders only (is_test = false), grouped by status.
+     * Orders filtered by is_test, grouped by status.
      *
      * @return array<int, int>
      */
-    public function countLiveByStatus(): array
+    public function countByStatusAndTestFlag(bool $isTest): array
     {
         $result = $this->createQueryBuilder('o')
             ->select('o.status', 'COUNT(o.id) as count')
-            ->andWhere('o.isTest = false')
+            ->andWhere('o.isTest = :isTest')
+            ->setParameter('isTest', $isTest)
             ->groupBy('o.status')
             ->getQuery()
             ->getResult();
@@ -213,12 +214,17 @@ class OrderRepository extends ServiceEntityRepository
     /**
      * @return list<Order>
      */
-    public function findLiveByStatusOlderThan(int $status, \DateTimeImmutable $olderThan, int $limit): array
-    {
+    public function findByStatusOlderThanAndTestFlag(
+        int $status,
+        \DateTimeImmutable $olderThan,
+        bool $isTest,
+        int $limit,
+    ): array {
         return $this->createQueryBuilder('o')
-            ->andWhere('o.isTest = false')
+            ->andWhere('o.isTest = :isTest')
             ->andWhere('o.status = :status')
             ->andWhere('o.updatedAt < :olderThan')
+            ->setParameter('isTest', $isTest)
             ->setParameter('status', $status)
             ->setParameter('olderThan', $olderThan)
             ->orderBy('o.updatedAt', 'ASC')
@@ -227,13 +233,17 @@ class OrderRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function countLiveByStatusOlderThan(int $status, \DateTimeImmutable $olderThan): int
-    {
+    public function countByStatusOlderThanAndTestFlag(
+        int $status,
+        \DateTimeImmutable $olderThan,
+        bool $isTest,
+    ): int {
         return (int) $this->createQueryBuilder('o')
             ->select('COUNT(o.id)')
-            ->andWhere('o.isTest = false')
+            ->andWhere('o.isTest = :isTest')
             ->andWhere('o.status = :status')
             ->andWhere('o.updatedAt < :olderThan')
+            ->setParameter('isTest', $isTest)
             ->setParameter('status', $status)
             ->setParameter('olderThan', $olderThan)
             ->getQuery()
@@ -245,11 +255,12 @@ class OrderRepository extends ServiceEntityRepository
      *
      * @return list<Order>
      */
-    public function findLiveByStatuses(array $statuses, int $limit): array
+    public function findByStatusesAndTestFlag(array $statuses, bool $isTest, int $limit): array
     {
         return $this->createQueryBuilder('o')
-            ->andWhere('o.isTest = false')
+            ->andWhere('o.isTest = :isTest')
             ->andWhere('o.status IN (:statuses)')
+            ->setParameter('isTest', $isTest)
             ->setParameter('statuses', $statuses)
             ->orderBy('o.createdAt', 'ASC')
             ->setMaxResults($limit)
@@ -260,15 +271,17 @@ class OrderRepository extends ServiceEntityRepository
     /**
      * @return list<Order>
      */
-    public function findLiveCreatedBetween(
+    public function findCreatedBetweenAndTestFlag(
         \DateTimeImmutable $from,
         \DateTimeImmutable $to,
+        bool $isTest,
         int $limit,
     ): array {
         return $this->createQueryBuilder('o')
-            ->andWhere('o.isTest = false')
+            ->andWhere('o.isTest = :isTest')
             ->andWhere('o.createdAt >= :from')
             ->andWhere('o.createdAt < :to')
+            ->setParameter('isTest', $isTest)
             ->setParameter('from', $from)
             ->setParameter('to', $to)
             ->orderBy('o.createdAt', 'DESC')
@@ -277,13 +290,17 @@ class OrderRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function countLiveCreatedBetween(\DateTimeImmutable $from, \DateTimeImmutable $to): int
-    {
+    public function countCreatedBetweenAndTestFlag(
+        \DateTimeImmutable $from,
+        \DateTimeImmutable $to,
+        bool $isTest,
+    ): int {
         return (int) $this->createQueryBuilder('o')
             ->select('COUNT(o.id)')
-            ->andWhere('o.isTest = false')
+            ->andWhere('o.isTest = :isTest')
             ->andWhere('o.createdAt >= :from')
             ->andWhere('o.createdAt < :to')
+            ->setParameter('isTest', $isTest)
             ->setParameter('from', $from)
             ->setParameter('to', $to)
             ->getQuery()

@@ -45,18 +45,20 @@ class NotificationLogRepository extends ServiceEntityRepository
     /**
      * @return list<NotificationLog>
      */
-    public function findFailedForLiveOrdersBetween(
+    public function findFailedForOrdersBetweenAndTestFlag(
         \DateTimeImmutable $from,
         \DateTimeImmutable $to,
+        bool $isTest,
         int $limit,
     ): array {
         return $this->createQueryBuilder('l')
             ->innerJoin('l.relatedOrder', 'o')
             ->addSelect('o')
-            ->andWhere('o.isTest = false')
+            ->andWhere('o.isTest = :isTest')
             ->andWhere('l.status = :failed')
             ->andWhere('l.createdAt >= :from')
             ->andWhere('l.createdAt < :to')
+            ->setParameter('isTest', $isTest)
             ->setParameter('failed', NotificationLogStatus::FAILED)
             ->setParameter('from', $from)
             ->setParameter('to', $to)
@@ -66,17 +68,19 @@ class NotificationLogRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function countFailedForLiveOrdersBetween(
+    public function countFailedForOrdersBetweenAndTestFlag(
         \DateTimeImmutable $from,
         \DateTimeImmutable $to,
+        bool $isTest,
     ): int {
         return (int) $this->createQueryBuilder('l')
             ->select('COUNT(l.id)')
             ->innerJoin('l.relatedOrder', 'o')
-            ->andWhere('o.isTest = false')
+            ->andWhere('o.isTest = :isTest')
             ->andWhere('l.status = :failed')
             ->andWhere('l.createdAt >= :from')
             ->andWhere('l.createdAt < :to')
+            ->setParameter('isTest', $isTest)
             ->setParameter('failed', NotificationLogStatus::FAILED)
             ->setParameter('from', $from)
             ->setParameter('to', $to)

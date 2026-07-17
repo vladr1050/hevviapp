@@ -365,6 +365,11 @@ class OrderAdmin extends BaseAdmin
                 'template' => 'admin/CRUD/show_order_adjust_offer_action.html.twig',
                 'virtual_field' => true,
             ])
+            ->add('_price_breakdown', null, [
+                'label' => 'show.label_order_price_breakdown',
+                'template' => 'admin/CRUD/show_order_price_breakdown.html.twig',
+                'virtual_field' => true,
+            ])
             ->add('sender', null, [
                 'associated_property' => function ($carrier) {
                     return sprintf('%s %s (%s)', $carrier->getFirstName(), $carrier->getLastName(), $carrier->getEmail());

@@ -1841,17 +1841,61 @@
         <source>ops_dashboard.title</source>
         <target>Ops dashboard</target>
       </trans-unit>
-      <trans-unit id="opsDashLive" resname="ops_dashboard.live_only">
-        <source>ops_dashboard.live_only</source>
-        <target>Live orders only</target>
+      <trans-unit id="opsDashScopeLive" resname="ops_dashboard.scope.live">
+        <source>ops_dashboard.scope.live</source>
+        <target>Live orders</target>
+      </trans-unit>
+      <trans-unit id="opsDashScopeTest" resname="ops_dashboard.scope.test">
+        <source>ops_dashboard.scope.test</source>
+        <target>Test orders</target>
+      </trans-unit>
+      <trans-unit id="opsDashFilterLive" resname="ops_dashboard.filter.live">
+        <source>ops_dashboard.filter.live</source>
+        <target>No test (Live)</target>
+      </trans-unit>
+      <trans-unit id="opsDashFilterTest" resname="ops_dashboard.filter.test">
+        <source>ops_dashboard.filter.test</source>
+        <target>Test</target>
+      </trans-unit>
+      <trans-unit id="opsDashFilterFrom" resname="ops_dashboard.filter.from">
+        <source>ops_dashboard.filter.from</source>
+        <target>From</target>
+      </trans-unit>
+      <trans-unit id="opsDashFilterTo" resname="ops_dashboard.filter.to">
+        <source>ops_dashboard.filter.to</source>
+        <target>To</target>
+      </trans-unit>
+      <trans-unit id="opsDashFilterApply" resname="ops_dashboard.filter.apply">
+        <source>ops_dashboard.filter.apply</source>
+        <target>Apply</target>
+      </trans-unit>
+      <trans-unit id="opsPeriodLabel" resname="ops_dashboard.period.label">
+        <source>ops_dashboard.period.label</source>
+        <target>Period: %from% → %to%</target>
+      </trans-unit>
+      <trans-unit id="opsPeriodToday" resname="ops_dashboard.period.today">
+        <source>ops_dashboard.period.today</source>
+        <target>Today</target>
+      </trans-unit>
+      <trans-unit id="opsPeriod7d" resname="ops_dashboard.period.last_7_days">
+        <source>ops_dashboard.period.last_7_days</source>
+        <target>7 days</target>
+      </trans-unit>
+      <trans-unit id="opsPeriodMonth" resname="ops_dashboard.period.this_month">
+        <source>ops_dashboard.period.this_month</source>
+        <target>This month</target>
+      </trans-unit>
+      <trans-unit id="opsPeriodYear" resname="ops_dashboard.period.this_year">
+        <source>ops_dashboard.period.this_year</source>
+        <target>This year</target>
       </trans-unit>
       <trans-unit id="opsDashGen" resname="ops_dashboard.generated_at">
         <source>ops_dashboard.generated_at</source>
         <target>Updated %time% (%tz%)</target>
       </trans-unit>
-      <trans-unit id="opsDashTotal" resname="ops_dashboard.live_total">
-        <source>ops_dashboard.live_total</source>
-        <target>%count% live orders</target>
+      <trans-unit id="opsDashTotal" resname="ops_dashboard.order_total">
+        <source>ops_dashboard.order_total</source>
+        <target>%count% orders</target>
       </trans-unit>
       <trans-unit id="opsDashEmpty" resname="ops_dashboard.empty">
         <source>ops_dashboard.empty</source>
@@ -1861,21 +1905,21 @@
         <source>ops_dashboard.showing_of</source>
         <target>Showing %shown% of %total%</target>
       </trans-unit>
-      <trans-unit id="opsKpiNew" resname="ops_dashboard.kpi.today_new">
-        <source>ops_dashboard.kpi.today_new</source>
-        <target>New today</target>
+      <trans-unit id="opsKpiNew" resname="ops_dashboard.kpi.period_new">
+        <source>ops_dashboard.kpi.period_new</source>
+        <target>New in period</target>
       </trans-unit>
-      <trans-unit id="opsKpiPaid" resname="ops_dashboard.kpi.today_paid">
-        <source>ops_dashboard.kpi.today_paid</source>
-        <target>Paid today</target>
+      <trans-unit id="opsKpiPaid" resname="ops_dashboard.kpi.period_paid">
+        <source>ops_dashboard.kpi.period_paid</source>
+        <target>Paid in period</target>
       </trans-unit>
-      <trans-unit id="opsKpiDel" resname="ops_dashboard.kpi.today_delivered">
-        <source>ops_dashboard.kpi.today_delivered</source>
-        <target>Delivered today</target>
+      <trans-unit id="opsKpiDel" resname="ops_dashboard.kpi.period_delivered">
+        <source>ops_dashboard.kpi.period_delivered</source>
+        <target>Delivered in period</target>
       </trans-unit>
-      <trans-unit id="opsKpiMail" resname="ops_dashboard.kpi.today_email_fail">
-        <source>ops_dashboard.kpi.today_email_fail</source>
-        <target>Email fails today</target>
+      <trans-unit id="opsKpiMail" resname="ops_dashboard.kpi.period_email_fail">
+        <source>ops_dashboard.kpi.period_email_fail</source>
+        <target>Email fails in period</target>
       </trans-unit>
       <trans-unit id="opsKpiStuckP" resname="ops_dashboard.kpi.stuck_paid">
         <source>ops_dashboard.kpi.stuck_paid</source>
@@ -1892,6 +1936,30 @@
       <trans-unit id="opsKpiFail7" resname="ops_dashboard.kpi.failed_7d">
         <source>ops_dashboard.kpi.failed_7d</source>
         <target>Failed emails 7d</target>
+      </trans-unit>
+      <trans-unit id="opsFinanceTitle" resname="ops_dashboard.finance.title">
+        <source>ops_dashboard.finance.title</source>
+        <target>Finance (invoices)</target>
+      </trans-unit>
+      <trans-unit id="opsFinanceHint" resname="ops_dashboard.finance.hint">
+        <source>ops_dashboard.finance.hint</source>
+        <target>Sums by invoice issue date in the selected period. Freight and commission are net (excl. VAT).</target>
+      </trans-unit>
+      <trans-unit id="opsFinanceFreight" resname="ops_dashboard.finance.freight">
+        <source>ops_dashboard.finance.freight</source>
+        <target>Freight (transport)</target>
+      </trans-unit>
+      <trans-unit id="opsFinanceComm" resname="ops_dashboard.finance.commission">
+        <source>ops_dashboard.finance.commission</source>
+        <target>Commission</target>
+      </trans-unit>
+      <trans-unit id="opsFinanceVat" resname="ops_dashboard.finance.vat">
+        <source>ops_dashboard.finance.vat</source>
+        <target>VAT</target>
+      </trans-unit>
+      <trans-unit id="opsFinanceTotal" resname="ops_dashboard.finance.total">
+        <source>ops_dashboard.finance.total</source>
+        <target>Total (gross)</target>
       </trans-unit>
       <trans-unit id="opsFunnel" resname="ops_dashboard.funnel.title">
         <source>ops_dashboard.funnel.title</source>
@@ -1953,21 +2021,29 @@
         <source>ops_dashboard.sla_overdue.hint</source>
         <target>Past deadline, not yet delivered</target>
       </trans-unit>
-      <trans-unit id="opsTodayNewT" resname="ops_dashboard.today_new.title">
-        <source>ops_dashboard.today_new.title</source>
-        <target>New today</target>
+      <trans-unit id="opsPeriodNewT" resname="ops_dashboard.period_new.title">
+        <source>ops_dashboard.period_new.title</source>
+        <target>New in period</target>
       </trans-unit>
-      <trans-unit id="opsTodayPaidT" resname="ops_dashboard.today_paid.title">
-        <source>ops_dashboard.today_paid.title</source>
-        <target>Paid today</target>
+      <trans-unit id="opsPeriodPaidT" resname="ops_dashboard.period_paid.title">
+        <source>ops_dashboard.period_paid.title</source>
+        <target>Paid in period</target>
       </trans-unit>
-      <trans-unit id="opsTodayDelT" resname="ops_dashboard.today_delivered.title">
-        <source>ops_dashboard.today_delivered.title</source>
-        <target>Delivered today</target>
+      <trans-unit id="opsPeriodDelT" resname="ops_dashboard.period_delivered.title">
+        <source>ops_dashboard.period_delivered.title</source>
+        <target>Delivered in period</target>
+      </trans-unit>
+      <trans-unit id="opsPeriodFailT" resname="ops_dashboard.period_failed_emails.title">
+        <source>ops_dashboard.period_failed_emails.title</source>
+        <target>Failed emails in period</target>
       </trans-unit>
       <trans-unit id="opsFailMailT" resname="ops_dashboard.failed_emails.title">
         <source>ops_dashboard.failed_emails.title</source>
         <target>Failed emails (7 days)</target>
+      </trans-unit>
+      <trans-unit id="showOrdPriceBr" resname="show.label_order_price_breakdown">
+        <source>show.label_order_price_breakdown</source>
+        <target>Price breakdown</target>
       </trans-unit>
     </body>
   </file>

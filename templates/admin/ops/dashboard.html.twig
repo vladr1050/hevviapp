@@ -4,28 +4,76 @@
 
 {% block sonata_page_content %}
     <section class="content-header">
-        <h1>
-            {{ 'ops_dashboard.title'|trans({}, 'AppBundle') }}
-            <small class="text-muted">{{ 'ops_dashboard.live_only'|trans({}, 'AppBundle') }}</small>
-        </h1>
-        <p class="text-muted">
-            {{ 'ops_dashboard.generated_at'|trans({
-                '%time%': data.generatedAt|date('Y-m-d H:i'),
-                '%tz%': data.timezone
-            }, 'AppBundle') }}
-            · {{ 'ops_dashboard.live_total'|trans({'%count%': data.liveTotal}, 'AppBundle') }}
-        </p>
+        <div class="row">
+            <div class="col-md-5">
+                <h1>
+                    {{ 'ops_dashboard.title'|trans({}, 'AppBundle') }}
+                    <small class="text-muted">
+                        {% if isTest %}
+                            {{ 'ops_dashboard.scope.test'|trans({}, 'AppBundle') }}
+                        {% else %}
+                            {{ 'ops_dashboard.scope.live'|trans({}, 'AppBundle') }}
+                        {% endif %}
+                    </small>
+                </h1>
+                <p class="text-muted">
+                    {{ 'ops_dashboard.generated_at'|trans({
+                        '%time%': data.generatedAt|date('Y-m-d H:i'),
+                        '%tz%': data.timezone
+                    }, 'AppBundle') }}
+                    · {{ 'ops_dashboard.order_total'|trans({'%count%': data.orderTotal}, 'AppBundle') }}
+                </p>
+            </div>
+            <div class="col-md-7">
+                <form method="get" action="{{ path('admin_ops_dashboard') }}" class="form-inline" style="margin-top: 8px; text-align: right;">
+                    <input type="hidden" name="isTest" value="{{ isTest ? 1 : 0 }}">
+                    <div class="form-group" style="margin-right: 8px;">
+                        <label for="ops-from" style="margin-right: 4px;">{{ 'ops_dashboard.filter.from'|trans({}, 'AppBundle') }}</label>
+                        <input id="ops-from" type="date" name="from" value="{{ from }}" class="form-control input-sm">
+                    </div>
+                    <div class="form-group" style="margin-right: 8px;">
+                        <label for="ops-to" style="margin-right: 4px;">{{ 'ops_dashboard.filter.to'|trans({}, 'AppBundle') }}</label>
+                        <input id="ops-to" type="date" name="to" value="{{ to }}" class="form-control input-sm">
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-primary">{{ 'ops_dashboard.filter.apply'|trans({}, 'AppBundle') }}</button>
+                </form>
+                <div style="margin-top: 8px; text-align: right;">
+                    <div class="btn-group" style="margin-right: 8px;">
+                        {% for preset in presets %}
+                            <a href="{{ path('admin_ops_dashboard', {isTest: preset.isTest, from: preset.from, to: preset.to}) }}"
+                               class="btn btn-xs {{ from == preset.from and to == preset.to ? 'btn-info' : 'btn-default' }}">
+                                {{ preset.label_key|trans({}, 'AppBundle') }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                    <div class="btn-group">
+                        <a href="{{ path('admin_ops_dashboard', filterQuery|merge({isTest: 0})) }}"
+                           class="btn btn-sm {{ not isTest ? 'btn-primary' : 'btn-default' }}">
+                            {{ 'ops_dashboard.filter.live'|trans({}, 'AppBundle') }}
+                        </a>
+                        <a href="{{ path('admin_ops_dashboard', filterQuery|merge({isTest: 1})) }}"
+                           class="btn btn-sm {{ isTest ? 'btn-warning' : 'btn-default' }}">
+                            {{ 'ops_dashboard.filter.test'|trans({}, 'AppBundle') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <section class="content">
-        {# Today KPIs #}
+        <p class="text-muted" style="margin-top: 0;">
+            {{ 'ops_dashboard.period.label'|trans({'%from%': from, '%to%': to}, 'AppBundle') }}
+        </p>
+
+        {# Period activity KPIs #}
         <div class="row">
             <div class="col-md-3 col-sm-6">
                 <div class="info-box">
                     <span class="info-box-icon bg-aqua"><i class="fas fa-plus"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">{{ 'ops_dashboard.kpi.today_new'|trans({}, 'AppBundle') }}</span>
-                        <span class="info-box-number">{{ data.todayNewCount }}</span>
+                        <span class="info-box-text">{{ 'ops_dashboard.kpi.period_new'|trans({}, 'AppBundle') }}</span>
+                        <span class="info-box-number">{{ data.periodNewCount }}</span>
                     </div>
                 </div>
             </div>
@@ -33,8 +81,8 @@
                 <div class="info-box">
                     <span class="info-box-icon bg-green"><i class="fas fa-credit-card"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">{{ 'ops_dashboard.kpi.today_paid'|trans({}, 'AppBundle') }}</span>
-                        <span class="info-box-number">{{ data.todayPaidCount }}</span>
+                        <span class="info-box-text">{{ 'ops_dashboard.kpi.period_paid'|trans({}, 'AppBundle') }}</span>
+                        <span class="info-box-number">{{ data.periodPaidCount }}</span>
                     </div>
                 </div>
             </div>
@@ -42,8 +90,8 @@
                 <div class="info-box">
                     <span class="info-box-icon bg-purple"><i class="fas fa-check"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">{{ 'ops_dashboard.kpi.today_delivered'|trans({}, 'AppBundle') }}</span>
-                        <span class="info-box-number">{{ data.todayDeliveredCount }}</span>
+                        <span class="info-box-text">{{ 'ops_dashboard.kpi.period_delivered'|trans({}, 'AppBundle') }}</span>
+                        <span class="info-box-number">{{ data.periodDeliveredCount }}</span>
                     </div>
                 </div>
             </div>
@@ -51,14 +99,57 @@
                 <div class="info-box">
                     <span class="info-box-icon bg-red"><i class="fas fa-envelope"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">{{ 'ops_dashboard.kpi.today_email_fail'|trans({}, 'AppBundle') }}</span>
-                        <span class="info-box-number">{{ data.todayFailedNotificationsCount }}</span>
+                        <span class="info-box-text">{{ 'ops_dashboard.kpi.period_email_fail'|trans({}, 'AppBundle') }}</span>
+                        <span class="info-box-number">{{ data.periodFailedNotificationsCount }}</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        {# Stuck KPIs #}
+        {# Finance for period (invoices by issue date) #}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-success">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{ 'ops_dashboard.finance.title'|trans({}, 'AppBundle') }}</h3>
+                        <span class="badge bg-green">{{ data.finance.invoiceCount }}</span>
+                        <p class="text-muted" style="margin: 6px 0 0; font-weight: normal; font-size: 12px;">
+                            {{ 'ops_dashboard.finance.hint'|trans({}, 'AppBundle') }}
+                        </p>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-3 col-sm-6">
+                                <p class="text-muted" style="margin-bottom: 4px;">{{ 'ops_dashboard.finance.freight'|trans({}, 'AppBundle') }}</p>
+                                <p class="lead" style="margin-top: 0;">
+                                    <strong>{{ data.finance.freightNetCents|currency_convert(data.finance.currency) }}</strong>
+                                </p>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <p class="text-muted" style="margin-bottom: 4px;">{{ 'ops_dashboard.finance.commission'|trans({}, 'AppBundle') }}</p>
+                                <p class="lead" style="margin-top: 0;">
+                                    <strong>{{ data.finance.commissionNetCents|currency_convert(data.finance.currency) }}</strong>
+                                </p>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <p class="text-muted" style="margin-bottom: 4px;">{{ 'ops_dashboard.finance.vat'|trans({}, 'AppBundle') }}</p>
+                                <p class="lead" style="margin-top: 0;">
+                                    <strong>{{ data.finance.vatCents|currency_convert(data.finance.currency) }}</strong>
+                                </p>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <p class="text-muted" style="margin-bottom: 4px;">{{ 'ops_dashboard.finance.total'|trans({}, 'AppBundle') }}</p>
+                                <p class="lead" style="margin-top: 0;">
+                                    <strong>{{ data.finance.grossCents|currency_convert(data.finance.currency) }}</strong>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Stuck KPIs (current snapshot) #}
         <div class="row">
             <div class="col-md-3 col-sm-6">
                 <div class="info-box bg-yellow">
@@ -122,7 +213,7 @@
                                             <a href="{{ path('admin_app_order_list', {
                                                 'filter': {
                                                     'status': {'value': code},
-                                                    'isTest': {'value': 2}
+                                                    'isTest': {'value': isTestFilterValue}
                                                 }
                                             }) }}">
                                                 {{ name|trans({}, 'AppBundle') }}
@@ -169,19 +260,19 @@
         <div class="row">
             <div class="col-md-6">
                 {% include 'admin/ops/_order_table.html.twig' with {
-                    title: 'ops_dashboard.today_new.title'|trans({}, 'AppBundle'),
+                    title: 'ops_dashboard.period_new.title'|trans({}, 'AppBundle'),
                     hint: null,
-                    orders: data.todayNew,
-                    total: data.todayNewCount,
+                    orders: data.periodNew,
+                    total: data.periodNewCount,
                     box_class: 'box-info'
                 } %}
             </div>
             <div class="col-md-6">
                 {% include 'admin/ops/_order_table.html.twig' with {
-                    title: 'ops_dashboard.today_paid.title'|trans({}, 'AppBundle'),
+                    title: 'ops_dashboard.period_paid.title'|trans({}, 'AppBundle'),
                     hint: null,
-                    orders: data.todayPaid,
-                    total: data.todayPaidCount,
+                    orders: data.periodPaid,
+                    total: data.periodPaidCount,
                     box_class: 'box-success'
                 } %}
             </div>
@@ -190,21 +281,21 @@
         <div class="row">
             <div class="col-md-6">
                 {% include 'admin/ops/_order_table.html.twig' with {
-                    title: 'ops_dashboard.today_delivered.title'|trans({}, 'AppBundle'),
+                    title: 'ops_dashboard.period_delivered.title'|trans({}, 'AppBundle'),
                     hint: null,
-                    orders: data.todayDelivered,
-                    total: data.todayDeliveredCount,
+                    orders: data.periodDelivered,
+                    total: data.periodDeliveredCount,
                     box_class: 'box-primary'
                 } %}
             </div>
             <div class="col-md-6">
                 <div class="box box-danger">
                     <div class="box-header with-border">
-                        <h3 class="box-title">{{ 'ops_dashboard.failed_emails.title'|trans({}, 'AppBundle') }}</h3>
-                        <span class="badge bg-red">{{ data.failedNotificationsCount }}</span>
+                        <h3 class="box-title">{{ 'ops_dashboard.period_failed_emails.title'|trans({}, 'AppBundle') }}</h3>
+                        <span class="badge bg-red">{{ data.periodFailedNotificationsCount }}</span>
                     </div>
                     <div class="box-body table-responsive no-padding">
-                        {% if data.failedNotifications is empty %}
+                        {% if data.periodFailedNotifications is empty %}
                             <p class="text-muted" style="padding: 12px;">{{ 'ops_dashboard.empty'|trans({}, 'AppBundle') }}</p>
                         {% else %}
                             <table class="table table-hover">
@@ -217,7 +308,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% for log in data.failedNotifications %}
+                                {% for log in data.periodFailedNotifications %}
                                     {% set order = log.relatedOrder %}
                                     <tr>
                                         <td>

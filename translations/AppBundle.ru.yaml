@@ -666,6 +666,9 @@ ASSIGNED:  Назначено
 sender_price:
     no_offer_data:           Нет данных по предложению.
     total_delivery_gross:    Итоговая цена доставки (брутто)
+    summary_total:           Общая сумма
+    summary_commission:      Размер комиссии
+    summary_freight:         Сумма за перевозку
     section_freight:         1) Стоимость перевозки
     section_platform:        2) Комиссия платформы
     carrier_profile:         Профиль НДС перевозчика — %name%

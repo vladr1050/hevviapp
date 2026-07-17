@@ -683,6 +683,9 @@ ASSIGNED:  Assigned
 sender_price:
     no_offer_data:           No offer data available.
     total_delivery_gross:    Total delivery price (gross)
+    summary_total:           Total amount
+    summary_commission:      Commission
+    summary_freight:         Freight (transport)
     section_freight:         1) Freight cost
     section_platform:        2) Platform commission
     carrier_profile:         Carrier VAT profile — %name%
