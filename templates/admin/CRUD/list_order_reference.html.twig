@@ -1,0 +1,19 @@
+{#
+ # Shared list column: Order reference (HEV-#####) linking to order show.
+ # Expects object.relatedOrder.
+ #}
+{% extends '@SonataAdmin/CRUD/base_list_field.html.twig' %}
+
+{% block field %}
+    {% set order = object.relatedOrder %}
+    {% if order is null %}
+        <span class="text-muted">—</span>
+    {% else %}
+        {% set ref = order.reference %}
+        {% if order.id %}
+            <a href="{{ path('admin_app_order_show', {id: order.id.toRfc4122()}) }}">{{ ref }}</a>
+        {% else %}
+            {{ ref }}
+        {% endif %}
+    {% endif %}
+{% endblock %}

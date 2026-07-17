@@ -100,6 +100,12 @@ class Order extends BaseUUID
     #[ORM\OneToMany(targetEntity: Document::class, mappedBy: 'relatedOrder', orphanRemoval: false)]
     private Collection $documents;
 
+    /**
+     * @var Collection<int, Invoice>
+     */
+    #[ORM\OneToMany(targetEntity: Invoice::class, mappedBy: 'relatedOrder')]
+    private Collection $invoices;
+
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 7, nullable: true)]
     private ?string $pickupLatitude = null;
 
@@ -167,6 +173,7 @@ class Order extends BaseUUID
         $this->notificationLogs = new ArrayCollection();
         $this->attachments = new ArrayCollection();
         $this->documents = new ArrayCollection();
+        $this->invoices = new ArrayCollection();
     }
 
     public function getSender(): ?User
@@ -716,6 +723,35 @@ class Order extends BaseUUID
         if ($this->documents->removeElement($document)) {
             if ($document->getRelatedOrder() === $this) {
                 $document->setRelatedOrder(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Invoice>
+     */
+    public function getInvoices(): Collection
+    {
+        return $this->invoices;
+    }
+
+    public function addInvoice(Invoice $invoice): static
+    {
+        if (!$this->invoices->contains($invoice)) {
+            $this->invoices->add($invoice);
+            $invoice->setRelatedOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvoice(Invoice $invoice): static
+    {
+        if ($this->invoices->removeElement($invoice)) {
+            if ($invoice->getRelatedOrder() === $this) {
+                $invoice->setRelatedOrder(null);
             }
         }
 

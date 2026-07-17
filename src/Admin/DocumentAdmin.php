@@ -10,11 +10,15 @@ use FRPC\SonataAuthorization\Admin\BaseAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridInterface;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
+use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
+use Sonata\AdminBundle\Filter\Model\FilterData;
 use Sonata\AdminBundle\Route\RouteCollectionInterface;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\DoctrineORMAdminBundle\Filter\CallbackFilter;
 use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
 use Sonata\DoctrineORMAdminBundle\Filter\ModelFilter;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class DocumentAdmin extends BaseAdmin
 {
@@ -49,6 +53,28 @@ class DocumentAdmin extends BaseAdmin
             ->add('relatedOrder', ModelFilter::class, [
                 'label' => 'filter.label_order',
             ])
+            ->add('orderNumber', CallbackFilter::class, [
+                'label' => 'filter.label_order_number',
+                'field_type' => TextType::class,
+                'callback' => static function (ProxyQueryInterface $query, string $alias, string $field, FilterData $data): bool {
+                    if (!$data->hasValue() || $data->getValue() === null || $data->getValue() === '') {
+                        return false;
+                    }
+
+                    $raw = trim((string) $data->getValue());
+                    $digits = preg_replace('/\D+/', '', $raw) ?? '';
+                    if ($digits === '') {
+                        return false;
+                    }
+
+                    $query
+                        ->leftJoin($alias . '.relatedOrder', 'ord_filter')
+                        ->andWhere('ord_filter.orderNumber = :order_number_filter')
+                        ->setParameter('order_number_filter', (int) $digits);
+
+                    return true;
+                },
+            ])
             ->add('documentType', ChoiceFilter::class, [
                 'label' => 'filter.label_document_type',
                 'field_type' => ChoiceType::class,
@@ -73,6 +99,7 @@ class DocumentAdmin extends BaseAdmin
         $list
             ->add('relatedOrder', null, [
                 'label' => 'list.label_order',
+                'template' => 'admin/CRUD/list_order_reference.html.twig',
             ])
             ->add('documentType', null, [
                 'label' => 'list.label_document_type',
@@ -113,6 +140,7 @@ class DocumentAdmin extends BaseAdmin
             ->add('id')
             ->add('relatedOrder', null, [
                 'label' => 'show.label_order',
+                'route' => ['name' => 'show'],
             ])
             ->add('documentType', null, [
                 'label' => 'show.label_document_type',

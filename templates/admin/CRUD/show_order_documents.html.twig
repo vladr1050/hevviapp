@@ -1,0 +1,59 @@
+{#
+ # Order 360° — documents (PN / SN / CR) with PDF links.
+ #}
+{% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %}
+
+{% block field %}
+    {% set docs = object.documents %}
+    {% if docs is empty %}
+        <span class="text-muted">{{ 'show.label_order_documents_empty'|trans({}, 'AppBundle') }}</span>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-sm mb-0">
+                <thead>
+                    <tr>
+                        <th>{{ 'list.label_document_type'|trans({}, 'AppBundle') }}</th>
+                        <th>{{ 'list.label_document_number'|trans({}, 'AppBundle') }}</th>
+                        <th>{{ 'list.label_document_status'|trans({}, 'AppBundle') }}</th>
+                        <th>{{ 'list.label_document_issued_at'|trans({}, 'AppBundle') }}</th>
+                        <th>{{ 'list.label_document_pdf'|trans({}, 'AppBundle') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for doc in docs %}
+                        <tr>
+                            <td>{{ doc.documentType.value|default(doc.documentType) }}</td>
+                            <td>
+                                {% if doc.id %}
+                                    <a href="{{ path('admin_app_document_show', {id: doc.id.toRfc4122()}) }}">
+                                        {{ doc.documentNumber }}
+                                    </a>
+                                {% else %}
+                                    {{ doc.documentNumber }}
+                                {% endif %}
+                            </td>
+                            <td>{{ doc.status.value|default(doc.status) }}</td>
+                            <td>
+                                {% if doc.issuedAt %}
+                                    {{ doc.issuedAt|date(admin.dateTimePattern|default('Y-m-d H:i')) }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if doc.filePath and doc.id %}
+                                    {% set doc_id = doc.id.toRfc4122() %}
+                                    <a href="{{ path('admin_file_document_pdf', {id: doc_id}) }}" class="btn btn-xs btn-default" target="_blank" rel="noopener noreferrer">
+                                        {{ 'action.document_open_pdf'|trans({}, 'AppBundle') }}
+                                    </a>
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

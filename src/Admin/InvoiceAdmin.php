@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace App\Admin;
 
-use App\Entity\Invoice;
 use FRPC\SonataAuthorization\Admin\BaseAdmin;
+use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
+use Sonata\AdminBundle\Filter\Model\FilterData;
+use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 use Sonata\AdminBundle\Route\RouteCollectionInterface;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\DoctrineORMAdminBundle\Filter\CallbackFilter;
+use Sonata\DoctrineORMAdminBundle\Filter\ModelFilter;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class InvoiceAdmin extends BaseAdmin
 {
@@ -19,11 +24,57 @@ class InvoiceAdmin extends BaseAdmin
         $collection->remove('delete');
     }
 
+    protected function configureDatagridFilters(DatagridMapper $datagrid): void
+    {
+        $datagrid
+            ->add('invoiceNumber', null, [
+                'label' => 'filter.label_invoice_number',
+            ])
+            ->add('orderReference', null, [
+                'label' => 'filter.label_order_number',
+            ])
+            ->add('orderNumber', CallbackFilter::class, [
+                'label' => 'filter.label_order_seq',
+                'field_type' => TextType::class,
+                'callback' => static function (ProxyQueryInterface $query, string $alias, string $field, FilterData $data): bool {
+                    if (!$data->hasValue() || $data->getValue() === null || $data->getValue() === '') {
+                        return false;
+                    }
+
+                    $raw = trim((string) $data->getValue());
+                    $digits = preg_replace('/\D+/', '', $raw) ?? '';
+                    if ($digits === '') {
+                        return false;
+                    }
+
+                    $query
+                        ->leftJoin($alias . '.relatedOrder', 'ord_filter')
+                        ->andWhere('ord_filter.orderNumber = :order_number_filter')
+                        ->setParameter('order_number_filter', (int) $digits);
+
+                    return true;
+                },
+            ])
+            ->add('relatedOrder', ModelFilter::class, [
+                'label' => 'filter.label_order',
+            ])
+            ->add('status', null, [
+                'label' => 'filter.label_invoice_status',
+            ]);
+    }
+
     protected function configureListFields(ListMapper $list): void
     {
         $list
             ->add('invoiceNumber', null, [
                 'label' => 'list.label_invoice_number',
+            ])
+            ->add('orderReference', null, [
+                'label' => 'list.label_order_number',
+            ])
+            ->add('relatedOrder', null, [
+                'label' => 'list.label_order',
+                'template' => 'admin/CRUD/list_order_reference.html.twig',
             ])
             ->add('status', null, [
                 'label' => 'list.label_invoice_status',
@@ -32,9 +83,6 @@ class InvoiceAdmin extends BaseAdmin
             ->add('issueDate', null, [
                 'label' => 'list.label_invoice_issue_date',
                 'format' => 'Y-m-d',
-            ])
-            ->add('relatedOrder', null, [
-                'label' => 'list.label_order',
             ])
             ->add('createdAt', 'datetime', [
                 'label' => 'list.label_created_at',
@@ -144,6 +192,7 @@ class InvoiceAdmin extends BaseAdmin
             ])
             ->add('relatedOrder', null, [
                 'label' => 'show.label_order',
+                'route' => ['name' => 'show'],
             ])
             ->add('createdAt')
             ->add('updatedAt');

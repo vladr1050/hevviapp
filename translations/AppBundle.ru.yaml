@@ -82,6 +82,9 @@ filter:
     label_sender:                 Отправитель
     label_carrier:                Перевозчик
     label_is_test:                Тестовый
+    label_invoice_number:         № счёта
+    label_invoice_status:         Статус счёта
+    label_order_seq:              № заказа (число)
     label_latest_offer_status:    Статус последнего предложения
     label_last_assignment_status: Статус последнего назначения
     label_order:                  Заказ
@@ -187,6 +190,12 @@ list:
 show:
     label_order_number:       Номер заказа
     label_is_test:            Тестовый
+    label_order_documents:    Документы (PN / SN / CR)
+    label_order_documents_empty: Документов нет
+    label_order_invoices:     Счета
+    label_order_invoices_empty: Счетов нет
+    label_order_notifications: Уведомления
+    label_order_notifications_empty: Уведомлений нет
     group_menu_users:         Пользователь
     group_menu_orders:        Заказ
     group_menu_cargo:         Груз

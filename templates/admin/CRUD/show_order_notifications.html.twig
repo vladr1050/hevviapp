@@ -1,0 +1,50 @@
+{#
+ # Order 360° — notification logs for this order.
+ #}
+{% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %}
+
+{% block field %}
+    {% set logs = object.notificationLogs %}
+    {% if logs is empty %}
+        <span class="text-muted">{{ 'show.label_order_notifications_empty'|trans({}, 'AppBundle') }}</span>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-sm mb-0">
+                <thead>
+                    <tr>
+                        <th>{{ 'list.label_notification_event_key'|trans({}, 'AppBundle') }}</th>
+                        <th>{{ 'list.label_notification_recipient_email'|trans({}, 'AppBundle') }}</th>
+                        <th>{{ 'list.label_notification_log_status'|trans({}, 'AppBundle') }}</th>
+                        <th>{{ 'list.label_notification_sent_at'|trans({}, 'AppBundle') }}</th>
+                        <th>{{ 'list.label_notification_error'|trans({}, 'AppBundle') }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                        <tr>
+                            <td>{{ log.eventKey }}</td>
+                            <td>{{ log.recipientEmail|default('—') }}</td>
+                            <td>{{ log.status }}</td>
+                            <td>
+                                {% if log.sentAt %}
+                                    {{ log.sentAt|date('Y-m-d H:i') }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td class="small text-danger">{{ log.errorMessage|default('') }}</td>
+                            <td>
+                                {% if log.id %}
+                                    <a href="{{ path('admin_app_notificationlog_show', {id: log.id.toRfc4122()}) }}" class="btn btn-xs btn-default">
+                                        {{ 'link_action_show'|trans({}, 'SonataAdminBundle') }}
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

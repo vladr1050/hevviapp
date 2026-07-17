@@ -1,0 +1,64 @@
+{#
+ # Order 360° — invoices with PDF links.
+ #}
+{% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %}
+
+{% block field %}
+    {% set invoices = object.invoices %}
+    {% if invoices is empty %}
+        <span class="text-muted">{{ 'show.label_order_invoices_empty'|trans({}, 'AppBundle') }}</span>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-sm mb-0">
+                <thead>
+                    <tr>
+                        <th>{{ 'list.label_invoice_number'|trans({}, 'AppBundle') }}</th>
+                        <th>{{ 'list.label_invoice_status'|trans({}, 'AppBundle') }}</th>
+                        <th>{{ 'list.label_invoice_issue_date'|trans({}, 'AppBundle') }}</th>
+                        <th>{{ 'show.label_invoice_amount_gross'|trans({}, 'AppBundle') }}</th>
+                        <th>PDF</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for invoice in invoices %}
+                        <tr>
+                            <td>
+                                {% if invoice.id %}
+                                    <a href="{{ path('admin_app_invoice_show', {id: invoice.id.toRfc4122()}) }}">
+                                        {{ invoice.invoiceNumber }}
+                                    </a>
+                                {% else %}
+                                    {{ invoice.invoiceNumber }}
+                                {% endif %}
+                            </td>
+                            <td>{{ invoice.status }}</td>
+                            <td>
+                                {% if invoice.issueDate %}
+                                    {{ invoice.issueDate|date('Y-m-d') }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if invoice.amountGross is not null %}
+                                    {{ invoice.amountGross }} {{ invoice.currency|default('EUR') }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if invoice.pdfRelativePath and invoice.id %}
+                                    <a href="{{ path('admin_file_invoice_pdf', {id: invoice.id.toRfc4122()}) }}" class="btn btn-xs btn-default" target="_blank" rel="noopener noreferrer">
+                                        {{ 'show.label_invoice_pdf_open'|trans({}, 'AppBundle') }}
+                                    </a>
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

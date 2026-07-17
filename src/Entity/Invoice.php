@@ -117,7 +117,7 @@ class Invoice extends BaseUUID
     #[ORM\JoinColumn(name: 'order_offer_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private ?OrderOffer $orderOffer = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'invoices')]
     #[ORM\JoinColumn(name: 'related_order_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private ?Order $relatedOrder = null;
 

@@ -1797,6 +1797,42 @@
         <source>form.help_carrier_is_test</source>
         <target>QA / sandbox carrier.</target>
       </trans-unit>
+      <trans-unit id="shwOrdDocs" resname="show.label_order_documents">
+        <source>show.label_order_documents</source>
+        <target>Documents (PN / SN / CR)</target>
+      </trans-unit>
+      <trans-unit id="shwOrdDocsEmpty" resname="show.label_order_documents_empty">
+        <source>show.label_order_documents_empty</source>
+        <target>No documents</target>
+      </trans-unit>
+      <trans-unit id="shwOrdInv" resname="show.label_order_invoices">
+        <source>show.label_order_invoices</source>
+        <target>Invoices</target>
+      </trans-unit>
+      <trans-unit id="shwOrdInvEmpty" resname="show.label_order_invoices_empty">
+        <source>show.label_order_invoices_empty</source>
+        <target>No invoices</target>
+      </trans-unit>
+      <trans-unit id="shwOrdNotif" resname="show.label_order_notifications">
+        <source>show.label_order_notifications</source>
+        <target>Notifications</target>
+      </trans-unit>
+      <trans-unit id="shwOrdNotifEmpty" resname="show.label_order_notifications_empty">
+        <source>show.label_order_notifications_empty</source>
+        <target>No notifications</target>
+      </trans-unit>
+      <trans-unit id="fltInvNum" resname="filter.label_invoice_number">
+        <source>filter.label_invoice_number</source>
+        <target>Invoice №</target>
+      </trans-unit>
+      <trans-unit id="fltInvStatus" resname="filter.label_invoice_status">
+        <source>filter.label_invoice_status</source>
+        <target>Invoice status</target>
+      </trans-unit>
+      <trans-unit id="fltOrdSeq" resname="filter.label_order_seq">
+        <source>filter.label_order_seq</source>
+        <target>Order № (digits)</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

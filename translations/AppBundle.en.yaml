@@ -85,6 +85,10 @@ filter:
     label_status:                 Status
     label_sender:                 Sender
     label_carrier:                Carrier
+    label_is_test:                Test
+    label_invoice_number:         Invoice №
+    label_invoice_status:         Invoice status
+    label_order_seq:              Order № (digits)
     label_latest_offer_status:    Offer Status
     label_last_assignment_status: Assignment Status
     label_order:                  Order
@@ -193,6 +197,13 @@ list:
 
 show:
     label_order_number:                Order №
+    label_is_test:                     Test
+    label_order_documents:             Documents (PN / SN / CR)
+    label_order_documents_empty:       No documents
+    label_order_invoices:              Invoices
+    label_order_invoices_empty:        No invoices
+    label_order_notifications:         Notifications
+    label_order_notifications_empty:   No notifications
     group_menu_users:                  User
     group_menu_orders:                 Order
     group_menu_cargo:                  Cargo

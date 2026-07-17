@@ -412,6 +412,18 @@ class OrderAdmin extends BaseAdmin
             ->add('histories', null, [
                 'label' => 'show.label_status_history',
             ])
+            ->add('documents', null, [
+                'label' => 'show.label_order_documents',
+                'template' => 'admin/CRUD/show_order_documents.html.twig',
+            ])
+            ->add('invoices', null, [
+                'label' => 'show.label_order_invoices',
+                'template' => 'admin/CRUD/show_order_invoices.html.twig',
+            ])
+            ->add('notificationLogs', null, [
+                'label' => 'show.label_order_notifications',
+                'template' => 'admin/CRUD/show_order_notifications.html.twig',
+            ])
             ->add('attachments', null, [
                 'label'    => 'show.label_attachments',
                 'template' => 'admin/CRUD/show_order_attachments.html.twig',
