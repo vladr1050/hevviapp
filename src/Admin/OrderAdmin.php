@@ -34,6 +34,8 @@ use Sonata\AdminBundle\Form\Type\ModelAutocompleteType;
 use Sonata\AdminBundle\Route\RouteCollectionInterface;
 use Sonata\DoctrineORMAdminBundle\Filter\ModelFilter;
 use Sonata\DoctrineORMAdminBundle\Filter\CallbackFilter;
+use Sonata\DoctrineORMAdminBundle\Filter\BooleanFilter;
+use Sonata\Form\Type\BooleanType;
 use Sonata\Form\Type\CollectionType;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
@@ -74,6 +76,10 @@ class OrderAdmin extends BaseAdmin
     {
         $this->handleUploadedFiles($object);
         if ($object instanceof Order) {
+            // Test sender always produces test orders; live sender keeps form override.
+            if ($object->getSender()?->isTest()) {
+                $object->setIsTest(true);
+            }
             $this->ensureDeliveredHistoryIfMissing($object);
         }
     }
@@ -154,9 +160,20 @@ class OrderAdmin extends BaseAdmin
             ->remove('export');
     }
 
+    protected function configureDefaultFilterValues(array &$filterValues): void
+    {
+        // Default to Live orders only (BooleanType::TYPE_NO = not test).
+        $filterValues['isTest'] = [
+            'value' => BooleanType::TYPE_NO,
+        ];
+    }
+
     protected function configureDatagridFilters(DatagridMapper $datagrid): void
     {
         $datagrid
+            ->add('isTest', BooleanFilter::class, [
+                'label' => 'filter.label_is_test',
+            ])
             ->add('orderNumber', null, [
                 'label' => 'filter.label_order_number',
             ])
@@ -284,6 +301,9 @@ class OrderAdmin extends BaseAdmin
                 'label'    => 'list.label_order_number',
                 'accessor' => static fn(Order $order): string => $order->getReference(),
             ])
+            ->add('isTest', null, [
+                'label' => 'list.label_is_test',
+            ])
             ->add('sender', null, [
                 'associated_property' => function ($user) {
                     return sprintf('%s %s', $user->getFirstName(), $user->getLastName());
@@ -330,6 +350,9 @@ class OrderAdmin extends BaseAdmin
             ->add('reference', TextType::class, [
                 'label'    => 'show.label_order_number',
                 'accessor' => static fn(Order $order): string => $order->getReference(),
+            ])
+            ->add('isTest', null, [
+                'label' => 'show.label_is_test',
             ])
             ->add('status', TextType::class, [
                 'catalogue' => 'AppBundle',
@@ -471,6 +494,11 @@ class OrderAdmin extends BaseAdmin
             ->add('vehiclePlate', TextType::class, [
                 'required' => false,
                 'attr' => ['maxlength' => 32],
+            ])
+            ->add('isTest', CheckboxType::class, [
+                'required' => false,
+                'label' => 'form.label_is_test',
+                'help' => 'form.help_is_test',
             ])
             ->end()
             ->with('addresses', [

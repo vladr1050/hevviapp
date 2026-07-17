@@ -18,6 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(columns: ['legal_name', 'state'])]
 #[ORM\Index(columns: ['registration_number'])]
 #[ORM\Index(columns: ['registration_number', 'state'])]
+#[ORM\Index(name: 'idx_carrier_is_test', columns: ['is_test'])]
 class Carrier extends BaseSecurityDBO
 {
     #[ORM\Column(length: 255)]
@@ -79,6 +80,10 @@ class Carrier extends BaseSecurityDBO
     /** Local multiplier on base freight (excl. VAT). Null = use AppSettings.defaultPriceCoefficient. */
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 4, nullable: true)]
     private ?string $priceCoefficient = null;
+
+    /** When true, this carrier is QA / sandbox traffic. */
+    #[ORM\Column(options: ['default' => false])]
+    private bool $isTest = false;
 
     /**
      * @var Collection<int, ServiceArea>
@@ -374,6 +379,18 @@ class Carrier extends BaseSecurityDBO
     public function setPriceCoefficient(?string $priceCoefficient): static
     {
         $this->priceCoefficient = $priceCoefficient;
+
+        return $this;
+    }
+
+    public function isTest(): bool
+    {
+        return $this->isTest;
+    }
+
+    public function setIsTest(bool $isTest): static
+    {
+        $this->isTest = $isTest;
 
         return $this;
     }

@@ -1769,6 +1769,34 @@
         <source>order_offer.pricing_source.manual</source>
         <target>Manual adjustment</target>
       </trans-unit>
+      <trans-unit id="fltIsTest" resname="filter.label_is_test">
+        <source>filter.label_is_test</source>
+        <target>Test</target>
+      </trans-unit>
+      <trans-unit id="lstIsTest" resname="list.label_is_test">
+        <source>list.label_is_test</source>
+        <target>Test</target>
+      </trans-unit>
+      <trans-unit id="shwIsTest" resname="show.label_is_test">
+        <source>show.label_is_test</source>
+        <target>Test</target>
+      </trans-unit>
+      <trans-unit id="frmIsTest" resname="form.label_is_test">
+        <source>form.label_is_test</source>
+        <target>Test account / order</target>
+      </trans-unit>
+      <trans-unit id="hlpIsTest" resname="form.help_is_test">
+        <source>form.help_is_test</source>
+        <target>For a live sender you can manually mark the order as test. A test sender always creates test orders.</target>
+      </trans-unit>
+      <trans-unit id="hlpUserIsTest" resname="form.help_user_is_test">
+        <source>form.help_user_is_test</source>
+        <target>QA / sandbox sender. New orders from this user are marked as test.</target>
+      </trans-unit>
+      <trans-unit id="hlpCarrierIsTest" resname="form.help_carrier_is_test">
+        <source>form.help_carrier_is_test</source>
+        <target>QA / sandbox carrier.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

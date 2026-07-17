@@ -81,6 +81,7 @@ filter:
     label_status:                 Статус
     label_sender:                 Отправитель
     label_carrier:                Перевозчик
+    label_is_test:                Тестовый
     label_latest_offer_status:    Статус последнего предложения
     label_last_assignment_status: Статус последнего назначения
     label_order:                  Заказ
@@ -117,6 +118,7 @@ list:
     label_delivery_gross_price: Цена доставки (Брутто)
     label_default_for_pricing:  Цена по умолчанию
     label_pricing_algorithm:    Алгоритм цены
+    label_is_test:              Тест
     label_is_home_zone:         Главная зона
     label_order_assignments:    Назначения
     label_no_assignments:       Нет назначений
@@ -184,6 +186,7 @@ list:
 
 show:
     label_order_number:       Номер заказа
+    label_is_test:            Тестовый
     group_menu_users:         Пользователь
     group_menu_orders:        Заказ
     group_menu_cargo:         Груз
@@ -337,6 +340,10 @@ form:
     tab_appsettings_pricing:   Ценообразование доставки
     label_default_for_pricing: Перевозчик по умолчанию для расчёта цены
     help_default_for_pricing:  Новые заказы считаются по тарифам этого перевозчика, пока на заказ не назначен другой.
+    label_is_test:             Тестовый аккаунт / заказ
+    help_is_test:              Для live-отправителя можно вручную пометить заказ как тест. Тестовый отправитель всегда создаёт тестовые заказы.
+    help_user_is_test:         QA / sandbox отправитель. Новые заказы этого пользователя помечаются как тестовые.
+    help_carrier_is_test:      QA / sandbox перевозчик.
     label_pricing_algorithm:   Алгоритм расчёта цены
     label_price_coefficient:   Коэффициент цены (локальный)
     help_price_coefficient:    Множитель к базовому фрахту (без НДС). Пусто — глобальный коэффициент из Settings.

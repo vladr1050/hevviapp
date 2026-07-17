@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'idx_user_name', columns: ['first_name', 'last_name'])]
 #[ORM\Index(name: 'idx_user_first_name', columns: ['first_name'])]
 #[ORM\Index(name: 'idx_user_last_name', columns: ['last_name'])]
+#[ORM\Index(name: 'idx_user_is_test', columns: ['is_test'])]
 #[ORM\Table(name: '`user`')]
 class User extends BaseSecurityDBO
 {
@@ -60,6 +61,10 @@ class User extends BaseSecurityDBO
     /** Local multiplier on base freight (excl. VAT). Null = use global default from PricingSettings. */
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 4, nullable: true)]
     private ?string $priceCoefficient = null;
+
+    /** When true, this sender and their orders are treated as QA / sandbox traffic. */
+    #[ORM\Column(options: ['default' => false])]
+    private bool $isTest = false;
 
     public function __construct()
     {
@@ -266,6 +271,18 @@ class User extends BaseSecurityDBO
     public function setPriceCoefficient(?string $priceCoefficient): static
     {
         $this->priceCoefficient = $priceCoefficient;
+
+        return $this;
+    }
+
+    public function isTest(): bool
+    {
+        return $this->isTest;
+    }
+
+    public function setIsTest(bool $isTest): static
+    {
+        $this->isTest = $isTest;
 
         return $this;
     }

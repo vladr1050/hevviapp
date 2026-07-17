@@ -17,6 +17,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 #[ORM\Index(name: 'idx_order_dropout_address', columns: ['dropout_address'])]
 #[ORM\Index(name: 'idx_order_stackable', columns: ['stackable'])]
 #[ORM\Index(name: 'idx_order_manipulator_needed', columns: ['manipulator_needed'])]
+#[ORM\Index(name: 'idx_order_is_test', columns: ['is_test'])]
 class Order extends BaseUUID
 {
     public const array STATUS = [
@@ -146,6 +147,10 @@ class Order extends BaseUUID
     #[ORM\Column(length: 32, nullable: true)]
     #[Assert\Length(max: 32)]
     private ?string $vehiclePlate = null;
+
+    /** QA / sandbox order. Inherited from sender on create; can be overridden in admin. */
+    #[ORM\Column(options: ['default' => false])]
+    private bool $isTest = false;
 
     /**
      * Не маппится в БД: один раз пропустить OrderOfferAutoCreateListener после flush
@@ -369,6 +374,18 @@ class Order extends BaseUUID
         $this->vehiclePlate = $vehiclePlate !== null && $vehiclePlate !== ''
             ? trim($vehiclePlate)
             : null;
+
+        return $this;
+    }
+
+    public function isTest(): bool
+    {
+        return $this->isTest;
+    }
+
+    public function setIsTest(bool $isTest): static
+    {
+        $this->isTest = $isTest;
 
         return $this;
     }

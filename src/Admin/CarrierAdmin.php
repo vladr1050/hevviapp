@@ -25,9 +25,11 @@ use Doctrine\DBAL\Types\TextType;
 use FRPC\SonataAuthorization\Admin\BaseAdmin;
 use FRPC\SonataAuthorization\Form\Type\PlainPasswordType;
 use Sonata\AdminBundle\Datagrid\DatagridInterface;
+use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\DoctrineORMAdminBundle\Filter\BooleanFilter;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -40,6 +42,16 @@ class CarrierAdmin extends BaseAdmin
     {
         $sortValues[DatagridInterface::SORT_BY] = 'createdAt';
         $sortValues[DatagridInterface::SORT_ORDER] = 'desc';
+    }
+
+    protected function configureDatagridFilters(DatagridMapper $datagrid): void
+    {
+        $datagrid
+            ->add('isTest', BooleanFilter::class, [
+                'label' => 'filter.label_is_test',
+            ])
+            ->add('email')
+            ->add('legalName');
     }
 
     protected function configureListFields(ListMapper $list): void
@@ -57,6 +69,9 @@ class CarrierAdmin extends BaseAdmin
             ])
             ->add('email')
             ->add('phone')
+            ->add('isTest', null, [
+                'label' => 'list.label_is_test',
+            ])
             ->add('registrationNumber')
             ->add('isDefaultForPricing', null, [
                 'label' => 'list.label_default_for_pricing',
@@ -86,6 +101,9 @@ class CarrierAdmin extends BaseAdmin
             ->add('legalName')
             ->add('email')
             ->add('phone')
+            ->add('isTest', null, [
+                'label' => 'show.label_is_test',
+            ])
             ->add('address')
             ->add('registrationNumber')
             ->add('vatNumber')
@@ -177,6 +195,11 @@ class CarrierAdmin extends BaseAdmin
             ->end()
             ->with('general', [
                 'class' => 'col-md-12',
+            ])
+            ->add('isTest', CheckboxType::class, [
+                'required' => false,
+                'label' => 'form.label_is_test',
+                'help' => 'form.help_carrier_is_test',
             ])
             ->add('locale', ChoiceType::class, [
                 'choices' => BaseDBO::BASE_LOCALE,

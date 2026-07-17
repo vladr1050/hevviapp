@@ -121,6 +121,7 @@ class OrderController extends AbstractController
         // Build Order
         $order = new Order();
         $order->setSender($user);
+        $order->setIsTest($user->isTest());
         $order->setStatus(Order::STATUS['DRAFT']);
         $order->setPickupAddress((string) $data['pickupAddress']);
         $order->setDropoutAddress((string) $data['dropoutAddress']);
