@@ -306,4 +306,42 @@ class OrderRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    /**
+     * Ongoing delivery orders for the portal floating widget (excludes Approved / Cancelled / Draft).
+     *
+     * @param list<int> $statuses
+     *
+     * @return list<Order>
+     */
+    public function findOngoingBySender(User $user, array $statuses, int $limit = 20): array
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.sender = :user')
+            ->andWhere('o.status IN (:statuses)')
+            ->setParameter('user', $user)
+            ->setParameter('statuses', $statuses)
+            ->orderBy('o.updatedAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param list<int> $statuses
+     *
+     * @return list<Order>
+     */
+    public function findOngoingByCarrier(Carrier $carrier, array $statuses, int $limit = 20): array
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.carrier = :carrier')
+            ->andWhere('o.status IN (:statuses)')
+            ->setParameter('carrier', $carrier)
+            ->setParameter('statuses', $statuses)
+            ->orderBy('o.updatedAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 }
