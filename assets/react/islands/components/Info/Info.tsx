@@ -24,6 +24,25 @@ interface InfoProps {
 	device?: DeviceType
 }
 
+const MAX_VISIBLE_DOTS = 7
+
+/** Contiguous window of dot indices centered on the active card. */
+const getVisibleDotIndices = (count: number, active: number): number[] => {
+	if (count <= MAX_VISIBLE_DOTS) {
+		return Array.from({ length: count }, (_, i) => i)
+	}
+
+	const half = Math.floor(MAX_VISIBLE_DOTS / 2)
+	let start = Math.max(0, active - half)
+	let end = start + MAX_VISIBLE_DOTS
+	if (end > count) {
+		end = count
+		start = count - MAX_VISIBLE_DOTS
+	}
+
+	return Array.from({ length: end - start }, (_, i) => start + i)
+}
+
 const HOVER_CLOSE_DELAY_MS = 150
 const DELIVERY_LIMIT_MS = 48 * 60 * 60 * 1000
 const SWIPE_THRESHOLD_PX = 40
@@ -142,15 +161,18 @@ export const Info: FC<InfoProps> = (props) => {
 	const orderCount = orders.length
 	const safeIndex = orderCount === 0 ? 0 : Math.min(currentOrder, orderCount - 1)
 	const activeOrder = orderCount > 0 ? orders[safeIndex] : undefined
-	const hasPrev = orderCount > 1
-	const hasNext = orderCount > 1
+	const hasPrev = safeIndex > 0
+	const hasNext = safeIndex < orderCount - 1
+	const visibleDotIndices = getVisibleDotIndices(orderCount, safeIndex)
+	const firstVisibleDot = visibleDotIndices[0] ?? 0
+	const lastVisibleDot = visibleDotIndices[visibleDotIndices.length - 1] ?? 0
 
 	const goPrev = useCallback(() => {
-		setCurrentOrder((v) => (v <= 0 ? Math.max(orderCount - 1, 0) : v - 1))
-	}, [orderCount])
+		setCurrentOrder((v) => Math.max(0, v - 1))
+	}, [])
 
 	const goNext = useCallback(() => {
-		setCurrentOrder((v) => (v >= orderCount - 1 ? 0 : v + 1))
+		setCurrentOrder((v) => Math.min(orderCount - 1, v + 1))
 	}, [orderCount])
 
 	const loadSupportContact = useCallback(() => {
@@ -286,18 +308,32 @@ export const Info: FC<InfoProps> = (props) => {
 								/>
 
 								{orderCount > 1 && (
-									<div className={styles.footer}>
-										{orders.map((order, index) => (
-											<button
-												type="button"
-												key={order.id}
-												className={cn(styles.dot, {
-													[styles.dotActive]: index === safeIndex,
-												})}
-												aria-label={`Show ${order.name}`}
-												onClick={() => setCurrentOrder(index)}
-											/>
-										))}
+									<div
+										className={cn(styles.footer, {
+											[styles.footerCompact]: orderCount > 5,
+										})}
+									>
+										{visibleDotIndices.map((index) => {
+											const order = orders[index]
+											const isWindowEdge =
+												orderCount > MAX_VISIBLE_DOTS &&
+												(index === firstVisibleDot || index === lastVisibleDot) &&
+												index !== safeIndex
+
+											return (
+												<button
+													type="button"
+													key={order.id}
+													className={cn(styles.dot, {
+														[styles.dotActive]: index === safeIndex,
+														[styles.dotEdge]: isWindowEdge,
+													})}
+													aria-label={`Show ${order.name}`}
+													aria-current={index === safeIndex ? 'true' : undefined}
+													onClick={() => setCurrentOrder(index)}
+												/>
+											)
+										})}
 									</div>
 								)}
 							</div>

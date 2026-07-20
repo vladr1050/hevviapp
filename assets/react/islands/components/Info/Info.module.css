@@ -111,15 +111,15 @@
 	height: 78%;
 	border: 0;
 	border-radius: 20px;
-	background: #3f3f3f;
+	background: #8a8a8a;
 	transform: translateY(-50%);
 	cursor: pointer;
 	z-index: 0;
-	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 	transition: background-color 0.15s ease;
 
 	&:hover {
-		background: #525252;
+		background: #9e9e9e;
 	}
 }
 
@@ -130,7 +130,6 @@
 .rightPeek {
 	right: -14px;
 }
-
 .content {
 	position: relative;
 	z-index: 1;
@@ -258,23 +257,63 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	flex-wrap: nowrap;
 	gap: 8px;
 	margin-top: 4px;
+	width: 100%;
+	overflow: hidden;
+}
+
+.footerCompact {
+	gap: 5px;
 }
 
 .dot {
+	flex: 0 0 auto;
+	box-sizing: border-box;
 	width: 8px;
 	height: 8px;
+	min-width: 8px;
+	min-height: 8px;
 	padding: 0;
 	border: 0;
 	border-radius: 50%;
+	aspect-ratio: 1 / 1;
 	background: rgba(255, 255, 255, 0.28);
 	cursor: pointer;
-	transition: background-color 0.15s ease;
+	transition:
+		background-color 0.15s ease,
+		width 0.15s ease,
+		height 0.15s ease,
+		min-width 0.15s ease,
+		min-height 0.15s ease,
+		opacity 0.15s ease;
+}
+
+.footerCompact .dot {
+	width: 6px;
+	height: 6px;
+	min-width: 6px;
+	min-height: 6px;
 }
 
 .dotActive {
 	background: #ffffff;
+}
+
+.dotEdge {
+	width: 5px;
+	height: 5px;
+	min-width: 5px;
+	min-height: 5px;
+	opacity: 0.55;
+}
+
+.footerCompact .dotEdge {
+	width: 4px;
+	height: 4px;
+	min-width: 4px;
+	min-height: 4px;
 }
 
 @keyframes fadeIn {
