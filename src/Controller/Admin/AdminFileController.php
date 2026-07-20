@@ -11,6 +11,7 @@ namespace App\Controller\Admin;
 use App\Repository\DocumentRepository;
 use App\Repository\InvoiceRepository;
 use App\Service\Document\StoredPdfPathResolver;
+use App\Service\OrderAttachmentContentTypeResolver;
 use App\Repository\OrderAttachmentRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -41,6 +42,7 @@ class AdminFileController extends AbstractController
         #[Autowire('%kernel.project_dir%/public')]
         private readonly string $publicDir,
         private readonly StoredPdfPathResolver $storedPdfPathResolver,
+        private readonly OrderAttachmentContentTypeResolver $contentTypeResolver,
     ) {
     }
 
@@ -60,6 +62,7 @@ class AdminFileController extends AbstractController
         }
 
         $originalName = $attachment->getOriginalName();
+        $contentType = $this->contentTypeResolver->resolveFromOriginalName($originalName);
 
         return new StreamedResponse(
             static function () use ($absolutePath): void {
@@ -71,7 +74,7 @@ class AdminFileController extends AbstractController
             },
             200,
             [
-                'Content-Type'           => 'application/pdf',
+                'Content-Type'           => $contentType,
                 'Content-Disposition'    => sprintf('inline; filename="%s"', addslashes($originalName)),
                 'Cache-Control'          => 'private, no-store',
                 'X-Content-Type-Options' => 'nosniff',

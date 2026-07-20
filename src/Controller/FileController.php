@@ -13,6 +13,7 @@ use App\Entity\Order;
 use App\Entity\User;
 use App\Repository\OrderAssignmentRepository;
 use App\Repository\OrderAttachmentRepository;
+use App\Service\OrderAttachmentContentTypeResolver;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -35,6 +36,7 @@ class FileController extends AbstractController
         private readonly OrderAssignmentRepository $orderAssignmentRepository,
         #[Autowire('%kernel.project_dir%/public')]
         private readonly string $publicDir,
+        private readonly OrderAttachmentContentTypeResolver $contentTypeResolver,
     ) {
     }
 
@@ -67,7 +69,7 @@ class FileController extends AbstractController
         }
 
         $originalName = $attachment->getOriginalName();
-        $contentType = $this->resolveContentType($originalName);
+        $contentType = $this->contentTypeResolver->resolveFromOriginalName($originalName);
 
         return new StreamedResponse(
             static function () use ($absolutePath): void {
@@ -102,16 +104,5 @@ class FileController extends AbstractController
         }
 
         return null !== $this->orderAssignmentRepository->findAssignedByOrderAndCarrier($order, $carrier);
-    }
-
-    private function resolveContentType(string $originalName): string
-    {
-        $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
-
-        return match ($extension) {
-            'png' => 'image/png',
-            'jpg', 'jpeg' => 'image/jpeg',
-            default => 'application/pdf',
-        };
     }
 }
