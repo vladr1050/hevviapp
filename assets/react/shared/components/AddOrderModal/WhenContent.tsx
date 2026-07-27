@@ -6,6 +6,7 @@ import {
 	PICKUP_TIME_SLOTS,
 	PICKUP_TIME_TO_DEFAULT,
 	PickupTypeEnum,
+	YearsType,
 	months,
 	years,
 } from '@config/constants'
@@ -32,10 +33,29 @@ const slotOptions = PICKUP_TIME_SLOTS.map((slot) => ({ label: slot, value: slot 
 
 const compareTime = (a: string, b: string): number => a.localeCompare(b)
 
+const monthFromForm = (date?: Date, month?: number, year?: string): Date => {
+	if (date instanceof Date && !Number.isNaN(date.getTime())) {
+		return new Date(date.getFullYear(), date.getMonth(), 1)
+	}
+
+	const next = new Date()
+	next.setDate(1)
+	if (year) {
+		next.setFullYear(Number(year))
+	}
+	if (month !== undefined && month !== null && !Number.isNaN(Number(month))) {
+		next.setMonth(Number(month))
+	}
+	return next
+}
+
 export const WhenContent: FC<WhenContentProps> = ({ control, watch, setValue }) => {
 	const pickupType = watch('pickupType') || 'pickup_ready'
 	const pickupTimeFrom = watch('pickupTimeFrom') || PICKUP_TIME_FROM_DEFAULT
 	const pickupTimeTo = watch('pickupTimeTo') || PICKUP_TIME_TO_DEFAULT
+	const pickupDate = watch('pickupDate')
+	const pickupMonth = watch('pickupMonth')
+	const pickupYear = watch('pickupYear')
 
 	// Ensure RHF always has the dropdown defaults (09:00 / 17:00) when entering When.
 	useEffect(() => {
@@ -45,16 +65,24 @@ export const WhenContent: FC<WhenContentProps> = ({ control, watch, setValue }) 
 		if (!watch('pickupTimeTo')) {
 			setValue('pickupTimeTo', PICKUP_TIME_TO_DEFAULT)
 		}
+		// Prefill month/year so Pickup later always has calendar chrome (Edit → When).
+		if (watch('pickupMonth') === undefined || watch('pickupMonth') === null) {
+			setValue('pickupMonth', new Date().getMonth())
+		}
+		if (!watch('pickupYear')) {
+			setValue('pickupYear', String(new Date().getFullYear()) as YearsType)
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
-	const createMonthDate = () => {
-		const d = new Date()
-		d.setDate(1)
-		return d
-	}
+	const [calendarMonth, setCalendarMonth] = useState<Date>(() =>
+		monthFromForm(pickupDate, pickupMonth, pickupYear),
+	)
 
-	const [calendarMonth, setCalendarMonth] = useState<Date>(createMonthDate())
+	// Keep calendar month in sync when Edit (or form reset) sets date/month/year from outside.
+	useEffect(() => {
+		setCalendarMonth(monthFromForm(pickupDate, pickupMonth, pickupYear))
+	}, [pickupDate, pickupMonth, pickupYear])
 
 	const fromOptions = useMemo(
 		() =>
@@ -124,7 +152,7 @@ export const WhenContent: FC<WhenContentProps> = ({ control, watch, setValue }) 
 						name="pickupType"
 						render={({ field: { value, onChange } }) => (
 							<Tabs
-								defaultValue={value}
+								value={value}
 								classNames={{ tab: styles.tab }}
 								onChange={(v) => {
 									onChange(v)
@@ -214,7 +242,7 @@ export const WhenContent: FC<WhenContentProps> = ({ control, watch, setValue }) 
 										defaultValue={value?.toString()}
 										value={value?.toString() || ''}
 										onChange={(v) => {
-											onChange(v)
+											onChange(Number(v))
 											onSelectMonth(Number(v))
 										}}
 										values={months.map((month, index) => ({
@@ -251,9 +279,13 @@ export const WhenContent: FC<WhenContentProps> = ({ control, watch, setValue }) 
 									<Calendar
 										mode="single"
 										month={calendarMonth}
-										key={pickupType}
-										setMonth={() => {}}
-										selected={value}
+										key={`${pickupType}-${calendarMonth.getFullYear()}-${calendarMonth.getMonth()}`}
+										setMonth={setCalendarMonth}
+										selected={
+											value instanceof Date && !Number.isNaN(value.getTime())
+												? value
+												: undefined
+										}
 										disableDaysAhead={1}
 										onSelect={(v) => onChange(v)}
 										className="rounded-lg border"

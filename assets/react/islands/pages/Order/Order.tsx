@@ -12,13 +12,14 @@ import {
 	PICKUP_TIME_FROM_DEFAULT,
 	PICKUP_TIME_TO_DEFAULT,
 	Routes,
+	YearsType,
 } from '@config/constants'
 import { useAuth } from '@hooks/useAuth'
 import { DeviceType, useDevice } from '@hooks/useDevice'
 import { Icon } from '@ui/Icon/Icon'
 import { Modal } from '@ui/Modal/Modal'
 import { cn } from '@utils/cn'
-import { isToday, parse, startOfDay } from 'date-fns'
+import { addDays, parse, startOfDay } from 'date-fns'
 
 import styles from './Order.module.css'
 
@@ -35,17 +36,19 @@ interface OrderPageProps {
 	device?: DeviceType
 }
 
-const isPickupLaterDate = (date: Date): boolean =>
-	!isToday(date) && startOfDay(date) > startOfDay(new Date())
-
+/** Map stored pickup date (or ready-now) into When-step form defaults — same chrome as a fresh request. */
 const getDefaultDate = (date?: string, time?: { from?: string; to?: string }) => {
-	const curDate = date ? parse(date, 'dd.MM.yyyy', new Date()) : undefined
+	const parsed = date?.trim() ? parse(date.trim(), 'dd.MM.yyyy', new Date()) : undefined
+	const validDate = parsed && !Number.isNaN(parsed.getTime()) ? parsed : undefined
+	const fallbackDate = addDays(startOfDay(new Date()), 1)
+	const anchor = validDate ?? fallbackDate
 
 	return {
-		pickupType: (curDate && isPickupLaterDate(curDate) ? 'pickup_later' : 'pickup_ready') as any,
-		pickupDate: curDate,
-		pickupMonth: (curDate ? curDate.getMonth() : undefined) as any,
-		pickupYear: (curDate ? curDate.getFullYear().toString() : undefined) as any,
+		// Any stored pickup date → Pickup later (show calendar). No date → Pickup ready.
+		pickupType: (validDate ? 'pickup_later' : 'pickup_ready') as FormValues['pickupType'],
+		pickupDate: validDate ?? fallbackDate,
+		pickupMonth: anchor.getMonth(),
+		pickupYear: String(anchor.getFullYear()) as YearsType,
 		pickupTimeFrom: normalizePickupTime(time?.from, PICKUP_TIME_FROM_DEFAULT),
 		pickupTimeTo: normalizePickupTime(time?.to, PICKUP_TIME_TO_DEFAULT),
 	}

@@ -7,6 +7,8 @@ import styles from './Tabs.module.css'
 
 interface TabsProps {
 	items?: { label: ReactNode; value: string }[]
+	/** Controlled value — keeps tab UI in sync when form state is set externally (e.g. Edit → When). */
+	value?: string
 	defaultValue?: string
 	onChange?: (value: string) => void
 	className?: string
@@ -16,12 +18,19 @@ interface TabsProps {
 	}
 }
 
-export const Tabs: FC<TabsProps> = ({ items, defaultValue, onChange, className, classNames }) => {
-	const [value, setValue] = useState(defaultValue || items?.[0]?.value)
+export const Tabs: FC<TabsProps> = ({
+	items,
+	value: valueProp,
+	defaultValue,
+	onChange,
+	className,
+	classNames,
+}) => {
+	const [uncontrolled, setUncontrolled] = useState(defaultValue || items?.[0]?.value)
+	const value = valueProp ?? uncontrolled
 
 	return (
 		<SegmentedControl.Root
-			defaultValue={defaultValue}
 			className={cn(styles.wrapper, className, classNames?.root)}
 			size="3"
 			radius="full"
@@ -33,7 +42,9 @@ export const Tabs: FC<TabsProps> = ({ items, defaultValue, onChange, className, 
 					value={item.value}
 					className={cn(styles.tab, classNames?.tab)}
 					onClick={() => {
-						setValue(item.value)
+						if (valueProp === undefined) {
+							setUncontrolled(item.value)
+						}
 						onChange?.(item.value)
 					}}
 				>
