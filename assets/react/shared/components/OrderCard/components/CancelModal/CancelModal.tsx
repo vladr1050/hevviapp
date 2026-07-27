@@ -10,6 +10,8 @@ import styles from './CancelModal.module.css'
 
 interface CancelModalProps {
 	id: string
+	/** Business reference shown in the UI (e.g. HEV-00042). Falls back to id. */
+	reference?: string
 	from?: string
 	to?: string
 	isCarrier?: boolean
@@ -22,10 +24,20 @@ type FormValues = {
 	text?: string
 }
 
-export const CancelModal: FC<CancelModalProps> = ({ id, from, to, isCarrier, actionUrl, csrfToken }) => {
+export const CancelModal: FC<CancelModalProps> = ({
+	id,
+	reference,
+	from,
+	to,
+	isCarrier,
+	actionUrl,
+	csrfToken,
+}) => {
 	const { control, register, watch } = useForm<FormValues>({
 		defaultValues: { radio: '1' },
 	})
+
+	const displayId = reference?.trim() || id
 
 	return (
 		<form className={styles.modal} method="POST" action={actionUrl}>
@@ -44,7 +56,7 @@ export const CancelModal: FC<CancelModalProps> = ({ id, from, to, isCarrier, act
 					)}
 				</span>
 				<span>Cancel order?</span>
-				<span>ID {id}</span>
+				<span>ID {displayId}</span>
 			</div>
 
 			<div className={styles.subtitle}>If you decide to cancel, please mention the reason</div>

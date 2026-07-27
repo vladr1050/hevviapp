@@ -12,7 +12,7 @@ use App\Repository\OrderHistoryRepository;
  *
  * Rules (Europe/Riga, 48h SLA from cargo readiness):
  * - pickupDate is null (ready now) → anchor = max(paidAt, today @ pickupTimeFrom or paidAt);
- * - pickupDate is set (later) → anchor = max(paidAt, pickupDate @ pickupTimeFrom or 08:00),
+ * - pickupDate is set (later) → anchor = max(paidAt, pickupDate @ pickupTimeFrom or 09:00),
  *   so a late payment cannot retroactively shrink the SLA window.
  * - deadline = anchor + DELIVERY_SLA_HOURS.
  *
@@ -23,7 +23,7 @@ final class DeliveryDeadlineCalculator
     public const int DELIVERY_SLA_HOURS = 48;
 
     private const string APP_TZ = 'Europe/Riga';
-    private const string DEFAULT_PICKUP_TIME = '08:00';
+    private const string DEFAULT_PICKUP_TIME = '09:00';
 
     public function __construct(
         private readonly OrderHistoryRepository $orderHistoryRepository,

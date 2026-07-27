@@ -34,9 +34,9 @@ export type FormValues = {
 	pickupType: PickupTypeT
 	pickupMonth: number
 	pickupYear: YearsType
-	/** Working-day window start, e.g. "08:00". */
+	/** Working-day window start, e.g. "09:00". */
 	pickupTimeFrom: string
-	/** Working-day window end, e.g. "18:00". */
+	/** Working-day window end, e.g. "17:00". */
 	pickupTimeTo: string
 	pickupDate?: Date
 

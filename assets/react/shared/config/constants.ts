@@ -88,8 +88,8 @@ export enum PickupTypeEnum {
 }
 
 /** Working-day pickup window (Europe/Riga). */
-export const PICKUP_TIME_FROM_DEFAULT = '08:00'
-export const PICKUP_TIME_TO_DEFAULT = '18:00'
+export const PICKUP_TIME_FROM_DEFAULT = '09:00'
+export const PICKUP_TIME_TO_DEFAULT = '17:00'
 
 /** Hourly slots from 08:00 through 18:00 inclusive. */
 export const PICKUP_TIME_SLOTS: string[] = Array.from({ length: 11 }, (_, i) => {

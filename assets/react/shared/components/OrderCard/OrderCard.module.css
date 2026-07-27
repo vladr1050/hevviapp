@@ -79,10 +79,11 @@
 				@apply flex justify-center mt-7;
 
 				& .route {
-					@apply h-[calc(100%-68px)] w-[3px] bg-black relative;
+					/* Stretch from Pickup address to Delivery address (content column ends there) */
+					@apply h-[calc(100%-0.5rem)] w-[3px] bg-black relative min-h-[3rem];
 
 					&.delivered {
-						@apply h-[calc(100%-8px)];
+						@apply h-[calc(100%-0.5rem)];
 					}
 
 					&:before,
@@ -102,6 +103,15 @@
 						@apply -bottom-1;
 					}
 				}
+			}
+		}
+
+		/* Content under Delivery address — same columns as routeItem, no timeline line */
+		& .routeFollow {
+			@apply grid grid-cols-[20px,1fr] gap-5 w-full;
+
+			& .routeFollowContent {
+				@apply flex flex-col gap-4;
 			}
 		}
 

@@ -53,7 +53,7 @@ export const whenLabel = (
 }
 
 /** Normalize API time to an hourly working-day slot "HH:00" (08–18). */
-export const normalizePickupTime = (raw?: string | null, fallback = '08:00'): string => {
+export const normalizePickupTime = (raw?: string | null, fallback = '09:00'): string => {
 	if (!raw) return fallback
 	const match = raw.trim().match(/^(\d{1,2}):(\d{2})/)
 	if (!match) return fallback

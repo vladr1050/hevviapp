@@ -235,16 +235,24 @@ export const PartyContactDisplay: FC<PartyContactDisplayProps> = ({
 
 	return (
 		<div className={cn(styles.contactDisplay, className)}>
-			{companyName && (
-				<div className={styles.contactRow}>
-					<div className={styles.contactLabel}>Company name</div>
-					<div className={styles.contactValue}>{companyName}</div>
-				</div>
-			)}
-			{phone && (
-				<div className={styles.contactRow}>
-					<div className={styles.contactLabel}>Phone number</div>
-					<div className={styles.contactValue}>{phone}</div>
+			{(companyName || phone) && (
+				<div className={styles.contactTopRow}>
+					{companyName ? (
+						<div className={styles.contactRow}>
+							<div className={styles.contactLabel}>Company name</div>
+							<div className={styles.contactValue}>{companyName}</div>
+						</div>
+					) : (
+						<div />
+					)}
+					{phone ? (
+						<div className={styles.contactRow}>
+							<div className={styles.contactLabel}>Phone number</div>
+							<div className={styles.contactValue}>{phone}</div>
+						</div>
+					) : (
+						<div />
+					)}
 				</div>
 			)}
 			{contactName && (

@@ -691,22 +691,33 @@
 
 					& .timeRange {
 						@apply grid grid-cols-2 gap-3 items-center;
+						gap: 12px;
 					}
 
 					& .timeField {
 						@apply relative;
 
 						& .timeFieldPrefix {
-							@apply absolute left-5 top-1/2 -translate-y-1/2 z-[1] pointer-events-none;
-							@apply text-black/40 font-medium text-sm;
+							@apply absolute left-[29px] top-1/2 -translate-y-1/2 z-[1] pointer-events-none;
+							@apply text-black/35 font-normal text-base;
 						}
 
-						/* Leave room for the "from"/"to" prefix inside the Select trigger. */
+						/* Pill select: light fill, no hard border — matches Figma Frame 1932 */
 						& button {
-							padding-left: 3.5rem !important;
-							background: #ffffff !important;
-							border-color: transparent !important;
-							box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+							padding: 22px 29px 22px 4.25rem !important;
+							background: #f7f7f7 !important;
+							border: none !important;
+							border-radius: 9999px !important;
+							box-shadow: none !important;
+							color: #000000 !important;
+							font-weight: 500 !important;
+						}
+
+						& button:hover,
+						& button:focus {
+							background: #f0f0f0 !important;
+							border: none !important;
+							box-shadow: none !important;
 						}
 					}
 				}

@@ -1,3 +1,4 @@
+import { format } from 'date-fns'
 import { type FC, Fragment, Suspense, useCallback, useState } from 'react'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 
@@ -51,6 +52,10 @@ interface OrderCardProps {
 }
 
 type ModalIdType = 'confirmSender' | 'cancel' | 'rate' | 'declineCarrier'
+
+/** Ready-now orders have no stored pickup date — show today instead of a dash. */
+const loadingReadyLabel = (pickupRequestDate?: string): string =>
+	pickupRequestDate?.trim() || format(new Date(), 'dd.MM.yyyy')
 
 export const OrderCard: FC<OrderCardProps> = ({
 	title,
@@ -307,6 +312,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 						<div className={cn(styles.route, { [styles.delivered]: isDelivered })} />
 					</div>
 
+					{/* Line spans only Pickup → Delivery address so the bottom dot stays on Delivery */}
 					<div className={styles.items}>
 						<div className={styles.item}>
 							<div className={styles.label}>Pickup</div>
@@ -318,7 +324,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 								<div className={styles.item}>
 									<div className={styles.label}>Loading ready</div>
 									<div className={styles.value}>
-										{order?.pickup_request_date || EMPTY_STRING}
+										{loadingReadyLabel(order?.pickup_request_date)}
 									</div>
 								</div>
 
@@ -351,7 +357,12 @@ export const OrderCard: FC<OrderCardProps> = ({
 							<div className={styles.label}>Delivery</div>
 							<div className={styles.value}>{order?.address.to || EMPTY_STRING}</div>
 						</div>
+					</div>
+				</div>
 
+				<div className={styles.routeFollow}>
+					<div aria-hidden="true" />
+					<div className={styles.routeFollowContent}>
 						{canConfirmOffer && (
 							<ConsigneeContactFields expanded={askingContacts} form={contactForm} />
 						)}
@@ -628,6 +639,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 			<Modal isOpen={modalId === 'cancel'} onClose={() => setModalId(undefined)} maxWidth="400px">
 				<CancelModal
 					id={order.id}
+					reference={orderReferenceDisplay}
 					from={order.address.from}
 					to={order.address.to}
 					isCarrier={isCarrier}

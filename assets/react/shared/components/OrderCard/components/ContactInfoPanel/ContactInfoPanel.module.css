@@ -70,11 +70,15 @@
 }
 
 .contactDisplay {
-	@apply flex flex-col gap-2 mt-1;
+	@apply flex flex-col gap-4 mt-1;
+}
+
+.contactTopRow {
+	@apply grid grid-cols-2 gap-4;
 }
 
 .contactRow {
-	@apply flex flex-col gap-1;
+	@apply flex flex-col gap-1 min-w-0;
 }
 
 .contactLabel {
@@ -82,5 +86,5 @@
 }
 
 .contactValue {
-	@apply text-black text-base font-medium;
+	@apply text-black text-base font-medium truncate;
 }
