@@ -86,9 +86,9 @@ export const ShipperContactFields: FC<ShipperContactFieldsProps> = ({
 		<div className={styles.expandInner}>
 			<div className={styles.fields}>
 				<ContactField
-					label="Company name"
+					label="Shippers name"
 					name="shipper_company_name"
-					placeholder="My company name"
+					placeholder="Shippers name"
 					value={form.shipperCompanyName}
 					onChange={form.setShipperCompanyName}
 					required
@@ -150,9 +150,9 @@ export const ConsigneeContactFields: FC<ConsigneeContactFieldsProps> = ({
 				<div className={styles.expandInner}>
 					<div className={styles.fields}>
 						<ContactField
-							label="Company name"
+							label="Consignee name"
 							name="consignee_company_name"
-							placeholder="My company name"
+							placeholder="Consignee name"
 							value={form.consigneeCompanyName}
 							onChange={form.setConsigneeCompanyName}
 							required
