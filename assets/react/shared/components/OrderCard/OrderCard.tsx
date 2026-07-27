@@ -1,9 +1,8 @@
-import { type FC, Fragment, Suspense, useState } from 'react'
+import { type FC, Fragment, Suspense, useCallback, useState } from 'react'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 
 import {
 	EMPTY_STRING,
-	FormActions,
 	OrderStatusEnum,
 	OrderType,
 	carrierCancelOrderUrl,
@@ -28,7 +27,12 @@ import CustomIcon from './CustomMarker.svg'
 import styles from './OrderCard.module.css'
 
 import { CancelModal } from './components/CancelModal/CancelModal'
-import { ContactInfoPanel, PartyContactDisplay } from './components/ContactInfoPanel/ContactInfoPanel'
+import {
+	ConsigneeContactFields,
+	PartyContactDisplay,
+	ShipperContactFields,
+	useOrderContactForm,
+} from './components/ContactInfoPanel/ContactInfoPanel'
 import { ConfirmModal } from './components/ConfirmModal/ConfirmModal'
 import { DeclineModal } from './components/DeclineModal/DeclineModal'
 import { RateModal } from './components/RateModal/RateModal'
@@ -59,6 +63,20 @@ export const OrderCard: FC<OrderCardProps> = ({
 	updateStatusCsrfToken,
 }) => {
 	const [modalId, setModalId] = useState<ModalIdType>()
+	const [askingContacts, setAskingContacts] = useState(false)
+	const [contactsValid, setContactsValid] = useState(false)
+	const handleContactsValidity = useCallback((valid: boolean) => setContactsValid(valid), [])
+	const contactForm = useOrderContactForm(order, handleContactsValidity)
+
+	const openContactStep = () => {
+		setAskingContacts(true)
+		requestAnimationFrame(() => {
+			document.getElementById('order-contact-shipper')?.scrollIntoView({
+				behavior: 'smooth',
+				block: 'nearest',
+			})
+		})
+	}
 
 	const { defaultPosition, defaultBounds } = getDefaultMapData({
 		from: {
@@ -85,7 +103,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 	const isDelivered =
 		order.status === OrderStatusEnum.DELIVERED || order.status === OrderStatusEnum.APPROVED
 	const isOffered = order.status <= OrderStatusEnum.OFFERED
-	const isOfferedSender = isOffered && !isCarrier
+	const canConfirmOffer = !isCarrier && order.status === OrderStatusEnum.OFFERED && !!csrfToken
 
 	const showInfo =
 		!isCanceled &&
@@ -142,12 +160,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 
 	const PriceBlock = () => (!isCarrier ? <SenderTotalPriceBlock /> : <CarrierPriceBlock />)
 
-	const leftPanel = isOfferedSender ? (
-		<form id="order-confirm-form" method="POST" action={userConfirmOrderUrl(order.id)}>
-			<input type="hidden" name="_token" value={csrfToken} />
-			<ContactInfoPanel order={order} />
-		</form>
-	) : (
+	const leftPanel = (
 		<>
 			{!isRequest && (
 				<div className={styles.titleWrapper}>
@@ -320,11 +333,17 @@ export const OrderCard: FC<OrderCardProps> = ({
 							</div>
 						)}
 
-						<PartyContactDisplay
-							companyName={order.shipper_company_name}
-							phone={order.shipper_phone}
-							contactName={order.shipper_contact_name}
-						/>
+						{canConfirmOffer ? (
+							<div id="order-contact-shipper">
+								<ShipperContactFields expanded={askingContacts} form={contactForm} />
+							</div>
+						) : (
+							<PartyContactDisplay
+								companyName={order.shipper_company_name}
+								phone={order.shipper_phone}
+								contactName={order.shipper_contact_name}
+							/>
+						)}
 
 						<div className={styles.hr} />
 
@@ -332,6 +351,10 @@ export const OrderCard: FC<OrderCardProps> = ({
 							<div className={styles.label}>Delivery</div>
 							<div className={styles.value}>{order?.address.to || EMPTY_STRING}</div>
 						</div>
+
+						{canConfirmOffer && (
+							<ConsigneeContactFields expanded={askingContacts} form={contactForm} />
+						)}
 
 						{!isDelivered && (
 							<div className={styles.row}>
@@ -351,11 +374,13 @@ export const OrderCard: FC<OrderCardProps> = ({
 							</div>
 						)}
 
-						<PartyContactDisplay
-							companyName={order.consignee_company_name}
-							phone={order.consignee_phone}
-							contactName={order.consignee_contact_name}
-						/>
+						{!canConfirmOffer && (
+							<PartyContactDisplay
+								companyName={order.consignee_company_name}
+								phone={order.consignee_phone}
+								contactName={order.consignee_contact_name}
+							/>
+						)}
 					</div>
 				</div>
 
@@ -375,7 +400,16 @@ export const OrderCard: FC<OrderCardProps> = ({
 
 	const cardInner = (
 		<>
-			<div className={styles.left}>{leftPanel}</div>
+			<div className={styles.left}>
+				{canConfirmOffer ? (
+					<form id="order-confirm-form" method="POST" action={userConfirmOrderUrl(order.id)}>
+						<input type="hidden" name="_token" value={csrfToken} />
+						{leftPanel}
+					</form>
+				) : (
+					leftPanel
+				)}
+			</div>
 
 			<div
 				className={cn(styles.right, {
@@ -523,22 +557,24 @@ export const OrderCard: FC<OrderCardProps> = ({
 												</Button>
 											</form>
 										)}
-										{order.status === OrderStatusEnum.OFFERED && csrfToken && (
-											isOfferedSender ? (
-												<Button type="submit" form="order-confirm-form" className="w-full">
+										{canConfirmOffer && (
+											askingContacts ? (
+												<Button
+													type="submit"
+													form="order-confirm-form"
+													className="w-full"
+													disabled={!contactsValid}
+												>
 													Confirm order
 												</Button>
 											) : (
-												<form
-													method="POST"
-													className="contents"
-													action={userConfirmOrderUrl(order.id)}
+												<Button
+													type="button"
+													className="w-full"
+													onClick={openContactStep}
 												>
-													<input type="hidden" name="_token" value={csrfToken} />
-													<Button type="submit" className="w-full">
-														Confirm
-													</Button>
-												</form>
+													Confirm
+												</Button>
 											)
 										)}
 									</>
@@ -565,7 +601,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 			<div
 				className={cn(styles.card, {
 					[styles.isCarrier]: isCarrier,
-					[styles.isOfferedSender]: isOfferedSender,
+					[styles.askingContacts]: askingContacts && canConfirmOffer,
 				})}
 			>
 				{cardInner}

@@ -1,32 +1,35 @@
-import { type FC, useState } from 'react'
+import { type FC, useEffect, useState } from 'react'
 
-import { EMPTY_STRING, OrderType } from '@config/constants'
+import { OrderType } from '@config/constants'
 import { Checkbox } from '@ui/Checkbox/Checkbox'
 import { cn } from '@utils/cn'
 
 import styles from './ContactInfoPanel.module.css'
 
-interface ContactInfoPanelProps {
-	order: OrderType
+const isFilled = (value: string): boolean => value.trim().length > 0
+
+export type OrderContactFormState = {
+	shipperCompanyName: string
+	setShipperCompanyName: (v: string) => void
+	shipperPhone: string
+	setShipperPhone: (v: string) => void
+	shipperContactName: string
+	setShipperContactName: (v: string) => void
+	consigneeSameAsShipper: boolean
+	setConsigneeSameAsShipper: (v: boolean) => void
+	consigneeCompanyName: string
+	setConsigneeCompanyName: (v: string) => void
+	consigneePhone: string
+	setConsigneePhone: (v: string) => void
+	consigneeContactName: string
+	setConsigneeContactName: (v: string) => void
+	isValid: boolean
 }
 
-const formatPickupWindow = (order: OrderType): string => {
-	if (!order.pickup_time_from && !order.pickup_time_to) {
-		return 'Anytime'
-	}
-
-	return `${order.pickup_time_from ?? ''} – ${order.pickup_time_to ?? ''}`.trim()
-}
-
-const formatDeliveryWindow = (order: OrderType): string => {
-	if (!order.delivery_time_from && !order.delivery_time_to) {
-		return EMPTY_STRING
-	}
-
-	return `${order.delivery_time_from} - ${order.delivery_time_to}`
-}
-
-export const ContactInfoPanel: FC<ContactInfoPanelProps> = ({ order }) => {
+export function useOrderContactForm(
+	order: OrderType,
+	onValidityChange?: (valid: boolean) => void,
+): OrderContactFormState {
 	const [shipperCompanyName, setShipperCompanyName] = useState(order.shipper_company_name ?? '')
 	const [shipperPhone, setShipperPhone] = useState(order.shipper_phone ?? '')
 	const [shipperContactName, setShipperContactName] = useState(order.shipper_contact_name ?? '')
@@ -35,122 +38,141 @@ export const ContactInfoPanel: FC<ContactInfoPanelProps> = ({ order }) => {
 	const [consigneePhone, setConsigneePhone] = useState(order.consignee_phone ?? '')
 	const [consigneeContactName, setConsigneeContactName] = useState(order.consignee_contact_name ?? '')
 
-	return (
-		<div className={styles.panel}>
-			<div className={styles.title}>Add contact info</div>
+	const isValid =
+		isFilled(shipperCompanyName) &&
+		isFilled(shipperPhone) &&
+		isFilled(shipperContactName) &&
+		(consigneeSameAsShipper ||
+			(isFilled(consigneeCompanyName) &&
+				isFilled(consigneePhone) &&
+				isFilled(consigneeContactName)))
 
-			<div className={styles.routeItem}>
-				<div className={styles.routeWrapper}>
-					<div className={styles.route} />
-				</div>
+	useEffect(() => {
+		onValidityChange?.(isValid)
+	}, [isValid, onValidityChange])
 
-				<div className={styles.sections}>
-					<div className={styles.section}>
-						<div className={styles.sectionHeader}>
-							<span className={styles.sectionLabel}>Loading:</span>
-							<span className={styles.sectionAddress}>{order.address.from || EMPTY_STRING}</span>
-						</div>
+	return {
+		shipperCompanyName,
+		setShipperCompanyName,
+		shipperPhone,
+		setShipperPhone,
+		shipperContactName,
+		setShipperContactName,
+		consigneeSameAsShipper,
+		setConsigneeSameAsShipper,
+		consigneeCompanyName,
+		setConsigneeCompanyName,
+		consigneePhone,
+		setConsigneePhone,
+		consigneeContactName,
+		setConsigneeContactName,
+		isValid,
+	}
+}
 
-						<div className={styles.metaRow}>
-							<div className={styles.metaItem}>
-								<div className={styles.metaLabel}>Loading ready</div>
-								<div className={styles.metaValue}>{order.pickup_request_date || EMPTY_STRING}</div>
-							</div>
-							<div className={styles.metaItem}>
-								<div className={styles.metaLabel}>Loading window</div>
-								<div className={styles.metaValue}>{formatPickupWindow(order)}</div>
-							</div>
-						</div>
+interface ShipperContactFieldsProps {
+	expanded: boolean
+	form: OrderContactFormState
+}
 
-						<div className={styles.fields}>
-							<ContactField
-								label="Shippers name"
-								name="shipper_company_name"
-								placeholder="My company name"
-								value={shipperCompanyName}
-								onChange={setShipperCompanyName}
-							/>
-							<ContactField
-								label="Phone number"
-								name="shipper_phone"
-								placeholder="+371 --- --- ---"
-								type="tel"
-								value={shipperPhone}
-								onChange={setShipperPhone}
-							/>
-							<ContactField
-								label="Name"
-								name="shipper_contact_name"
-								placeholder="Your name"
-								value={shipperContactName}
-								onChange={setShipperContactName}
-							/>
-						</div>
-					</div>
+export const ShipperContactFields: FC<ShipperContactFieldsProps> = ({ expanded, form }) => (
+	<div className={cn(styles.expandWrap, { [styles.expandOpen]: expanded })}>
+		<div className={styles.expandInner}>
+			<div className={styles.fields}>
+				<ContactField
+					label="Shippers name"
+					name="shipper_company_name"
+					placeholder="My company name"
+					value={form.shipperCompanyName}
+					onChange={form.setShipperCompanyName}
+					required
+					highlightEmpty={expanded}
+				/>
+				<ContactField
+					label="Phone number"
+					name="shipper_phone"
+					placeholder="+371 --- --- ---"
+					type="tel"
+					value={form.shipperPhone}
+					onChange={form.setShipperPhone}
+					required
+					highlightEmpty={expanded}
+				/>
+				<ContactField
+					label="Name"
+					name="shipper_contact_name"
+					placeholder="Your name"
+					value={form.shipperContactName}
+					onChange={form.setShipperContactName}
+					required
+					highlightEmpty={expanded}
+				/>
+			</div>
+		</div>
+	</div>
+)
 
-					<div className={styles.divider} />
+interface ConsigneeContactFieldsProps {
+	expanded: boolean
+	form: OrderContactFormState
+}
 
-					<div className={styles.section}>
-						<div className={styles.sectionHeader}>
-							<span className={styles.sectionLabel}>Unloading</span>
-							<span className={styles.sectionAddress}>{order.address.to || EMPTY_STRING}</span>
-						</div>
+export const ConsigneeContactFields: FC<ConsigneeContactFieldsProps> = ({ expanded, form }) => (
+	<div className={cn(styles.expandWrap, { [styles.expandOpen]: expanded })}>
+		<div className={styles.expandInner}>
+			<Checkbox
+				className={styles.sameCheckbox}
+				value={form.consigneeSameAsShipper}
+				onChange={form.setConsigneeSameAsShipper}
+			>
+				Same contact information for unloading
+			</Checkbox>
 
-						<Checkbox
-							className={styles.sameCheckbox}
-							value={consigneeSameAsShipper}
-							onChange={setConsigneeSameAsShipper}
-						>
-							Same contact information for unloading
-						</Checkbox>
+			{form.consigneeSameAsShipper && (
+				<input type="hidden" name="consignee_same_as_shipper" value="1" />
+			)}
 
-						{consigneeSameAsShipper && (
-							<input type="hidden" name="consignee_same_as_shipper" value="1" />
-						)}
-
-						<div className={styles.metaRow}>
-							<div className={styles.metaItem}>
-								<div className={styles.metaLabel}>Delivery date</div>
-								<div className={styles.metaValue}>{order.delivery_date || EMPTY_STRING}</div>
-							</div>
-							<div className={styles.metaItem}>
-								<div className={styles.metaLabel}>Delivery window</div>
-								<div className={styles.metaValue}>{formatDeliveryWindow(order)}</div>
-							</div>
-						</div>
-
-						{!consigneeSameAsShipper && (
-							<div className={styles.fields}>
-								<ContactField
-									label="Consignee name"
-									name="consignee_company_name"
-									placeholder="My company name"
-									value={consigneeCompanyName}
-									onChange={setConsigneeCompanyName}
-								/>
-								<ContactField
-									label="Phone number"
-									name="consignee_phone"
-									placeholder="+371 --- --- ---"
-									type="tel"
-									value={consigneePhone}
-									onChange={setConsigneePhone}
-								/>
-								<ContactField
-									label="Name"
-									name="consignee_contact_name"
-									placeholder="Your name"
-									value={consigneeContactName}
-									onChange={setConsigneeContactName}
-								/>
-							</div>
-						)}
+			<div
+				className={cn(styles.expandWrap, {
+					[styles.expandOpen]: expanded && !form.consigneeSameAsShipper,
+				})}
+			>
+				<div className={styles.expandInner}>
+					<div className={styles.fields}>
+						<ContactField
+							label="Consignee name"
+							name="consignee_company_name"
+							placeholder="My company name"
+							value={form.consigneeCompanyName}
+							onChange={form.setConsigneeCompanyName}
+							required
+							highlightEmpty={expanded && !form.consigneeSameAsShipper}
+						/>
+						<ContactField
+							label="Phone number"
+							name="consignee_phone"
+							placeholder="+371 --- --- ---"
+							type="tel"
+							value={form.consigneePhone}
+							onChange={form.setConsigneePhone}
+							required
+							highlightEmpty={expanded && !form.consigneeSameAsShipper}
+						/>
+						<ContactField
+							label="Name"
+							name="consignee_contact_name"
+							placeholder="Your name"
+							value={form.consigneeContactName}
+							onChange={form.setConsigneeContactName}
+							required
+							highlightEmpty={expanded && !form.consigneeSameAsShipper}
+						/>
 					</div>
 				</div>
 			</div>
 		</div>
-	)
-}
+	</div>
+)
 
 interface ContactFieldProps {
 	label: string
@@ -159,6 +181,8 @@ interface ContactFieldProps {
 	value: string
 	onChange: (value: string) => void
 	type?: 'text' | 'tel'
+	required?: boolean
+	highlightEmpty?: boolean
 }
 
 const ContactField: FC<ContactFieldProps> = ({
@@ -168,19 +192,29 @@ const ContactField: FC<ContactFieldProps> = ({
 	value,
 	onChange,
 	type = 'text',
-}) => (
-	<label className={styles.field}>
-		<span className={styles.fieldLabel}>{label}</span>
-		<input
-			className={styles.fieldInput}
-			name={name}
-			type={type}
-			placeholder={placeholder}
-			value={value}
-			onChange={(e) => onChange(e.target.value)}
-		/>
-	</label>
-)
+	required,
+	highlightEmpty,
+}) => {
+	const showError = !!highlightEmpty && !isFilled(value)
+
+	return (
+		<label className={styles.field}>
+			<span className={cn(styles.fieldLabel, { [styles.fieldLabelError]: showError })}>
+				{label}
+				{required && <span className={styles.requiredMark}> *</span>}
+			</span>
+			<input
+				className={cn(styles.fieldInput, { [styles.fieldInputError]: showError })}
+				name={name}
+				type={type}
+				placeholder={placeholder}
+				value={value}
+				required={required && highlightEmpty}
+				onChange={(e) => onChange(e.target.value)}
+			/>
+		</label>
+	)
+}
 
 interface PartyContactDisplayProps {
 	companyName?: string

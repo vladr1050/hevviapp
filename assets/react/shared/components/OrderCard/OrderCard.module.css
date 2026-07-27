@@ -9,7 +9,7 @@
 		@apply h-[652px] !important;
 	}
 
-	&.isOfferedSender {
+	&.askingContacts {
 		@apply h-[680px];
 	}
 

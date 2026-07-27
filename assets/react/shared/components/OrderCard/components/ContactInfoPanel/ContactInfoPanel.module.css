@@ -1,76 +1,3 @@
-.panel {
-	@apply flex flex-col gap-6 pr-2;
-}
-
-.title {
-	@apply font-semibold text-3xl text-black m-0;
-}
-
-.routeItem {
-	@apply grid grid-cols-[20px,1fr] gap-5 w-full items-stretch;
-}
-
-.routeWrapper {
-	@apply flex justify-center pt-7;
-}
-
-.route {
-	/* One continuous stroke from Loading to Unloading (same pattern as OrderCard) */
-	@apply h-[calc(100%-1.75rem)] w-[3px] bg-black relative min-h-[12rem];
-
-	&:before,
-	&:after {
-		content: '';
-		@apply absolute h-4 w-4 bg-white rounded-full left-0 -translate-x-[6.5px];
-		border: 3px solid black;
-		box-sizing: border-box !important;
-	}
-
-	&:before {
-		@apply -top-1;
-	}
-
-	&:after {
-		@apply -bottom-1;
-	}
-}
-
-.sections {
-	@apply flex flex-col gap-5 min-w-0;
-}
-
-.section {
-	@apply flex flex-col gap-4 min-w-0;
-}
-
-.sectionHeader {
-	@apply flex flex-col gap-1;
-}
-
-.sectionLabel {
-	@apply text-black/40 text-xs font-medium;
-}
-
-.sectionAddress {
-	@apply text-black text-base font-medium;
-}
-
-.metaRow {
-	@apply grid grid-cols-2 gap-4;
-}
-
-.metaItem {
-	@apply flex flex-col gap-1 min-w-0;
-}
-
-.metaLabel {
-	@apply text-black/40 text-xs;
-}
-
-.metaValue {
-	@apply text-black text-base font-medium truncate;
-}
-
 .fields {
 	@apply flex flex-col gap-[22px];
 }
@@ -83,8 +10,16 @@
 	@apply text-xs font-medium text-black/50 ml-[29px];
 }
 
+.fieldLabelError {
+	@apply text-red-600;
+}
+
+.requiredMark {
+	@apply text-red-600 font-medium;
+}
+
 .fieldInput {
-	@apply w-full rounded-full border-0 bg-[#F7F7F7] px-[29px] py-[14px] text-base text-black outline-none transition-colors;
+	@apply w-full rounded-full border border-transparent bg-[#F7F7F7] px-[29px] py-[14px] text-base text-black outline-none transition-colors;
 	font-weight: 400 !important;
 
 	&::placeholder {
@@ -97,8 +32,37 @@
 	}
 }
 
-.divider {
-	@apply w-full h-px bg-[#E5E5E5] shrink-0;
+.fieldInputError {
+	@apply bg-red-50 border-red-500 text-red-900;
+
+	&::placeholder {
+		@apply text-red-400;
+	}
+
+	&:hover,
+	&:focus {
+		@apply bg-red-50 border-red-600;
+	}
+}
+
+.expandWrap {
+	display: grid;
+	grid-template-rows: 0fr;
+	opacity: 0;
+	transition:
+		grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+		opacity 0.35s ease;
+}
+
+.expandOpen {
+	grid-template-rows: 1fr;
+	opacity: 1;
+}
+
+.expandInner {
+	overflow: hidden;
+	min-height: 0;
+	@apply flex flex-col gap-4 pt-3;
 }
 
 .sameCheckbox {
