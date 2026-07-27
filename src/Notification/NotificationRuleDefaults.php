@@ -118,10 +118,22 @@ HTML;
 <p><strong>Iekraušanas informācija:</strong></p>
 <ul>
 <li>Datums: {{PICKUP_DATE}}</li>
+<li>Laiks: {{PICKUP_TIME}}</li>
 <li>Adrese: {{PICKUP_ADDRESS}}</li>
-<li>Kontaktpersona: {{PICKUP_CONTACT}}</li>
+<li>Uzņēmums / nosaukums: {{SHIPPER_COMPANY_NAME}}</li>
+<li>Kontaktpersona: {{SHIPPER_CONTACT_NAME}}</li>
+<li>Tālrunis: {{SHIPPER_PHONE}}</li>
 </ul>
-<p><strong>Klienta informācija:</strong></p>
+<p><strong>Izkraušanas informācija:</strong></p>
+<ul>
+<li>Datums: {{DELIVERY_DATE}}</li>
+<li>Laiks: {{DELIVERY_TIME}}</li>
+<li>Adrese: {{DELIVERY_ADDRESS}}</li>
+<li>Uzņēmums / nosaukums: {{CONSIGNEE_COMPANY_NAME}}</li>
+<li>Kontaktpersona: {{CONSIGNEE_CONTACT_NAME}}</li>
+<li>Tālrunis: {{CONSIGNEE_PHONE}}</li>
+</ul>
+<p><strong>Klienta informācija (pasūtītājs):</strong></p>
 <ul>
 <li>Uzņēmums / persona: {{CLIENT_NAME}}</li>
 <li>Tālrunis: {{CLIENT_PHONE}}</li>

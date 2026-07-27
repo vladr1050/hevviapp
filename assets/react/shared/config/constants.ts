@@ -154,6 +154,13 @@ export type OrderType = {
 	delivery_time_to?: string
 	delivery_date?: string
 
+	shipper_company_name?: string
+	shipper_phone?: string
+	shipper_contact_name?: string
+	consignee_company_name?: string
+	consignee_phone?: string
+	consignee_contact_name?: string
+
 	status: OrderStatusEnum
 	status_text: string
 	price?: string

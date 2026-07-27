@@ -27,6 +27,7 @@ use App\Entity\OrderOffer;
 use App\Repository\OrderAssignmentRepository;
 use App\Repository\OrderRepository;
 use App\Service\Order\DeliveryDeadlineCalculator;
+use App\Service\Order\OrderPartyContactApplicator;
 use App\Service\Order\SenderOrderPayableTotalCentsCalculator;
 use App\Twig\Extension\Filter\MoneyExtension;
 use Doctrine\ORM\EntityManagerInterface;
@@ -51,6 +52,7 @@ class CarrierController extends AbstractController
         private readonly EntityManagerInterface    $em,
         private readonly SenderOrderPayableTotalCentsCalculator $senderOrderPayableTotalCentsCalculator,
         private readonly DeliveryDeadlineCalculator $deliveryDeadlineCalculator,
+        private readonly OrderPartyContactApplicator $orderPartyContactApplicator,
     )
     {
     }
@@ -429,6 +431,7 @@ class CarrierController extends AbstractController
             'delivery_time_to' => $order->getDeliveryTimeTo()?->format('H:i'),
             'pickup_request_date' => $order->getPickupDate()?->format('d.m.Y'),
             'delivery_date' => $order->getDeliveryDate()?->format('d.m.Y'),
+            ...$this->orderPartyContactApplicator->serialize($order),
         ];
 
         return $this->render('public/carrier/pages/order.html.twig', [

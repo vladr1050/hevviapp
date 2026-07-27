@@ -9,6 +9,10 @@
 		@apply h-[652px] !important;
 	}
 
+	&.isOfferedSender {
+		@apply h-[680px];
+	}
+
 	& .left {
 		@apply flex flex-col gap-3 h-full overflow-auto;
 

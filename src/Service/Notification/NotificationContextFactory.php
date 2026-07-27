@@ -61,6 +61,8 @@ final class NotificationContextFactory
             'PICKUP_ADDRESS', 'DELIVERY_ADDRESS', 'PICKUP_CITY', 'DELIVERY_CITY',
             'PICKUP_DATE', 'PICKUP_TIME', 'DELIVERY_DATE', 'DELIVERY_TIME', 'ETA',
             'CARGO_DESCRIPTION', 'RECEIVER_NAME', 'PICKUP_CONTACT',
+            'SHIPPER_COMPANY_NAME', 'SHIPPER_PHONE', 'SHIPPER_CONTACT_NAME',
+            'CONSIGNEE_COMPANY_NAME', 'CONSIGNEE_PHONE', 'CONSIGNEE_CONTACT_NAME',
             'INVOICE_NUMBER', 'INVOICE_DATE', 'TOTAL_AMOUNT', 'CURRENCY', 'PAYMENT_DUE_DATE',
             'PAYMENT_NOTICE_NUMBER', 'PAYMENT_NOTICE_DATE',
         ];
@@ -102,9 +104,25 @@ final class NotificationContextFactory
             $carrierPhone = trim((string) ($carrier->getPhone() ?? ''));
         }
 
-        $pickupContact = $clientName !== '' ? $clientName : $clientPhone;
-        if ($clientPhone !== '' && $clientName !== '') {
-            $pickupContact = $clientName.' / '.$clientPhone;
+        $pickupContact = $this->formatPartyContact(
+            $order->getShipperCompanyName(),
+            $order->getShipperContactName(),
+            $order->getShipperPhone(),
+        );
+        if ($pickupContact === '') {
+            $pickupContact = $clientName !== '' ? $clientName : $clientPhone;
+            if ($clientPhone !== '' && $clientName !== '') {
+                $pickupContact = $clientName.' / '.$clientPhone;
+            }
+        }
+
+        $receiverName = $this->formatPartyContact(
+            $order->getConsigneeCompanyName(),
+            $order->getConsigneeContactName(),
+            $order->getConsigneePhone(),
+        );
+        if ($receiverName === '') {
+            $receiverName = $clientName;
         }
 
         $deliveredHistory = $this->orderHistoryRepository->findLatestForOrderAndStatus(
@@ -137,9 +155,29 @@ final class NotificationContextFactory
             'DELIVERY_TIME' => $deliveryTime,
             'ETA' => $this->buildEta($order),
             'CARGO_DESCRIPTION' => $this->buildCargoDescription($order),
-            'RECEIVER_NAME' => $clientName,
+            'RECEIVER_NAME' => $receiverName,
             'PICKUP_CONTACT' => $pickupContact,
+            'SHIPPER_COMPANY_NAME' => trim((string) ($order->getShipperCompanyName() ?? '')),
+            'SHIPPER_PHONE' => trim((string) ($order->getShipperPhone() ?? '')),
+            'SHIPPER_CONTACT_NAME' => trim((string) ($order->getShipperContactName() ?? '')),
+            'CONSIGNEE_COMPANY_NAME' => trim((string) ($order->getConsigneeCompanyName() ?? '')),
+            'CONSIGNEE_PHONE' => trim((string) ($order->getConsigneePhone() ?? '')),
+            'CONSIGNEE_CONTACT_NAME' => trim((string) ($order->getConsigneeContactName() ?? '')),
         ];
+    }
+
+    private function formatPartyContact(?string $company, ?string $contactName, ?string $phone): string
+    {
+        $company = trim((string) ($company ?? ''));
+        $contactName = trim((string) ($contactName ?? ''));
+        $phone = trim((string) ($phone ?? ''));
+
+        $namePart = $company !== '' ? $company : $contactName;
+        if ($namePart !== '' && $phone !== '') {
+            return $namePart.' / '.$phone;
+        }
+
+        return $namePart !== '' ? $namePart : $phone;
     }
 
     /**

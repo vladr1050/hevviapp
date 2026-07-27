@@ -158,6 +158,32 @@ class Order extends BaseUUID
     #[ORM\Column(options: ['default' => false])]
     private bool $isTest = false;
 
+    /** Shipper company / site name at pickup (optional, portal contact step). */
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    private ?string $shipperCompanyName = null;
+
+    #[ORM\Column(length: 64, nullable: true)]
+    #[Assert\Length(max: 64)]
+    private ?string $shipperPhone = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    private ?string $shipperContactName = null;
+
+    /** Consignee company / site name at delivery (optional). */
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    private ?string $consigneeCompanyName = null;
+
+    #[ORM\Column(length: 64, nullable: true)]
+    #[Assert\Length(max: 64)]
+    private ?string $consigneePhone = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    private ?string $consigneeContactName = null;
+
     /**
      * Не маппится в БД: один раз пропустить OrderOfferAutoCreateListener после flush
      * (аннулирование котировки перед редактированием).
@@ -393,6 +419,90 @@ class Order extends BaseUUID
     public function setIsTest(bool $isTest): static
     {
         $this->isTest = $isTest;
+
+        return $this;
+    }
+
+    public function getShipperCompanyName(): ?string
+    {
+        return $this->shipperCompanyName;
+    }
+
+    public function setShipperCompanyName(?string $shipperCompanyName): static
+    {
+        $this->shipperCompanyName = $shipperCompanyName !== null && $shipperCompanyName !== ''
+            ? trim($shipperCompanyName)
+            : null;
+
+        return $this;
+    }
+
+    public function getShipperPhone(): ?string
+    {
+        return $this->shipperPhone;
+    }
+
+    public function setShipperPhone(?string $shipperPhone): static
+    {
+        $this->shipperPhone = $shipperPhone !== null && $shipperPhone !== ''
+            ? trim($shipperPhone)
+            : null;
+
+        return $this;
+    }
+
+    public function getShipperContactName(): ?string
+    {
+        return $this->shipperContactName;
+    }
+
+    public function setShipperContactName(?string $shipperContactName): static
+    {
+        $this->shipperContactName = $shipperContactName !== null && $shipperContactName !== ''
+            ? trim($shipperContactName)
+            : null;
+
+        return $this;
+    }
+
+    public function getConsigneeCompanyName(): ?string
+    {
+        return $this->consigneeCompanyName;
+    }
+
+    public function setConsigneeCompanyName(?string $consigneeCompanyName): static
+    {
+        $this->consigneeCompanyName = $consigneeCompanyName !== null && $consigneeCompanyName !== ''
+            ? trim($consigneeCompanyName)
+            : null;
+
+        return $this;
+    }
+
+    public function getConsigneePhone(): ?string
+    {
+        return $this->consigneePhone;
+    }
+
+    public function setConsigneePhone(?string $consigneePhone): static
+    {
+        $this->consigneePhone = $consigneePhone !== null && $consigneePhone !== ''
+            ? trim($consigneePhone)
+            : null;
+
+        return $this;
+    }
+
+    public function getConsigneeContactName(): ?string
+    {
+        return $this->consigneeContactName;
+    }
+
+    public function setConsigneeContactName(?string $consigneeContactName): static
+    {
+        $this->consigneeContactName = $consigneeContactName !== null && $consigneeContactName !== ''
+            ? trim($consigneeContactName)
+            : null;
 
         return $this;
     }

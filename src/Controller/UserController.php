@@ -10,6 +10,7 @@ use App\Entity\OrderOffer;
 use App\Entity\User;
 use App\Repository\OrderRepository;
 use App\Service\Invoice\InvoiceIssuingService;
+use App\Service\Order\OrderPartyContactApplicator;
 use App\Service\Order\SenderOrderPayableTotalCentsCalculator;
 use App\Service\OrderAttachmentUploader;
 use App\Twig\Extension\Filter\MoneyExtension;
@@ -35,6 +36,7 @@ class UserController extends AbstractController
         private readonly OrderAttachmentUploader   $attachmentUploader,
         private readonly InvoiceIssuingService     $invoiceIssuingService,
         private readonly SenderOrderPayableTotalCentsCalculator $senderOrderPayableTotalCentsCalculator,
+        private readonly OrderPartyContactApplicator $orderPartyContactApplicator,
     )
     {
     }
@@ -282,6 +284,7 @@ class UserController extends AbstractController
             'delivery_time_to' => $order->getDeliveryTimeTo()?->format('H:i'),
             'pickup_request_date' => $order->getPickupDate()?->format('d.m.Y'),
             'delivery_date' => $order->getDeliveryDate()?->format('d.m.Y'),
+            ...$this->orderPartyContactApplicator->serialize($order),
         ];
 
         return $this->render('public/user/pages/order.html.twig', [
@@ -310,6 +313,8 @@ class UserController extends AbstractController
         if ($order->getStatus() !== Order::STATUS['OFFERED']) {
             return $this->redirectToRoute('user_public_order', ['id' => $id]);
         }
+
+        $this->orderPartyContactApplicator->applyFromRequest($order, $request);
 
         $offerResult = $this->applyOfferStatus($order, OrderOffer::STATUS['ACCEPTED']);
         if (null !== $offerResult) {

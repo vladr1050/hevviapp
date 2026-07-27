@@ -1,0 +1,101 @@
+.panel {
+	@apply flex flex-col gap-5 pr-2;
+}
+
+.title {
+	@apply font-semibold text-3xl text-black m-0;
+}
+
+.routeItem {
+	@apply grid grid-cols-[20px,1fr] gap-5 w-full;
+}
+
+.routeWrapper {
+	@apply flex justify-center mt-7;
+}
+
+.route {
+	@apply h-[calc(100%-24px)] w-[3px] bg-black relative min-h-[120px];
+
+	&:before {
+		content: '';
+		@apply absolute h-4 w-4 bg-white rounded-full left-0 -translate-x-[6.5px] -top-1;
+		border: 3px solid black;
+		box-sizing: border-box !important;
+	}
+}
+
+.routeEnd {
+	@apply h-4 w-4 bg-white rounded-full relative;
+	border: 3px solid black;
+	box-sizing: border-box !important;
+}
+
+.section {
+	@apply flex flex-col gap-4 min-w-0;
+}
+
+.sectionHeader {
+	@apply flex flex-col gap-1;
+}
+
+.sectionLabel {
+	@apply text-black/40 text-xs font-medium;
+}
+
+.sectionAddress {
+	@apply text-black text-base font-medium;
+}
+
+.metaRow {
+	@apply grid grid-cols-2 gap-4;
+}
+
+.metaItem {
+	@apply flex flex-col gap-1 min-w-0;
+}
+
+.metaLabel {
+	@apply text-black/40 text-xs;
+}
+
+.metaValue {
+	@apply text-black text-base font-medium truncate;
+}
+
+.fields {
+	@apply flex flex-col gap-3;
+}
+
+.field {
+	@apply flex flex-col gap-2;
+}
+
+.fieldLabel {
+	@apply text-xs font-medium text-black ml-5;
+}
+
+.fieldInput {
+	@apply w-full rounded-3xl border border-gray-300 px-5 py-[11px] text-base text-black outline-none transition-colors;
+	@apply hover-hover:hover:border-black focus:border-black;
+}
+
+.sameCheckbox {
+	@apply ml-1;
+}
+
+.contactDisplay {
+	@apply flex flex-col gap-2 mt-1;
+}
+
+.contactRow {
+	@apply flex flex-col gap-1;
+}
+
+.contactLabel {
+	@apply text-black/40 text-xs;
+}
+
+.contactValue {
+	@apply text-black text-base font-medium;
+}
