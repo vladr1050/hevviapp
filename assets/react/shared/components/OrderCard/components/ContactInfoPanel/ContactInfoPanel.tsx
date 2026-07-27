@@ -72,21 +72,27 @@ export function useOrderContactForm(
 
 interface ShipperContactFieldsProps {
 	expanded: boolean
+	/** Red empty-state only after a failed Confirm attempt — not on first expand. */
+	showValidation: boolean
 	form: OrderContactFormState
 }
 
-export const ShipperContactFields: FC<ShipperContactFieldsProps> = ({ expanded, form }) => (
+export const ShipperContactFields: FC<ShipperContactFieldsProps> = ({
+	expanded,
+	showValidation,
+	form,
+}) => (
 	<div className={cn(styles.expandWrap, { [styles.expandOpen]: expanded })}>
 		<div className={styles.expandInner}>
 			<div className={styles.fields}>
 				<ContactField
-					label="Shippers name"
+					label="Company name"
 					name="shipper_company_name"
 					placeholder="My company name"
 					value={form.shipperCompanyName}
 					onChange={form.setShipperCompanyName}
 					required
-					highlightEmpty={expanded}
+					showError={showValidation && !isFilled(form.shipperCompanyName)}
 				/>
 				<ContactField
 					label="Phone number"
@@ -96,7 +102,7 @@ export const ShipperContactFields: FC<ShipperContactFieldsProps> = ({ expanded, 
 					value={form.shipperPhone}
 					onChange={form.setShipperPhone}
 					required
-					highlightEmpty={expanded}
+					showError={showValidation && !isFilled(form.shipperPhone)}
 				/>
 				<ContactField
 					label="Name"
@@ -104,8 +110,7 @@ export const ShipperContactFields: FC<ShipperContactFieldsProps> = ({ expanded, 
 					placeholder="Your name"
 					value={form.shipperContactName}
 					onChange={form.setShipperContactName}
-					required
-					highlightEmpty={expanded}
+					showError={showValidation && !isFilled(form.shipperContactName)}
 				/>
 			</div>
 		</div>
@@ -114,10 +119,15 @@ export const ShipperContactFields: FC<ShipperContactFieldsProps> = ({ expanded, 
 
 interface ConsigneeContactFieldsProps {
 	expanded: boolean
+	showValidation: boolean
 	form: OrderContactFormState
 }
 
-export const ConsigneeContactFields: FC<ConsigneeContactFieldsProps> = ({ expanded, form }) => (
+export const ConsigneeContactFields: FC<ConsigneeContactFieldsProps> = ({
+	expanded,
+	showValidation,
+	form,
+}) => (
 	<div className={cn(styles.expandWrap, { [styles.expandOpen]: expanded })}>
 		<div className={styles.expandInner}>
 			<Checkbox
@@ -140,13 +150,17 @@ export const ConsigneeContactFields: FC<ConsigneeContactFieldsProps> = ({ expand
 				<div className={styles.expandInner}>
 					<div className={styles.fields}>
 						<ContactField
-							label="Consignee name"
+							label="Company name"
 							name="consignee_company_name"
 							placeholder="My company name"
 							value={form.consigneeCompanyName}
 							onChange={form.setConsigneeCompanyName}
 							required
-							highlightEmpty={expanded && !form.consigneeSameAsShipper}
+							showError={
+								showValidation &&
+								!form.consigneeSameAsShipper &&
+								!isFilled(form.consigneeCompanyName)
+							}
 						/>
 						<ContactField
 							label="Phone number"
@@ -156,7 +170,11 @@ export const ConsigneeContactFields: FC<ConsigneeContactFieldsProps> = ({ expand
 							value={form.consigneePhone}
 							onChange={form.setConsigneePhone}
 							required
-							highlightEmpty={expanded && !form.consigneeSameAsShipper}
+							showError={
+								showValidation &&
+								!form.consigneeSameAsShipper &&
+								!isFilled(form.consigneePhone)
+							}
 						/>
 						<ContactField
 							label="Name"
@@ -164,8 +182,11 @@ export const ConsigneeContactFields: FC<ConsigneeContactFieldsProps> = ({ expand
 							placeholder="Your name"
 							value={form.consigneeContactName}
 							onChange={form.setConsigneeContactName}
-							required
-							highlightEmpty={expanded && !form.consigneeSameAsShipper}
+							showError={
+								showValidation &&
+								!form.consigneeSameAsShipper &&
+								!isFilled(form.consigneeContactName)
+							}
 						/>
 					</div>
 				</div>
@@ -182,7 +203,7 @@ interface ContactFieldProps {
 	onChange: (value: string) => void
 	type?: 'text' | 'tel'
 	required?: boolean
-	highlightEmpty?: boolean
+	showError?: boolean
 }
 
 const ContactField: FC<ContactFieldProps> = ({
@@ -193,28 +214,31 @@ const ContactField: FC<ContactFieldProps> = ({
 	onChange,
 	type = 'text',
 	required,
-	highlightEmpty,
-}) => {
-	const showError = !!highlightEmpty && !isFilled(value)
-
-	return (
-		<label className={styles.field}>
-			<span className={cn(styles.fieldLabel, { [styles.fieldLabelError]: showError })}>
-				{label}
-				{required && <span className={styles.requiredMark}> *</span>}
+	showError,
+}) => (
+	<label className={styles.field}>
+		<span className={cn(styles.fieldLabel, { [styles.fieldLabelError]: showError })}>
+			{label}
+			{required && <span className={styles.requiredMark}> *</span>}
+		</span>
+		<input
+			className={cn(styles.fieldInput, { [styles.fieldInputError]: showError })}
+			name={name}
+			type={type}
+			placeholder={placeholder}
+			value={value}
+			onChange={(e) => onChange(e.target.value)}
+		/>
+		{showError && (
+			<span className={styles.fieldError} role="alert">
+				<span className={styles.fieldErrorIcon} aria-hidden>
+					!
+				</span>
+				Please enter {label.toLowerCase()}
 			</span>
-			<input
-				className={cn(styles.fieldInput, { [styles.fieldInputError]: showError })}
-				name={name}
-				type={type}
-				placeholder={placeholder}
-				value={value}
-				required={required && highlightEmpty}
-				onChange={(e) => onChange(e.target.value)}
-			/>
-		</label>
-	)
-}
+		)}
+	</label>
+)
 
 interface PartyContactDisplayProps {
 	companyName?: string

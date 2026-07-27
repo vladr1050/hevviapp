@@ -15,7 +15,11 @@
 }
 
 .requiredMark {
-	@apply text-red-600 font-medium;
+	@apply text-black/50 font-medium;
+}
+
+.fieldLabelError .requiredMark {
+	@apply text-red-600;
 }
 
 .fieldInput {
@@ -33,7 +37,7 @@
 }
 
 .fieldInputError {
-	@apply bg-red-50 border-red-500 text-red-900;
+	@apply bg-red-50 border-red-600 text-red-900;
 
 	&::placeholder {
 		@apply text-red-400;
@@ -43,6 +47,14 @@
 	&:focus {
 		@apply bg-red-50 border-red-600;
 	}
+}
+
+.fieldError {
+	@apply flex items-center gap-1.5 text-red-600 text-xs font-medium ml-[29px];
+}
+
+.fieldErrorIcon {
+	@apply inline-flex items-center justify-center shrink-0 w-3.5 h-3.5 rounded-full bg-red-600 text-white text-[9px] font-bold leading-none;
 }
 
 .expandWrap {

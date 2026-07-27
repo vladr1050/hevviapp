@@ -69,12 +69,29 @@ export const OrderCard: FC<OrderCardProps> = ({
 }) => {
 	const [modalId, setModalId] = useState<ModalIdType>()
 	const [askingContacts, setAskingContacts] = useState(false)
+	const [showContactValidation, setShowContactValidation] = useState(false)
 	const [contactsValid, setContactsValid] = useState(false)
 	const handleContactsValidity = useCallback((valid: boolean) => setContactsValid(valid), [])
 	const contactForm = useOrderContactForm(order, handleContactsValidity)
 
 	const openContactStep = () => {
+		setShowContactValidation(false)
 		setAskingContacts(true)
+		requestAnimationFrame(() => {
+			document.getElementById('order-contact-shipper')?.scrollIntoView({
+				behavior: 'smooth',
+				block: 'nearest',
+			})
+		})
+	}
+
+	const handleConfirmOrderClick = () => {
+		if (contactsValid) {
+			const form = document.getElementById('order-confirm-form') as HTMLFormElement | null
+			form?.requestSubmit()
+			return
+		}
+		setShowContactValidation(true)
 		requestAnimationFrame(() => {
 			document.getElementById('order-contact-shipper')?.scrollIntoView({
 				behavior: 'smooth',
@@ -167,143 +184,153 @@ export const OrderCard: FC<OrderCardProps> = ({
 
 	const leftPanel = (
 		<>
-			{!isRequest && (
+			{askingContacts && canConfirmOffer ? (
 				<div className={styles.titleWrapper}>
-					<div className={styles.title}>{title}</div>
-
-					<div className={styles.id}>
-						Reference ID
-						<span>{orderReferenceDisplay}</span>
-					</div>
+					<div className={styles.title}>Add contact info</div>
 				</div>
+			) : (
+				!isRequest && (
+					<div className={styles.titleWrapper}>
+						<div className={styles.title}>{title}</div>
+
+						<div className={styles.id}>
+							Reference ID
+							<span>{orderReferenceDisplay}</span>
+						</div>
+					</div>
+				)
 			)}
 
 			<div className={styles.items}>
-				<div className={styles.itemsWrapper}>
-					<div className={styles.label}>Cargo</div>
-
-					<div className={styles.itemsContent}>
-						{/* CARGO */}
-						{order.cargo.map((item, index) => (
-							<Fragment key={index}>
-								<div className={styles.cargo}>
-									<div className={styles.index}>{index + 1}.</div>
-
-									{/* NAME */}
-									<div className={cn(styles.value, '!truncate')} title={item?.name}>
-										{item?.name || EMPTY_STRING}
-									</div>
-
-									{/* Q-ty */}
-									<div className={styles.value}>
-										{!item?.quantity ? (
-											EMPTY_STRING
-										) : (
-											<>
-												{item?.quantity}{' '}
-												<span className="font-normal text-xs">
-													{item?.quantity > 1 ? 'pcs' : 'pc'}
-												</span>
-											</>
-										)}
-									</div>
-
-									{/* Size */}
-									<div className={styles.value}>
-										{!item?.dimensions
-											? EMPTY_STRING
-											: item?.dimensions?.split('x').map((d, i, arr) => {
-													if (i === arr.length - 1)
-														return (
-															<>
-																{d} <span className="font-normal text-xs">cm</span>
-															</>
-														)
-													return (
-														<>
-															{d} <span className="font-normal text-xs">x</span>{' '}
-														</>
-													)
-												})}
-									</div>
-
-									{/* weight*/}
-									<div className={styles.value}>
-										{!item?.weight ? (
-											EMPTY_STRING
-										) : (
-											<>
-												{item?.weight} <span className="font-normal text-xs">kg</span>
-											</>
-										)}
-									</div>
-								</div>
-
-								<div className={styles.hr} />
-							</Fragment>
-						))}
-					</div>
-
-					{/* FILES */}
-					{!!order?.attachments?.length && (
+				{!(askingContacts && canConfirmOffer) && (
+					<>
 						<div className={styles.itemsWrapper}>
-							<div className={styles.label}>Documents</div>
+							<div className={styles.label}>Cargo</div>
 
 							<div className={styles.itemsContent}>
-								{order?.attachments?.map((file, index) => (
+								{/* CARGO */}
+								{order.cargo.map((item, index) => (
 									<Fragment key={index}>
-										<div className={styles.document}>
+										<div className={styles.cargo}>
+											<div className={styles.index}>{index + 1}.</div>
+
+											{/* NAME */}
+											<div className={cn(styles.value, '!truncate')} title={item?.name}>
+												{item?.name || EMPTY_STRING}
+											</div>
+
+											{/* Q-ty */}
 											<div className={styles.value}>
-												<Icon type={getFileCategory(file.filename)} size={16} />
+												{!item?.quantity ? (
+													EMPTY_STRING
+												) : (
+													<>
+														{item?.quantity}{' '}
+														<span className="font-normal text-xs">
+															{item?.quantity > 1 ? 'pcs' : 'pc'}
+														</span>
+													</>
+												)}
 											</div>
 
-											<div className={cn(styles.value, '!truncate')} title={file.filename}>
-												{file.filename}
+											{/* Size */}
+											<div className={styles.value}>
+												{!item?.dimensions
+													? EMPTY_STRING
+													: item?.dimensions?.split('x').map((d, i, arr) => {
+															if (i === arr.length - 1)
+																return (
+																	<>
+																		{d} <span className="font-normal text-xs">cm</span>
+																	</>
+																)
+															return (
+																<>
+																	{d} <span className="font-normal text-xs">x</span>{' '}
+																</>
+															)
+														})}
 											</div>
 
-											<button
-												type="button"
-												className={styles.fileDownload}
-												onClick={() => downloadFileByUrl(file.path, file.filename)}
-												title="Download"
-											>
-												<Icon type="download_file" size={16} />
-											</button>
+											{/* weight*/}
+											<div className={styles.value}>
+												{!item?.weight ? (
+													EMPTY_STRING
+												) : (
+													<>
+														{item?.weight} <span className="font-normal text-xs">kg</span>
+													</>
+												)}
+											</div>
 										</div>
 
 										<div className={styles.hr} />
 									</Fragment>
 								))}
 							</div>
-						</div>
-					)}
-				</div>
 
-				{(!!order?.stackable || !!order?.manipulator_needed) && (
-					<>
-						<div className={styles.item}>
-							<div className={styles.label}>Additionals</div>
-							<div className={styles.additionals}>
-								{order?.stackable && (
-									<div className={styles.additional}>
-										<div className={styles.icon}>
-											<Icon type="check_circle_1" size={20} />
-										</div>
-										Stackability
+							{/* FILES */}
+							{!!order?.attachments?.length && (
+								<div className={styles.itemsWrapper}>
+									<div className={styles.label}>Documents</div>
+
+									<div className={styles.itemsContent}>
+										{order?.attachments?.map((file, index) => (
+											<Fragment key={index}>
+												<div className={styles.document}>
+													<div className={styles.value}>
+														<Icon type={getFileCategory(file.filename)} size={16} />
+													</div>
+
+													<div className={cn(styles.value, '!truncate')} title={file.filename}>
+														{file.filename}
+													</div>
+
+													<button
+														type="button"
+														className={styles.fileDownload}
+														onClick={() => downloadFileByUrl(file.path, file.filename)}
+														title="Download"
+													>
+														<Icon type="download_file" size={16} />
+													</button>
+												</div>
+
+												<div className={styles.hr} />
+											</Fragment>
+										))}
 									</div>
-								)}
-								{order?.manipulator_needed && (
-									<div className={styles.additional}>
-										<div className={styles.icon}>
-											<Icon type="check_circle_1" size={20} />
-										</div>
-										Truck with lift
-									</div>
-								)}
-							</div>
+								</div>
+							)}
 						</div>
 
-						<div className={styles.hr} />
+						{(!!order?.stackable || !!order?.manipulator_needed) && (
+							<>
+								<div className={styles.item}>
+									<div className={styles.label}>Additionals</div>
+									<div className={styles.additionals}>
+										{order?.stackable && (
+											<div className={styles.additional}>
+												<div className={styles.icon}>
+													<Icon type="check_circle_1" size={20} />
+												</div>
+												Stackability
+											</div>
+										)}
+										{order?.manipulator_needed && (
+											<div className={styles.additional}>
+												<div className={styles.icon}>
+													<Icon type="check_circle_1" size={20} />
+												</div>
+												Truck with lift
+											</div>
+										)}
+									</div>
+								</div>
+
+								<div className={styles.hr} />
+							</>
+						)}
 					</>
 				)}
 
@@ -315,7 +342,9 @@ export const OrderCard: FC<OrderCardProps> = ({
 					{/* Line spans only Pickup → Delivery address so the bottom dot stays on Delivery */}
 					<div className={styles.items}>
 						<div className={styles.item}>
-							<div className={styles.label}>Pickup</div>
+							<div className={styles.label}>
+								{askingContacts && canConfirmOffer ? 'Loading:' : 'Pickup'}
+							</div>
 							<div className={styles.value}>{order?.address.from || EMPTY_STRING}</div>
 						</div>
 
@@ -341,7 +370,11 @@ export const OrderCard: FC<OrderCardProps> = ({
 
 						{canConfirmOffer ? (
 							<div id="order-contact-shipper">
-								<ShipperContactFields expanded={askingContacts} form={contactForm} />
+								<ShipperContactFields
+									expanded={askingContacts}
+									showValidation={showContactValidation}
+									form={contactForm}
+								/>
 							</div>
 						) : (
 							<PartyContactDisplay
@@ -354,7 +387,9 @@ export const OrderCard: FC<OrderCardProps> = ({
 						<div className={styles.hr} />
 
 						<div className={styles.item}>
-							<div className={styles.label}>Delivery</div>
+							<div className={styles.label}>
+								{askingContacts && canConfirmOffer ? 'Unloading' : 'Delivery'}
+							</div>
 							<div className={styles.value}>{order?.address.to || EMPTY_STRING}</div>
 						</div>
 					</div>
@@ -364,7 +399,11 @@ export const OrderCard: FC<OrderCardProps> = ({
 					<div aria-hidden="true" />
 					<div className={styles.routeFollowContent}>
 						{canConfirmOffer && (
-							<ConsigneeContactFields expanded={askingContacts} form={contactForm} />
+							<ConsigneeContactFields
+								expanded={askingContacts}
+								showValidation={showContactValidation}
+								form={contactForm}
+							/>
 						)}
 
 						{!isDelivered && (
@@ -395,16 +434,20 @@ export const OrderCard: FC<OrderCardProps> = ({
 					</div>
 				</div>
 
-				<div className={styles.hr} />
+				{!(askingContacts && canConfirmOffer) && (
+					<>
+						<div className={styles.hr} />
 
-				<div className={styles.item}>
-					<div className={styles.label}>Comments</div>
-					<div className={styles.comments}>{order?.comment || EMPTY_STRING}</div>
-				</div>
+						<div className={styles.item}>
+							<div className={styles.label}>Comments</div>
+							<div className={styles.comments}>{order?.comment || EMPTY_STRING}</div>
+						</div>
 
-				<div className={styles.hr} />
+						<div className={styles.hr} />
 
-				<PriceBlock />
+						<PriceBlock />
+					</>
+				)}
 			</div>
 		</>
 	)
@@ -571,10 +614,9 @@ export const OrderCard: FC<OrderCardProps> = ({
 										{canConfirmOffer && (
 											askingContacts ? (
 												<Button
-													type="submit"
-													form="order-confirm-form"
+													type="button"
 													className="w-full"
-													disabled={!contactsValid}
+													onClick={handleConfirmOrderClick}
 												>
 													Confirm order
 												</Button>
