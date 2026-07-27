@@ -1,5 +1,5 @@
 .panel {
-	@apply flex flex-col gap-5 pr-2;
+	@apply flex flex-col gap-6 pr-2;
 }
 
 .title {
@@ -7,28 +7,36 @@
 }
 
 .routeItem {
-	@apply grid grid-cols-[20px,1fr] gap-5 w-full;
+	@apply grid grid-cols-[20px,1fr] gap-5 w-full items-stretch;
 }
 
 .routeWrapper {
-	@apply flex justify-center mt-7;
+	@apply flex justify-center pt-7;
 }
 
 .route {
-	@apply h-[calc(100%-24px)] w-[3px] bg-black relative min-h-[120px];
+	/* One continuous stroke from Loading to Unloading (same pattern as OrderCard) */
+	@apply h-[calc(100%-1.75rem)] w-[3px] bg-black relative min-h-[12rem];
 
-	&:before {
+	&:before,
+	&:after {
 		content: '';
-		@apply absolute h-4 w-4 bg-white rounded-full left-0 -translate-x-[6.5px] -top-1;
+		@apply absolute h-4 w-4 bg-white rounded-full left-0 -translate-x-[6.5px];
 		border: 3px solid black;
 		box-sizing: border-box !important;
 	}
+
+	&:before {
+		@apply -top-1;
+	}
+
+	&:after {
+		@apply -bottom-1;
+	}
 }
 
-.routeEnd {
-	@apply h-4 w-4 bg-white rounded-full relative;
-	border: 3px solid black;
-	box-sizing: border-box !important;
+.sections {
+	@apply flex flex-col gap-5 min-w-0;
 }
 
 .section {
@@ -64,7 +72,7 @@
 }
 
 .fields {
-	@apply flex flex-col gap-3;
+	@apply flex flex-col gap-[22px];
 }
 
 .field {
@@ -72,12 +80,25 @@
 }
 
 .fieldLabel {
-	@apply text-xs font-medium text-black ml-5;
+	@apply text-xs font-medium text-black/50 ml-[29px];
 }
 
 .fieldInput {
-	@apply w-full rounded-3xl border border-gray-300 px-5 py-[11px] text-base text-black outline-none transition-colors;
-	@apply hover-hover:hover:border-black focus:border-black;
+	@apply w-full rounded-full border-0 bg-[#F7F7F7] px-[29px] py-[14px] text-base text-black outline-none transition-colors;
+	font-weight: 400 !important;
+
+	&::placeholder {
+		@apply text-black/35;
+	}
+
+	&:hover,
+	&:focus {
+		@apply bg-[#F0F0F0];
+	}
+}
+
+.divider {
+	@apply w-full h-px bg-[#E5E5E5] shrink-0;
 }
 
 .sameCheckbox {

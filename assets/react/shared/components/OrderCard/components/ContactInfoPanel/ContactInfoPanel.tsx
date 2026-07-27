@@ -44,110 +44,108 @@ export const ContactInfoPanel: FC<ContactInfoPanelProps> = ({ order }) => {
 					<div className={styles.route} />
 				</div>
 
-				<div className={styles.section}>
-					<div className={styles.sectionHeader}>
-						<span className={styles.sectionLabel}>Loading:</span>
-						<span className={styles.sectionAddress}>{order.address.from || EMPTY_STRING}</span>
-					</div>
-
-					<div className={styles.metaRow}>
-						<div className={styles.metaItem}>
-							<div className={styles.metaLabel}>Loading ready</div>
-							<div className={styles.metaValue}>{order.pickup_request_date || EMPTY_STRING}</div>
+				<div className={styles.sections}>
+					<div className={styles.section}>
+						<div className={styles.sectionHeader}>
+							<span className={styles.sectionLabel}>Loading:</span>
+							<span className={styles.sectionAddress}>{order.address.from || EMPTY_STRING}</span>
 						</div>
-						<div className={styles.metaItem}>
-							<div className={styles.metaLabel}>Loading window</div>
-							<div className={styles.metaValue}>{formatPickupWindow(order)}</div>
+
+						<div className={styles.metaRow}>
+							<div className={styles.metaItem}>
+								<div className={styles.metaLabel}>Loading ready</div>
+								<div className={styles.metaValue}>{order.pickup_request_date || EMPTY_STRING}</div>
+							</div>
+							<div className={styles.metaItem}>
+								<div className={styles.metaLabel}>Loading window</div>
+								<div className={styles.metaValue}>{formatPickupWindow(order)}</div>
+							</div>
 						</div>
-					</div>
 
-					<div className={styles.fields}>
-						<ContactField
-							label="Shippers name"
-							name="shipper_company_name"
-							placeholder="My company name"
-							value={shipperCompanyName}
-							onChange={setShipperCompanyName}
-						/>
-						<ContactField
-							label="Phone number"
-							name="shipper_phone"
-							placeholder="+371 --- --- ---"
-							type="tel"
-							value={shipperPhone}
-							onChange={setShipperPhone}
-						/>
-						<ContactField
-							label="Name"
-							name="shipper_contact_name"
-							placeholder="Your name"
-							value={shipperContactName}
-							onChange={setShipperContactName}
-						/>
-					</div>
-				</div>
-			</div>
-
-			<div className={styles.routeItem}>
-				<div className={styles.routeWrapper}>
-					<div className={styles.routeEnd} />
-				</div>
-
-				<div className={styles.section}>
-					<div className={styles.sectionHeader}>
-						<span className={styles.sectionLabel}>Unloading</span>
-						<span className={styles.sectionAddress}>{order.address.to || EMPTY_STRING}</span>
-					</div>
-
-					<Checkbox
-						className={styles.sameCheckbox}
-						value={consigneeSameAsShipper}
-						onChange={setConsigneeSameAsShipper}
-					>
-						Same contact information for unloading
-					</Checkbox>
-
-					{consigneeSameAsShipper && (
-						<input type="hidden" name="consignee_same_as_shipper" value="1" />
-					)}
-
-					<div className={styles.metaRow}>
-						<div className={styles.metaItem}>
-							<div className={styles.metaLabel}>Delivery date</div>
-							<div className={styles.metaValue}>{order.delivery_date || EMPTY_STRING}</div>
-						</div>
-						<div className={styles.metaItem}>
-							<div className={styles.metaLabel}>Delivery window</div>
-							<div className={styles.metaValue}>{formatDeliveryWindow(order)}</div>
-						</div>
-					</div>
-
-					{!consigneeSameAsShipper && (
 						<div className={styles.fields}>
 							<ContactField
-								label="Consignee name"
-								name="consignee_company_name"
+								label="Shippers name"
+								name="shipper_company_name"
 								placeholder="My company name"
-								value={consigneeCompanyName}
-								onChange={setConsigneeCompanyName}
+								value={shipperCompanyName}
+								onChange={setShipperCompanyName}
 							/>
 							<ContactField
 								label="Phone number"
-								name="consignee_phone"
+								name="shipper_phone"
 								placeholder="+371 --- --- ---"
 								type="tel"
-								value={consigneePhone}
-								onChange={setConsigneePhone}
+								value={shipperPhone}
+								onChange={setShipperPhone}
 							/>
 							<ContactField
 								label="Name"
-								name="consignee_contact_name"
+								name="shipper_contact_name"
 								placeholder="Your name"
-								value={consigneeContactName}
-								onChange={setConsigneeContactName}
+								value={shipperContactName}
+								onChange={setShipperContactName}
 							/>
 						</div>
-					)}
+					</div>
+
+					<div className={styles.divider} />
+
+					<div className={styles.section}>
+						<div className={styles.sectionHeader}>
+							<span className={styles.sectionLabel}>Unloading</span>
+							<span className={styles.sectionAddress}>{order.address.to || EMPTY_STRING}</span>
+						</div>
+
+						<Checkbox
+							className={styles.sameCheckbox}
+							value={consigneeSameAsShipper}
+							onChange={setConsigneeSameAsShipper}
+						>
+							Same contact information for unloading
+						</Checkbox>
+
+						{consigneeSameAsShipper && (
+							<input type="hidden" name="consignee_same_as_shipper" value="1" />
+						)}
+
+						<div className={styles.metaRow}>
+							<div className={styles.metaItem}>
+								<div className={styles.metaLabel}>Delivery date</div>
+								<div className={styles.metaValue}>{order.delivery_date || EMPTY_STRING}</div>
+							</div>
+							<div className={styles.metaItem}>
+								<div className={styles.metaLabel}>Delivery window</div>
+								<div className={styles.metaValue}>{formatDeliveryWindow(order)}</div>
+							</div>
+						</div>
+
+						{!consigneeSameAsShipper && (
+							<div className={styles.fields}>
+								<ContactField
+									label="Consignee name"
+									name="consignee_company_name"
+									placeholder="My company name"
+									value={consigneeCompanyName}
+									onChange={setConsigneeCompanyName}
+								/>
+								<ContactField
+									label="Phone number"
+									name="consignee_phone"
+									placeholder="+371 --- --- ---"
+									type="tel"
+									value={consigneePhone}
+									onChange={setConsigneePhone}
+								/>
+								<ContactField
+									label="Name"
+									name="consignee_contact_name"
+									placeholder="Your name"
+									value={consigneeContactName}
+									onChange={setConsigneeContactName}
+								/>
+							</div>
+						)}
+					</div>
 				</div>
 			</div>
 		</div>
