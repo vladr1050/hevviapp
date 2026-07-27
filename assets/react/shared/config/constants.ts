@@ -87,14 +87,16 @@ export enum PickupTypeEnum {
 	pickup_later = 'Pickup later',
 }
 
-/** Working-day pickup window (Europe/Riga). */
+/** Working-day pickup window defaults (Europe/Riga). */
 export const PICKUP_TIME_FROM_DEFAULT = '09:00'
 export const PICKUP_TIME_TO_DEFAULT = '17:00'
 
-/** Hourly slots from 08:00 through 18:00 inclusive. */
-export const PICKUP_TIME_SLOTS: string[] = Array.from({ length: 11 }, (_, i) => {
-	const hour = 8 + i
-	return `${String(hour).padStart(2, '0')}:00`
+/** Hourly slots from 00:00 through 24:00 inclusive. */
+export const PICKUP_TIME_SLOTS: string[] = Array.from({ length: 25 }, (_, i) => {
+	if (i === 24) {
+		return '24:00'
+	}
+	return `${String(i).padStart(2, '0')}:00`
 })
 
 export enum OrderStatusEnum {

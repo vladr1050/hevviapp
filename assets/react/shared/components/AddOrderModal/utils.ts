@@ -52,11 +52,15 @@ export const whenLabel = (
 	return `${PickupTypeEnum[pickupType]}, ${time}`
 }
 
-/** Normalize API time to an hourly working-day slot "HH:00" (08–18). */
+/** Normalize API time to an hourly slot "HH:00" (00–24). End-of-day 23:59 → 24:00. */
 export const normalizePickupTime = (raw?: string | null, fallback = '09:00'): string => {
 	if (!raw) return fallback
-	const match = raw.trim().match(/^(\d{1,2}):(\d{2})/)
+	const trimmed = raw.trim()
+	if (trimmed === '23:59' || trimmed.startsWith('23:59')) return '24:00'
+	const match = trimmed.match(/^(\d{1,2}):(\d{2})/)
 	if (!match) return fallback
-	const hour = Math.min(18, Math.max(8, Number(match[1])))
+	const hour = Number(match[1])
+	if (hour === 24) return '24:00'
+	if (Number.isNaN(hour) || hour < 0 || hour > 23) return fallback
 	return `${String(hour).padStart(2, '0')}:00`
 }

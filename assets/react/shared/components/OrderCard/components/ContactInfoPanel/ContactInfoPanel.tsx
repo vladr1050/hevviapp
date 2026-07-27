@@ -237,28 +237,32 @@ export const PartyContactDisplay: FC<PartyContactDisplayProps> = ({
 		<div className={cn(styles.contactDisplay, className)}>
 			{(companyName || phone) && (
 				<div className={styles.contactTopRow}>
-					{companyName ? (
-						<div className={styles.contactRow}>
-							<div className={styles.contactLabel}>Company name</div>
-							<div className={styles.contactValue}>{companyName}</div>
-						</div>
-					) : (
-						<div />
-					)}
-					{phone ? (
-						<div className={styles.contactRow}>
-							<div className={styles.contactLabel}>Phone number</div>
-							<div className={styles.contactValue}>{phone}</div>
-						</div>
-					) : (
-						<div />
-					)}
+					<div className={styles.contactRow}>
+						{companyName && (
+							<>
+								<div className={styles.contactLabel}>Company name</div>
+								<div className={styles.contactValue}>{companyName}</div>
+							</>
+						)}
+					</div>
+					<div className={styles.contactRow}>
+						{phone && (
+							<>
+								<div className={styles.contactLabel}>Phone number</div>
+								<div className={styles.contactValue}>{phone}</div>
+							</>
+						)}
+					</div>
+					{/* third column reserved — matches Loading window / Delivery window track */}
+					<div />
 				</div>
 			)}
 			{contactName && (
-				<div className={styles.contactRow}>
-					<div className={styles.contactLabel}>Name</div>
-					<div className={styles.contactValue}>{contactName}</div>
+				<div className={styles.contactTopRow}>
+					<div className={styles.contactRow}>
+						<div className={styles.contactLabel}>Name</div>
+						<div className={styles.contactValue}>{contactName}</div>
+					</div>
 				</div>
 			)}
 		</div>

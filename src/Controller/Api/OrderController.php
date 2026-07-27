@@ -142,10 +142,10 @@ class OrderController extends AbstractController
             $order->setNotes((string) $data['notes']);
         }
         if (!empty($data['pickupTimeFrom'])) {
-            $order->setPickupTimeFrom(\DateTime::createFromFormat('H:i', $data['pickupTimeFrom']) ?: null);
+            $order->setPickupTimeFrom($this->parseOrderTimeHi((string) $data['pickupTimeFrom']));
         }
         if (!empty($data['pickupTimeTo'])) {
-            $order->setPickupTimeTo(\DateTime::createFromFormat('H:i', $data['pickupTimeTo']) ?: null);
+            $order->setPickupTimeTo($this->parseOrderTimeHi((string) $data['pickupTimeTo']));
         }
         $pickupDate = !empty($data['pickupDate'])
             ? (\DateTime::createFromFormat('Y-m-d', $data['pickupDate']) ?: null)
@@ -419,12 +419,12 @@ class OrderController extends AbstractController
 
         $order->setPickupTimeFrom(
             !empty($data['pickupTimeFrom'])
-                ? (\DateTime::createFromFormat('H:i', $data['pickupTimeFrom']) ?: null)
+                ? $this->parseOrderTimeHi((string) $data['pickupTimeFrom'])
                 : null
         );
         $order->setPickupTimeTo(
             !empty($data['pickupTimeTo'])
-                ? (\DateTime::createFromFormat('H:i', $data['pickupTimeTo']) ?: null)
+                ? $this->parseOrderTimeHi((string) $data['pickupTimeTo'])
                 : null
         );
 
@@ -483,5 +483,22 @@ class OrderController extends AbstractController
         }
 
         return $cargo;
+    }
+
+    /**
+     * Parses "H:i" pickup window times. "24:00" is end-of-day (stored as 23:59:59).
+     */
+    private function parseOrderTimeHi(string $value): ?\DateTime
+    {
+        $trimmed = trim($value);
+        if ($trimmed === '') {
+            return null;
+        }
+
+        if ($trimmed === '24:00') {
+            return \DateTime::createFromFormat('H:i:s', '23:59:59') ?: null;
+        }
+
+        return \DateTime::createFromFormat('H:i', $trimmed) ?: null;
     }
 }
