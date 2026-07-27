@@ -161,10 +161,19 @@ export const AddOrderModal: FC<AddOrderModalProps> = ({
 											activeTab !== 'when' ||
 											(watch('pickupType') === 'pickup_later' && !watch('pickupDate')),
 									})}
-									title={whenLabel(watch('pickupType'), watch('pickupTime'), watch('pickupDate'))}
+									title={whenLabel(
+										watch('pickupType'),
+										watch('pickupTimeFrom'),
+										watch('pickupTimeTo'),
+										watch('pickupDate'),
+									)}
 								>
-									{whenLabel(watch('pickupType'), watch('pickupTime'), watch('pickupDate')) ||
-										'Add date'}
+									{whenLabel(
+										watch('pickupType'),
+										watch('pickupTimeFrom'),
+										watch('pickupTimeTo'),
+										watch('pickupDate'),
+									) || 'Add date'}
 									{/* {activeTab !== 'when' ? 'Add date' : PickupTypeEnum[watch('pickupType')]} */}
 								</div>
 							</div>
@@ -208,7 +217,7 @@ export const AddOrderModal: FC<AddOrderModalProps> = ({
 				/>
 			)}
 
-			{activeTab === 'when' && <WhenContent control={control} watch={watch} />}
+			{activeTab === 'when' && <WhenContent control={control} watch={watch} setValue={setValue} />}
 		</form>
 	)
 }

@@ -11,8 +11,8 @@ use App\Repository\OrderHistoryRepository;
  * Resolves the delivery countdown anchor and deadline for an order.
  *
  * Rules (Europe/Riga, 48h SLA from cargo readiness):
- * - pickupDate is null → anchor = first PAID history createdAt;
- * - pickupDate is set  → anchor = max(paidAt, pickupDate at pickupTimeFrom or 09:00),
+ * - pickupDate is null (ready now) → anchor = max(paidAt, today @ pickupTimeFrom or paidAt);
+ * - pickupDate is set (later) → anchor = max(paidAt, pickupDate @ pickupTimeFrom or 08:00),
  *   so a late payment cannot retroactively shrink the SLA window.
  * - deadline = anchor + DELIVERY_SLA_HOURS.
  *
@@ -23,7 +23,7 @@ final class DeliveryDeadlineCalculator
     public const int DELIVERY_SLA_HOURS = 48;
 
     private const string APP_TZ = 'Europe/Riga';
-    private const string DEFAULT_PICKUP_TIME = '09:00';
+    private const string DEFAULT_PICKUP_TIME = '08:00';
 
     public function __construct(
         private readonly OrderHistoryRepository $orderHistoryRepository,
@@ -42,12 +42,11 @@ final class DeliveryDeadlineCalculator
 
         $tz = new \DateTimeZone(self::APP_TZ);
         $paidAtRiga = $paidAt->setTimezone($tz);
+        $pickupAnchor = $this->buildPickupAnchor($order, $paidAtRiga);
 
-        if ($order->getPickupDate() === null) {
+        if ($pickupAnchor === null) {
             return $paidAtRiga;
         }
-
-        $pickupAnchor = $this->buildPickupAnchor($order);
 
         return $paidAtRiga > $pickupAnchor ? $paidAtRiga : $pickupAnchor;
     }
@@ -79,24 +78,34 @@ final class DeliveryDeadlineCalculator
     }
 
     /**
-     * Build pickupDate at pickupTimeFrom (or 09:00 default), in Europe/Riga.
+     * Build pickup readiness moment in Europe/Riga.
+     * Uses pickupDate when set; otherwise uses the paid day (ready-now window).
      */
-    private function buildPickupAnchor(Order $order): \DateTimeImmutable
-    {
+    private function buildPickupAnchor(
+        Order $order,
+        \DateTimeImmutable $paidAtRiga,
+    ): ?\DateTimeImmutable {
         $tz = new \DateTimeZone(self::APP_TZ);
         $date = $order->getPickupDate();
-        \assert($date !== null);
+        $day = $date !== null
+            ? $date->format('Y-m-d')
+            : $paidAtRiga->format('Y-m-d');
 
         $time = $order->getPickupTimeFrom()?->format('H:i') ?? self::DEFAULT_PICKUP_TIME;
 
         $anchor = \DateTimeImmutable::createFromFormat(
             'Y-m-d H:i',
-            $date->format('Y-m-d') . ' ' . $time,
+            $day . ' ' . $time,
             $tz,
         );
 
         if ($anchor === false) {
-            $anchor = (new \DateTimeImmutable($date->format('Y-m-d') . ' ' . self::DEFAULT_PICKUP_TIME, $tz));
+            $anchor = new \DateTimeImmutable($day . ' ' . self::DEFAULT_PICKUP_TIME, $tz);
+        }
+
+        // Ready-now without an explicit From: stay on paidAt (caller already returns it).
+        if ($date === null && $order->getPickupTimeFrom() === null) {
+            return null;
         }
 
         return $anchor;

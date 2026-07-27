@@ -12,7 +12,6 @@ export type CargoItemType = {
 }
 
 export type PickupTypeT = 'pickup_ready' | 'pickup_later'
-export type PickupTimeT = 'anytime' | '8:00-13:00' | '13:00-18:00'
 
 export type FormValues = {
 	// WHAT
@@ -35,7 +34,10 @@ export type FormValues = {
 	pickupType: PickupTypeT
 	pickupMonth: number
 	pickupYear: YearsType
-	pickupTime: PickupTimeT
+	/** Working-day window start, e.g. "08:00". */
+	pickupTimeFrom: string
+	/** Working-day window end, e.g. "18:00". */
+	pickupTimeTo: string
 	pickupDate?: Date
 
 	// какой этап заполнения формы и на какой можно вернуться

@@ -4,9 +4,15 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { apiUpdateOrder, apiUploadOrderAttachments, apiVoidOrderQuote } from '@api/orderApi'
 import { AddOrderModal } from '@components/AddOrderModal/AddOrderModal'
 import { CalculateModalType, FormValues } from '@components/AddOrderModal/types'
-import { dimensionsCm, formatDate } from '@components/AddOrderModal/utils'
+import { dimensionsCm, formatDate, normalizePickupTime } from '@components/AddOrderModal/utils'
 import { OrderCard } from '@components/OrderCard/OrderCard'
-import { OrderStatusEnum, OrderType, Routes } from '@config/constants'
+import {
+	OrderStatusEnum,
+	OrderType,
+	PICKUP_TIME_FROM_DEFAULT,
+	PICKUP_TIME_TO_DEFAULT,
+	Routes,
+} from '@config/constants'
 import { useAuth } from '@hooks/useAuth'
 import { DeviceType, useDevice } from '@hooks/useDevice'
 import { Icon } from '@ui/Icon/Icon'
@@ -35,14 +41,13 @@ const isPickupLaterDate = (date: Date): boolean =>
 const getDefaultDate = (date?: string, time?: { from?: string; to?: string }) => {
 	const curDate = date ? parse(date, 'dd.MM.yyyy', new Date()) : undefined
 
-	const curTime = (time?.from && time?.to ? `${time.from}-${time.to}` : 'anytime') as any
-
 	return {
 		pickupType: (curDate && isPickupLaterDate(curDate) ? 'pickup_later' : 'pickup_ready') as any,
 		pickupDate: curDate,
 		pickupMonth: (curDate ? curDate.getMonth() : undefined) as any,
 		pickupYear: (curDate ? curDate.getFullYear().toString() : undefined) as any,
-		pickupTime: curTime,
+		pickupTimeFrom: normalizePickupTime(time?.from, PICKUP_TIME_FROM_DEFAULT),
+		pickupTimeTo: normalizePickupTime(time?.to, PICKUP_TIME_TO_DEFAULT),
 	}
 }
 
@@ -116,8 +121,8 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 				dropoutLatitude: values.dropoutLatitude ?? null,
 				dropoutLongitude: values.dropoutLongitude ?? null,
 				notes: values.comment || null,
-				pickupTimeFrom: values.pickupTime === 'anytime' ? null : values.pickupTime.split('-')[0],
-				pickupTimeTo: values.pickupTime === 'anytime' ? null : values.pickupTime.split('-')[1],
+				pickupTimeFrom: values.pickupTimeFrom || null,
+				pickupTimeTo: values.pickupTimeTo || null,
 				pickupDate,
 				stackable: values.stackable,
 				manipulatorNeeded: values.manipulatorNeeded,
@@ -183,7 +188,8 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 			setValue('pickupDate', whenDefaults.pickupDate)
 			setValue('pickupMonth', whenDefaults.pickupMonth)
 			setValue('pickupYear', whenDefaults.pickupYear)
-			setValue('pickupTime', whenDefaults.pickupTime)
+			setValue('pickupTimeFrom', whenDefaults.pickupTimeFrom)
+			setValue('pickupTimeTo', whenDefaults.pickupTimeTo)
 			setValue('_step', 3)
 			setActiveTab('when')
 		} catch (err) {

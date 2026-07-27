@@ -1,10 +1,16 @@
-import { type FC, useState } from 'react'
-import { Control, Controller, UseFormWatch } from 'react-hook-form'
+import { type FC, useMemo, useState } from 'react'
+import { Control, Controller, UseFormSetValue, UseFormWatch } from 'react-hook-form'
 
-import { PickupTypeEnum, months, years } from '@config/constants'
+import {
+	PICKUP_TIME_FROM_DEFAULT,
+	PICKUP_TIME_SLOTS,
+	PICKUP_TIME_TO_DEFAULT,
+	PickupTypeEnum,
+	months,
+	years,
+} from '@config/constants'
 import { Calendar } from '@ui/Calendar/Calendar'
 import { Icon } from '@ui/Icon/Icon'
-import { RadioButtons } from '@ui/RadioButtons/RadioButtons'
 import { Select } from '@ui/Select/Select'
 import { Tabs } from '@ui/Tabs/Tabs'
 import { cn } from '@utils/cn'
@@ -19,10 +25,17 @@ import { FormValues } from './types'
 interface WhenContentProps {
 	control: Control<FormValues, any, FormValues>
 	watch: UseFormWatch<FormValues>
+	setValue: UseFormSetValue<FormValues>
 }
 
-export const WhenContent: FC<WhenContentProps> = ({ control, watch }) => {
+const slotOptions = PICKUP_TIME_SLOTS.map((slot) => ({ label: slot, value: slot }))
+
+const compareTime = (a: string, b: string): number => a.localeCompare(b)
+
+export const WhenContent: FC<WhenContentProps> = ({ control, watch, setValue }) => {
 	const pickupType = watch('pickupType') || 'pickup_ready'
+	const pickupTimeFrom = watch('pickupTimeFrom') || PICKUP_TIME_FROM_DEFAULT
+	const pickupTimeTo = watch('pickupTimeTo') || PICKUP_TIME_TO_DEFAULT
 
 	const createMonthDate = () => {
 		const d = new Date()
@@ -31,6 +44,24 @@ export const WhenContent: FC<WhenContentProps> = ({ control, watch }) => {
 	}
 
 	const [calendarMonth, setCalendarMonth] = useState<Date>(createMonthDate())
+
+	const fromOptions = useMemo(
+		() =>
+			slotOptions.map((opt) => ({
+				...opt,
+				disabled: compareTime(opt.value, pickupTimeTo) >= 0,
+			})),
+		[pickupTimeTo],
+	)
+
+	const toOptions = useMemo(
+		() =>
+			slotOptions.map((opt) => ({
+				...opt,
+				disabled: compareTime(opt.value, pickupTimeFrom) <= 0,
+			})),
+		[pickupTimeFrom],
+	)
 
 	const onSelectMonth = (monthIndex: number) => {
 		setCalendarMonth((prev) => {
@@ -50,6 +81,25 @@ export const WhenContent: FC<WhenContentProps> = ({ control, watch }) => {
 
 			return next
 		})
+	}
+
+	const onFromChange = (value: string) => {
+		setValue('pickupTimeFrom', value, { shouldDirty: true })
+		if (compareTime(value, pickupTimeTo) >= 0) {
+			const nextTo =
+				PICKUP_TIME_SLOTS.find((slot) => compareTime(slot, value) > 0) || PICKUP_TIME_TO_DEFAULT
+			setValue('pickupTimeTo', nextTo, { shouldDirty: true })
+		}
+	}
+
+	const onToChange = (value: string) => {
+		setValue('pickupTimeTo', value, { shouldDirty: true })
+		if (compareTime(value, pickupTimeFrom) <= 0) {
+			const reversed = [...PICKUP_TIME_SLOTS].reverse()
+			const nextFrom =
+				reversed.find((slot) => compareTime(slot, value) < 0) || PICKUP_TIME_FROM_DEFAULT
+			setValue('pickupTimeFrom', nextFrom, { shouldDirty: true })
+		}
 	}
 
 	return (
@@ -102,18 +152,29 @@ export const WhenContent: FC<WhenContentProps> = ({ control, watch }) => {
 				</div>
 
 				<div className={styles.leftBlock}>
-					<div className={styles.title}>Pickup time in working days</div>
+					<div className={styles.title}>Pickup time (working days)</div>
 
-					<RadioButtons
-						control={control}
-						name="pickupTime"
-						defaultValue="anytime"
-						items={[
-							{ label: 'Any time', value: 'anytime' },
-							{ label: 'Morning (8:00 – 13:00)', value: '8:00-13:00' },
-							{ label: 'Afternoon (13:00 – 18:00)', value: '13:00-18:00' },
-						]}
-					/>
+					<div className={styles.timeRange}>
+						<div className={styles.timeField}>
+							<span className={styles.timeFieldPrefix}>from</span>
+							<Select
+								color="gray"
+								value={pickupTimeFrom}
+								onChange={onFromChange}
+								values={fromOptions}
+							/>
+						</div>
+
+						<div className={styles.timeField}>
+							<span className={styles.timeFieldPrefix}>to</span>
+							<Select
+								color="gray"
+								value={pickupTimeTo}
+								onChange={onToChange}
+								values={toOptions}
+							/>
+						</div>
+					</div>
 				</div>
 			</div>
 

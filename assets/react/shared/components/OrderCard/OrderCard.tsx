@@ -311,7 +311,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 											<div className={styles.value}>
 												{!order.pickup_time_from && !order.pickup_time_to
 													? 'Anytime'
-													: `${order?.pickup_time_from} - ${order?.pickup_time_to}`}
+													: `${order?.pickup_time_from ?? ''} – ${order?.pickup_time_to ?? ''}`.trim()}
 											</div>
 										</div>
 									</div>

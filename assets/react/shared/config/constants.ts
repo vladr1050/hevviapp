@@ -84,8 +84,18 @@ export type YearsType = typeof years[number]
 
 export enum PickupTypeEnum {
 	pickup_ready = 'Pickup ready',
-	pickup_later = 'Pickup later'
+	pickup_later = 'Pickup later',
 }
+
+/** Working-day pickup window (Europe/Riga). */
+export const PICKUP_TIME_FROM_DEFAULT = '08:00'
+export const PICKUP_TIME_TO_DEFAULT = '18:00'
+
+/** Hourly slots from 08:00 through 18:00 inclusive. */
+export const PICKUP_TIME_SLOTS: string[] = Array.from({ length: 11 }, (_, i) => {
+	const hour = 8 + i
+	return `${String(hour).padStart(2, '0')}:00`
+})
 
 export enum OrderStatusEnum {
 	'DRAFT' = 1,

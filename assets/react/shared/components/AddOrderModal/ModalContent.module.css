@@ -688,6 +688,27 @@
 							}
 						}
 					}
+
+					& .timeRange {
+						@apply grid grid-cols-2 gap-3 items-center;
+					}
+
+					& .timeField {
+						@apply relative;
+
+						& .timeFieldPrefix {
+							@apply absolute left-5 top-1/2 -translate-y-1/2 z-[1] pointer-events-none;
+							@apply text-black/40 font-medium text-sm;
+						}
+
+						/* Leave room for the "from"/"to" prefix inside the Select trigger. */
+						& button {
+							padding-left: 3.5rem !important;
+							background: #ffffff !important;
+							border-color: transparent !important;
+							box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+						}
+					}
 				}
 			}
 

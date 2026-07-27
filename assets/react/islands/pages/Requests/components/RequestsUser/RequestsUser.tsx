@@ -11,7 +11,7 @@ import {
 	whenLabel,
 	whereLabel,
 } from '@components/AddOrderModal/utils'
-import { ShortOrderType, YearsType } from '@config/constants'
+import { ShortOrderType, YearsType, PICKUP_TIME_FROM_DEFAULT, PICKUP_TIME_TO_DEFAULT } from '@config/constants'
 import { useAuth } from '@hooks/useAuth'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
@@ -48,7 +48,8 @@ export const RequestsUser: FC<RequestsUserProps> = ({ orders }) => {
 			pickupMonth: currentMonthZeroBased,
 			pickupYear: currentYear.toString() as YearsType,
 			pickupDate: addDays(new Date(), 1),
-			pickupTime: 'anytime',
+			pickupTimeFrom: PICKUP_TIME_FROM_DEFAULT,
+			pickupTimeTo: PICKUP_TIME_TO_DEFAULT,
 			//
 			_step: 1,
 		},
@@ -76,8 +77,8 @@ export const RequestsUser: FC<RequestsUserProps> = ({ orders }) => {
 				dropoutLatitude: values.dropoutLatitude ?? null,
 				dropoutLongitude: values.dropoutLongitude ?? null,
 				notes: values.comment || null,
-				pickupTimeFrom: values.pickupTime === 'anytime' ? null : values.pickupTime.split('-')[0],
-				pickupTimeTo: values.pickupTime === 'anytime' ? null : values.pickupTime.split('-')[1],
+				pickupTimeFrom: values.pickupTimeFrom || null,
+				pickupTimeTo: values.pickupTimeTo || null,
 				pickupDate,
 				cargo: values.cargo.map((item) => ({
 					name: item.name,
@@ -138,7 +139,12 @@ export const RequestsUser: FC<RequestsUserProps> = ({ orders }) => {
 							<InputButton
 								label="When"
 								placeholder={
-									whenLabel(watch('pickupType'), watch('pickupTime'), watch('pickupDate')) ||
+									whenLabel(
+										watch('pickupType'),
+										watch('pickupTimeFrom'),
+										watch('pickupTimeTo'),
+										watch('pickupDate'),
+									) ||
 									'Add date'
 								}
 								className={cn(styles.inputButton)}
