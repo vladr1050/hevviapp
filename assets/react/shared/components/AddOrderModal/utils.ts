@@ -41,15 +41,17 @@ export const formatPickupWindow = (from?: string | null, to?: string | null): st
 
 export const whenLabel = (
 	pickupType: PickupTypeT,
-	pickupTimeFrom?: string | null,
-	pickupTimeTo?: string | null,
+	_pickupTimeFrom?: string | null,
+	_pickupTimeTo?: string | null,
 	pickupDate?: Date
 ) => {
-	const time = formatPickupWindow(pickupTimeFrom, pickupTimeTo)
-	const date = format(pickupDate || new Date(), 'dd.MM.yyyy')
+	// Time window stays only in the When-step dropdowns (defaults 09:00–17:00),
+	// not in the tab / request-form summary label.
+	if (pickupType === 'pickup_later') {
+		return format(pickupDate || new Date(), 'dd.MM.yyyy')
+	}
 
-	if (pickupType === 'pickup_later') return `${date}, ${time}`
-	return `${PickupTypeEnum[pickupType]}, ${time}`
+	return PickupTypeEnum[pickupType]
 }
 
 /** Normalize API time to an hourly slot "HH:00" (00–24). End-of-day 23:59 → 24:00. */
