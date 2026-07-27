@@ -1,4 +1,4 @@
-import { type FC, useMemo, useState } from 'react'
+import { type FC, useEffect, useMemo, useState } from 'react'
 import { Control, Controller, UseFormSetValue, UseFormWatch } from 'react-hook-form'
 
 import {
@@ -36,6 +36,17 @@ export const WhenContent: FC<WhenContentProps> = ({ control, watch, setValue }) 
 	const pickupType = watch('pickupType') || 'pickup_ready'
 	const pickupTimeFrom = watch('pickupTimeFrom') || PICKUP_TIME_FROM_DEFAULT
 	const pickupTimeTo = watch('pickupTimeTo') || PICKUP_TIME_TO_DEFAULT
+
+	// Ensure RHF always has the dropdown defaults (09:00 / 17:00) when entering When.
+	useEffect(() => {
+		if (!watch('pickupTimeFrom')) {
+			setValue('pickupTimeFrom', PICKUP_TIME_FROM_DEFAULT)
+		}
+		if (!watch('pickupTimeTo')) {
+			setValue('pickupTimeTo', PICKUP_TIME_TO_DEFAULT)
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	const createMonthDate = () => {
 		const d = new Date()
@@ -160,6 +171,7 @@ export const WhenContent: FC<WhenContentProps> = ({ control, watch, setValue }) 
 							<Select
 								color="gray"
 								value={pickupTimeFrom}
+								defaultValue={PICKUP_TIME_FROM_DEFAULT}
 								onChange={onFromChange}
 								values={fromOptions}
 							/>
@@ -170,6 +182,7 @@ export const WhenContent: FC<WhenContentProps> = ({ control, watch, setValue }) 
 							<Select
 								color="gray"
 								value={pickupTimeTo}
+								defaultValue={PICKUP_TIME_TO_DEFAULT}
 								onChange={onToChange}
 								values={toOptions}
 							/>

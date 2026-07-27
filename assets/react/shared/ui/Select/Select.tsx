@@ -1,4 +1,4 @@
-import { type FC, ReactNode, useEffect, useState } from 'react'
+import { type FC, ReactNode } from 'react'
 
 import { Select as RadixSelect } from '@radix-ui/themes'
 import { cn } from '@utils/cn'
@@ -25,19 +25,14 @@ export const Select: FC<SelectProps> = ({
 	value,
 	onChange,
 }) => {
-	const [curValue, setCurValue] = useState(defaultValue || '')
-
-	useEffect(() => {
-		setCurValue(value)
-	}, [value])
+	// Radix controlled mode needs a real matching item value — never "".
+	const resolvedValue = value || defaultValue || undefined
 
 	return (
 		<RadixSelect.Root
-			defaultValue={defaultValue}
 			disabled={disabled}
-			value={curValue}
+			value={resolvedValue}
 			onValueChange={(v) => {
-				setCurValue(v)
 				onChange?.(v)
 			}}
 		>
@@ -45,11 +40,11 @@ export const Select: FC<SelectProps> = ({
 
 			<RadixSelect.Content className={styles.content}>
 				<RadixSelect.Group>
-					{values.map(({ value, label, disabled }) => (
+					{values.map(({ value: itemValue, label, disabled: itemDisabled }) => (
 						<RadixSelect.Item
-							key={value}
-							value={value}
-							disabled={disabled}
+							key={itemValue}
+							value={itemValue}
+							disabled={itemDisabled}
 							className={cn(styles.item, {
 								[styles.black]: color === 'black',
 								[styles.gray]: color === 'gray',
