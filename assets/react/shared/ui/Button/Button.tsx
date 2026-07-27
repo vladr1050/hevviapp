@@ -12,6 +12,8 @@ interface ButtonProps extends PropsWithChildren {
 	disabled?: boolean
 	name?: string
 	value?: string
+	/** Associates a submit button with a form by id when the button is outside the form. */
+	form?: string
 }
 
 export const Button: FC<ButtonProps> = ({
