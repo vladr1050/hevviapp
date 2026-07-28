@@ -84,20 +84,14 @@ export const WhenContent: FC<WhenContentProps> = ({ control, watch, setValue }) 
 		setCalendarMonth(monthFromForm(pickupDate, pickupMonth, pickupYear))
 	}, [pickupDate, pickupMonth, pickupYear])
 
-	const fromOptions = useMemo(
-		() =>
-			slotOptions.map((opt) => ({
-				...opt,
-				disabled: compareTime(opt.value, pickupTimeTo) >= 0,
-			})),
-		[pickupTimeTo],
-	)
+	// Free choice of both ends. Only rule: to must be ≥ from (equality allowed).
+	const fromOptions = useMemo(() => slotOptions.map((opt) => ({ ...opt })), [])
 
 	const toOptions = useMemo(
 		() =>
 			slotOptions.map((opt) => ({
 				...opt,
-				disabled: compareTime(opt.value, pickupTimeFrom) <= 0,
+				disabled: compareTime(opt.value, pickupTimeFrom) < 0,
 			})),
 		[pickupTimeFrom],
 	)
@@ -124,21 +118,14 @@ export const WhenContent: FC<WhenContentProps> = ({ control, watch, setValue }) 
 
 	const onFromChange = (value: string) => {
 		setValue('pickupTimeFrom', value, { shouldDirty: true })
-		if (compareTime(value, pickupTimeTo) >= 0) {
-			const nextTo =
-				PICKUP_TIME_SLOTS.find((slot) => compareTime(slot, value) > 0) || PICKUP_TIME_TO_DEFAULT
-			setValue('pickupTimeTo', nextTo, { shouldDirty: true })
+		// If from moves past to, lift to so the window stays valid (to === from is OK).
+		if (compareTime(value, pickupTimeTo) > 0) {
+			setValue('pickupTimeTo', value, { shouldDirty: true })
 		}
 	}
 
 	const onToChange = (value: string) => {
 		setValue('pickupTimeTo', value, { shouldDirty: true })
-		if (compareTime(value, pickupTimeFrom) <= 0) {
-			const reversed = [...PICKUP_TIME_SLOTS].reverse()
-			const nextFrom =
-				reversed.find((slot) => compareTime(slot, value) < 0) || PICKUP_TIME_FROM_DEFAULT
-			setValue('pickupTimeFrom', nextFrom, { shouldDirty: true })
-		}
 	}
 
 	return (
