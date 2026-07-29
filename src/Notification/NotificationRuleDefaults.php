@@ -27,11 +27,9 @@ final class NotificationRuleDefaults
     {
         return [
             self::accepted(),
-            self::assignedToSender(),
             self::assignedToCarrier(),
             self::awaitingPickup(),
             self::pickupDone(),
-            self::inTransit(),
             self::delivered(),
             self::etaChanged(),
             self::priceConfirmed(),
