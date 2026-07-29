@@ -127,6 +127,25 @@ const formatEtaDisplay = (iso: string): string => {
 	return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()}, ${pad(date.getHours())}:${pad(date.getMinutes())}`
 }
 
+/** Sender Delivery ETA pipe format (same instant as carrier): `ETA: 19/08/2024 | 14:00`. */
+const formatSenderEtaPipe = (iso: string): string => {
+	const date = new Date(iso)
+	if (Number.isNaN(date.getTime())) return ''
+	const pad = (n: number) => String(n).padStart(2, '0')
+	return `ETA: ${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()} | ${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
+
+/** Fallback when deadline is not resolved yet — order delivery window. */
+const formatSenderEtaWindow = (order: OrderType): string => {
+	const dateLabel = order.delivery_date?.trim()
+	if (!dateLabel) return ''
+	const from = order.delivery_time_from?.trim()
+	const to = order.delivery_time_to?.trim()
+	if (from && to && from !== to) return `ETA: ${dateLabel}, ${from} - ${to}`
+	if (from) return `ETA: ${dateLabel} | ${from}`
+	return `ETA: ${dateLabel}`
+}
+
 const toDatetimeLocalValue = (iso?: string): string => {
 	const date = iso ? new Date(iso) : new Date(Date.now() + 48 * 60 * 60 * 1000)
 	if (Number.isNaN(date.getTime())) return ''
@@ -218,6 +237,12 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 		if (order.deadline_at) return formatEtaDisplay(order.deadline_at)
 		return ''
 	}, [order.deadline_at])
+
+	/** Same deadline source as carrier ETA; falls back to requested delivery window. */
+	const senderDeliveryEta = useMemo(() => {
+		if (order.deadline_at) return formatSenderEtaPipe(order.deadline_at)
+		return formatSenderEtaWindow(order)
+	}, [order.deadline_at, order.delivery_date, order.delivery_time_from, order.delivery_time_to])
 
 	const etaBaseline = useMemo(
 		() => toDatetimeLocalValue(order.deadline_at),
@@ -354,9 +379,14 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 
 					<div className={styles.line} />
 
-					<div className={styles.item}>
-						Delivery
-						<Icon type="mark_map" size={24} className="!translate-x-0.5" />
+					<div className={cn(styles.item, styles.deliveryItem)}>
+						<div className={styles.deliveryCopy}>
+							<span className={styles.deliveryLabel}>Delivery</span>
+							{senderDeliveryEta && order.status < OrderStatusEnum.DELIVERED && (
+								<span className={styles.deliveryEta}>{senderDeliveryEta}</span>
+							)}
+						</div>
+						<Icon type="mark_map" size={24} className={styles.deliveryPin} />
 						{order.status >= OrderStatusEnum.DELIVERED && (
 							<div className={styles.active}>
 								{order.status === OrderStatusEnum.APPROVED ? 'Approved' : 'Delivered'}

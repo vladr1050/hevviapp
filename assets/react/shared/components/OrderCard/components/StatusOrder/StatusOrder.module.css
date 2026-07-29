@@ -8,41 +8,68 @@
 	}
 
 	&.sender {
+		/* Figma Status Frame 1993: 290 wide, 30 padding; 24 between title / list / cancel */
+		@apply w-[290px] items-stretch justify-start gap-0 p-[30px];
+
+		& .title {
+			@apply mb-6 shrink-0 text-xl font-bold leading-none text-black;
+		}
+
 		& .statusWrapper {
-			@apply w-[180px] flex flex-col items-end;
+			@apply flex w-full flex-col items-end;
 
 			& .item {
-				@apply h-10 my-2 flex items-center justify-between gap-5 px-4
-				w-full text-base text-[#A9A9A9] font-medium relative;
+				@apply relative my-2 flex h-10 w-full items-center justify-between gap-5 px-4
+				text-base font-medium text-[#A9A9A9];
 
 				& .dot {
 					border: 2px solid #a9a9a9;
-					@apply w-5 h-5 bg-transparent rounded-full shrink-0;
+					@apply h-5 w-5 shrink-0 rounded-full bg-transparent;
 				}
 
 				& .active {
-					@apply absolute left-0 -top-4 z-[2] w-[188px] h-[72px] 
-					bg-white shadow-md rounded-2xl py-4 pl-5 pr-[10px]
-					text-black font-medium text-base
-					flex items-center justify-between gap-4;
+					@apply absolute left-0 -top-4 z-[2] flex h-[72px] w-full items-center justify-between gap-4
+					rounded-2xl bg-white py-4 pl-5 pr-[10px] text-base font-medium text-black shadow-md;
 
 					& .icon {
-						@apply w-10 h-10 shrink-0 flex items-center justify-center text-black;
+						@apply flex h-10 w-10 shrink-0 items-center justify-center text-black;
 
 						&.activeIcon {
 							@apply rounded-full bg-primary;
 						}
 					}
 				}
+
+				&.deliveryItem {
+					@apply my-2 h-auto min-h-10 items-start py-1;
+
+					& .deliveryCopy {
+						@apply flex min-w-0 flex-1 flex-col items-start gap-0.5 text-left;
+					}
+
+					& .deliveryLabel {
+						/* Figma: Instrument Sans 16 / Medium */
+						@apply text-base font-medium leading-5 text-[#A9A9A9];
+					}
+
+					& .deliveryEta {
+						/* Figma Descriptions-med: 12 / Medium; synced with carrier deadline_at */
+						@apply text-xs font-medium leading-[15px] text-black;
+					}
+
+					& .deliveryPin {
+						@apply mt-0.5 shrink-0 translate-x-0.5 text-[#A9A9A9];
+					}
+				}
 			}
 
 			& .line {
-				@apply w-[3px] h-10 bg-[#A9A9A9] mr-6;
+				@apply mr-6 h-10 w-[3px] bg-[#A9A9A9];
 			}
 		}
 
 		& .senderFooter {
-			@apply mt-auto flex w-full flex-col items-center -mt-[14px];
+			@apply mt-6 flex w-full shrink-0 flex-col items-center;
 		}
 
 		& .senderCancel {

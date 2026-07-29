@@ -10,6 +10,7 @@ use App\Entity\OrderOffer;
 use App\Entity\User;
 use App\Repository\OrderRepository;
 use App\Service\Invoice\InvoiceIssuingService;
+use App\Service\Order\DeliveryDeadlineCalculator;
 use App\Service\Order\OrderPartyContactApplicator;
 use App\Service\Order\SenderOrderPayableTotalCentsCalculator;
 use App\Service\OrderAttachmentUploader;
@@ -37,6 +38,7 @@ class UserController extends AbstractController
         private readonly InvoiceIssuingService     $invoiceIssuingService,
         private readonly SenderOrderPayableTotalCentsCalculator $senderOrderPayableTotalCentsCalculator,
         private readonly OrderPartyContactApplicator $orderPartyContactApplicator,
+        private readonly DeliveryDeadlineCalculator $deliveryDeadlineCalculator,
     )
     {
     }
@@ -284,6 +286,9 @@ class UserController extends AbstractController
             'delivery_time_to' => $order->getDeliveryTimeTo()?->format('H:i'),
             'pickup_request_date' => $order->getPickupDate()?->format('d.m.Y'),
             'delivery_date' => $order->getDeliveryDate()?->format('d.m.Y'),
+            // Same deadline source as carrier Status ETA (carrier Change ETA override wins).
+            'deadline_at' => $this->deliveryDeadlineCalculator->resolveDeadline($order)?->format(\DateTimeInterface::ATOM),
+            'carrier_eta_at' => $order->getCarrierEtaAt()?->format(\DateTimeInterface::ATOM),
             ...$this->orderPartyContactApplicator->serialize($order),
         ];
 
