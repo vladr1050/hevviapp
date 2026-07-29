@@ -1,9 +1,9 @@
 .page {
 	@apply flex flex-col gap-[32px] min-h-[calc(100vh-90px)] h-full py-16;
 
-	/* Figma carrier order: 118px from page top, 90px from page bottom to the order card */
+	/* Figma: 27px Header → order card; 90px order card → page bottom */
 	&.carrierPage {
-		@apply py-0 pt-[118px] pb-[90px];
+		@apply py-0 pt-[27px] pb-[90px];
 	}
 
 	& .content {
