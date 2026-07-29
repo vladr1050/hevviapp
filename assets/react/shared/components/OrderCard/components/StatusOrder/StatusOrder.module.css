@@ -8,7 +8,11 @@
 	}
 
 	&.sender {
-		/* Figma Status: 290×…, pad 30, align-items center, gap 24, radius 30 */
+		/*
+		 * Figma Frame 1993:
+		 * 290 wide, padding 30, radius 30, gap 24 (title ↔ list ↔ cancel)
+		 * cards Frame 1901: 188×73, gap 14 between steps
+		 */
 		@apply h-full w-[290px] items-center justify-start gap-6 rounded-[30px] p-[30px];
 
 		& .title {
@@ -16,72 +20,74 @@
 		}
 
 		& .statusWrapper {
-			/* Frame 1901 cards are 188 wide — centered in the panel */
-			@apply flex w-[188px] flex-col items-stretch;
+			@apply relative z-0 flex w-[188px] flex-col gap-[14px];
+		}
 
-			& .item {
-				/* Same horizontal rhythm as Frame 1901: pl 21, pr 17, gap 31 */
-				@apply relative flex h-10 w-full items-center gap-[31px] pl-[21px] pr-[17px]
-				text-base font-medium text-[#A9A9A9];
+		& .timeline {
+			/* Continuous connector through icon centers (pr 17 + half of 40px icon) */
+			@apply pointer-events-none absolute z-0 w-[2px] bg-[#A9A9A9];
+			top: 36.5px;
+			bottom: 20px;
+			right: 36px;
+		}
 
-				&:has(.active) {
-					@apply h-[73px];
-				}
+		& .step {
+			@apply relative z-[1] flex min-h-10 w-full items-center gap-[31px]
+			pl-[21px] pr-[17px] text-base font-medium leading-5 text-[#A9A9A9];
+		}
 
-				& .iconSlot {
-					/* 40×40 — same slot as completed-card check icon */
-					@apply flex h-10 w-10 shrink-0 items-center justify-center;
-				}
+		& .stepCard {
+			/* Frame 1901: 188×73; pad 18 / 17 / 15 / 21; gap 31 */
+			@apply h-[73px] min-h-[73px] rounded-2xl bg-white pb-[15px] pl-[21px] pr-[17px] pt-[18px] text-black;
+			box-shadow:
+				0 6px 54px rgba(0, 0, 0, 0.029),
+				0 5px 15px rgba(0, 0, 0, 0.1);
+		}
 
-				& .dot {
-					border: 2px solid #a9a9a9;
-					@apply h-5 w-5 shrink-0 rounded-full bg-transparent;
-				}
+		& .stepLabel {
+			@apply min-w-0 flex-1 text-left;
+		}
 
-				& .active {
-					/* Figma Frame 1901: 188×73; pad 18/17/15/21; gap text→icon 31 */
-					@apply absolute inset-0 z-[2] flex h-[73px] w-[188px] items-center justify-between gap-[31px]
-					rounded-2xl bg-white pb-[15px] pl-[21px] pr-[17px] pt-[18px] text-base font-medium text-black shadow-md;
+		& .stepIcon {
+			@apply relative z-[1] flex h-10 w-10 shrink-0 items-center justify-center;
+		}
 
-					& .icon {
-						@apply flex h-10 w-10 shrink-0 items-center justify-center text-black;
+		& .stepIconDone {
+			@apply flex h-10 w-10 items-center justify-center rounded-full bg-primary text-black;
+		}
 
-						&.activeIcon {
-							@apply rounded-full bg-primary;
-						}
-					}
-				}
+		& .stepDot {
+			border: 2px solid #a9a9a9;
+			@apply h-5 w-5 rounded-full bg-transparent;
+		}
 
-				&.deliveryItem {
-					@apply h-auto min-h-10 items-center py-1;
+		& .stepGif {
+			@apply h-12 w-12 object-contain;
+		}
 
-					&:has(.active) {
-						@apply h-[73px] py-0;
-					}
+		& .stepDelivery {
+			@apply items-center py-1;
 
-					& .deliveryCopy {
-						@apply flex min-w-0 flex-1 flex-col items-start gap-0.5 text-left;
-					}
-
-					& .deliveryLabel {
-						@apply text-base font-medium leading-5 text-[#A9A9A9];
-					}
-
-					& .deliveryEta {
-						@apply text-xs font-medium leading-[15px] text-black;
-					}
-
-					& .deliveryPin {
-						@apply text-[#A9A9A9];
-					}
-				}
+			&.stepCard {
+				@apply py-0;
 			}
+		}
 
-			& .line {
-				/* 3px connector through icon-slot center: pr 17 + half of 40 − half of 3 */
-				@apply h-2 w-[3px] shrink-0 self-end bg-[#A9A9A9];
-				margin-right: 35.5px;
-			}
+		& .deliveryCopy {
+			@apply flex min-w-0 flex-1 flex-col items-start gap-0.5 text-left;
+		}
+
+		& .deliveryLabel {
+			@apply text-base font-medium leading-5;
+		}
+
+		& .deliveryEta {
+			/* Descriptions-med 12 / Medium */
+			@apply text-xs font-medium leading-[15px] text-black;
+		}
+
+		& .deliveryPin {
+			@apply text-[#A9A9A9];
 		}
 
 		& .senderFooter {

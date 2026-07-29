@@ -281,130 +281,127 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 
 			{!isCarrier && (
 				<div className={styles.statusWrapper}>
-					<div className={styles.item}>
-						<span className="min-w-0 flex-1">Awaiting Payment</span>
-						<div className={styles.iconSlot}>
-							<div className={styles.dot} />
-						</div>
-						{order.status >= OrderStatusEnum.ACCEPTED && (
-							<div className={styles.active}>
-								{order.status <= OrderStatusEnum.INVOICED
+					<div className={styles.timeline} aria-hidden />
+
+					{/* Payment */}
+					<div
+						className={cn(styles.step, order.status >= OrderStatusEnum.ACCEPTED && styles.stepCard)}
+					>
+						<span className={styles.stepLabel}>
+							{order.status >= OrderStatusEnum.ACCEPTED
+								? order.status <= OrderStatusEnum.INVOICED
 									? 'Awaiting Payment'
-									: 'Payment successful'}
-								<div
-									className={cn(styles.icon, {
-										[styles.activeIcon]: order.status > OrderStatusEnum.ACCEPTED,
-									})}
-								>
-									{order.status > OrderStatusEnum.INVOICED ? (
-										<Icon type="check_circle_1" size={20} />
-									) : (
-										<img
-											alt=""
-											src={awaitingPaymentGif}
-											style={{ width: '48px', height: '48px' }}
-										/>
-									)}
-								</div>
-							</div>
-						)}
-					</div>
-
-					<div className={styles.line} />
-
-					<div className={styles.item}>
-						<span className="min-w-0 flex-1">Matching carrier</span>
-						<div className={styles.iconSlot}>
-							<div className={styles.dot} />
+									: 'Payment successful'
+								: 'Awaiting Payment'}
+						</span>
+						<div className={styles.stepIcon}>
+							{order.status > OrderStatusEnum.INVOICED ? (
+								<span className={styles.stepIconDone}>
+									<Icon type="check_circle_1" size={20} />
+								</span>
+							) : order.status >= OrderStatusEnum.ACCEPTED ? (
+								<img alt="" src={awaitingPaymentGif} className={styles.stepGif} />
+							) : (
+								<span className={styles.stepDot} />
+							)}
 						</div>
-						{order.status >= OrderStatusEnum.PAID && (
-							<div className={styles.active}>
-								{order.status < OrderStatusEnum.ASSIGNED ? 'Matching carrier' : 'Carrier matched'}
-								<div
-									className={cn(styles.icon, {
-										[styles.activeIcon]: order.status > OrderStatusEnum.PAID,
-									})}
-								>
-									{order.status > OrderStatusEnum.PAID ? (
-										<Icon type="check_circle_1" size={20} />
-									) : (
-										<img alt="" src={carrierMatchedGig} style={{ width: '48px', height: '48px' }} />
-									)}
-								</div>
-							</div>
-						)}
 					</div>
 
-					<div className={styles.line} />
-
-					<div className={styles.item}>
-						<span className="min-w-0 flex-1">Awaiting pickup</span>
-						<div className={styles.iconSlot}>
-							<div className={styles.dot} />
+					{/* Carrier matched */}
+					<div
+						className={cn(styles.step, order.status >= OrderStatusEnum.PAID && styles.stepCard)}
+					>
+						<span className={styles.stepLabel}>
+							{order.status >= OrderStatusEnum.PAID
+								? order.status < OrderStatusEnum.ASSIGNED
+									? 'Matching carrier'
+									: 'Carrier matched'
+								: 'Matching carrier'}
+						</span>
+						<div className={styles.stepIcon}>
+							{order.status > OrderStatusEnum.PAID ? (
+								<span className={styles.stepIconDone}>
+									<Icon type="check_circle_1" size={20} />
+								</span>
+							) : order.status >= OrderStatusEnum.PAID ? (
+								<img alt="" src={carrierMatchedGig} className={styles.stepGif} />
+							) : (
+								<span className={styles.stepDot} />
+							)}
 						</div>
-						{order.status >= OrderStatusEnum.ASSIGNED && (
-							<div className={styles.active}>
-								Awaiting pickup
-								<div
-									className={cn(styles.icon, {
-										[styles.activeIcon]: order.status > OrderStatusEnum.AWAITING_PICKUP,
-									})}
-								>
-									{order.status > OrderStatusEnum.AWAITING_PICKUP ? (
-										<Icon type="check_circle_1" size={20} />
-									) : (
-										<img alt="" src={awaitingPickupGif} style={{ width: '48px', height: '48px' }} />
-									)}
-								</div>
-							</div>
-						)}
 					</div>
 
-					<div className={styles.line} />
-
-					<div className={styles.item}>
-						<span className="min-w-0 flex-1">In transit</span>
-						<div className={styles.iconSlot}>
-							<div className={styles.dot} />
+					{/* Awaiting pickup */}
+					<div
+						className={cn(
+							styles.step,
+							order.status >= OrderStatusEnum.ASSIGNED && styles.stepCard,
+						)}
+					>
+						<span className={styles.stepLabel}>Awaiting pickup</span>
+						<div className={styles.stepIcon}>
+							{order.status > OrderStatusEnum.AWAITING_PICKUP ? (
+								<span className={styles.stepIconDone}>
+									<Icon type="check_circle_1" size={20} />
+								</span>
+							) : order.status >= OrderStatusEnum.ASSIGNED ? (
+								<img alt="" src={awaitingPickupGif} className={styles.stepGif} />
+							) : (
+								<span className={styles.stepDot} />
+							)}
 						</div>
-						{order.status >= OrderStatusEnum.PICKUP_DONE && (
-							<div className={styles.active}>
-								In transit
-								<div
-									className={cn(styles.icon, {
-										[styles.activeIcon]: order.status > OrderStatusEnum.IN_TRANSIT,
-									})}
-								>
-									{order.status > OrderStatusEnum.IN_TRANSIT ? (
-										<Icon type="check_circle_1" size={20} />
-									) : (
-										<img alt="" src={inTransitGif} style={{ width: '48px', height: '48px' }} />
-									)}
-								</div>
-							</div>
-						)}
 					</div>
 
-					<div className={styles.line} />
+					{/* In transit */}
+					<div
+						className={cn(
+							styles.step,
+							order.status >= OrderStatusEnum.PICKUP_DONE && styles.stepCard,
+						)}
+					>
+						<span className={styles.stepLabel}>In transit</span>
+						<div className={styles.stepIcon}>
+							{order.status > OrderStatusEnum.IN_TRANSIT ? (
+								<span className={styles.stepIconDone}>
+									<Icon type="check_circle_1" size={20} />
+								</span>
+							) : order.status >= OrderStatusEnum.PICKUP_DONE ? (
+								<img alt="" src={inTransitGif} className={styles.stepGif} />
+							) : (
+								<span className={styles.stepDot} />
+							)}
+						</div>
+					</div>
 
-					<div className={cn(styles.item, styles.deliveryItem)}>
+					{/* Delivery */}
+					<div
+						className={cn(
+							styles.step,
+							styles.stepDelivery,
+							order.status >= OrderStatusEnum.DELIVERED && styles.stepCard,
+						)}
+					>
 						<div className={styles.deliveryCopy}>
-							<span className={styles.deliveryLabel}>Delivery</span>
+							<span className={styles.deliveryLabel}>
+								{order.status >= OrderStatusEnum.DELIVERED
+									? order.status === OrderStatusEnum.APPROVED
+										? 'Approved'
+										: 'Delivered'
+									: 'Delivery'}
+							</span>
 							{senderDeliveryEta && order.status < OrderStatusEnum.DELIVERED && (
 								<span className={styles.deliveryEta}>{senderDeliveryEta}</span>
 							)}
 						</div>
-						<div className={styles.iconSlot}>
-							<Icon type="mark_map" size={24} className={styles.deliveryPin} />
-						</div>
-						{order.status >= OrderStatusEnum.DELIVERED && (
-							<div className={styles.active}>
-								{order.status === OrderStatusEnum.APPROVED ? 'Approved' : 'Delivered'}
-								<div className={cn(styles.icon, styles.activeIcon)}>
+						<div className={styles.stepIcon}>
+							{order.status >= OrderStatusEnum.DELIVERED ? (
+								<span className={styles.stepIconDone}>
 									<Icon type="check_circle_1" size={20} />
-								</div>
-							</div>
-						)}
+								</span>
+							) : (
+								<Icon type="mark_map" size={24} className={styles.deliveryPin} />
+							)}
+						</div>
 					</div>
 				</div>
 			)}
