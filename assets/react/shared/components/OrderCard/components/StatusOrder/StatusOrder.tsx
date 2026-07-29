@@ -134,6 +134,13 @@ const toDatetimeLocalValue = (iso?: string): string => {
 	return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
 }
 
+/** Figma Change ETA pill: `27/07/2026 | 20:00` from datetime-local value. */
+const formatEtaPipeFromLocal = (local: string): string => {
+	const match = local.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/)
+	if (!match) return ''
+	return `${match[3]}/${match[2]}/${match[1]} | ${match[4]}:${match[5]}`
+}
+
 const useDeliveryCountdown = (
 	pickupReadyAt: string | undefined,
 	deadlineAt: string | undefined,
@@ -383,16 +390,20 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 								{etaLabel && (
 									<div className={styles.carrierEtaBlock}>
 										<div className={styles.carrierEtaLabel}>ETA (time of arrival)</div>
-										<div className={styles.carrierEtaValue}>{etaLabel}</div>
 
-										{canChangeEta && !showChangeEta && (
-											<button
-												type="button"
-												className={styles.carrierChangeEtaBtn}
-												onClick={() => setShowChangeEta(true)}
-											>
-												Change ETA
-											</button>
+										{!showChangeEta && (
+											<>
+												<div className={styles.carrierEtaValue}>{etaLabel}</div>
+												{canChangeEta && (
+													<button
+														type="button"
+														className={styles.carrierChangeEtaBtn}
+														onClick={() => setShowChangeEta(true)}
+													>
+														Change ETA
+													</button>
+												)}
+											</>
 										)}
 
 										{canChangeEta && showChangeEta && (
@@ -402,22 +413,29 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 												className={styles.carrierChangeEtaForm}
 											>
 												<input type="hidden" name="_token" value={changeEtaCsrfToken} />
-												<label className={styles.carrierChangeEtaField}>
-													<span>New ETA</span>
+												{/* Figma Frame 1932: pill with DD/MM/YYYY | HH:MM overlay */}
+												<div className={styles.carrierChangeEtaPill}>
+													<span className={styles.carrierChangeEtaPillText} aria-hidden>
+														{formatEtaPipeFromLocal(etaInput)}
+													</span>
 													<input
 														type="datetime-local"
 														name="eta"
 														required
 														value={etaInput}
 														onChange={(e) => setEtaInput(e.target.value)}
-														className={styles.carrierChangeEtaInput}
+														className={styles.carrierChangeEtaNative}
+														aria-label="ETA (time of arrival)"
 													/>
-												</label>
+												</div>
 												<div className={styles.carrierChangeEtaActions}>
 													<button
 														type="button"
 														className={styles.carrierChangeEtaCancel}
-														onClick={() => setShowChangeEta(false)}
+														onClick={() => {
+															setEtaInput(toDatetimeLocalValue(order.deadline_at))
+															setShowChangeEta(false)
+														}}
 													>
 														Cancel
 													</button>
