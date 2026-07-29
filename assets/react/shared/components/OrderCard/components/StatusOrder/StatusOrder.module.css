@@ -65,12 +65,12 @@
 		}
 
 		& .stepDot {
-			/* Frame 1853: 40×40 slot, 8px inset → 24×24 grey ring */
+			/* 40×40 slot; grey ring 20×20 centered on timeline */
 			@apply relative block h-10 w-10 shrink-0 rounded-full bg-white;
 
 			&::after {
 				content: '';
-				@apply absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2
+				@apply absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2
 				rounded-full border-2 border-solid border-[#A9A9A9] bg-white;
 			}
 		}
@@ -80,8 +80,8 @@
 		}
 
 		& .stepDelivery {
-			/* Figma: text col ~91px (gap 19), pin in white 40 disc on timeline */
-			@apply items-center gap-x-[19px];
+			/* Wider text col so `ETA: DD/MM/YYYY,` stays on one line */
+			@apply items-center gap-x-2;
 
 			&.stepCard {
 				@apply gap-x-[31px];
@@ -99,18 +99,36 @@
 		}
 
 		& .deliveryEta {
-			/* Descriptions-med: Instrument Sans 12 / Medium 500; frame 91×30 */
-			@apply flex max-w-[91px] flex-col text-[12px] font-medium leading-normal text-black;
+			/* Descriptions-med: Instrument Sans 12 / Medium 500 */
+			@apply flex w-full flex-col text-[12px] font-medium leading-normal text-black;
 			font-family: 'Instrument_Sans', sans-serif;
+
+			& > span:first-child {
+				/* Keep `ETA: 04/08/2026,` on one line; time may wrap below */
+				@apply whitespace-nowrap;
+			}
 		}
 
 		& .deliveryPinWrap {
-			/* Frame 1853: 40×40, pin 24×24 (= 8px inset) */
+			/* 40×40 slot; pin 14×18 centered */
 			@apply flex h-10 w-10 items-center justify-center rounded-full bg-white;
 		}
 
 		& .deliveryPin {
 			@apply text-[#A9A9A9];
+			width: 14px;
+			height: 18px;
+
+			& > div {
+				width: 14px !important;
+				height: 18px !important;
+			}
+
+			& svg {
+				width: 14px !important;
+				height: 18px !important;
+				aspect-ratio: auto !important;
+			}
 		}
 
 		& .senderFooter {

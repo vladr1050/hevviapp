@@ -135,7 +135,7 @@ const formatSenderEtaFromDeadline = (iso: string): SenderEtaLines | null => {
 	if (Number.isNaN(date.getTime())) return null
 	const pad = (n: number) => String(n).padStart(2, '0')
 	return {
-		primary: `ETA: ${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()}`,
+		primary: `ETA: ${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()},`,
 		secondary: `${pad(date.getHours())}:${pad(date.getMinutes())}`,
 	}
 }
@@ -412,7 +412,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 								</span>
 							) : (
 								<span className={styles.deliveryPinWrap}>
-									<Icon type="mark_map" size={24} className={styles.deliveryPin} />
+									<Icon type="mark_map" size={18} className={styles.deliveryPin} />
 								</span>
 							)}
 						</div>
