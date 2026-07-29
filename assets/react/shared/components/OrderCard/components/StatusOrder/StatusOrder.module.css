@@ -55,8 +55,8 @@
 		@apply h-full justify-start rounded-[30px] px-[28px] pt-[27px] pb-[15px];
 
 		& .statusWrapper {
-			/* Figma: ~44px from Change ETA to Awaiting pickup (card→awaiting 211 − 119 − ~48) */
-			@apply flex min-h-0 w-full flex-1 flex-col items-center justify-start gap-[44px];
+			/* ETA block (end of .top) → Awaiting pickup = 149px */
+			@apply flex min-h-0 w-full flex-1 flex-col items-center justify-start gap-[149px];
 
 			& .top {
 				@apply flex w-full shrink-0 flex-col items-center justify-center self-center;
@@ -82,8 +82,8 @@
 				}
 
 				& .carrierCountdownBlock {
-					/* Figma: countdown card → ETA label = 149px */
-					@apply flex w-[240px] flex-col items-center gap-[149px];
+					/* Compact: timer card → ETA; large 149px gap is below ETA → statuses */
+					@apply flex w-[240px] flex-col items-center gap-5;
 				}
 
 				& .carrierCountdownCard {
