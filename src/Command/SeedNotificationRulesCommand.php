@@ -32,7 +32,7 @@ final class SeedNotificationRulesCommand extends Command
             'ensure-missing',
             null,
             InputOption::VALUE_NONE,
-            'Insert any default rule that does not yet exist (matched by event_key + name).',
+            'Insert any default rule that does not yet exist (matched by event_key + recipient_type).',
         );
     }
 
@@ -58,9 +58,10 @@ final class SeedNotificationRulesCommand extends Command
         $added = 0;
 
         foreach (NotificationRuleDefaults::all() as $row) {
+            // One active logical rule per event + recipient — do not re-insert when the default name changes.
             $exists = $repo->findOneBy([
                 'eventKey' => $row['eventKey'],
-                'name' => $row['name'],
+                'recipientType' => $row['recipientType'],
             ]);
             if ($exists instanceof NotificationRule) {
                 continue;
