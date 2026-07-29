@@ -102,12 +102,12 @@
 				}
 
 				& .carrierCountdownValue {
-					/* Figma hug ~24px */
-					@apply text-[20px] font-bold leading-6 tracking-tight text-black;
+					/* Figma: Instrument Sans 20 / Medium 500 */
+					@apply text-[20px] font-medium leading-6 tracking-tight text-black;
 				}
 
 				& .carrierCountdownSubtitle {
-					/* Figma hug 15px — keep clear gap under the timer */
+					/* Figma: Instrument Sans 12 / Medium 500 / Black 40% */
 					@apply text-xs font-medium leading-[15px] text-black/40;
 				}
 
