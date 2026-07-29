@@ -206,7 +206,7 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 
 	return (
 		<>
-			<div className={cn('tw-container', styles.page, isCarrier && styles.carrierPage)}>
+			<div className={cn('tw-container', styles.page)}>
 				<div className={styles.content}>
 					{submitError && !activeTab && (
 						<div className="text-red-600 text-sm mb-2 max-w-md">{submitError}</div>

@@ -1,10 +1,6 @@
 .page {
-	@apply flex flex-col gap-[32px] min-h-[calc(100vh-90px)] h-full py-16;
-
 	/* Figma: 27px Header → order card; 90px order card → page bottom */
-	&.carrierPage {
-		@apply py-0 pt-[27px] pb-[90px];
-	}
+	@apply flex flex-col gap-[32px] min-h-[calc(100vh-90px)] h-full pt-[27px] pb-[90px];
 
 	& .content {
 		@apply grid grid-cols-[52px,1fr] items-start gap-8 w-full h-full;
