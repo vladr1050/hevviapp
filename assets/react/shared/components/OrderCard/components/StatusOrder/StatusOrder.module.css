@@ -224,19 +224,32 @@
 				}
 
 				& .carrierChangeEtaPill {
-					/* Figma Frame 1932: h 48, px 29, border 1px #888 */
-					@apply relative flex h-12 w-full items-center justify-center rounded-full border border-solid border-[#888] bg-white px-[29px] transition-[border-color,background-color,box-shadow];
+					/* Figma Frame 1932: h 48, px 29, border 1px #888 — segmented dd/mm/yyyy, hh:mm */
+					@apply relative flex h-12 w-full items-center justify-center gap-0.5 rounded-full border border-solid border-[#888] bg-white px-4 transition-[border-color,background-color,box-shadow];
 					@apply hover-hover:hover:border-[#666] hover-hover:hover:bg-[#FAFAFA] hover-hover:hover:shadow-sm;
 					@apply hover-none:active:border-[#666] hover-none:active:bg-[#FAFAFA];
 
-					&:has(.carrierChangeEtaInput:focus-visible) {
+					&:has(input:focus-visible) {
 						@apply border-[#555] bg-[#FAFAFA] shadow-sm;
 					}
 				}
 
-				& .carrierChangeEtaInput {
-					@apply w-full border-0 bg-transparent p-0 text-center text-base font-normal leading-5 text-black outline-none;
+				& .carrierEtaSegWrap {
+					@apply inline-flex items-center;
+				}
+
+				& .carrierEtaSep {
+					@apply px-0.5 text-base font-normal leading-5 text-black;
 					font-family: 'Instrument_Sans', sans-serif;
+				}
+
+				& .carrierEtaSeg {
+					@apply w-[1.6em] border-0 bg-transparent p-0 text-center text-base font-normal leading-5 text-black outline-none;
+					font-family: 'Instrument_Sans', sans-serif;
+				}
+
+				& .carrierEtaSegYear {
+					@apply w-[2.8em];
 				}
 
 				& .carrierUpdateEtaBtn {

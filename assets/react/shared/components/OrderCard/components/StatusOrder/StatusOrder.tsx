@@ -1,4 +1,4 @@
-import { type ClipboardEvent, type FC, type KeyboardEvent, ReactNode, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
+import { type FC, type KeyboardEvent, ReactNode, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
 
 import {
 	OrderStatusEnum,
@@ -175,36 +175,59 @@ const formatSenderEtaFromWindow = (order: OrderType): SenderEtaLines | null => {
 	return { primary: `ETA: ${dateLabel}` }
 }
 
-/** Manual Change ETA value: `dd/mm/yyyy, hh:mm`. */
-const formatEtaManualValue = (iso?: string): string => {
+/** Manual Change ETA segments: dd / mm / yyyy , hh : mm */
+type EtaParts = {
+	day: string
+	month: string
+	year: string
+	hour: string
+	minute: string
+}
+
+type EtaPartKey = keyof EtaParts
+
+const ETA_PART_ORDER: EtaPartKey[] = ['day', 'month', 'year', 'hour', 'minute']
+const ETA_PART_MAX: Record<EtaPartKey, number> = {
+	day: 2,
+	month: 2,
+	year: 4,
+	hour: 2,
+	minute: 2,
+}
+
+const parseEtaPartsFromIso = (iso?: string): EtaParts => {
 	const date = iso ? new Date(iso) : new Date(Date.now() + 48 * 60 * 60 * 1000)
-	if (Number.isNaN(date.getTime())) return ''
-	const pad = (n: number) => String(n).padStart(2, '0')
-	return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()}, ${pad(date.getHours())}:${pad(date.getMinutes())}`
+	if (Number.isNaN(date.getTime())) {
+		return { day: '', month: '', year: '', hour: '', minute: '' }
+	}
+	const pad = (n: number, len = 2) => String(n).padStart(len, '0')
+	return {
+		day: pad(date.getDate()),
+		month: pad(date.getMonth() + 1),
+		year: String(date.getFullYear()),
+		hour: pad(date.getHours()),
+		minute: pad(date.getMinutes()),
+	}
 }
 
-/** Digit slots in `dd/mm/yyyy, hh:mm` (length 17). */
-const ETA_DIGIT_SLOTS = [0, 1, 3, 4, 6, 7, 8, 9, 12, 13, 15, 16] as const
+const joinEtaParts = (parts: EtaParts): string =>
+	`${parts.day}/${parts.month}/${parts.year}, ${parts.hour}:${parts.minute}`
 
-const buildEtaFromDigits = (digits: string): string => {
-	const d = digits.replace(/\D/g, '').slice(0, 12).padEnd(12, '0')
-	return `${d.slice(0, 2)}/${d.slice(2, 4)}/${d.slice(4, 8)}, ${d.slice(8, 10)}:${d.slice(10, 12)}`
-}
-
-/** Keep separators fixed; fill missing digits with 0 so caret edits stay in place. */
-const ensureEtaShape = (value: string): string => {
-	if (/^\d{2}\/\d{2}\/\d{4}, \d{2}:\d{2}$/.test(value)) return value
-	return buildEtaFromDigits(value)
-}
-
-const isValidEtaManualValue = (value: string): boolean => {
-	const match = value.trim().match(/^(\d{2})\/(\d{2})\/(\d{4}),\s*(\d{2}):(\d{2})$/)
-	if (!match) return false
-	const day = Number(match[1])
-	const month = Number(match[2])
-	const year = Number(match[3])
-	const hour = Number(match[4])
-	const minute = Number(match[5])
+const isValidEtaParts = (parts: EtaParts): boolean => {
+	if (
+		parts.day.length !== 2 ||
+		parts.month.length !== 2 ||
+		parts.year.length !== 4 ||
+		parts.hour.length !== 2 ||
+		parts.minute.length !== 2
+	) {
+		return false
+	}
+	const day = Number(parts.day)
+	const month = Number(parts.month)
+	const year = Number(parts.year)
+	const hour = Number(parts.hour)
+	const minute = Number(parts.minute)
 	if (month < 1 || month > 12 || hour > 23 || minute > 59) return false
 	const date = new Date(year, month - 1, day, hour, minute)
 	return (
@@ -215,6 +238,8 @@ const isValidEtaManualValue = (value: string): boolean => {
 		date.getMinutes() === minute
 	)
 }
+
+const digitsOnly = (value: string, max: number): string => value.replace(/\D/g, '').slice(0, max)
 
 const useDeliveryCountdown = (
 	pickupReadyAt: string | undefined,
@@ -270,11 +295,10 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 }) => {
 	const [valueForm, setValueForm] = useState<'PICKUP_DONE' | 'DELIVERED'>()
 	const [showChangeEta, setShowChangeEta] = useState(false)
-	const [etaInput, setEtaInput] = useState(() => formatEtaManualValue(order.deadline_at))
+	const [etaParts, setEtaParts] = useState<EtaParts>(() => parseEtaPartsFromIso(order.deadline_at))
 	const etaPillRef = useRef<HTMLDivElement>(null)
-	const etaFieldRef = useRef<HTMLInputElement>(null)
 	const etaUpdateBtnRef = useRef<HTMLButtonElement>(null)
-	const etaCaretRef = useRef<number | null>(null)
+	const etaPartRefs = useRef<Partial<Record<EtaPartKey, HTMLInputElement | null>>>({})
 
 	const countdown = useDeliveryCountdown(
 		order.pickup_ready_at,
@@ -303,132 +327,86 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 	}, [order.deadline_at, order.delivery_date, order.delivery_time_from, order.delivery_time_to])
 
 	const etaBaseline = useMemo(
-		() => formatEtaManualValue(order.deadline_at),
+		() => parseEtaPartsFromIso(order.deadline_at),
 		[order.deadline_at],
 	)
+	const etaJoined = joinEtaParts(etaParts)
+	const etaValid = isValidEtaParts(etaParts)
 
 	useEffect(() => {
-		setEtaInput(etaBaseline)
+		setEtaParts(etaBaseline)
 	}, [etaBaseline])
 
 	useEffect(() => {
 		if (!showChangeEta) return
-		etaFieldRef.current?.focus()
+		const dayInput = etaPartRefs.current.day
+		dayInput?.focus()
+		dayInput?.select()
 	}, [showChangeEta])
 
-	useEffect(() => {
-		if (etaCaretRef.current === null || !etaFieldRef.current) return
-		const caret = etaCaretRef.current
-		etaCaretRef.current = null
-		etaFieldRef.current.setSelectionRange(caret, caret)
-	}, [etaInput])
-
-	const setEtaDigitsAt = (shaped: string, digitIndex: number, digit: string, caretAfter: number) => {
-		const chars = shaped.split('')
-		chars[digitIndex] = digit
-		etaCaretRef.current = caretAfter
-		setEtaInput(chars.join(''))
+	const focusEtaPart = (key: EtaPartKey, select = true) => {
+		const el = etaPartRefs.current[key]
+		if (!el) return
+		el.focus()
+		if (select) el.select()
 	}
 
-	const handleEtaKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-		if (event.metaKey || event.ctrlKey || event.altKey) return
-
-		const input = event.currentTarget
-		const start = input.selectionStart ?? 0
-		const end = input.selectionEnd ?? 0
-		const shaped = ensureEtaShape(etaInput)
-
-		if (/^\d$/.test(event.key)) {
-			event.preventDefault()
-			const pos =
-				ETA_DIGIT_SLOTS.find((slot) => slot >= start && (start === end || slot < end)) ??
-				ETA_DIGIT_SLOTS.find((slot) => slot >= start) ??
-				ETA_DIGIT_SLOTS[ETA_DIGIT_SLOTS.length - 1]
-			const next =
-				ETA_DIGIT_SLOTS.find((slot) => slot > pos) ?? Math.min(pos + 1, shaped.length)
-			setEtaDigitsAt(shaped, pos, event.key, next)
-			return
-		}
-
-		if (event.key === 'Backspace') {
-			event.preventDefault()
-			const chars = shaped.split('')
-			if (start !== end) {
-				for (const slot of ETA_DIGIT_SLOTS) {
-					if (slot >= start && slot < end) chars[slot] = '0'
-				}
-				const caret = ETA_DIGIT_SLOTS.find((slot) => slot >= start) ?? start
-				etaCaretRef.current = caret
-				setEtaInput(chars.join(''))
-				return
-			}
-			const pos =
-				[...ETA_DIGIT_SLOTS].reverse().find((slot) => slot < start) ?? ETA_DIGIT_SLOTS[0]
-			chars[pos] = '0'
-			etaCaretRef.current = pos
-			setEtaInput(chars.join(''))
-			return
-		}
-
-		if (event.key === 'Delete') {
-			event.preventDefault()
-			const chars = shaped.split('')
-			if (start !== end) {
-				for (const slot of ETA_DIGIT_SLOTS) {
-					if (slot >= start && slot < end) chars[slot] = '0'
-				}
-				etaCaretRef.current = ETA_DIGIT_SLOTS.find((slot) => slot >= start) ?? start
-				setEtaInput(chars.join(''))
-				return
-			}
-			const pos = ETA_DIGIT_SLOTS.find((slot) => slot >= start) ?? ETA_DIGIT_SLOTS[ETA_DIGIT_SLOTS.length - 1]
-			chars[pos] = '0'
-			etaCaretRef.current = pos
-			setEtaInput(chars.join(''))
-			return
-		}
-
-		// Keep navigation keys; block other printable chars that would break the mask.
-		if (event.key.length === 1) {
-			event.preventDefault()
+	const updateEtaPart = (key: EtaPartKey, raw: string) => {
+		const nextValue = digitsOnly(raw, ETA_PART_MAX[key])
+		setEtaParts((prev) => ({ ...prev, [key]: nextValue }))
+		if (nextValue.length >= ETA_PART_MAX[key]) {
+			const idx = ETA_PART_ORDER.indexOf(key)
+			const nextKey = ETA_PART_ORDER[idx + 1]
+			if (nextKey) requestAnimationFrame(() => focusEtaPart(nextKey))
 		}
 	}
 
-	const handleEtaPaste = (event: ClipboardEvent<HTMLInputElement>) => {
-		event.preventDefault()
-		const digits = event.clipboardData.getData('text').replace(/\D/g, '').slice(0, 12)
-		if (!digits) return
-		const shaped = ensureEtaShape(etaInput)
-		const chars = shaped.split('')
-		const start = event.currentTarget.selectionStart ?? 0
-		let slotIdx = ETA_DIGIT_SLOTS.findIndex((slot) => slot >= start)
-		if (slotIdx < 0) slotIdx = 0
-		for (let i = 0; i < digits.length && slotIdx + i < ETA_DIGIT_SLOTS.length; i += 1) {
-			chars[ETA_DIGIT_SLOTS[slotIdx + i]] = digits[i]
+	const handleEtaPartKeyDown = (key: EtaPartKey, event: KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === 'Backspace' && event.currentTarget.value === '') {
+			event.preventDefault()
+			const idx = ETA_PART_ORDER.indexOf(key)
+			const prevKey = ETA_PART_ORDER[idx - 1]
+			if (prevKey) focusEtaPart(prevKey)
+			return
 		}
-		const last = Math.min(slotIdx + digits.length, ETA_DIGIT_SLOTS.length - 1)
-		const caret =
-			ETA_DIGIT_SLOTS[last + 1] ?? ETA_DIGIT_SLOTS[ETA_DIGIT_SLOTS.length - 1] + 1
-		etaCaretRef.current = caret
-		setEtaInput(chars.join(''))
+		if (event.key === 'ArrowLeft' && (event.currentTarget.selectionStart ?? 0) === 0) {
+			const idx = ETA_PART_ORDER.indexOf(key)
+			const prevKey = ETA_PART_ORDER[idx - 1]
+			if (prevKey) {
+				event.preventDefault()
+				focusEtaPart(prevKey)
+			}
+			return
+		}
+		if (
+			event.key === 'ArrowRight' &&
+			(event.currentTarget.selectionStart ?? 0) === event.currentTarget.value.length
+		) {
+			const idx = ETA_PART_ORDER.indexOf(key)
+			const nextKey = ETA_PART_ORDER[idx + 1]
+			if (nextKey) {
+				event.preventDefault()
+				focusEtaPart(nextKey)
+			}
+		}
 	}
 
 	useEffect(() => {
 		if (!showChangeEta) return
 
 		const onPointerDown = (event: PointerEvent) => {
-			if (etaInput !== etaBaseline) return
+			if (etaJoined !== joinEtaParts(etaBaseline)) return
 			const target = event.target as Node | null
 			if (!target) return
 			if (etaPillRef.current?.contains(target)) return
 			if (etaUpdateBtnRef.current?.contains(target)) return
-			setEtaInput(etaBaseline)
+			setEtaParts(etaBaseline)
 			setShowChangeEta(false)
 		}
 
 		document.addEventListener('pointerdown', onPointerDown)
 		return () => document.removeEventListener('pointerdown', onPointerDown)
-	}, [showChangeEta, etaInput, etaBaseline])
+	}, [showChangeEta, etaJoined, etaBaseline])
 
 	return (
 		<div
@@ -625,39 +603,79 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 												action={carrierChangeEtaUrl(order.id)}
 												className={styles.carrierChangeEtaForm}
 												onSubmit={(e) => {
-													if (!isValidEtaManualValue(etaInput)) {
+													if (!etaValid) {
 														e.preventDefault()
 														e.currentTarget.reportValidity()
 													}
 												}}
 											>
 												<input type="hidden" name="_token" value={changeEtaCsrfToken} />
-												{/* Figma Frame 1932: manual text in format dd/mm/yyyy, hh:mm */}
+												<input type="hidden" name="eta" value={etaJoined} />
+												{/* Separate fields: dd / mm / yyyy , hh : mm */}
 												<div ref={etaPillRef} className={styles.carrierChangeEtaPill}>
-													<input
-														ref={etaFieldRef}
-														type="text"
-														name="eta"
-														required
-														inputMode="numeric"
-														autoComplete="off"
-														spellCheck={false}
-														placeholder="dd/mm/yyyy, hh:mm"
-														pattern="\d{2}/\d{2}/\d{4},\s*\d{2}:\d{2}"
-														title="Click a digit to change it. Format: dd/mm/yyyy, hh:mm"
-														value={etaInput}
-														onChange={(e) => setEtaInput(ensureEtaShape(e.target.value))}
-														onKeyDown={handleEtaKeyDown}
-														onPaste={handleEtaPaste}
-														className={styles.carrierChangeEtaInput}
-														aria-label="ETA (time of arrival)"
-													/>
+													{(
+														[
+															['day', 'dd'],
+															['month', 'mm'],
+															['year', 'yyyy'],
+															['hour', 'hh'],
+															['minute', 'mm'],
+														] as const
+													).map(([key, placeholder], index) => (
+														<span key={key} className={styles.carrierEtaSegWrap}>
+															{index === 1 || index === 2 ? (
+																<span className={styles.carrierEtaSep} aria-hidden>
+																	/
+																</span>
+															) : null}
+															{index === 3 ? (
+																<span className={styles.carrierEtaSep} aria-hidden>
+																	{',\u00A0'}
+																</span>
+															) : null}
+															{index === 4 ? (
+																<span className={styles.carrierEtaSep} aria-hidden>
+																	:
+																</span>
+															) : null}
+															<input
+																ref={(el) => {
+																	etaPartRefs.current[key] = el
+																}}
+																type="text"
+																inputMode="numeric"
+																autoComplete="off"
+																spellCheck={false}
+																placeholder={placeholder}
+																maxLength={ETA_PART_MAX[key]}
+																value={etaParts[key]}
+																onFocus={(e) => e.currentTarget.select()}
+																onChange={(e) => updateEtaPart(key, e.target.value)}
+																onKeyDown={(e) => handleEtaPartKeyDown(key, e)}
+																className={cn(
+																	styles.carrierEtaSeg,
+																	key === 'year' && styles.carrierEtaSegYear,
+																)}
+																aria-label={
+																	key === 'day'
+																		? 'Day'
+																		: key === 'month'
+																			? 'Month'
+																			: key === 'year'
+																				? 'Year'
+																				: key === 'hour'
+																					? 'Hours'
+																					: 'Minutes'
+																}
+															/>
+														</span>
+													))}
 												</div>
 												<button
 													ref={etaUpdateBtnRef}
 													type="submit"
 													className={styles.carrierUpdateEtaBtn}
-													disabled={!isValidEtaManualValue(etaInput)}
+													disabled={!etaValid}
 												>
 													Update
 												</button>
