@@ -27,6 +27,9 @@ final class NotificationEventKey
 
     public const ORDER_STATUS_CHANGED_TO_DELIVERED = 'ORDER_STATUS_CHANGED_TO_DELIVERED';
 
+    /** Carrier updated planned delivery ETA (Change ETA). */
+    public const ORDER_ETA_CHANGED = 'ORDER_ETA_CHANGED';
+
     /**
      * Delivered: email to sender with customer invoice PDF (one attachment).
      * Distinct from carrier mail so rules can target different templates/recipients.
@@ -56,6 +59,7 @@ final class NotificationEventKey
             self::ORDER_STATUS_CHANGED_TO_PICKUP_DONE,
             self::ORDER_STATUS_CHANGED_TO_IN_TRANSIT,
             self::ORDER_STATUS_CHANGED_TO_DELIVERED,
+            self::ORDER_ETA_CHANGED,
             self::ORDER_DELIVERED_SENDER_DOCUMENT,
             self::ORDER_DELIVERED_CARRIER_DOCUMENT,
             self::WAITING_LIST_CONFIRMATION,

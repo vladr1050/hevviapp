@@ -24,8 +24,10 @@ use App\Entity\OrderAssignment;
 use App\Entity\OrderAttachment;
 use App\Entity\OrderHistory;
 use App\Entity\OrderOffer;
+use App\Notification\NotificationEventKey;
 use App\Repository\OrderAssignmentRepository;
 use App\Repository\OrderRepository;
+use App\Service\Notification\NotificationDispatchService;
 use App\Service\Order\DeliveryDeadlineCalculator;
 use App\Service\Order\OrderPartyContactApplicator;
 use App\Service\Order\SenderOrderPayableTotalCentsCalculator;
@@ -53,6 +55,7 @@ class CarrierController extends AbstractController
         private readonly SenderOrderPayableTotalCentsCalculator $senderOrderPayableTotalCentsCalculator,
         private readonly DeliveryDeadlineCalculator $deliveryDeadlineCalculator,
         private readonly OrderPartyContactApplicator $orderPartyContactApplicator,
+        private readonly NotificationDispatchService $notificationDispatchService,
     )
     {
     }
@@ -256,6 +259,63 @@ class CarrierController extends AbstractController
         return $this->redirectToRoute('carrier_public_order', ['id' => $id]);
     }
 
+    #[Route('/orders/{id}/change-eta', name: 'public_order_change_eta', methods: ['POST'])]
+    public function changeOrderEta(string $id, Request $request, CsrfTokenManagerInterface $csrfTokenManager): Response
+    {
+        /** @var Carrier $user */
+        $user = $this->getUser();
+
+        $order = $this->orderRepository->find($id);
+        if (!$order || $order->getCarrier() !== $user) {
+            return $this->redirectToRoute('carrier_public_orders');
+        }
+
+        $token = new CsrfToken('change_order_eta', (string) $request->request->get('_token'));
+        if (!$csrfTokenManager->isTokenValid($token)) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
+        $status = $order->getStatus();
+        $allowed = [
+            Order::STATUS['AWAITING_PICKUP'],
+            Order::STATUS['PICKUP_DONE'],
+            Order::STATUS['IN_TRANSIT'],
+        ];
+        if (!in_array($status, $allowed, true)) {
+            return $this->redirectToRoute('carrier_public_order', ['id' => $id]);
+        }
+
+        $raw = trim((string) $request->request->get('eta', ''));
+        // Support datetime-local "Y-m-d\TH:i" or "Y-m-d H:i"
+        $normalized = str_replace('T', ' ', $raw);
+        $tz = new \DateTimeZone('Europe/Riga');
+        $eta = \DateTimeImmutable::createFromFormat('Y-m-d H:i', $normalized, $tz);
+        if ($eta === false) {
+            $eta = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $normalized, $tz);
+        }
+        if ($eta === false) {
+            return $this->redirectToRoute('carrier_public_order', ['id' => $id]);
+        }
+
+        $order->setCarrierEtaAt($eta);
+        // Keep order card delivery fields in sync with the ETA the carrier committed to.
+        $day = \DateTime::createFromFormat('Y-m-d', $eta->format('Y-m-d'));
+        $time = \DateTime::createFromFormat('H:i', $eta->format('H:i'));
+        if ($day instanceof \DateTime) {
+            $order->setDeliveryDate($day);
+        }
+        if ($time instanceof \DateTime) {
+            $order->setDeliveryTimeFrom($time);
+            $order->setDeliveryTimeTo($time);
+        }
+
+        $this->em->flush();
+
+        $this->notificationDispatchService->dispatch($order, NotificationEventKey::ORDER_ETA_CHANGED);
+
+        return $this->redirectToRoute('carrier_public_order', ['id' => $id]);
+    }
+
     #[Route('/profile', name: 'public_profile')]
     public function profile(): Response
     {
@@ -420,6 +480,7 @@ class CarrierController extends AbstractController
             'delivered_date' => false !== $deliveredHistory ? $deliveredHistory->getCreatedAt()->format(\DateTimeInterface::ATOM) : null,
             'pickup_ready_at' => $this->deliveryDeadlineCalculator->resolveAnchor($order)?->format(\DateTimeInterface::ATOM),
             'deadline_at' => $this->deliveryDeadlineCalculator->resolveDeadline($order)?->format(\DateTimeInterface::ATOM),
+            'carrier_eta_at' => $order->getCarrierEtaAt()?->format(\DateTimeInterface::ATOM),
             'carrier' => $order->getCarrier()?->getLegalName(),
             'pickup_latitude' => $order->getPickupLatitude(),
             'pickup_longitude' => $order->getPickupLongitude(),

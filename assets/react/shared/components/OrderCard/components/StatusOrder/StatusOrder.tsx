@@ -1,9 +1,13 @@
-import { type FC, ReactNode, SetStateAction, useEffect, useState } from 'react'
+import { type FC, ReactNode, SetStateAction, useEffect, useMemo, useState } from 'react'
 
-import { OrderStatusEnum, OrderType, carrierUpdateStatusUrl } from '@config/constants'
+import {
+	OrderStatusEnum,
+	OrderType,
+	carrierChangeEtaUrl,
+	carrierUpdateStatusUrl,
+} from '@config/constants'
 import { Button } from '@ui/Button/Button'
 import { Checkbox } from '@ui/Checkbox/Checkbox'
-import { CircleChart } from '@ui/CircleChart/CircleChart'
 import { Icon } from '@ui/Icon/Icon'
 import { IconNameType } from '@ui/Icon/Icon.types'
 import { cn } from '@utils/cn'
@@ -24,13 +28,12 @@ interface StatusOrderProps {
 	order: OrderType
 	setModalId: (value: SetStateAction<any>) => void
 	csrfToken?: string
+	changeEtaCsrfToken?: string
 }
-
-const DELIVERY_LIMIT_MS = 48 * 60 * 60 * 1000
 
 type CountdownState =
 	| { phase: 'pending'; opensAtLabel: string }
-	| { phase: 'running'; percent: number; timeLabel: string; subtitle: string }
+	| { phase: 'running'; timeLabel: string; subtitle: string }
 
 type CarrierFlatRowProps = {
 	muted?: boolean
@@ -107,6 +110,30 @@ const formatPickupOpensAt = (iso: string): string => {
 	return `${pad(date.getDate())}.${pad(date.getMonth() + 1)} ${pad(date.getHours())}:${pad(date.getMinutes())}`
 }
 
+/** Digital countdown: 48h → `2d 00:00`, 47h59m → `1d 23:59`. */
+const formatDigitalCountdown = (remainingMs: number): string => {
+	const totalMinutes = Math.max(0, Math.floor(remainingMs / 60_000))
+	const days = Math.floor(totalMinutes / (24 * 60))
+	const hours = Math.floor((totalMinutes % (24 * 60)) / 60)
+	const minutes = totalMinutes % 60
+	const pad = (n: number) => String(n).padStart(2, '0')
+	return `${days}d ${pad(hours)}:${pad(minutes)}`
+}
+
+const formatEtaDisplay = (iso: string): string => {
+	const date = new Date(iso)
+	if (Number.isNaN(date.getTime())) return ''
+	const pad = (n: number) => String(n).padStart(2, '0')
+	return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()}, ${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
+
+const toDatetimeLocalValue = (iso?: string): string => {
+	const date = iso ? new Date(iso) : new Date(Date.now() + 48 * 60 * 60 * 1000)
+	if (Number.isNaN(date.getTime())) return ''
+	const pad = (n: number) => String(n).padStart(2, '0')
+	return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
+
 const useDeliveryCountdown = (
 	pickupReadyAt: string | undefined,
 	deadlineAt: string | undefined,
@@ -127,17 +154,14 @@ const useDeliveryCountdown = (
 
 		const remainingMs = Math.max(0, deadlineMs - referenceMs)
 		const isExpired = remainingMs === 0
-		const percent = (remainingMs / DELIVERY_LIMIT_MS) * 100
+		const timeLabel = formatDigitalCountdown(remainingMs)
+		const subtitle = deliveredDate
+			? 'until order completion'
+			: isExpired
+				? "Time's up"
+				: 'until order completion'
 
-		const hours = Math.floor(remainingMs / 3_600_000)
-		const minutes = Math.floor((remainingMs % 3_600_000) / 60_000)
-		const seconds = Math.floor((remainingMs % 60_000) / 1_000)
-
-		const pad = (n: number) => String(n).padStart(2, '0')
-		const timeLabel = isExpired ? '00:00:00' : `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
-		const subtitle = deliveredDate ? 'remaining' : isExpired ? "Time's up" : 'left'
-
-		return { phase: 'running', percent, timeLabel, subtitle }
+		return { phase: 'running', timeLabel, subtitle }
 	}
 
 	const [state, setState] = useState<CountdownState | null>(compute)
@@ -155,8 +179,17 @@ const useDeliveryCountdown = (
 	return state
 }
 
-export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId, csrfToken }) => {
+export const StatusOrder: FC<StatusOrderProps> = ({
+	isCarrier,
+	order,
+	setModalId,
+	csrfToken,
+	changeEtaCsrfToken,
+}) => {
 	const [valueForm, setValueForm] = useState<'PICKUP_DONE' | 'DELIVERED'>()
+	const [showChangeEta, setShowChangeEta] = useState(false)
+	const [etaInput, setEtaInput] = useState(() => toDatetimeLocalValue(order.deadline_at))
+
 	const countdown = useDeliveryCountdown(
 		order.pickup_ready_at,
 		order.deadline_at,
@@ -165,6 +198,21 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 	const deliveredToLabel = order.address?.to?.trim()
 		? `Delivered to ${order.address.to.trim()}`
 		: 'Delivered'
+
+	const canChangeEta =
+		!!changeEtaCsrfToken &&
+		order.status >= OrderStatusEnum.AWAITING_PICKUP &&
+		order.status < OrderStatusEnum.DELIVERED &&
+		!!order.deadline_at
+
+	const etaLabel = useMemo(() => {
+		if (order.deadline_at) return formatEtaDisplay(order.deadline_at)
+		return ''
+	}, [order.deadline_at])
+
+	useEffect(() => {
+		setEtaInput(toDatetimeLocalValue(order.deadline_at))
+	}, [order.deadline_at])
 
 	return (
 		<div
@@ -321,14 +369,67 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 								</span>
 							</div>
 						) : countdown?.phase === 'running' ? (
-							<CircleChart
-								size={170}
-								percent={countdown.percent}
-								title={`${countdown.timeLabel}h`}
-								titleClassName={styles.carrierCountdownTitle}
-								subtitle={countdown.subtitle}
-								countdown
-							/>
+							<div className={styles.carrierCountdownBlock}>
+								<div className={styles.carrierCountdownCard}>
+									<div className={styles.carrierCountdownIcon}>
+										<Icon type="clock_1" size={28} />
+									</div>
+									<div className={styles.carrierCountdownText}>
+										<div className={styles.carrierCountdownValue}>{countdown.timeLabel}</div>
+										<div className={styles.carrierCountdownSubtitle}>{countdown.subtitle}</div>
+									</div>
+								</div>
+
+								{etaLabel && (
+									<div className={styles.carrierEtaBlock}>
+										<div className={styles.carrierEtaLabel}>ETA (time of arrival)</div>
+										<div className={styles.carrierEtaValue}>{etaLabel}</div>
+
+										{canChangeEta && !showChangeEta && (
+											<button
+												type="button"
+												className={styles.carrierChangeEtaBtn}
+												onClick={() => setShowChangeEta(true)}
+											>
+												Change ETA
+											</button>
+										)}
+
+										{canChangeEta && showChangeEta && (
+											<form
+												method="POST"
+												action={carrierChangeEtaUrl(order.id)}
+												className={styles.carrierChangeEtaForm}
+											>
+												<input type="hidden" name="_token" value={changeEtaCsrfToken} />
+												<label className={styles.carrierChangeEtaField}>
+													<span>New ETA</span>
+													<input
+														type="datetime-local"
+														name="eta"
+														required
+														value={etaInput}
+														onChange={(e) => setEtaInput(e.target.value)}
+														className={styles.carrierChangeEtaInput}
+													/>
+												</label>
+												<div className={styles.carrierChangeEtaActions}>
+													<button
+														type="button"
+														className={styles.carrierChangeEtaCancel}
+														onClick={() => setShowChangeEta(false)}
+													>
+														Cancel
+													</button>
+													<Button type="submit" className="w-full">
+														Save ETA
+													</Button>
+												</div>
+											</form>
+										)}
+									</div>
+								)}
+							</div>
 						) : (
 							<div className={styles.carrierPickupPending}>
 								<Icon type="clock_1_light" size={36} />
@@ -478,7 +579,6 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 				</div>
 			)}
 
-
 			{isCarrier && (
 				<>
 					<div className={styles.footer}>
@@ -527,4 +627,3 @@ export const StatusOrder: FC<StatusOrderProps> = ({ isCarrier, order, setModalId
 		</div>
 	)
 }
-

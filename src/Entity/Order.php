@@ -185,6 +185,12 @@ class Order extends BaseUUID
     private ?string $consigneeContactName = null;
 
     /**
+     * Carrier-set delivery ETA (Europe/Riga wall time). When set, overrides the default 48h SLA deadline.
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $carrierEtaAt = null;
+
+    /**
      * Не маппится в БД: один раз пропустить OrderOfferAutoCreateListener после flush
      * (аннулирование котировки перед редактированием).
      */
@@ -503,6 +509,18 @@ class Order extends BaseUUID
         $this->consigneeContactName = $consigneeContactName !== null && $consigneeContactName !== ''
             ? trim($consigneeContactName)
             : null;
+
+        return $this;
+    }
+
+    public function getCarrierEtaAt(): ?\DateTimeImmutable
+    {
+        return $this->carrierEtaAt;
+    }
+
+    public function setCarrierEtaAt(?\DateTimeImmutable $carrierEtaAt): static
+    {
+        $this->carrierEtaAt = $carrierEtaAt;
 
         return $this;
     }

@@ -33,6 +33,7 @@ final class NotificationRuleDefaults
             self::pickupDone(),
             self::inTransit(),
             self::delivered(),
+            self::etaChanged(),
             self::priceConfirmed(),
             self::deliveredSenderDocument(),
             self::deliveredCarrierDocument(),
@@ -287,6 +288,36 @@ HTML;
             'bodyTemplate' => $body,
             'attachInvoicePdf' => false,
             'sendOncePerOrder' => true,
+        ];
+    }
+
+    /**
+     * @return RuleShape
+     */
+    private static function etaChanged(): array
+    {
+        $body = <<<'HTML'
+<p>Labdien,</p>
+<p>Pārvadātājs ir atjauninājis plānoto piegādes laiku (ETA) jūsu pasūtījumam.</p>
+<p><strong>Pasūtījuma informācija:</strong></p>
+<ul>
+<li>Pasūtījuma ID: {{ORDER_ID}}</li>
+<li>Maršruts: {{PICKUP_ADDRESS}} → {{DELIVERY_ADDRESS}}</li>
+<li>Jaunais ETA: {{ETA}}</li>
+</ul>
+<p>Ja rodas jautājumi, sazinieties ar Hevvi komandu.</p>
+<p>Ar cieņu,<br>Hevvi Operāciju komanda<br>support@hevvi.app<br>www.hevvi.app</p>
+HTML;
+
+        return [
+            'name' => 'Sender: ETA mainīts (Change ETA)',
+            'description' => 'ORDER_ETA_CHANGED — carrier updated delivery ETA',
+            'eventKey' => NotificationEventKey::ORDER_ETA_CHANGED,
+            'recipientType' => NotificationRecipientType::SENDER,
+            'subjectTemplate' => 'Atjaunināts piegādes laiks (ETA) – pasūtījums {{ORDER_ID}}',
+            'bodyTemplate' => $body,
+            'attachInvoicePdf' => false,
+            'sendOncePerOrder' => false,
         ];
     }
 

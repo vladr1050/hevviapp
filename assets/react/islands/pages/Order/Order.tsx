@@ -32,6 +32,7 @@ interface OrderPageProps {
 	cancel_order_csrf_token: string
 	abandon_order_csrf_token?: string
 	update_status_csrf_token?: string
+	change_eta_csrf_token?: string
 	isCarrier?: boolean
 	device?: DeviceType
 }
@@ -62,6 +63,7 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 		cancel_order_csrf_token,
 		abandon_order_csrf_token,
 		update_status_csrf_token,
+		change_eta_csrf_token,
 		isCarrier,
 		device,
 	} = props
@@ -230,6 +232,7 @@ export const OrderPage: FC<OrderPageProps> = (props) => {
 						cancelCsrfToken={cancel_order_csrf_token}
 						abandonCsrfToken={abandon_order_csrf_token}
 						updateStatusCsrfToken={update_status_csrf_token}
+						changeEtaCsrfToken={change_eta_csrf_token}
 					/>
 				</div>
 			</div>

@@ -14,9 +14,9 @@ use App\Repository\OrderHistoryRepository;
  * - pickupDate is null (ready now) → anchor = max(paidAt, today @ pickupTimeFrom or paidAt);
  * - pickupDate is set (later) → anchor = max(paidAt, pickupDate @ pickupTimeFrom or 09:00),
  *   so a late payment cannot retroactively shrink the SLA window.
- * - deadline = anchor + DELIVERY_SLA_HOURS.
+ * - deadline = carrierEtaAt override when set, otherwise anchor + DELIVERY_SLA_HOURS.
  *
- * Returns null when no PAID history exists yet (timer should not run).
+ * Returns null when no PAID history exists yet and no carrier ETA override (timer should not run).
  */
 final class DeliveryDeadlineCalculator
 {
@@ -52,10 +52,17 @@ final class DeliveryDeadlineCalculator
     }
 
     /**
-     * 48h deadline from anchor. Null if anchor cannot be resolved (no PAID yet).
+     * Delivery deadline for countdown / {{ETA}}.
+     * Prefers carrier Change ETA override; otherwise anchor + DELIVERY_SLA_HOURS.
+     * Null if neither override nor PAID anchor exists.
      */
     public function resolveDeadline(Order $order): ?\DateTimeImmutable
     {
+        $override = $order->getCarrierEtaAt();
+        if ($override !== null) {
+            return $override->setTimezone(new \DateTimeZone(self::APP_TZ));
+        }
+
         $anchor = $this->resolveAnchor($order);
         if ($anchor === null) {
             return null;

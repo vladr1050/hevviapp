@@ -27,6 +27,7 @@
 			csrf_token: csrf_token("confirm_order"),
 			cancel_order_csrf_token: csrf_token("cancel_order"),
 			update_status_csrf_token: csrf_token("update_order_status"),
+			change_eta_csrf_token: csrf_token("change_order_eta"),
 			isCarrier: true,
 		}|json_encode|e("html_attr") }}'
 	></div>

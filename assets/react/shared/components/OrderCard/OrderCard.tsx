@@ -49,6 +49,7 @@ interface OrderCardProps {
 	cancelCsrfToken?: string
 	abandonCsrfToken?: string
 	updateStatusCsrfToken?: string
+	changeEtaCsrfToken?: string
 }
 
 type ModalIdType = 'confirmSender' | 'cancel' | 'rate' | 'declineCarrier'
@@ -66,6 +67,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 	cancelCsrfToken,
 	abandonCsrfToken,
 	updateStatusCsrfToken,
+	changeEtaCsrfToken,
 }) => {
 	const [modalId, setModalId] = useState<ModalIdType>()
 	const [askingContacts, setAskingContacts] = useState(false)
@@ -644,6 +646,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 					setModalId={setModalId}
 					isCarrier={isCarrier}
 					csrfToken={updateStatusCsrfToken}
+					changeEtaCsrfToken={changeEtaCsrfToken}
 				/>
 			)}
 		</>

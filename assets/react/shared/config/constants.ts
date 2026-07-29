@@ -57,6 +57,9 @@ export const userCancelOrderUrl = (id: string): string =>
 export const carrierUpdateStatusUrl = (id: string): string =>
 	`/carrier/orders/${id}/update-status`
 
+export const carrierChangeEtaUrl = (id: string): string =>
+	`/carrier/orders/${id}/change-eta`
+
 export const months = [
 	'january',
 	'february',
@@ -171,8 +174,10 @@ export type OrderType = {
 	delivered_date?: string
 	/** ISO timestamp when cargo becomes available for pickup (anchor for the 48h SLA). */
 	pickup_ready_at?: string
-	/** ISO timestamp by which the order must be delivered (= pickup_ready_at + 48h). */
+	/** ISO timestamp by which the order must be delivered (= pickup_ready_at + 48h, or carrier ETA). */
 	deadline_at?: string
+	/** ISO timestamp of carrier-set ETA override, if any. */
+	carrier_eta_at?: string
 	type?: string
 	vat?: string
 	brutto?: string
