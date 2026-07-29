@@ -55,8 +55,8 @@
 		@apply h-full justify-start rounded-[30px] px-[28px] pt-[27px] pb-[15px];
 
 		& .statusWrapper {
-			/* ETA block (end of .top) → Awaiting pickup = 149px */
-			@apply flex min-h-0 w-full flex-1 flex-col items-center justify-start gap-[149px];
+			/* Change ETA → Awaiting pickup: compact rhythm from Figma mockup */
+			@apply flex min-h-0 w-full flex-1 flex-col items-center justify-start gap-10;
 
 			& .top {
 				@apply flex w-full shrink-0 flex-col items-center justify-center self-center;
@@ -82,8 +82,8 @@
 				}
 
 				& .carrierCountdownBlock {
-					/* Compact: timer card → ETA; large 149px gap is below ETA → statuses */
-					@apply flex w-[240px] flex-col items-center gap-5;
+					/* Figma: panel top → ETA label = 149px ≈ pt 27 + card ~78 + gap 44 */
+					@apply flex w-[240px] flex-col items-center gap-[44px];
 				}
 
 				& .carrierCountdownCard {
@@ -121,8 +121,7 @@
 				}
 
 				& .carrierEtaValueSlot {
-					/* Keeps Change ETA / Update at the same vertical slot when swapping value ↔ pill */
-					@apply flex h-12 w-full items-center justify-center;
+					@apply flex w-full items-center justify-center;
 				}
 
 				& .carrierEtaValue {
