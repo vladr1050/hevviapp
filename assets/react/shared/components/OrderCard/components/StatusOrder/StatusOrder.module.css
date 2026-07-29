@@ -225,28 +225,25 @@
 
 				& .carrierChangeEtaPill {
 					/* Figma Frame 1932: h 48, px 29, border 1px #888 */
-					@apply relative flex h-12 w-full cursor-pointer items-center justify-center gap-2.5 rounded-full border border-solid border-[#888] bg-white px-[29px] transition-[border-color,background-color,box-shadow];
+					@apply relative flex h-12 w-full items-center justify-center rounded-full border border-solid border-[#888] bg-white px-[29px] transition-[border-color,background-color,box-shadow];
 					@apply hover-hover:hover:border-[#666] hover-hover:hover:bg-[#FAFAFA] hover-hover:hover:shadow-sm;
 					@apply hover-none:active:border-[#666] hover-none:active:bg-[#FAFAFA];
 
-					&:has(.carrierChangeEtaNative:focus-visible) {
+					&:has(.carrierChangeEtaInput:focus-visible) {
 						@apply border-[#555] bg-[#FAFAFA] shadow-sm;
 					}
 				}
 
-				& .carrierChangeEtaPillText {
-					@apply pointer-events-none text-base font-normal leading-5 text-black;
-				}
-
-				& .carrierChangeEtaNative {
-					@apply absolute inset-0 z-[1] cursor-pointer opacity-0;
-					color-scheme: light;
+				& .carrierChangeEtaInput {
+					@apply w-full border-0 bg-transparent p-0 text-center text-base font-normal leading-5 text-black outline-none;
+					font-family: 'Instrument_Sans', sans-serif;
 				}
 
 				& .carrierUpdateEtaBtn {
 					/* Same slot as Change ETA; Figma black Update 240×48 */
 					@apply mt-[14px] flex h-12 w-[240px] shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-black px-[30px] text-sm font-medium leading-5 text-white transition-colors;
 					@apply hover-hover:hover:bg-[#222] hover-none:active:bg-[#222];
+					@apply disabled:cursor-not-allowed disabled:bg-[#888] disabled:hover:bg-[#888];
 				}
 			}
 

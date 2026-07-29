@@ -286,12 +286,27 @@ class CarrierController extends AbstractController
         }
 
         $raw = trim((string) $request->request->get('eta', ''));
-        // Support datetime-local "Y-m-d\TH:i" or "Y-m-d H:i"
-        $normalized = str_replace('T', ' ', $raw);
         $tz = new \DateTimeZone('Europe/Riga');
-        $eta = \DateTimeImmutable::createFromFormat('Y-m-d H:i', $normalized, $tz);
-        if ($eta === false) {
-            $eta = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $normalized, $tz);
+        // Manual UI: "dd/mm/yyyy, hh:mm" (also pipe / legacy datetime-local).
+        $candidates = [
+            $raw,
+            str_replace('T', ' ', $raw),
+            preg_replace('/\s*\|\s*/', ', ', $raw) ?? $raw,
+        ];
+        $formats = ['d/m/Y, H:i', 'd/m/Y H:i', 'Y-m-d H:i', 'Y-m-d H:i:s'];
+        $eta = false;
+        foreach ($candidates as $candidate) {
+            $candidate = trim((string) $candidate);
+            if ($candidate === '') {
+                continue;
+            }
+            foreach ($formats as $format) {
+                $parsed = \DateTimeImmutable::createFromFormat('!' . $format, $candidate, $tz);
+                if ($parsed instanceof \DateTimeImmutable) {
+                    $eta = $parsed;
+                    break 2;
+                }
+            }
         }
         if ($eta === false) {
             return $this->redirectToRoute('carrier_public_order', ['id' => $id]);

@@ -175,18 +175,43 @@ const formatSenderEtaFromWindow = (order: OrderType): SenderEtaLines | null => {
 	return { primary: `ETA: ${dateLabel}` }
 }
 
-const toDatetimeLocalValue = (iso?: string): string => {
+/** Manual Change ETA value: `dd/mm/yyyy, hh:mm`. */
+const formatEtaManualValue = (iso?: string): string => {
 	const date = iso ? new Date(iso) : new Date(Date.now() + 48 * 60 * 60 * 1000)
 	if (Number.isNaN(date.getTime())) return ''
 	const pad = (n: number) => String(n).padStart(2, '0')
-	return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
+	return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()}, ${pad(date.getHours())}:${pad(date.getMinutes())}`
 }
 
-/** Figma Change ETA pill: `27/07/2026 | 20:00` from datetime-local value. */
-const formatEtaPipeFromLocal = (local: string): string => {
-	const match = local.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/)
-	if (!match) return ''
-	return `${match[3]}/${match[2]}/${match[1]} | ${match[4]}:${match[5]}`
+/** Digits-only mask → `dd/mm/yyyy, hh:mm` while typing. */
+const formatEtaAsYouType = (raw: string): string => {
+	const digits = raw.replace(/\D/g, '').slice(0, 12)
+	let out = ''
+	if (digits.length > 0) out = digits.slice(0, 2)
+	if (digits.length >= 3) out += `/${digits.slice(2, 4)}`
+	if (digits.length >= 5) out += `/${digits.slice(4, 8)}`
+	if (digits.length >= 9) out += `, ${digits.slice(8, 10)}`
+	if (digits.length >= 11) out += `:${digits.slice(10, 12)}`
+	return out
+}
+
+const isValidEtaManualValue = (value: string): boolean => {
+	const match = value.trim().match(/^(\d{2})\/(\d{2})\/(\d{4}),\s*(\d{2}):(\d{2})$/)
+	if (!match) return false
+	const day = Number(match[1])
+	const month = Number(match[2])
+	const year = Number(match[3])
+	const hour = Number(match[4])
+	const minute = Number(match[5])
+	if (month < 1 || month > 12 || hour > 23 || minute > 59) return false
+	const date = new Date(year, month - 1, day, hour, minute)
+	return (
+		date.getFullYear() === year &&
+		date.getMonth() === month - 1 &&
+		date.getDate() === day &&
+		date.getHours() === hour &&
+		date.getMinutes() === minute
+	)
 }
 
 const useDeliveryCountdown = (
@@ -243,7 +268,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 }) => {
 	const [valueForm, setValueForm] = useState<'PICKUP_DONE' | 'DELIVERED'>()
 	const [showChangeEta, setShowChangeEta] = useState(false)
-	const [etaInput, setEtaInput] = useState(() => toDatetimeLocalValue(order.deadline_at))
+	const [etaInput, setEtaInput] = useState(() => formatEtaManualValue(order.deadline_at))
 	const etaPillRef = useRef<HTMLDivElement>(null)
 	const etaUpdateBtnRef = useRef<HTMLButtonElement>(null)
 
@@ -274,7 +299,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 	}, [order.deadline_at, order.delivery_date, order.delivery_time_from, order.delivery_time_to])
 
 	const etaBaseline = useMemo(
-		() => toDatetimeLocalValue(order.deadline_at),
+		() => formatEtaManualValue(order.deadline_at),
 		[order.deadline_at],
 	)
 
@@ -493,20 +518,29 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 												method="POST"
 												action={carrierChangeEtaUrl(order.id)}
 												className={styles.carrierChangeEtaForm}
+												onSubmit={(e) => {
+													if (!isValidEtaManualValue(etaInput)) {
+														e.preventDefault()
+														e.currentTarget.reportValidity()
+													}
+												}}
 											>
 												<input type="hidden" name="_token" value={changeEtaCsrfToken} />
-												{/* Figma Frame 1932: pill stays in the value slot; Update keeps Change ETA position */}
+												{/* Figma Frame 1932: manual text in format dd/mm/yyyy, hh:mm */}
 												<div ref={etaPillRef} className={styles.carrierChangeEtaPill}>
-													<span className={styles.carrierChangeEtaPillText} aria-hidden>
-														{formatEtaPipeFromLocal(etaInput)}
-													</span>
 													<input
-														type="datetime-local"
+														type="text"
 														name="eta"
 														required
+														inputMode="numeric"
+														autoComplete="off"
+														spellCheck={false}
+														placeholder="dd/mm/yyyy, hh:mm"
+														pattern="\d{2}/\d{2}/\d{4},\s*\d{2}:\d{2}"
+														title="Use format dd/mm/yyyy, hh:mm"
 														value={etaInput}
-														onChange={(e) => setEtaInput(e.target.value)}
-														className={styles.carrierChangeEtaNative}
+														onChange={(e) => setEtaInput(formatEtaAsYouType(e.target.value))}
+														className={styles.carrierChangeEtaInput}
 														aria-label="ETA (time of arrival)"
 													/>
 												</div>
@@ -514,6 +548,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 													ref={etaUpdateBtnRef}
 													type="submit"
 													className={styles.carrierUpdateEtaBtn}
+													disabled={!isValidEtaManualValue(etaInput)}
 												>
 													Update
 												</button>
