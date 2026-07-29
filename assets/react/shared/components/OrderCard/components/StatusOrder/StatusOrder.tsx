@@ -1,4 +1,4 @@
-import { type FC, ReactNode, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
+import { type ClipboardEvent, type FC, type KeyboardEvent, ReactNode, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
 
 import {
 	OrderStatusEnum,
@@ -183,16 +183,18 @@ const formatEtaManualValue = (iso?: string): string => {
 	return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()}, ${pad(date.getHours())}:${pad(date.getMinutes())}`
 }
 
-/** Digits-only mask → `dd/mm/yyyy, hh:mm` while typing. */
-const formatEtaAsYouType = (raw: string): string => {
-	const digits = raw.replace(/\D/g, '').slice(0, 12)
-	let out = ''
-	if (digits.length > 0) out = digits.slice(0, 2)
-	if (digits.length >= 3) out += `/${digits.slice(2, 4)}`
-	if (digits.length >= 5) out += `/${digits.slice(4, 8)}`
-	if (digits.length >= 9) out += `, ${digits.slice(8, 10)}`
-	if (digits.length >= 11) out += `:${digits.slice(10, 12)}`
-	return out
+/** Digit slots in `dd/mm/yyyy, hh:mm` (length 17). */
+const ETA_DIGIT_SLOTS = [0, 1, 3, 4, 6, 7, 8, 9, 12, 13, 15, 16] as const
+
+const buildEtaFromDigits = (digits: string): string => {
+	const d = digits.replace(/\D/g, '').slice(0, 12).padEnd(12, '0')
+	return `${d.slice(0, 2)}/${d.slice(2, 4)}/${d.slice(4, 8)}, ${d.slice(8, 10)}:${d.slice(10, 12)}`
+}
+
+/** Keep separators fixed; fill missing digits with 0 so caret edits stay in place. */
+const ensureEtaShape = (value: string): string => {
+	if (/^\d{2}\/\d{2}\/\d{4}, \d{2}:\d{2}$/.test(value)) return value
+	return buildEtaFromDigits(value)
 }
 
 const isValidEtaManualValue = (value: string): boolean => {
@@ -270,7 +272,9 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 	const [showChangeEta, setShowChangeEta] = useState(false)
 	const [etaInput, setEtaInput] = useState(() => formatEtaManualValue(order.deadline_at))
 	const etaPillRef = useRef<HTMLDivElement>(null)
+	const etaFieldRef = useRef<HTMLInputElement>(null)
 	const etaUpdateBtnRef = useRef<HTMLButtonElement>(null)
+	const etaCaretRef = useRef<number | null>(null)
 
 	const countdown = useDeliveryCountdown(
 		order.pickup_ready_at,
@@ -306,6 +310,108 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 	useEffect(() => {
 		setEtaInput(etaBaseline)
 	}, [etaBaseline])
+
+	useEffect(() => {
+		if (!showChangeEta) return
+		etaFieldRef.current?.focus()
+	}, [showChangeEta])
+
+	useEffect(() => {
+		if (etaCaretRef.current === null || !etaFieldRef.current) return
+		const caret = etaCaretRef.current
+		etaCaretRef.current = null
+		etaFieldRef.current.setSelectionRange(caret, caret)
+	}, [etaInput])
+
+	const setEtaDigitsAt = (shaped: string, digitIndex: number, digit: string, caretAfter: number) => {
+		const chars = shaped.split('')
+		chars[digitIndex] = digit
+		etaCaretRef.current = caretAfter
+		setEtaInput(chars.join(''))
+	}
+
+	const handleEtaKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+		if (event.metaKey || event.ctrlKey || event.altKey) return
+
+		const input = event.currentTarget
+		const start = input.selectionStart ?? 0
+		const end = input.selectionEnd ?? 0
+		const shaped = ensureEtaShape(etaInput)
+
+		if (/^\d$/.test(event.key)) {
+			event.preventDefault()
+			const pos =
+				ETA_DIGIT_SLOTS.find((slot) => slot >= start && (start === end || slot < end)) ??
+				ETA_DIGIT_SLOTS.find((slot) => slot >= start) ??
+				ETA_DIGIT_SLOTS[ETA_DIGIT_SLOTS.length - 1]
+			const next =
+				ETA_DIGIT_SLOTS.find((slot) => slot > pos) ?? Math.min(pos + 1, shaped.length)
+			setEtaDigitsAt(shaped, pos, event.key, next)
+			return
+		}
+
+		if (event.key === 'Backspace') {
+			event.preventDefault()
+			const chars = shaped.split('')
+			if (start !== end) {
+				for (const slot of ETA_DIGIT_SLOTS) {
+					if (slot >= start && slot < end) chars[slot] = '0'
+				}
+				const caret = ETA_DIGIT_SLOTS.find((slot) => slot >= start) ?? start
+				etaCaretRef.current = caret
+				setEtaInput(chars.join(''))
+				return
+			}
+			const pos =
+				[...ETA_DIGIT_SLOTS].reverse().find((slot) => slot < start) ?? ETA_DIGIT_SLOTS[0]
+			chars[pos] = '0'
+			etaCaretRef.current = pos
+			setEtaInput(chars.join(''))
+			return
+		}
+
+		if (event.key === 'Delete') {
+			event.preventDefault()
+			const chars = shaped.split('')
+			if (start !== end) {
+				for (const slot of ETA_DIGIT_SLOTS) {
+					if (slot >= start && slot < end) chars[slot] = '0'
+				}
+				etaCaretRef.current = ETA_DIGIT_SLOTS.find((slot) => slot >= start) ?? start
+				setEtaInput(chars.join(''))
+				return
+			}
+			const pos = ETA_DIGIT_SLOTS.find((slot) => slot >= start) ?? ETA_DIGIT_SLOTS[ETA_DIGIT_SLOTS.length - 1]
+			chars[pos] = '0'
+			etaCaretRef.current = pos
+			setEtaInput(chars.join(''))
+			return
+		}
+
+		// Keep navigation keys; block other printable chars that would break the mask.
+		if (event.key.length === 1) {
+			event.preventDefault()
+		}
+	}
+
+	const handleEtaPaste = (event: ClipboardEvent<HTMLInputElement>) => {
+		event.preventDefault()
+		const digits = event.clipboardData.getData('text').replace(/\D/g, '').slice(0, 12)
+		if (!digits) return
+		const shaped = ensureEtaShape(etaInput)
+		const chars = shaped.split('')
+		const start = event.currentTarget.selectionStart ?? 0
+		let slotIdx = ETA_DIGIT_SLOTS.findIndex((slot) => slot >= start)
+		if (slotIdx < 0) slotIdx = 0
+		for (let i = 0; i < digits.length && slotIdx + i < ETA_DIGIT_SLOTS.length; i += 1) {
+			chars[ETA_DIGIT_SLOTS[slotIdx + i]] = digits[i]
+		}
+		const last = Math.min(slotIdx + digits.length, ETA_DIGIT_SLOTS.length - 1)
+		const caret =
+			ETA_DIGIT_SLOTS[last + 1] ?? ETA_DIGIT_SLOTS[ETA_DIGIT_SLOTS.length - 1] + 1
+		etaCaretRef.current = caret
+		setEtaInput(chars.join(''))
+	}
 
 	useEffect(() => {
 		if (!showChangeEta) return
@@ -529,6 +635,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 												{/* Figma Frame 1932: manual text in format dd/mm/yyyy, hh:mm */}
 												<div ref={etaPillRef} className={styles.carrierChangeEtaPill}>
 													<input
+														ref={etaFieldRef}
 														type="text"
 														name="eta"
 														required
@@ -537,9 +644,11 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 														spellCheck={false}
 														placeholder="dd/mm/yyyy, hh:mm"
 														pattern="\d{2}/\d{2}/\d{4},\s*\d{2}:\d{2}"
-														title="Use format dd/mm/yyyy, hh:mm"
+														title="Click a digit to change it. Format: dd/mm/yyyy, hh:mm"
 														value={etaInput}
-														onChange={(e) => setEtaInput(formatEtaAsYouType(e.target.value))}
+														onChange={(e) => setEtaInput(ensureEtaShape(e.target.value))}
+														onKeyDown={handleEtaKeyDown}
+														onPaste={handleEtaPaste}
 														className={styles.carrierChangeEtaInput}
 														aria-label="ETA (time of arrival)"
 													/>
