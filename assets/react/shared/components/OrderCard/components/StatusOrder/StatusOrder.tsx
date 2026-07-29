@@ -282,8 +282,10 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 			{!isCarrier && (
 				<div className={styles.statusWrapper}>
 					<div className={styles.item}>
-						Awaiting Payment
-						<div className={styles.dot} />
+						<span className="min-w-0 flex-1">Awaiting Payment</span>
+						<div className={styles.iconSlot}>
+							<div className={styles.dot} />
+						</div>
 						{order.status >= OrderStatusEnum.ACCEPTED && (
 							<div className={styles.active}>
 								{order.status <= OrderStatusEnum.INVOICED
@@ -311,8 +313,10 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 					<div className={styles.line} />
 
 					<div className={styles.item}>
-						Matching carrier
-						<div className={styles.dot} />
+						<span className="min-w-0 flex-1">Matching carrier</span>
+						<div className={styles.iconSlot}>
+							<div className={styles.dot} />
+						</div>
 						{order.status >= OrderStatusEnum.PAID && (
 							<div className={styles.active}>
 								{order.status < OrderStatusEnum.ASSIGNED ? 'Matching carrier' : 'Carrier matched'}
@@ -334,8 +338,10 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 					<div className={styles.line} />
 
 					<div className={styles.item}>
-						Awaiting pickup
-						<div className={styles.dot} />
+						<span className="min-w-0 flex-1">Awaiting pickup</span>
+						<div className={styles.iconSlot}>
+							<div className={styles.dot} />
+						</div>
 						{order.status >= OrderStatusEnum.ASSIGNED && (
 							<div className={styles.active}>
 								Awaiting pickup
@@ -357,8 +363,10 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 					<div className={styles.line} />
 
 					<div className={styles.item}>
-						In transit
-						<div className={styles.dot} />
+						<span className="min-w-0 flex-1">In transit</span>
+						<div className={styles.iconSlot}>
+							<div className={styles.dot} />
+						</div>
 						{order.status >= OrderStatusEnum.PICKUP_DONE && (
 							<div className={styles.active}>
 								In transit
@@ -386,7 +394,9 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 								<span className={styles.deliveryEta}>{senderDeliveryEta}</span>
 							)}
 						</div>
-						<Icon type="mark_map" size={24} className={styles.deliveryPin} />
+						<div className={styles.iconSlot}>
+							<Icon type="mark_map" size={24} className={styles.deliveryPin} />
+						</div>
 						{order.status >= OrderStatusEnum.DELIVERED && (
 							<div className={styles.active}>
 								{order.status === OrderStatusEnum.APPROVED ? 'Approved' : 'Delivered'}

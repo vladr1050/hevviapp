@@ -8,20 +8,30 @@
 	}
 
 	&.sender {
-		/* Figma Status Frame 1993: 290 wide, 30 padding; 24 between title / list / cancel */
-		@apply w-[290px] items-stretch justify-start gap-0 p-[30px];
+		/* Figma Status: 290×…, pad 30, align-items center, gap 24, radius 30 */
+		@apply h-full w-[290px] items-center justify-start gap-6 rounded-[30px] p-[30px];
 
 		& .title {
-			@apply mb-6 shrink-0 text-xl font-bold leading-none text-black;
+			@apply w-full shrink-0 text-center text-xl font-bold leading-none text-black;
 		}
 
 		& .statusWrapper {
-			/* Status cards Frame 1901 are 188 wide; keep timeline aligned to them */
-			@apply flex w-[188px] flex-col items-end;
+			/* Frame 1901 cards are 188 wide — centered in the panel */
+			@apply flex w-[188px] flex-col items-stretch;
 
 			& .item {
-				@apply relative my-2 flex h-10 w-full items-center justify-between gap-5 px-4
+				/* Same horizontal rhythm as Frame 1901: pl 21, pr 17, gap 31 */
+				@apply relative flex h-10 w-full items-center gap-[31px] pl-[21px] pr-[17px]
 				text-base font-medium text-[#A9A9A9];
+
+				&:has(.active) {
+					@apply h-[73px];
+				}
+
+				& .iconSlot {
+					/* 40×40 — same slot as completed-card check icon */
+					@apply flex h-10 w-10 shrink-0 items-center justify-center;
+				}
 
 				& .dot {
 					border: 2px solid #a9a9a9;
@@ -30,7 +40,7 @@
 
 				& .active {
 					/* Figma Frame 1901: 188×73; pad 18/17/15/21; gap text→icon 31 */
-					@apply absolute left-0 -top-4 z-[2] flex h-[73px] w-[188px] items-center justify-between gap-[31px]
+					@apply absolute inset-0 z-[2] flex h-[73px] w-[188px] items-center justify-between gap-[31px]
 					rounded-2xl bg-white pb-[15px] pl-[21px] pr-[17px] pt-[18px] text-base font-medium text-black shadow-md;
 
 					& .icon {
@@ -43,35 +53,39 @@
 				}
 
 				&.deliveryItem {
-					@apply my-2 h-auto min-h-10 items-start py-1;
+					@apply h-auto min-h-10 items-center py-1;
+
+					&:has(.active) {
+						@apply h-[73px] py-0;
+					}
 
 					& .deliveryCopy {
 						@apply flex min-w-0 flex-1 flex-col items-start gap-0.5 text-left;
 					}
 
 					& .deliveryLabel {
-						/* Figma: Instrument Sans 16 / Medium */
 						@apply text-base font-medium leading-5 text-[#A9A9A9];
 					}
 
 					& .deliveryEta {
-						/* Figma Descriptions-med: 12 / Medium; synced with carrier deadline_at */
 						@apply text-xs font-medium leading-[15px] text-black;
 					}
 
 					& .deliveryPin {
-						@apply mt-0.5 shrink-0 translate-x-0.5 text-[#A9A9A9];
+						@apply text-[#A9A9A9];
 					}
 				}
 			}
 
 			& .line {
-				@apply mr-6 h-10 w-[3px] bg-[#A9A9A9];
+				/* 3px connector through icon-slot center: pr 17 + half of 40 − half of 3 */
+				@apply h-2 w-[3px] shrink-0 self-end bg-[#A9A9A9];
+				margin-right: 35.5px;
 			}
 		}
 
 		& .senderFooter {
-			@apply mt-6 flex w-full shrink-0 flex-col items-center;
+			@apply flex w-full shrink-0 flex-col items-center;
 		}
 
 		& .senderCancel {
