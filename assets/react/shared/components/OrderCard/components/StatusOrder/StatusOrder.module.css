@@ -16,7 +16,8 @@
 		}
 
 		& .statusWrapper {
-			@apply flex w-full flex-col items-end;
+			/* Status cards Frame 1901 are 188 wide; keep timeline aligned to them */
+			@apply flex w-[188px] flex-col items-end;
 
 			& .item {
 				@apply relative my-2 flex h-10 w-full items-center justify-between gap-5 px-4
@@ -28,8 +29,9 @@
 				}
 
 				& .active {
-					@apply absolute left-0 -top-4 z-[2] flex h-[72px] w-full items-center justify-between gap-4
-					rounded-2xl bg-white py-4 pl-5 pr-[10px] text-base font-medium text-black shadow-md;
+					/* Figma Frame 1901: 188×73; pad 18/17/15/21; gap text→icon 31 */
+					@apply absolute left-0 -top-4 z-[2] flex h-[73px] w-[188px] items-center justify-between gap-[31px]
+					rounded-2xl bg-white pb-[15px] pl-[21px] pr-[17px] pt-[18px] text-base font-medium text-black shadow-md;
 
 					& .icon {
 						@apply flex h-10 w-10 shrink-0 items-center justify-center text-black;
