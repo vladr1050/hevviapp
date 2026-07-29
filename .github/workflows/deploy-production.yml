@@ -77,4 +77,5 @@ jobs:
               docker compose exec -T php php bin/console cache:clear --env=prod --no-warmup && \
               docker compose restart php nginx && \
               sleep 3 && \
-              docker compose exec -T php php bin/console cache:warmup --env=prod"
+              docker compose exec -T php php bin/console cache:warmup --env=prod && \
+              docker compose exec -T php sh -c 'chown -R www-data:www-data /var/www/app/var/cache /var/www/app/var/log && chmod -R ug+rwX /var/www/app/var/cache /var/www/app/var/log'"
