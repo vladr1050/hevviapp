@@ -17,6 +17,7 @@
 
 		& .title {
 			@apply w-full shrink-0 text-center text-xl font-bold leading-none text-black;
+			font-family: 'Instrument_Sans', sans-serif;
 		}
 
 		& .statusWrapper {
@@ -35,7 +36,7 @@
 			/*
 			 * Future / upcoming (default): pad 18/17/18/21, gap text→icon 44
 			 * Grid keeps the 40px icon slot flush to pr 17 so the timeline hits its center.
-			 * Figma P 16 med: Instrument Sans 16 / Medium 500 / #A9A9A9
+			 * Figma P 16 med: Instrument Sans 16 / Medium 500
 			 */
 			@apply relative z-[1] grid w-full grid-cols-[minmax(0,1fr)_40px] items-center gap-x-[44px]
 			pb-[18px] pl-[21px] pr-[17px] pt-[18px]
@@ -64,12 +65,12 @@
 		}
 
 		& .stepDot {
-			/* Future marker: white disc + grey ring, ring centered on timeline */
+			/* Frame 1853: 40×40 slot, 8px inset → 24×24 grey ring */
 			@apply relative block h-10 w-10 shrink-0 rounded-full bg-white;
 
 			&::after {
 				content: '';
-				@apply absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2
+				@apply absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2
 				rounded-full border-2 border-solid border-[#A9A9A9] bg-white;
 			}
 		}
@@ -92,18 +93,19 @@
 		}
 
 		& .deliveryLabel {
-			/* P 16 med */
+			/* P 16 med — same as status step labels */
 			@apply text-[16px] font-medium leading-5;
 			font-family: 'Instrument_Sans', sans-serif;
 		}
 
 		& .deliveryEta {
-			/* Descriptions-med 12 / Medium — two lines, ~91×30 */
-			@apply flex max-w-[91px] flex-col text-[12px] font-medium leading-[15px] text-black;
+			/* Descriptions-med: Instrument Sans 12 / Medium 500; frame 91×30 */
+			@apply flex max-w-[91px] flex-col text-[12px] font-medium leading-normal text-black;
 			font-family: 'Instrument_Sans', sans-serif;
 		}
 
 		& .deliveryPinWrap {
+			/* Frame 1853: 40×40, pin 24×24 (= 8px inset) */
 			@apply flex h-10 w-10 items-center justify-center rounded-full bg-white;
 		}
 
@@ -116,7 +118,9 @@
 		}
 
 		& .senderCancel {
-			@apply mx-auto w-max min-h-0 rounded-none border-0 !border-0 bg-transparent !px-0 !py-0 text-sm font-medium !text-black underline shadow-none;
+			/* Same face as status labels: Instrument Sans 16 / Medium */
+			@apply mx-auto w-max min-h-0 rounded-none border-0 !border-0 bg-transparent !px-0 !py-0 text-[16px] font-medium !text-black underline shadow-none;
+			font-family: 'Instrument_Sans', sans-serif;
 		}
 	}
 

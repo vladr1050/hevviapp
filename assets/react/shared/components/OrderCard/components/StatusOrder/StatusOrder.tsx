@@ -412,7 +412,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 								</span>
 							) : (
 								<span className={styles.deliveryPinWrap}>
-									<Icon type="mark_map" size={22} className={styles.deliveryPin} />
+									<Icon type="mark_map" size={24} className={styles.deliveryPin} />
 								</span>
 							)}
 						</div>
