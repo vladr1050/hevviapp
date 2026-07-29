@@ -596,6 +596,56 @@ export const Clock2 = () => (
 	</svg>
 )
 
+/** Feather-style stopwatch for carrier digital countdown. */
+export const Stopwatch = () => (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="24"
+		height="24"
+		viewBox="0 0 24 24"
+		fill="none"
+		aria-hidden
+	>
+		<circle
+			cx="12"
+			cy="13"
+			r="8"
+			stroke="currentColor"
+			strokeWidth="1.75"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+		<path
+			d="M12 9v4l2 2"
+			stroke="currentColor"
+			strokeWidth="1.75"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+		<path
+			d="M5 4l1.5 1.5"
+			stroke="currentColor"
+			strokeWidth="1.75"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+		<path
+			d="M19 4l-1.5 1.5"
+			stroke="currentColor"
+			strokeWidth="1.75"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+		<path
+			d="M9 2h6"
+			stroke="currentColor"
+			strokeWidth="1.75"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+	</svg>
+)
+
 export const CheckCircle1 = () => (
 	<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
 		<path

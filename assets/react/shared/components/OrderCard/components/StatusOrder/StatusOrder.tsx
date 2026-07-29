@@ -221,7 +221,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 				[styles.carrier]: isCarrier,
 			})}
 		>
-			<div className={styles.title}>Status</div>
+			{!isCarrier && <div className={styles.title}>Status</div>}
 
 			{!isCarrier && (
 				<div className={styles.statusWrapper}>
@@ -372,7 +372,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 							<div className={styles.carrierCountdownBlock}>
 								<div className={styles.carrierCountdownCard}>
 									<div className={styles.carrierCountdownIcon}>
-										<Icon type="clock_1" size={28} />
+										<Icon type="stopwatch" size={22} />
 									</div>
 									<div className={styles.carrierCountdownText}>
 										<div className={styles.carrierCountdownValue}>{countdown.timeLabel}</div>

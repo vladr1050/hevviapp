@@ -1,5 +1,5 @@
 import { format } from 'date-fns'
-import { type FC, Fragment, Suspense, useCallback, useState } from 'react'
+import { type FC, type FormEvent, Fragment, Suspense, useCallback, useState } from 'react'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 
 import {
@@ -85,6 +85,24 @@ export const OrderCard: FC<OrderCardProps> = ({
 				block: 'nearest',
 			})
 		})
+	}
+
+	/** Only the final Confirm may POST — Continue must never hit /confirm (invoice email). */
+	const handleConfirmFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+		if (!askingContacts || !contactsValid) {
+			e.preventDefault()
+			if (!askingContacts) {
+				openContactStep()
+			} else {
+				setShowContactValidation(true)
+				requestAnimationFrame(() => {
+					document.getElementById('order-contact-shipper')?.scrollIntoView({
+						behavior: 'smooth',
+						block: 'nearest',
+					})
+				})
+			}
+		}
 	}
 
 	const handleConfirmOrderClick = () => {
@@ -458,7 +476,12 @@ export const OrderCard: FC<OrderCardProps> = ({
 		<>
 			<div className={styles.left}>
 				{canConfirmOffer ? (
-					<form id="order-confirm-form" method="POST" action={userConfirmOrderUrl(order.id)}>
+					<form
+						id="order-confirm-form"
+						method="POST"
+						action={userConfirmOrderUrl(order.id)}
+						onSubmit={handleConfirmFormSubmit}
+					>
 						<input type="hidden" name="_token" value={csrfToken} />
 						{leftPanel}
 					</form>
@@ -620,7 +643,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 													className="w-full"
 													onClick={handleConfirmOrderClick}
 												>
-													Confirm order
+													Confirm
 												</Button>
 											) : (
 												<Button
@@ -628,7 +651,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 													className="w-full"
 													onClick={openContactStep}
 												>
-													Confirm
+													Continue
 												</Button>
 											)
 										)}
