@@ -127,23 +127,30 @@ const formatEtaDisplay = (iso: string): string => {
 	return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()}, ${pad(date.getHours())}:${pad(date.getMinutes())}`
 }
 
-/** Sender Delivery ETA pipe format (same instant as carrier): `ETA: 19/08/2024 | 14:00`. */
-const formatSenderEtaPipe = (iso: string): string => {
+/** Sender Delivery ETA lines (Figma Descriptions-med ~91×30, two lines). */
+type SenderEtaLines = { primary: string; secondary?: string }
+
+const formatSenderEtaFromDeadline = (iso: string): SenderEtaLines | null => {
 	const date = new Date(iso)
-	if (Number.isNaN(date.getTime())) return ''
+	if (Number.isNaN(date.getTime())) return null
 	const pad = (n: number) => String(n).padStart(2, '0')
-	return `ETA: ${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()} | ${pad(date.getHours())}:${pad(date.getMinutes())}`
+	return {
+		primary: `ETA: ${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()}`,
+		secondary: `${pad(date.getHours())}:${pad(date.getMinutes())}`,
+	}
 }
 
 /** Fallback when deadline is not resolved yet — order delivery window. */
-const formatSenderEtaWindow = (order: OrderType): string => {
+const formatSenderEtaFromWindow = (order: OrderType): SenderEtaLines | null => {
 	const dateLabel = order.delivery_date?.trim()
-	if (!dateLabel) return ''
+	if (!dateLabel) return null
 	const from = order.delivery_time_from?.trim()
 	const to = order.delivery_time_to?.trim()
-	if (from && to && from !== to) return `ETA: ${dateLabel}, ${from} - ${to}`
-	if (from) return `ETA: ${dateLabel} | ${from}`
-	return `ETA: ${dateLabel}`
+	if (from && to && from !== to) {
+		return { primary: `ETA: ${dateLabel},`, secondary: `${from} - ${to}` }
+	}
+	if (from) return { primary: `ETA: ${dateLabel}`, secondary: from }
+	return { primary: `ETA: ${dateLabel}` }
 }
 
 const toDatetimeLocalValue = (iso?: string): string => {
@@ -240,8 +247,8 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 
 	/** Same deadline source as carrier ETA; falls back to requested delivery window. */
 	const senderDeliveryEta = useMemo(() => {
-		if (order.deadline_at) return formatSenderEtaPipe(order.deadline_at)
-		return formatSenderEtaWindow(order)
+		if (order.deadline_at) return formatSenderEtaFromDeadline(order.deadline_at)
+		return formatSenderEtaFromWindow(order)
 	}, [order.deadline_at, order.delivery_date, order.delivery_time_from, order.delivery_time_to])
 
 	const etaBaseline = useMemo(
@@ -390,7 +397,12 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 									: 'Delivery'}
 							</span>
 							{senderDeliveryEta && order.status < OrderStatusEnum.DELIVERED && (
-								<span className={styles.deliveryEta}>{senderDeliveryEta}</span>
+								<span className={styles.deliveryEta}>
+									<span>{senderDeliveryEta.primary}</span>
+									{senderDeliveryEta.secondary && (
+										<span>{senderDeliveryEta.secondary}</span>
+									)}
+								</span>
 							)}
 						</div>
 						<div className={styles.stepIcon}>
@@ -399,7 +411,9 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 									<Icon type="check_circle_1" size={20} />
 								</span>
 							) : (
-								<Icon type="mark_map" size={24} className={styles.deliveryPin} />
+								<span className={styles.deliveryPinWrap}>
+									<Icon type="mark_map" size={22} className={styles.deliveryPin} />
+								</span>
 							)}
 						</div>
 					</div>

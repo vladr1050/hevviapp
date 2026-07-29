@@ -27,36 +27,36 @@
 			/* Continuous connector through icon centers (pr 17 + half of 40px icon) */
 			@apply pointer-events-none absolute z-0 w-[2px] bg-[#A9A9A9];
 			top: 36.5px;
-			bottom: 20px;
+			bottom: 36.5px;
 			right: 36px;
 		}
 
 		& .step {
 			/*
 			 * Future / upcoming (default): pad 18/17/18/21, gap text→icon 44
+			 * Grid keeps the 40px icon slot flush to pr 17 so the timeline hits its center.
 			 * Figma P 16 med: Instrument Sans 16 / Medium 500 / #A9A9A9
 			 */
-			@apply relative z-[1] flex w-full items-center gap-[44px]
+			@apply relative z-[1] grid w-full grid-cols-[minmax(0,1fr)_40px] items-center gap-x-[44px]
 			pb-[18px] pl-[21px] pr-[17px] pt-[18px]
 			text-[16px] font-medium leading-5 text-[#A9A9A9];
 			font-family: 'Instrument_Sans', sans-serif;
 		}
 
 		& .stepCard {
-			/* Done / current — Frame 1901: 188×73; pad 18/17/15/21; gap 31 */
-			@apply h-[73px] min-h-[73px] gap-[31px] rounded-2xl bg-white pb-[15px] pl-[21px] pr-[17px] pt-[18px] text-black;
+			/* Done / current — Frame 1901: 188×73; pad 18/17/15/21; gap 31 → text col 79 */
+			@apply h-[73px] min-h-[73px] gap-x-[31px] rounded-2xl bg-white pb-[15px] pl-[21px] pr-[17px] pt-[18px] text-black;
 			box-shadow:
 				0 6px 54px rgba(0, 0, 0, 0.029),
 				0 5px 15px rgba(0, 0, 0, 0.1);
 		}
 
 		& .stepLabel {
-			/* Figma text frame: 79×40 (two lines at 16/20) */
-			@apply w-[79px] shrink-0 text-left;
+			@apply min-w-0 text-left;
 		}
 
 		& .stepIcon {
-			@apply relative z-[1] flex h-10 w-10 shrink-0 items-center justify-center;
+			@apply relative z-[1] flex h-10 w-10 shrink-0 items-center justify-center justify-self-end;
 		}
 
 		& .stepIconDone {
@@ -64,7 +64,7 @@
 		}
 
 		& .stepDot {
-			/* Future marker: white disc + grey ring (covers timeline) */
+			/* Future marker: white disc + grey ring, ring centered on timeline */
 			@apply relative block h-10 w-10 shrink-0 rounded-full bg-white;
 
 			&::after {
@@ -79,15 +79,16 @@
 		}
 
 		& .stepDelivery {
-			@apply items-center;
+			/* Figma: text col ~91px (gap 19), pin in white 40 disc on timeline */
+			@apply items-center gap-x-[19px];
 
 			&.stepCard {
-				@apply gap-[31px];
+				@apply gap-x-[31px];
 			}
 		}
 
 		& .deliveryCopy {
-			@apply flex w-[79px] shrink-0 flex-col items-start gap-0.5 text-left;
+			@apply flex min-w-0 flex-col items-start gap-0.5 text-left;
 		}
 
 		& .deliveryLabel {
@@ -97,9 +98,13 @@
 		}
 
 		& .deliveryEta {
-			/* Descriptions-med: 12 / Medium */
-			@apply text-[12px] font-medium leading-[15px] text-black;
+			/* Descriptions-med 12 / Medium — two lines, ~91×30 */
+			@apply flex max-w-[91px] flex-col text-[12px] font-medium leading-[15px] text-black;
 			font-family: 'Instrument_Sans', sans-serif;
+		}
+
+		& .deliveryPinWrap {
+			@apply flex h-10 w-10 items-center justify-center rounded-full bg-white;
 		}
 
 		& .deliveryPin {
