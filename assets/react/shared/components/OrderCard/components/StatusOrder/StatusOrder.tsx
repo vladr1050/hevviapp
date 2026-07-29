@@ -1,4 +1,4 @@
-import { type FC, ReactNode, SetStateAction, useEffect, useMemo, useState } from 'react'
+import { type FC, ReactNode, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
 
 import {
 	OrderStatusEnum,
@@ -196,6 +196,8 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 	const [valueForm, setValueForm] = useState<'PICKUP_DONE' | 'DELIVERED'>()
 	const [showChangeEta, setShowChangeEta] = useState(false)
 	const [etaInput, setEtaInput] = useState(() => toDatetimeLocalValue(order.deadline_at))
+	const etaPillRef = useRef<HTMLDivElement>(null)
+	const etaUpdateBtnRef = useRef<HTMLButtonElement>(null)
 
 	const countdown = useDeliveryCountdown(
 		order.pickup_ready_at,
@@ -217,9 +219,31 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 		return ''
 	}, [order.deadline_at])
 
+	const etaBaseline = useMemo(
+		() => toDatetimeLocalValue(order.deadline_at),
+		[order.deadline_at],
+	)
+
 	useEffect(() => {
-		setEtaInput(toDatetimeLocalValue(order.deadline_at))
-	}, [order.deadline_at])
+		setEtaInput(etaBaseline)
+	}, [etaBaseline])
+
+	useEffect(() => {
+		if (!showChangeEta) return
+
+		const onPointerDown = (event: PointerEvent) => {
+			if (etaInput !== etaBaseline) return
+			const target = event.target as Node | null
+			if (!target) return
+			if (etaPillRef.current?.contains(target)) return
+			if (etaUpdateBtnRef.current?.contains(target)) return
+			setEtaInput(etaBaseline)
+			setShowChangeEta(false)
+		}
+
+		document.addEventListener('pointerdown', onPointerDown)
+		return () => document.removeEventListener('pointerdown', onPointerDown)
+	}, [showChangeEta, etaInput, etaBaseline])
 
 	return (
 		<div
@@ -391,30 +415,15 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 									<div className={styles.carrierEtaBlock}>
 										<div className={styles.carrierEtaLabel}>ETA (time of arrival)</div>
 
-										{!showChangeEta && (
-											<>
-												<div className={styles.carrierEtaValue}>{etaLabel}</div>
-												{canChangeEta && (
-													<button
-														type="button"
-														className={styles.carrierChangeEtaBtn}
-														onClick={() => setShowChangeEta(true)}
-													>
-														Change ETA
-													</button>
-												)}
-											</>
-										)}
-
-										{canChangeEta && showChangeEta && (
+										{canChangeEta && showChangeEta ? (
 											<form
 												method="POST"
 												action={carrierChangeEtaUrl(order.id)}
 												className={styles.carrierChangeEtaForm}
 											>
 												<input type="hidden" name="_token" value={changeEtaCsrfToken} />
-												{/* Figma Frame 1932: pill with DD/MM/YYYY | HH:MM overlay */}
-												<div className={styles.carrierChangeEtaPill}>
+												{/* Figma Frame 1932: pill stays in the value slot; Update keeps Change ETA position */}
+												<div ref={etaPillRef} className={styles.carrierChangeEtaPill}>
 													<span className={styles.carrierChangeEtaPillText} aria-hidden>
 														{formatEtaPipeFromLocal(etaInput)}
 													</span>
@@ -428,22 +437,29 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 														aria-label="ETA (time of arrival)"
 													/>
 												</div>
-												<div className={styles.carrierChangeEtaActions}>
+												<button
+													ref={etaUpdateBtnRef}
+													type="submit"
+													className={styles.carrierUpdateEtaBtn}
+												>
+													Update
+												</button>
+											</form>
+										) : (
+											<>
+												<div className={styles.carrierEtaValueSlot}>
+													<div className={styles.carrierEtaValue}>{etaLabel}</div>
+												</div>
+												{canChangeEta && (
 													<button
 														type="button"
-														className={styles.carrierChangeEtaCancel}
-														onClick={() => {
-															setEtaInput(toDatetimeLocalValue(order.deadline_at))
-															setShowChangeEta(false)
-														}}
+														className={styles.carrierChangeEtaBtn}
+														onClick={() => setShowChangeEta(true)}
 													>
-														Cancel
+														Change ETA
 													</button>
-													<Button type="submit" className="w-full">
-														Save ETA
-													</Button>
-												</div>
-											</form>
+												)}
+											</>
 										)}
 									</div>
 								)}

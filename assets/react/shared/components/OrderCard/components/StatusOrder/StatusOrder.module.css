@@ -82,8 +82,8 @@
 				}
 
 				& .carrierCountdownBlock {
-					/* Figma: card → ETA label = 62px */
-					@apply flex w-[240px] flex-col items-center gap-[62px];
+					/* Figma: countdown card → ETA label = 149px */
+					@apply flex w-[240px] flex-col items-center gap-[149px];
 				}
 
 				& .carrierCountdownCard {
@@ -113,7 +113,6 @@
 				}
 
 				& .carrierEtaBlock {
-					/* Figma: card → Change ETA = 119 → value→button ≈ 14px */
 					@apply flex w-[240px] flex-col items-center gap-1 text-center;
 				}
 
@@ -121,27 +120,34 @@
 					@apply text-xs font-medium leading-[15px] text-black/40;
 				}
 
+				& .carrierEtaValueSlot {
+					/* Keeps Change ETA / Update at the same vertical slot when swapping value ↔ pill */
+					@apply flex h-12 w-full items-center justify-center;
+				}
+
 				& .carrierEtaValue {
 					@apply text-base font-normal leading-5 text-black;
 				}
 
 				& .carrierChangeEtaBtn {
-					/* Figma Button: py 12, px 30 */
-					@apply mt-[14px] flex w-[240px] shrink-0 items-center justify-center rounded-full border-0 bg-[#F2F2F2] px-[30px] py-3 text-sm font-medium leading-5 text-black transition-colors;
-					@apply hover-hover:hover:bg-[#E8E8E8] hover-none:active:bg-[#E8E8E8];
+					/* Figma Button: py 12, px 30 — hover shows clickability */
+					@apply mt-[14px] flex h-12 w-[240px] shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-[#F2F2F2] px-[30px] text-sm font-medium leading-5 text-black transition-colors;
+					@apply hover-hover:hover:bg-[#E4E4E4] hover-none:active:bg-[#E4E4E4];
 				}
 
 				& .carrierChangeEtaForm {
-					/* Replaces value + button; label→pill gap from parent gap-1 */
-					@apply flex w-[240px] flex-col items-center gap-3;
+					/* Same rhythm as view: value slot + mt-14 button — no Cancel */
+					@apply flex w-[240px] flex-col items-center gap-1;
 				}
 
 				& .carrierChangeEtaPill {
-					/* Figma Frame 1932: white pill, px 29, value 16/400 centered */
-					@apply relative flex h-12 w-full items-center justify-center rounded-full border border-black/20 bg-white px-[29px];
+					/* Figma Frame 1932: h 48, px 29, border 1px #888 */
+					@apply relative flex h-12 w-full cursor-pointer items-center justify-center gap-2.5 rounded-full border border-solid border-[#888] bg-white px-[29px] transition-[border-color,background-color,box-shadow];
+					@apply hover-hover:hover:border-[#666] hover-hover:hover:bg-[#FAFAFA] hover-hover:hover:shadow-sm;
+					@apply hover-none:active:border-[#666] hover-none:active:bg-[#FAFAFA];
 
 					&:has(.carrierChangeEtaNative:focus-visible) {
-						@apply border-black/40 ring-2 ring-black/10;
+						@apply border-[#555] bg-[#FAFAFA] shadow-sm;
 					}
 				}
 
@@ -154,12 +160,10 @@
 					color-scheme: light;
 				}
 
-				& .carrierChangeEtaActions {
-					@apply flex w-full flex-col gap-2;
-				}
-
-				& .carrierChangeEtaCancel {
-					@apply border-0 bg-transparent py-1 text-sm font-medium text-black/50 underline;
+				& .carrierUpdateEtaBtn {
+					/* Same slot as Change ETA; Figma black Update 240×48 */
+					@apply mt-[14px] flex h-12 w-[240px] shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-black px-[30px] text-sm font-medium leading-5 text-white transition-colors;
+					@apply hover-hover:hover:bg-[#222] hover-none:active:bg-[#222];
 				}
 			}
 
