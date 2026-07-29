@@ -23,6 +23,28 @@ import carrierMatchedGig from './images/carrierMatched.gif'
 // @ts-ignore
 import inTransitGif from './images/inTransit.gif'
 
+/** Figma Delivery pin: 14×18 (Frame 1853 inset). */
+const DeliveryPinIcon: FC<{ className?: string }> = ({ className }) => (
+	<svg
+		className={className}
+		xmlns="http://www.w3.org/2000/svg"
+		width={14}
+		height={18}
+		viewBox="3 0 16 22"
+		fill="none"
+		aria-hidden
+	>
+		<path
+			d="M10.9988 0C6.60548 0 3.03125 3.57423 3.03125 7.96752C3.03125 13.4197 10.1614 21.4239 10.465 21.762C10.7502 22.0796 11.248 22.079 11.5326 21.762C11.8362 21.4239 18.9664 13.4197 18.9664 7.96752C18.9663 3.57423 15.3921 0 10.9988 0ZM10.9988 20.1837C8.59914 17.3332 4.46606 11.7095 4.46606 7.96761C4.46606 4.36537 7.39662 1.43481 10.9988 1.43481C14.601 1.43481 17.5316 4.36537 17.5316 7.96757C17.5315 11.7096 13.3991 17.3323 10.9988 20.1837Z"
+			fill="currentColor"
+		/>
+		<path
+			d="M11.0008 3.95898C8.79043 3.95898 6.99219 5.75727 6.99219 7.96767C6.99219 10.1781 8.79047 11.9764 11.0008 11.9764C13.2112 11.9764 15.0094 10.1781 15.0094 7.96767C15.0094 5.75727 13.2112 3.95898 11.0008 3.95898ZM11.0008 10.5415C9.58157 10.5415 8.427 9.38693 8.427 7.96767C8.427 6.54841 9.58161 5.3938 11.0008 5.3938C12.42 5.3938 13.5747 6.54841 13.5747 7.96767C13.5747 9.38693 12.42 10.5415 11.0008 10.5415Z"
+			fill="currentColor"
+		/>
+	</svg>
+)
+
 interface StatusOrderProps {
 	isCarrier?: boolean
 	order: OrderType
@@ -412,7 +434,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 								</span>
 							) : (
 								<span className={styles.deliveryPinWrap}>
-									<Icon type="mark_map" size={18} className={styles.deliveryPin} />
+									<DeliveryPinIcon className={styles.deliveryPin} />
 								</span>
 							)}
 						</div>
