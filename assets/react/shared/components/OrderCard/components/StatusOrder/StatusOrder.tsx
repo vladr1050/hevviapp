@@ -23,13 +23,13 @@ import carrierMatchedGig from './images/carrierMatched.gif'
 // @ts-ignore
 import inTransitGif from './images/inTransit.gif'
 
-/** Figma Delivery pin: 14×18 (Frame 1853 inset). */
+/** Figma Delivery pin wrap: 40×40, pad 8 → icon 24×24. */
 const DeliveryPinIcon: FC<{ className?: string }> = ({ className }) => (
 	<svg
 		className={className}
 		xmlns="http://www.w3.org/2000/svg"
-		width={14}
-		height={18}
+		width={24}
+		height={24}
 		viewBox="3 0 16 22"
 		fill="none"
 		aria-hidden
