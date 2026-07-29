@@ -32,20 +32,27 @@
 		}
 
 		& .step {
-			@apply relative z-[1] flex min-h-10 w-full items-center gap-[31px]
-			pl-[21px] pr-[17px] text-base font-medium leading-5 text-[#A9A9A9];
+			/*
+			 * Future / upcoming (default): pad 18/17/18/21, gap text→icon 44
+			 * Figma P 16 med: Instrument Sans 16 / Medium 500 / #A9A9A9
+			 */
+			@apply relative z-[1] flex w-full items-center gap-[44px]
+			pb-[18px] pl-[21px] pr-[17px] pt-[18px]
+			text-[16px] font-medium leading-5 text-[#A9A9A9];
+			font-family: 'Instrument_Sans', sans-serif;
 		}
 
 		& .stepCard {
-			/* Frame 1901: 188×73; pad 18 / 17 / 15 / 21; gap 31 */
-			@apply h-[73px] min-h-[73px] rounded-2xl bg-white pb-[15px] pl-[21px] pr-[17px] pt-[18px] text-black;
+			/* Done / current — Frame 1901: 188×73; pad 18/17/15/21; gap 31 */
+			@apply h-[73px] min-h-[73px] gap-[31px] rounded-2xl bg-white pb-[15px] pl-[21px] pr-[17px] pt-[18px] text-black;
 			box-shadow:
 				0 6px 54px rgba(0, 0, 0, 0.029),
 				0 5px 15px rgba(0, 0, 0, 0.1);
 		}
 
 		& .stepLabel {
-			@apply min-w-0 flex-1 text-left;
+			/* Figma text frame: 79×40 (two lines at 16/20) */
+			@apply w-[79px] shrink-0 text-left;
 		}
 
 		& .stepIcon {
@@ -57,8 +64,14 @@
 		}
 
 		& .stepDot {
-			border: 2px solid #a9a9a9;
-			@apply h-5 w-5 rounded-full bg-transparent;
+			/* Future marker: white disc + grey ring (covers timeline) */
+			@apply relative block h-10 w-10 shrink-0 rounded-full bg-white;
+
+			&::after {
+				content: '';
+				@apply absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2
+				rounded-full border-2 border-solid border-[#A9A9A9] bg-white;
+			}
 		}
 
 		& .stepGif {
@@ -66,24 +79,27 @@
 		}
 
 		& .stepDelivery {
-			@apply items-center py-1;
+			@apply items-center;
 
 			&.stepCard {
-				@apply py-0;
+				@apply gap-[31px];
 			}
 		}
 
 		& .deliveryCopy {
-			@apply flex min-w-0 flex-1 flex-col items-start gap-0.5 text-left;
+			@apply flex w-[79px] shrink-0 flex-col items-start gap-0.5 text-left;
 		}
 
 		& .deliveryLabel {
-			@apply text-base font-medium leading-5;
+			/* P 16 med */
+			@apply text-[16px] font-medium leading-5;
+			font-family: 'Instrument_Sans', sans-serif;
 		}
 
 		& .deliveryEta {
-			/* Descriptions-med 12 / Medium */
-			@apply text-xs font-medium leading-[15px] text-black;
+			/* Descriptions-med: 12 / Medium */
+			@apply text-[12px] font-medium leading-[15px] text-black;
+			font-family: 'Instrument_Sans', sans-serif;
 		}
 
 		& .deliveryPin {
