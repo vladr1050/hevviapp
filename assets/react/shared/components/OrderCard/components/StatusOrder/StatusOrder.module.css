@@ -82,12 +82,12 @@
 				}
 
 				& .carrierCountdownBlock {
-					@apply flex w-[240px] flex-col items-center gap-4;
+					@apply flex w-full flex-col items-center gap-5;
 				}
 
 				& .carrierCountdownCard {
-					/* Figma: pl 21, py 19, icon↔text 8 */
-					@apply flex w-full items-center gap-2 rounded-[16px] bg-white py-[19px] pl-[21px] pr-4;
+					/* Figma Frame 2059: full width between 28px panel margins; py 19, px 21 */
+					@apply flex w-full items-center gap-3 rounded-[20px] bg-white px-[21px] py-[19px];
 					box-shadow:
 						0 6px 54px rgba(0, 0, 0, 0.029),
 						0 5px 15px rgba(0, 0, 0, 0.1);
@@ -98,17 +98,17 @@
 				}
 
 				& .carrierCountdownText {
-					@apply flex min-w-0 flex-col items-start justify-center;
+					@apply flex min-w-0 flex-1 flex-col items-start justify-center gap-1;
 				}
 
 				& .carrierCountdownValue {
 					/* Figma hug ~24px */
-					@apply text-xl font-bold leading-6 tracking-tight text-black;
+					@apply text-[20px] font-bold leading-6 tracking-tight text-black;
 				}
 
 				& .carrierCountdownSubtitle {
-					/* Figma hug 15px */
-					@apply mt-0.5 text-xs font-medium leading-[15px] text-black/40;
+					/* Figma hug 15px — keep clear gap under the timer */
+					@apply text-xs font-medium leading-[15px] text-black/40;
 				}
 
 				& .carrierEtaBlock {
@@ -125,7 +125,7 @@
 
 				& .carrierChangeEtaBtn {
 					/* Figma: 240×48, px 30 */
-					@apply mt-3 flex h-12 w-[240px] items-center justify-center rounded-full border-0 bg-[#F2F2F2] px-[30px] text-sm font-medium leading-5 text-black transition-colors;
+					@apply mt-3 flex h-12 w-[240px] shrink-0 items-center justify-center rounded-full border-0 bg-[#F2F2F2] px-[30px] text-sm font-medium leading-5 text-black transition-colors;
 					@apply hover-hover:hover:bg-[#E8E8E8] hover-none:active:bg-[#E8E8E8];
 				}
 

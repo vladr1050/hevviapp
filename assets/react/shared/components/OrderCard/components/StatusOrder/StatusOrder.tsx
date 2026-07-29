@@ -372,7 +372,7 @@ export const StatusOrder: FC<StatusOrderProps> = ({
 							<div className={styles.carrierCountdownBlock}>
 								<div className={styles.carrierCountdownCard}>
 									<div className={styles.carrierCountdownIcon}>
-										<Icon type="stopwatch" size={22} />
+										<Icon type="stopwatch" size={20} currentColor />
 									</div>
 									<div className={styles.carrierCountdownText}>
 										<div className={styles.carrierCountdownValue}>{countdown.timeLabel}</div>
