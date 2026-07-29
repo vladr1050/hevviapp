@@ -185,6 +185,7 @@ export const WhenContent: FC<WhenContentProps> = ({ control, watch, setValue }) 
 							<span className={styles.timeFieldPrefix}>from</span>
 							<Select
 								color="gray"
+								compact
 								value={pickupTimeFrom}
 								defaultValue={PICKUP_TIME_FROM_DEFAULT}
 								onChange={onFromChange}
@@ -196,6 +197,7 @@ export const WhenContent: FC<WhenContentProps> = ({ control, watch, setValue }) 
 							<span className={styles.timeFieldPrefix}>to</span>
 							<Select
 								color="gray"
+								compact
 								value={pickupTimeTo}
 								defaultValue={PICKUP_TIME_TO_DEFAULT}
 								onChange={onToChange}

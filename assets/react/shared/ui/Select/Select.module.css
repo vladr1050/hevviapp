@@ -14,6 +14,29 @@
 	@apply !rounded-3xl !overflow-hidden translate-x-1;
 }
 
+/* When time picks: top aligns with the field, ~10 rows, scroll inside — not full-screen. */
+.contentCompact {
+	@apply !rounded-2xl !bg-white translate-x-0 !important;
+	width: var(--radix-select-trigger-width) !important;
+	min-width: var(--radix-select-trigger-width) !important;
+	/* Pull up so the menu top sits on the trigger top (covers the field, unrolls down). */
+	margin-top: calc(-1 * var(--radix-select-trigger-height, 0px)) !important;
+	/* ~10 × 40px rows + padding */
+	max-height: 408px !important;
+	padding: 4px !important;
+	border: 1px solid rgba(0, 0, 0, 0.1) !important;
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+	overflow: hidden !important;
+
+	/* Themes wraps items in a viewport / scroll area — constrain that too. */
+	& :global(.rt-SelectViewport),
+	& :global([data-radix-select-viewport]),
+	& :global(.rt-ScrollAreaViewport) {
+		max-height: 400px !important;
+		overflow-y: auto !important;
+	}
+}
+
 .item {
 	@apply text-black font-medium text-base px-5 py-3 min-h-10 rounded-full transition-colors cursor-pointer;
 
@@ -22,19 +45,19 @@
 
 		&.black {
 			@apply bg-black text-white;
-			@apply hover-hover:hover:border-primary 
+			@apply hover-hover:hover:border-primary
 			hover-none:active:bg-black/50 !important;
 		}
 
 		&.gray {
 			@apply bg-black/10;
-			@apply hover-hover:hover:border-black 
+			@apply hover-hover:hover:border-black
 			hover-none:active:bg-black !important;
 		}
 
 		&.green {
 			@apply bg-primary;
-			@apply hover-hover:hover:border-gray-400 
+			@apply hover-hover:hover:border-gray-400
 			hover-none:active:border-gray-400 !important;
 		}
 	}
@@ -43,7 +66,7 @@
 		border: 1px solid transparent;
 		@apply bg-transparent !important;
 
-		@apply hover-hover:hover:border-gray-300 
+		@apply hover-hover:hover:border-gray-300
 		hover-none:active:border-gray-300 !important;
 	}
 
@@ -55,4 +78,8 @@
 		/* @apply bg-red-500; */
 		@apply hidden;
 	}
+}
+
+.itemCompact {
+	@apply py-2.5 min-h-10;
 }
