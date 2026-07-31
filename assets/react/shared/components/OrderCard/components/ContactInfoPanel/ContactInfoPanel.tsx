@@ -9,6 +9,7 @@ import styles from './ContactInfoPanel.module.css'
 const isFilled = (value: string): boolean => value.trim().length > 0
 
 const SHIPPER_NAME_INPUT_ID = 'order-contact-shipper-name'
+const SHIPPER_SECTION_ID = 'order-contact-shipper-fields'
 const CONSIGNEE_NAME_INPUT_ID = 'order-contact-consignee-name'
 export const CONSIGNEE_SECTION_ID = 'order-contact-consignee'
 
@@ -16,6 +17,12 @@ const focusInputById = (id: string): void => {
 	const el = document.getElementById(id) as HTMLInputElement | null
 	el?.focus()
 	el?.select()
+}
+
+const isFocusInside = (sectionId: string): boolean => {
+	const section = document.getElementById(sectionId)
+	const active = document.activeElement
+	return !!(section && active instanceof Node && section.contains(active))
 }
 
 export type OrderContactFormState = {
@@ -96,8 +103,21 @@ export const ShipperContactFields: FC<ShipperContactFieldsProps> = ({
 		isFilled(form.shipperCompanyName) &&
 		isFilled(form.shipperPhone) &&
 		isFilled(form.shipperContactName)
-	const shipperWasCompleteRef = useRef(false)
+	const jumpedToConsigneeRef = useRef(false)
 	const wasExpandedRef = useRef(false)
+
+	const jumpToConsigneeIfReady = () => {
+		if (!expanded || !shipperComplete || form.consigneeSameAsShipper) return
+		if (jumpedToConsigneeRef.current) return
+		if (isFocusInside(SHIPPER_SECTION_ID)) return
+
+		jumpedToConsigneeRef.current = true
+		document.getElementById(CONSIGNEE_SECTION_ID)?.scrollIntoView({
+			behavior: 'smooth',
+			block: 'nearest',
+		})
+		window.setTimeout(() => focusInputById(CONSIGNEE_NAME_INPUT_ID), 200)
+	}
 
 	// After Continue: focus Shipper name so typing can start immediately.
 	useEffect(() => {
@@ -105,40 +125,35 @@ export const ShipperContactFields: FC<ShipperContactFieldsProps> = ({
 		wasExpandedRef.current = expanded
 
 		if (!expanded) {
-			shipperWasCompleteRef.current = shipperComplete
+			jumpedToConsigneeRef.current = shipperComplete
 			return
 		}
 		if (!justOpened) return
 
+		jumpedToConsigneeRef.current = false
 		const timer = window.setTimeout(() => {
 			focusInputById(SHIPPER_NAME_INPUT_ID)
 		}, 120)
 		return () => window.clearTimeout(timer)
 	}, [expanded, shipperComplete])
 
-	// When all Shipper fields are filled, jump to Consignee name.
 	useEffect(() => {
-		if (!expanded) return
 		if (!shipperComplete) {
-			shipperWasCompleteRef.current = false
-			return
+			jumpedToConsigneeRef.current = false
 		}
-		if (shipperWasCompleteRef.current) return
-		shipperWasCompleteRef.current = true
-		if (form.consigneeSameAsShipper) return
-
-		const timer = window.setTimeout(() => {
-			document.getElementById(CONSIGNEE_SECTION_ID)?.scrollIntoView({
-				behavior: 'smooth',
-				block: 'nearest',
-			})
-			focusInputById(CONSIGNEE_NAME_INPUT_ID)
-		}, 80)
-		return () => window.clearTimeout(timer)
-	}, [expanded, shipperComplete, form.consigneeSameAsShipper])
+	}, [shipperComplete])
 
 	return (
-		<div className={cn(styles.expandWrap, { [styles.expandOpen]: expanded })}>
+		<div
+			id={SHIPPER_SECTION_ID}
+			className={cn(styles.expandWrap, { [styles.expandOpen]: expanded })}
+			onBlur={(e) => {
+				const next = e.relatedTarget as Node | null
+				if (next && e.currentTarget.contains(next)) return
+				// Left Shipper fields — jump only if everything is filled.
+				window.setTimeout(jumpToConsigneeIfReady, 0)
+			}}
+		>
 			<div className={styles.expandInner}>
 				<div className={styles.fields}>
 					<ContactField
