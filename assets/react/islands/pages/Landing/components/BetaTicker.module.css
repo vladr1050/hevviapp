@@ -29,7 +29,7 @@
 	display: flex;
 	width: max-content;
 	height: 100%;
-	animation: ticker-right 40s linear infinite;
+	animation: ticker-right 80s linear infinite;
 }
 
 .group {

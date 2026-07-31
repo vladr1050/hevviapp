@@ -4,7 +4,8 @@ import { Icon } from '@ui/Icon/Icon'
 
 import styles from './BetaTicker.module.css'
 
-const TICKER_TEXT = 'Beta version - orders accepted in Latvia'
+const TICKER_LABEL =
+	'Beta version — web version only, orders accepted in Latvia.'
 const DISMISS_KEY = 'hevvi-landing-beta-ticker-dismissed'
 const REPEAT_COUNT = 8
 
@@ -26,7 +27,7 @@ const TickerItem: FC = () => (
 	<span className={styles.item}>
 		<Icon type="vehicle_right" size={16} currentColor className={styles.truck} />
 		<span>
-			{TICKER_TEXT} <LatviaFlag /> only
+			Beta version — web version only, orders accepted in <LatviaFlag /> Latvia.
 		</span>
 	</span>
 )
@@ -45,7 +46,7 @@ export const BetaTicker: FC = () => {
 	}
 
 	return (
-		<div className={styles.ticker} role="status" aria-label={TICKER_TEXT + ' only'}>
+		<div className={styles.ticker} role="status" aria-label={TICKER_LABEL}>
 			<div className={styles.viewport}>
 				<div className={styles.track}>
 					<div className={styles.group}>
