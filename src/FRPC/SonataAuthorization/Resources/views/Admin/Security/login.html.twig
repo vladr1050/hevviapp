@@ -26,12 +26,15 @@
     {% endblock %}
 
     {% block stylesheets %}
-        <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('build/images/favicon/favicon-96x96.png') }}">
-        <link rel="icon" type="image/svg+xml" href="{{ asset('build/images/favicon/favicon.svg') }}">
-        <link rel="shortcut icon" href="{{ asset('build/images/favicon/favicon.ico') }}"/>
-        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('build/images/favicon/apple-touch-icon.png') }}"/>
+        <link rel="icon" href="{{ asset('favicon/favicon.ico') }}" sizes="any">
+        <link rel="icon" href="{{ asset('favicon/favicon.svg') }}" type="image/svg+xml">
+        <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicon/favicon-96x96.png') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon/favicon-32x32.png') }}">
+        <link rel="shortcut icon" href="{{ asset('favicon/favicon.ico') }}"/>
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon/apple-touch-icon.png') }}"/>
         <meta name="apple-mobile-web-app-title" content="{% block title %}{{ project_name }}{% endblock %}"/>
-        <link rel="manifest" href="{{ asset('build/images/favicon/site.webmanifest') }}"/>
+        <meta name="theme-color" content="#D7FF01">
+        <link rel="manifest" href="{{ asset('favicon/site.webmanifest') }}"/>
         <link rel="stylesheet" href="{{ asset('bundles/sonataauthorization/css/login.css') }}">
     {% endblock %}
 

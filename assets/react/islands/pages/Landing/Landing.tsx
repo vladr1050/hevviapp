@@ -70,7 +70,6 @@ export const LandingPage: FC<LandingProps> = ({ device }) => {
 						<header className={styles.heroHeader}>
 							<a href="/" className={styles.logoLink} aria-label="Hevvi home">
 								<img src={landingAssets.logo} alt="Hevvi" className={styles.logo} width={71} height={19} />
-								<span className={styles.betaBadge}>beta</span>
 							</a>
 
 							<div className={styles.heroNav}>

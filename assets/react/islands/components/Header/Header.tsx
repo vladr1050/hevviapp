@@ -46,7 +46,6 @@ export const Header: FC<HeaderProps> = ({ user, isCarrier, device }) => {
 				<div className={styles.left}>
 					<a className={styles.logo} href={logoHref} aria-label="Hevvi home">
 						<img src={logo} alt="Hevvi" width={71} height={19} className={styles.logoImage} />
-						<span className={styles.betaBadge}>beta</span>
 					</a>
 				</div>
 

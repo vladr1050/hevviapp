@@ -56,23 +56,12 @@
 
 .logoLink {
 	@apply inline-flex items-center;
-	gap: 6px;
 }
 
 .logo {
 	width: 71.3px;
 	height: 19px;
 	@apply object-contain;
-}
-
-.betaBadge {
-	@apply inline-flex items-center justify-center rounded-full bg-black text-white uppercase font-medium;
-	min-width: 26px;
-	height: 10.8px;
-	padding-inline: 4px;
-	font-size: 6.08px;
-	line-height: 7.42px;
-	letter-spacing: 0;
 }
 
 .heroNav {
