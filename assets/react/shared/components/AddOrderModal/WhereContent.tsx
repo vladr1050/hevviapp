@@ -1038,14 +1038,20 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 		sessionTokenRef.current = newGeocodeSessionToken()
 	}
 
+	const SUGGESTION_LABEL_MAX = 25
+
 	const suggestionLabel = (s: AddressSuggestion): string => {
 		if (s.source === 'history') return s.data.label
 		if (s.source === 'google') return s.data.description
 		return s.data.display_name
 	}
 
-	const truncateSuggestionLabel = (label: string, max = 25): string =>
-		label.length > max ? `${label.slice(0, max)}...` : label
+	/** Hard cap at 25 characters so the dropdown always shows a fixed preview length. */
+	const truncateSuggestionLabel = (label: string, max = SUGGESTION_LABEL_MAX): string => {
+		const chars = Array.from(label.trim())
+		if (chars.length <= max) return chars.join('')
+		return `${chars.slice(0, max).join('')}...`
+	}
 
 	const suggestionKey = (s: AddressSuggestion): string => {
 		if (s.source === 'history') return `h-${s.data.label}-${s.data.lat}-${s.data.lng}`
@@ -1084,18 +1090,21 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 			</div>
 			{showSuggestions && suggestions.length > 0 && (
 				<div className={styles.suggestions}>
-					{suggestions.map((s) => (
-						<div
-							key={suggestionKey(s)}
-							className={styles.suggestion}
-							onMouseDown={() => void handleSelect(s)}
-						>
-							<Icon type="mark_map" size={14} className={styles.suggestionIcon} />
-							<span title={suggestionLabel(s)}>
-								{truncateSuggestionLabel(suggestionLabel(s))}
-							</span>
-						</div>
-					))}
+					{suggestions.map((s) => {
+						const fullLabel = suggestionLabel(s)
+						return (
+							<div
+								key={suggestionKey(s)}
+								className={styles.suggestion}
+								onMouseDown={() => void handleSelect(s)}
+							>
+								<Icon type="mark_map" size={14} className={styles.suggestionIcon} />
+								<span className={styles.suggestionLabel} title={fullLabel}>
+									{truncateSuggestionLabel(fullLabel)}
+								</span>
+							</div>
+						)
+					})}
 				</div>
 			)}
 		</div>

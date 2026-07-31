@@ -835,19 +835,21 @@
 	}
 
 	& .suggestions {
-		@apply absolute left-0 w-full bg-white rounded-[24px] mt-1 shadow-lg overflow-hidden;
+		@apply absolute left-0 w-full bg-white rounded-[24px] mt-1 shadow-lg;
 		top: 100%;
 		z-index: 9999;
 		border: 1px solid #e5e7eb;
 		max-height: 231px;
+		overflow-x: hidden;
 		overflow-y: auto;
 	}
 
 	& .suggestion {
 		@apply flex items-center gap-2.5 px-4 py-3 text-sm text-black cursor-pointer transition-colors;
 
-		& span {
-			@apply min-w-0 truncate;
+		/* Character truncation is done in JS (25 chars) — do not CSS-ellipsis or width cuts hide it. */
+		& .suggestionLabel {
+			@apply min-w-0 shrink whitespace-nowrap;
 		}
 
 		& .suggestionIcon {
