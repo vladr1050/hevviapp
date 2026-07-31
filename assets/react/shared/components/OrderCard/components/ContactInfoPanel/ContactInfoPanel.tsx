@@ -1,4 +1,4 @@
-import { type FC, useEffect, useState } from 'react'
+import { type FC, type RefObject, useEffect, useRef, useState } from 'react'
 
 import { OrderType } from '@config/constants'
 import { Checkbox } from '@ui/Checkbox/Checkbox'
@@ -7,6 +7,16 @@ import { cn } from '@utils/cn'
 import styles from './ContactInfoPanel.module.css'
 
 const isFilled = (value: string): boolean => value.trim().length > 0
+
+const SHIPPER_NAME_INPUT_ID = 'order-contact-shipper-name'
+const CONSIGNEE_NAME_INPUT_ID = 'order-contact-consignee-name'
+export const CONSIGNEE_SECTION_ID = 'order-contact-consignee'
+
+const focusInputById = (id: string): void => {
+	const el = document.getElementById(id) as HTMLInputElement | null
+	el?.focus()
+	el?.select()
+}
 
 export type OrderContactFormState = {
 	shipperCompanyName: string
@@ -81,41 +91,89 @@ export const ShipperContactFields: FC<ShipperContactFieldsProps> = ({
 	expanded,
 	showValidation,
 	form,
-}) => (
-	<div className={cn(styles.expandWrap, { [styles.expandOpen]: expanded })}>
-		<div className={styles.expandInner}>
-			<div className={styles.fields}>
-				<ContactField
-					label="Shippers name"
-					name="shipper_company_name"
-					placeholder="Shippers name"
-					value={form.shipperCompanyName}
-					onChange={form.setShipperCompanyName}
-					required
-					showError={showValidation && !isFilled(form.shipperCompanyName)}
-				/>
-				<ContactField
-					label="Phone number"
-					name="shipper_phone"
-					placeholder="+371 --- --- ---"
-					type="tel"
-					value={form.shipperPhone}
-					onChange={form.setShipperPhone}
-					required
-					showError={showValidation && !isFilled(form.shipperPhone)}
-				/>
-				<ContactField
-					label="Name"
-					name="shipper_contact_name"
-					placeholder="Your name"
-					value={form.shipperContactName}
-					onChange={form.setShipperContactName}
-					showError={showValidation && !isFilled(form.shipperContactName)}
-				/>
+}) => {
+	const shipperComplete =
+		isFilled(form.shipperCompanyName) &&
+		isFilled(form.shipperPhone) &&
+		isFilled(form.shipperContactName)
+	const shipperWasCompleteRef = useRef(false)
+	const wasExpandedRef = useRef(false)
+
+	// After Continue: focus Shipper name so typing can start immediately.
+	useEffect(() => {
+		const justOpened = expanded && !wasExpandedRef.current
+		wasExpandedRef.current = expanded
+
+		if (!expanded) {
+			shipperWasCompleteRef.current = shipperComplete
+			return
+		}
+		if (!justOpened) return
+
+		const timer = window.setTimeout(() => {
+			focusInputById(SHIPPER_NAME_INPUT_ID)
+		}, 120)
+		return () => window.clearTimeout(timer)
+	}, [expanded, shipperComplete])
+
+	// When all Shipper fields are filled, jump to Consignee name.
+	useEffect(() => {
+		if (!expanded) return
+		if (!shipperComplete) {
+			shipperWasCompleteRef.current = false
+			return
+		}
+		if (shipperWasCompleteRef.current) return
+		shipperWasCompleteRef.current = true
+		if (form.consigneeSameAsShipper) return
+
+		const timer = window.setTimeout(() => {
+			document.getElementById(CONSIGNEE_SECTION_ID)?.scrollIntoView({
+				behavior: 'smooth',
+				block: 'nearest',
+			})
+			focusInputById(CONSIGNEE_NAME_INPUT_ID)
+		}, 80)
+		return () => window.clearTimeout(timer)
+	}, [expanded, shipperComplete, form.consigneeSameAsShipper])
+
+	return (
+		<div className={cn(styles.expandWrap, { [styles.expandOpen]: expanded })}>
+			<div className={styles.expandInner}>
+				<div className={styles.fields}>
+					<ContactField
+						id={SHIPPER_NAME_INPUT_ID}
+						label="Shippers name"
+						name="shipper_company_name"
+						placeholder="Shippers name"
+						value={form.shipperCompanyName}
+						onChange={form.setShipperCompanyName}
+						required
+						showError={showValidation && !isFilled(form.shipperCompanyName)}
+					/>
+					<ContactField
+						label="Phone number"
+						name="shipper_phone"
+						placeholder="+371 --- --- ---"
+						type="tel"
+						value={form.shipperPhone}
+						onChange={form.setShipperPhone}
+						required
+						showError={showValidation && !isFilled(form.shipperPhone)}
+					/>
+					<ContactField
+						label="Name"
+						name="shipper_contact_name"
+						placeholder="Your name"
+						value={form.shipperContactName}
+						onChange={form.setShipperContactName}
+						showError={showValidation && !isFilled(form.shipperContactName)}
+					/>
+				</div>
 			</div>
 		</div>
-	</div>
-)
+	)
+}
 
 interface ConsigneeContactFieldsProps {
 	expanded: boolean
@@ -128,7 +186,7 @@ export const ConsigneeContactFields: FC<ConsigneeContactFieldsProps> = ({
 	showValidation,
 	form,
 }) => (
-	<div className={cn(styles.expandWrap, { [styles.expandOpen]: expanded })}>
+	<div id={CONSIGNEE_SECTION_ID} className={cn(styles.expandWrap, { [styles.expandOpen]: expanded })}>
 		<div className={styles.expandInner}>
 			<Checkbox
 				className={styles.sameCheckbox}
@@ -150,6 +208,7 @@ export const ConsigneeContactFields: FC<ConsigneeContactFieldsProps> = ({
 				<div className={styles.expandInner}>
 					<div className={styles.fields}>
 						<ContactField
+							id={CONSIGNEE_NAME_INPUT_ID}
 							label="Consignee name"
 							name="consignee_company_name"
 							placeholder="Consignee name"
@@ -196,6 +255,7 @@ export const ConsigneeContactFields: FC<ConsigneeContactFieldsProps> = ({
 )
 
 interface ContactFieldProps {
+	id?: string
 	label: string
 	name: string
 	placeholder: string
@@ -204,9 +264,11 @@ interface ContactFieldProps {
 	type?: 'text' | 'tel'
 	required?: boolean
 	showError?: boolean
+	inputRef?: RefObject<HTMLInputElement | null>
 }
 
 const ContactField: FC<ContactFieldProps> = ({
+	id,
 	label,
 	name,
 	placeholder,
@@ -215,6 +277,7 @@ const ContactField: FC<ContactFieldProps> = ({
 	type = 'text',
 	required,
 	showError,
+	inputRef,
 }) => (
 	<label className={styles.field}>
 		<span className={cn(styles.fieldLabel, { [styles.fieldLabelError]: showError })}>
@@ -222,6 +285,8 @@ const ContactField: FC<ContactFieldProps> = ({
 			{required && <span className={styles.requiredMark}> *</span>}
 		</span>
 		<input
+			id={id}
+			ref={inputRef}
 			className={cn(styles.fieldInput, { [styles.fieldInputError]: showError })}
 			name={name}
 			type={type}
