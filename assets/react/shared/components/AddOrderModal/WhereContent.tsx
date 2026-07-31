@@ -739,7 +739,7 @@ export const WhereContent: FC<WhereContentProps> = ({
 									{formatRecentRouteLabel(route)}
 								</span>
 								<button type="button" onClick={() => void applyRoute(route)}>
-									Pielietot
+									Use
 								</button>
 							</div>
 						))
@@ -1044,6 +1044,9 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 		return s.data.display_name
 	}
 
+	const truncateSuggestionLabel = (label: string, max = 25): string =>
+		label.length > max ? `${label.slice(0, max)}...` : label
+
 	const suggestionKey = (s: AddressSuggestion): string => {
 		if (s.source === 'history') return `h-${s.data.label}-${s.data.lat}-${s.data.lng}`
 		if (s.source === 'google') return `g-${s.data.placeId}`
@@ -1088,7 +1091,9 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 							onMouseDown={() => void handleSelect(s)}
 						>
 							<Icon type="mark_map" size={14} className={styles.suggestionIcon} />
-							<span>{suggestionLabel(s)}</span>
+							<span title={suggestionLabel(s)}>
+								{truncateSuggestionLabel(suggestionLabel(s))}
+							</span>
 						</div>
 					))}
 				</div>

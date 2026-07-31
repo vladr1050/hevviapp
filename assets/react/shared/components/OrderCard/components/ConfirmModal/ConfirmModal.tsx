@@ -1,6 +1,5 @@
 import type { FC } from 'react'
 
-import { FormActions } from '@config/constants'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
 
@@ -14,15 +13,9 @@ interface ConfirmModalProps {
 	email: string
 }
 
-type FormValues = {
-	text: string
-	rate: number
-	id: string
-}
-
 export const ConfirmModal: FC<ConfirmModalProps> = ({ id, from, to, onClose, email }) => {
 	return (
-		<form className={styles.modal} method="POST" action={FormActions.RATE_ORDER}>
+		<div className={styles.modal}>
 			<div className={styles.icon}>
 				<Icon type="vehicle_check" size={60} />
 			</div>
@@ -46,6 +39,6 @@ export const ConfirmModal: FC<ConfirmModalProps> = ({ id, from, to, onClose, ema
 			<Button type="button" onClick={onClose} className="!w-full">
 				Got It
 			</Button>
-		</form>
+		</div>
 	)
 }

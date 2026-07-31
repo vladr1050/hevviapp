@@ -300,6 +300,7 @@ class UserController extends AbstractController
             'title' => $this->translator->trans('show.label_order', domain: 'AppBundle', locale: $user->getLocale()),
             'order' => $item,
             'user' => $this->buildUserContext($user),
+            'sender_email' => $user->getEmail(),
         ]);
     }
 
@@ -339,7 +340,7 @@ class UserController extends AbstractController
 
         $this->invoiceIssuingService->issueForAcceptedOrder($order);
 
-        return $this->redirectToRoute('user_public_order', ['id' => $id]);
+        return $this->redirectToRoute('user_public_order', ['id' => $id, 'confirmed' => 1]);
     }
 
     #[Route('/orders/{id}/cancel', name: 'cancel_order', methods: ['POST'])]

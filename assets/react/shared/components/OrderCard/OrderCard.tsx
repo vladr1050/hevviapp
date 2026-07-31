@@ -1,5 +1,5 @@
 import { format } from 'date-fns'
-import { type FC, type FormEvent, Fragment, Suspense, useCallback, useState } from 'react'
+import { type FC, type FormEvent, Fragment, Suspense, useCallback, useEffect, useState } from 'react'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 
 import {
@@ -50,6 +50,8 @@ interface OrderCardProps {
 	abandonCsrfToken?: string
 	updateStatusCsrfToken?: string
 	changeEtaCsrfToken?: string
+	/** Sender account email — invoice recipient after Confirm. */
+	senderEmail?: string
 }
 
 type ModalIdType = 'confirmSender' | 'cancel' | 'rate' | 'declineCarrier'
@@ -68,6 +70,7 @@ export const OrderCard: FC<OrderCardProps> = ({
 	abandonCsrfToken,
 	updateStatusCsrfToken,
 	changeEtaCsrfToken,
+	senderEmail,
 }) => {
 	const [modalId, setModalId] = useState<ModalIdType>()
 	const [askingContacts, setAskingContacts] = useState(false)
@@ -75,6 +78,17 @@ export const OrderCard: FC<OrderCardProps> = ({
 	const [contactsValid, setContactsValid] = useState(false)
 	const handleContactsValidity = useCallback((valid: boolean) => setContactsValid(valid), [])
 	const contactForm = useOrderContactForm(order, handleContactsValidity)
+
+	useEffect(() => {
+		if (isCarrier || typeof window === 'undefined') return
+		const params = new URLSearchParams(window.location.search)
+		if (params.get('confirmed') !== '1') return
+		setModalId('confirmSender')
+		params.delete('confirmed')
+		const next = params.toString()
+		const path = `${window.location.pathname}${next ? `?${next}` : ''}${window.location.hash}`
+		window.history.replaceState({}, '', path)
+	}, [isCarrier])
 
 	const openContactStep = () => {
 		setShowContactValidation(false)
@@ -694,11 +708,11 @@ export const OrderCard: FC<OrderCardProps> = ({
 					maxWidth="400px"
 				>
 					<ConfirmModal
-						id={order.id}
+						id={orderReferenceDisplay}
 						from={order.address.from}
 						to={order.address.to}
 						onClose={() => setModalId(undefined)}
-						email={'example@email.com'}
+						email={senderEmail?.trim() || EMPTY_STRING}
 					/>
 				</Modal>
 			)}

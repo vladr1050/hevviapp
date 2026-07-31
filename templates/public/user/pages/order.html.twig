@@ -24,6 +24,7 @@
 		data-props='{{ { 
 			order, 
 			title,
+			sender_email: sender_email|default(null),
 			csrf_token: csrf_token("confirm_order"),
 			cancel_order_csrf_token: csrf_token("cancel_order"),
 			abandon_order_csrf_token: csrf_token("abandon_order"),
