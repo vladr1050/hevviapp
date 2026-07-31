@@ -198,10 +198,14 @@ export type OrderType = {
 
 export type ShortOrderType = {
 	address: { from: string; to: string }
+	pickup_latitude?: string | null
+	pickup_longitude?: string | null
+	dropout_latitude?: string | null
+	dropout_longitude?: string | null
 	comment?: string
 	id: string
-	item: number
-	type: string
+	item?: number
+	type?: string
 }
 
 export type AccountType = 'Sender' | 'Carrier'

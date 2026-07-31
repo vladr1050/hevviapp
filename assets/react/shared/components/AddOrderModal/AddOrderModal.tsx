@@ -1,6 +1,7 @@
 import { type Dispatch, type FC, type SetStateAction } from 'react'
 import { Control, UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form'
 
+import { ShortOrderType } from '@config/constants'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon/Icon'
 import { cn } from '@utils/cn'
@@ -24,6 +25,7 @@ interface AddOrderModalProps {
 	setValue: UseFormSetValue<FormValues>
 	onSubmit: () => Promise<void>
 	submitError?: string
+	recentOrders?: ShortOrderType[]
 	defaultPosition?: {
 		from: {
 			lat: number
@@ -45,6 +47,7 @@ export const AddOrderModal: FC<AddOrderModalProps> = ({
 	setValue,
 	onSubmit,
 	submitError,
+	recentOrders,
 	defaultPosition,
 }) => {
 	if (activeTab === 'calculate')
@@ -214,6 +217,7 @@ export const AddOrderModal: FC<AddOrderModalProps> = ({
 					setValue={setValue}
 					register={register}
 					defaultPosition={defaultPosition}
+					recentOrders={recentOrders}
 				/>
 			)}
 

@@ -635,23 +635,29 @@
 				}
 
 				& .history {
-					@apply h-full flex flex-col gap-4 overflow-y-scroll;
+					@apply h-full flex flex-col overflow-y-scroll;
+					gap: 21px;
+					padding-bottom: 38px;
 
 					& .empty {
 						@apply h-full w-full flex items-center justify-center text-xs text-black/50;
 					}
 
 					& .item {
-						@apply flex items-center justify-between gap-4 h-7;
+						@apply flex items-center justify-between gap-4 min-h-7;
 
 						& > span {
-							@apply text-xs font-medium text-black/80;
+							@apply text-xs font-medium text-black/80 truncate min-w-0;
 						}
 
 						& > button {
-							@apply text-[10px] font-medium text-[#404040] bg-[#F2F2F2] rounded-full px-6 py-2;
+							@apply shrink-0 text-[10px] font-medium text-[#404040] bg-[#F2F2F2] rounded-full px-6 py-2 cursor-pointer transition-opacity;
 							border: none;
 							outline: none;
+
+							&:hover {
+								@apply opacity-70;
+							}
 						}
 					}
 				}
@@ -829,17 +835,31 @@
 	}
 
 	& .suggestions {
-		@apply absolute left-0 w-full bg-white rounded-2xl mt-1 shadow-lg overflow-hidden;
+		@apply absolute left-0 w-full bg-white rounded-[24px] mt-1 shadow-lg overflow-hidden;
 		top: 100%;
 		z-index: 9999;
 		border: 1px solid #e5e7eb;
+		max-height: 231px;
+		overflow-y: auto;
 	}
 
 	& .suggestion {
-		@apply px-4 py-3 text-sm text-black cursor-pointer transition-colors truncate;
+		@apply flex items-center gap-2.5 px-4 py-3 text-sm text-black cursor-pointer transition-colors;
+
+		& span {
+			@apply min-w-0 truncate;
+		}
+
+		& .suggestionIcon {
+			@apply shrink-0 text-black/45;
+		}
 
 		&:hover {
-			@apply bg-[#F2F2F2];
+			@apply bg-primary text-black;
+
+			& .suggestionIcon {
+				@apply text-black;
+			}
 		}
 
 		&:not(:last-child) {

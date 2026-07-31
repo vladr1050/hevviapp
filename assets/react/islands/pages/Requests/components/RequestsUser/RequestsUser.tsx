@@ -295,6 +295,7 @@ export const RequestsUser: FC<RequestsUserProps> = ({ orders }) => {
 					setValue={setValue}
 					watch={watch}
 					submitError={submitError}
+					recentOrders={orders}
 					onSubmit={handleSubmit(onSubmit)}
 				/>
 			</Modal>

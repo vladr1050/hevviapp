@@ -1,4 +1,4 @@
-import { ChangeEvent, type FC, Suspense, useCallback, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, type FC, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
 	Control,
 	Controller,
@@ -15,6 +15,7 @@ import {
 	PUBLIC_GEOCODE_PLACE_URL,
 	PUBLIC_GEOCODE_REVERSE_URL,
 	PUBLIC_MAP_SETTINGS_URL,
+	ShortOrderType,
 } from '@config/constants'
 import { Icon } from '@ui/Icon/Icon'
 import { cn } from '@utils/cn'
@@ -26,6 +27,14 @@ import CustomIcon from '../OrderCard/CustomMarker.svg'
 
 import styles from './ModalContent.module.css'
 
+import {
+	getAddressHistory,
+	getRouteHistory,
+	pushAddressHistory,
+	pushRouteHistory,
+	SavedAddress,
+	WHERE_HISTORY_LIMIT,
+} from './addressHistory'
 import { FormValues } from './types'
 
 export type MapPickTarget = 'from' | 'to'
@@ -56,6 +65,7 @@ interface WhereContentProps {
 	control: Control<FormValues, any, FormValues>
 	setValue: UseFormSetValue<FormValues>
 	register: UseFormRegister<FormValues>
+	recentOrders?: ShortOrderType[]
 	defaultPosition?: {
 		from: {
 			lat: number
@@ -67,6 +77,63 @@ interface WhereContentProps {
 		} | null
 	}
 }
+
+const parseCoord = (value?: string | null): number | null => {
+	if (value == null || value === '') return null
+	const n = Number(value)
+	return Number.isFinite(n) ? n : null
+}
+
+type RecentRouteItem = {
+	from: { label: string; lat: number | null; lng: number | null }
+	to: { label: string; lat: number | null; lng: number | null }
+}
+
+const routeKeyOf = (route: RecentRouteItem): string =>
+	`${route.from.label.trim().toLowerCase()}=>${route.to.label.trim().toLowerCase()}`
+
+const routeFromOrder = (order: ShortOrderType): RecentRouteItem | null => {
+	const fromLabel = order.address?.from?.trim()
+	const toLabel = order.address?.to?.trim()
+	if (!fromLabel || !toLabel) return null
+	return {
+		from: {
+			label: fromLabel,
+			lat: parseCoord(order.pickup_latitude),
+			lng: parseCoord(order.pickup_longitude),
+		},
+		to: {
+			label: toLabel,
+			lat: parseCoord(order.dropout_latitude),
+			lng: parseCoord(order.dropout_longitude),
+		},
+	}
+}
+
+const mergeRecentRoutes = (orders: ShortOrderType[] | undefined): RecentRouteItem[] => {
+	const seen = new Set<string>()
+	const out: RecentRouteItem[] = []
+	const push = (route: RecentRouteItem) => {
+		const key = routeKeyOf(route)
+		if (!key || seen.has(key)) return
+		seen.add(key)
+		out.push(route)
+	}
+	for (const route of getRouteHistory()) {
+		push({
+			from: { label: route.from.label, lat: route.from.lat, lng: route.from.lng },
+			to: { label: route.to.label, lat: route.to.lat, lng: route.to.lng },
+		})
+	}
+	for (const order of orders ?? []) {
+		const route = routeFromOrder(order)
+		if (route) push(route)
+	}
+	return out.slice(0, WHERE_HISTORY_LIMIT)
+}
+
+const formatRecentRouteLabel = (route: RecentRouteItem): string =>
+	`${route.from.label} → ${route.to.label}`
 
 const NOMINATIM_BROWSER_USER_AGENT = 'HeviiTransportApp/1.0'
 
@@ -162,6 +229,7 @@ interface GeocodeResolved {
 type AddressSuggestion =
 	| { source: 'nominatim'; data: NominatimResult }
 	| { source: 'google'; data: GeocodePrediction }
+	| { source: 'history'; data: SavedAddress }
 
 function newGeocodeSessionToken(): string {
 	try {
@@ -220,6 +288,71 @@ const formatNominatimAddress = (result: NominatimResult): string => {
 	return parts.length > 0 ? parts.join(', ') : result.display_name
 }
 
+async function resolveAddressLabel(
+	settings: PublicMapSettings,
+	label: string,
+): Promise<SavedAddress | null> {
+	const trimmed = label.trim()
+	if (!trimmed) return null
+	try {
+		if (settings.googleAddressSearch === true) {
+			const autoRes = await fetch(PUBLIC_GEOCODE_AUTOCOMPLETE_URL, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				credentials: 'same-origin',
+				body: JSON.stringify({
+					input: trimmed,
+					sessionToken: newGeocodeSessionToken(),
+				}),
+			})
+			if (!autoRes.ok) return null
+			const json = (await autoRes.json()) as { predictions?: GeocodePrediction[] }
+			const first = json.predictions?.[0]
+			if (!first) return null
+			const placeRes = await fetch(PUBLIC_GEOCODE_PLACE_URL, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				credentials: 'same-origin',
+				body: JSON.stringify({
+					placeId: first.placeId,
+					sessionToken: newGeocodeSessionToken(),
+				}),
+			})
+			if (!placeRes.ok) return null
+			const dto = (await placeRes.json()) as GeocodeResolved
+			return { label: dto.displayLine || trimmed, lat: dto.latitude, lng: dto.longitude }
+		}
+
+		const root = settings.nominatimApiUrl.replace(/\/$/, '')
+		const params = new URLSearchParams({
+			q: trimmed,
+			format: 'json',
+			addressdetails: '1',
+			limit: '1',
+			'accept-language': 'en',
+		})
+		if (settings.nominatimCountryCodes?.trim()) {
+			params.set(
+				'countrycodes',
+				settings.nominatimCountryCodes.replace(/\s+/g, '').toLowerCase(),
+			)
+		}
+		const res = await fetch(`${root}/search?${params}`, {
+			headers: { 'User-Agent': NOMINATIM_BROWSER_USER_AGENT },
+		})
+		const data = (await res.json()) as NominatimResult[]
+		const first = Array.isArray(data) ? data[0] : null
+		if (!first) return null
+		return {
+			label: formatNominatimAddress(first) || trimmed,
+			lat: parseFloat(first.lat),
+			lng: parseFloat(first.lon),
+		}
+	} catch {
+		return null
+	}
+}
+
 async function reverseGeocodeGoogle(lat: number, lng: number): Promise<GeocodeResolved | null> {
 	const params = new URLSearchParams({ lat: String(lat), lng: String(lng) })
 	try {
@@ -272,6 +405,7 @@ export const WhereContent: FC<WhereContentProps> = ({
 	setValue,
 	register,
 	defaultPosition,
+	recentOrders,
 }) => {
 	const [mapSettings, setMapSettings] = useState<PublicMapSettings | null>(null)
 	const [fromMarkerPos, setFromMarkerPos] = useState<{ lat: number; lng: number } | null>(
@@ -283,6 +417,13 @@ export const WhereContent: FC<WhereContentProps> = ({
 	/** Which address field last had focus — map clicks apply to this field. */
 	const mapClickTargetRef = useRef<MapPickTarget>('from')
 	const [geoHint, setGeoHint] = useState<string | null>(null)
+	const [recentRoutes, setRecentRoutes] = useState<RecentRouteItem[]>(() =>
+		mergeRecentRoutes(recentOrders),
+	)
+
+	useEffect(() => {
+		setRecentRoutes(mergeRecentRoutes(recentOrders))
+	}, [recentOrders])
 
 	useEffect(() => {
 		let cancelled = false
@@ -306,11 +447,77 @@ export const WhereContent: FC<WhereContentProps> = ({
 			? L.latLngBounds(settings.map.maxBounds[0], settings.map.maxBounds[1])
 			: undefined
 
-	const myIcon = new L.Icon({
-		iconUrl: CustomIcon,
-		iconSize: new L.Point(40, 40),
-		iconAnchor: [20, 30],
-	})
+	const myIcon = useMemo(
+		() =>
+			new L.Icon({
+				iconUrl: CustomIcon,
+				iconSize: new L.Point(40, 40),
+				iconAnchor: [20, 30],
+			}),
+		[],
+	)
+
+	const rememberPoint = useCallback((label: string, lat: number, lng: number) => {
+		pushAddressHistory({ label, lat, lng })
+	}, [])
+
+	const rememberCurrentRoute = useCallback(
+		(fromOverride?: SavedAddress, toOverride?: SavedAddress) => {
+			const from =
+				fromOverride ??
+				(watch('from') && fromMarkerPos
+					? { label: watch('from'), lat: fromMarkerPos.lat, lng: fromMarkerPos.lng }
+					: null)
+			const to =
+				toOverride ??
+				(watch('to') && toMarkerPos
+					? { label: watch('to'), lat: toMarkerPos.lat, lng: toMarkerPos.lng }
+					: null)
+			if (!from || !to) return
+			pushRouteHistory({ from, to })
+			setRecentRoutes(mergeRecentRoutes(recentOrders))
+		},
+		[fromMarkerPos, recentOrders, toMarkerPos, watch],
+	)
+
+	const applyRoute = useCallback(
+		async (route: RecentRouteItem) => {
+			setGeoHint(null)
+			setValue('from', route.from.label)
+			setValue('to', route.to.label)
+
+			let fromPoint: SavedAddress | null =
+				route.from.lat != null && route.from.lng != null
+					? { label: route.from.label, lat: route.from.lat, lng: route.from.lng }
+					: null
+			let toPoint: SavedAddress | null =
+				route.to.lat != null && route.to.lng != null
+					? { label: route.to.label, lat: route.to.lat, lng: route.to.lng }
+					: null
+
+			if (!fromPoint) fromPoint = await resolveAddressLabel(settings, route.from.label)
+			if (!toPoint) toPoint = await resolveAddressLabel(settings, route.to.label)
+
+			if (!fromPoint || !toPoint) {
+				setGeoHint('Could not resolve this route. Try selecting addresses manually.')
+				return
+			}
+
+			setValue('from', fromPoint.label)
+			setValue('pickupLatitude', fromPoint.lat)
+			setValue('pickupLongitude', fromPoint.lng)
+			setFromMarkerPos({ lat: fromPoint.lat, lng: fromPoint.lng })
+			setValue('to', toPoint.label)
+			setValue('dropoutLatitude', toPoint.lat)
+			setValue('dropoutLongitude', toPoint.lng)
+			setToMarkerPos({ lat: toPoint.lat, lng: toPoint.lng })
+			pushAddressHistory(fromPoint)
+			pushAddressHistory(toPoint)
+			pushRouteHistory({ from: fromPoint, to: toPoint })
+			setRecentRoutes(mergeRecentRoutes(recentOrders))
+		},
+		[recentOrders, setValue, settings],
+	)
 
 	const applyFromMap = useCallback(
 		async (lat: number, lng: number, target: MapPickTarget) => {
@@ -340,19 +547,40 @@ export const WhereContent: FC<WhereContentProps> = ({
 				setGeoHint(countryErr)
 				return
 			}
+			rememberPoint(addrText, lat, lng)
 			if (target === 'from') {
 				setValue('from', addrText)
 				setValue('pickupLatitude', lat)
 				setValue('pickupLongitude', lng)
 				setFromMarkerPos({ lat, lng })
+				if (toMarkerPos && watch('to')) {
+					rememberCurrentRoute(
+						{ label: addrText, lat, lng },
+						{ label: watch('to'), lat: toMarkerPos.lat, lng: toMarkerPos.lng },
+					)
+				}
 			} else {
 				setValue('to', addrText)
 				setValue('dropoutLatitude', lat)
 				setValue('dropoutLongitude', lng)
 				setToMarkerPos({ lat, lng })
+				if (fromMarkerPos && watch('from')) {
+					rememberCurrentRoute(
+						{ label: watch('from'), lat: fromMarkerPos.lat, lng: fromMarkerPos.lng },
+						{ label: addrText, lat, lng },
+					)
+				}
 			}
 		},
-		[setValue, settings]
+		[
+			fromMarkerPos,
+			rememberCurrentRoute,
+			rememberPoint,
+			setValue,
+			settings,
+			toMarkerPos,
+			watch,
+		],
 	)
 
 	const onMarkerDragEnd = useCallback(
@@ -374,7 +602,7 @@ export const WhereContent: FC<WhereContentProps> = ({
 			<input type="hidden" {...register('dropoutLatitude')} />
 			<input type="hidden" {...register('dropoutLongitude')} />
 
-			<div className={cn(styles.left, { [styles.noRoutes]: true })}>
+			<div className={styles.left}>
 				<div className={styles.top}>
 					<div className={styles.routeWrapper}>
 						<div className={styles.route} />
@@ -395,10 +623,17 @@ export const WhereContent: FC<WhereContentProps> = ({
 										onAddressFieldFocus={() => {
 											mapClickTargetRef.current = 'from'
 										}}
-										onSelect={(_addr, lat, lng) => {
+										onSelect={(addr, lat, lng) => {
 											setValue('pickupLatitude', lat)
 											setValue('pickupLongitude', lng)
 											setFromMarkerPos({ lat, lng })
+											rememberPoint(addr, lat, lng)
+											if (toMarkerPos && watch('to')) {
+												rememberCurrentRoute(
+													{ label: addr, lat, lng },
+													{ label: watch('to'), lat: toMarkerPos.lat, lng: toMarkerPos.lng },
+												)
+											}
 										}}
 										onClear={() => {
 											setFromMarkerPos(null)
@@ -425,10 +660,17 @@ export const WhereContent: FC<WhereContentProps> = ({
 										onAddressFieldFocus={() => {
 											mapClickTargetRef.current = 'to'
 										}}
-										onSelect={(_addr, lat, lng) => {
+										onSelect={(addr, lat, lng) => {
 											setValue('dropoutLatitude', lat)
 											setValue('dropoutLongitude', lng)
 											setToMarkerPos({ lat, lng })
+											rememberPoint(addr, lat, lng)
+											if (fromMarkerPos && watch('from')) {
+												rememberCurrentRoute(
+													{ label: watch('from'), lat: fromMarkerPos.lat, lng: fromMarkerPos.lng },
+													{ label: addr, lat, lng },
+												)
+											}
 										}}
 										onClear={() => {
 											setToMarkerPos(null)
@@ -485,7 +727,24 @@ export const WhereContent: FC<WhereContentProps> = ({
 					) : null}
 				</div>
 
-				<div />
+				<div className={styles.hr} />
+
+				<div className={styles.history}>
+					{recentRoutes.length === 0 ? (
+						<div className={styles.empty}>no recent routes</div>
+					) : (
+						recentRoutes.map((route) => (
+							<div className={styles.item} key={routeKeyOf(route)}>
+								<span title={formatRecentRouteLabel(route)}>
+									{formatRecentRouteLabel(route)}
+								</span>
+								<button type="button" onClick={() => void applyRoute(route)}>
+									Pielietot
+								</button>
+							</div>
+						))
+					)}
+				</div>
 			</div>
 
 			<div className={styles.right}>
@@ -580,10 +839,19 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 	const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 	const sessionTokenRef = useRef<string>(newGeocodeSessionToken())
 
+	const showHistorySuggestions = () => {
+		const history = getAddressHistory().slice(0, WHERE_HISTORY_LIMIT)
+		const rows: AddressSuggestion[] = history.map((item) => ({
+			source: 'history' as const,
+			data: item,
+		}))
+		setSuggestions(rows)
+		setShowSuggestions(rows.length > 0)
+	}
+
 	const searchAddress = async (query: string) => {
 		if (query.length < 2) {
-			setSuggestions([])
-			setShowSuggestions(false)
+			showHistorySuggestions()
 			return
 		}
 		const googleMode = mapSettings.googleAddressSearch === true
@@ -599,14 +867,17 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 					}),
 				})
 				if (!res.ok) {
-					setSuggestions([])
-					setShowSuggestions(false)
+					showHistorySuggestions()
 					return
 				}
 				const json = (await res.json()) as { predictions?: GeocodePrediction[] }
 				const list = Array.isArray(json.predictions) ? json.predictions : []
+				if (list.length === 0) {
+					showHistorySuggestions()
+					return
+				}
 				setSuggestions(list.map((p) => ({ source: 'google' as const, data: p })))
-				setShowSuggestions(list.length > 0)
+				setShowSuggestions(true)
 				return
 			}
 
@@ -637,11 +908,14 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 			})
 			const data: NominatimResult[] = await res.json()
 			const rows = Array.isArray(data) ? data : []
+			if (rows.length === 0) {
+				showHistorySuggestions()
+				return
+			}
 			setSuggestions(rows.map((r) => ({ source: 'nominatim' as const, data: r })))
-			setShowSuggestions(rows.length > 0)
+			setShowSuggestions(true)
 		} catch {
-			setSuggestions([])
-			setShowSuggestions(false)
+			showHistorySuggestions()
 		}
 	}
 
@@ -653,9 +927,8 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 			if (mapSettings.googleAddressSearch === true) {
 				sessionTokenRef.current = newGeocodeSessionToken()
 			}
-			setSuggestions([])
-			setShowSuggestions(false)
 			onClear?.()
+			showHistorySuggestions()
 			return
 		}
 		if (debounceRef.current) {
@@ -665,6 +938,17 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 	}
 
 	const handleSelect = async (item: AddressSuggestion) => {
+		if (item.source === 'history') {
+			const saved = item.data
+			onChange(saved.label)
+			onSelect(saved.label, saved.lat, saved.lng)
+			onGeoHint(null)
+			pushAddressHistory(saved)
+			setSuggestions([])
+			setShowSuggestions(false)
+			return
+		}
+
 		if (item.source === 'nominatim') {
 			const result = item.data
 			const lat = parseFloat(result.lat)
@@ -687,6 +971,7 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 			onChange(addr)
 			onSelect(addr, lat, lng)
 			onGeoHint(null)
+			pushAddressHistory({ label: addr, lat, lng })
 			setSuggestions([])
 			setShowSuggestions(false)
 			return
@@ -747,9 +1032,22 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 		onChange(dto.displayLine)
 		onSelect(dto.displayLine, lat, lng)
 		onGeoHint(null)
+		pushAddressHistory({ label: dto.displayLine, lat, lng })
 		setSuggestions([])
 		setShowSuggestions(false)
 		sessionTokenRef.current = newGeocodeSessionToken()
+	}
+
+	const suggestionLabel = (s: AddressSuggestion): string => {
+		if (s.source === 'history') return s.data.label
+		if (s.source === 'google') return s.data.description
+		return s.data.display_name
+	}
+
+	const suggestionKey = (s: AddressSuggestion): string => {
+		if (s.source === 'history') return `h-${s.data.label}-${s.data.lat}-${s.data.lng}`
+		if (s.source === 'google') return `g-${s.data.placeId}`
+		return `n-${s.data.place_id}`
 	}
 
 	return (
@@ -767,8 +1065,12 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 					}}
 					onFocus={() => {
 						onAddressFieldFocus?.()
-						if (suggestions.length > 0) {
+						if ((value?.trim().length ?? 0) < 2) {
+							showHistorySuggestions()
+						} else if (suggestions.length > 0) {
 							setShowSuggestions(true)
+						} else {
+							showHistorySuggestions()
 						}
 					}}
 					onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
@@ -781,11 +1083,12 @@ const AddressSearchInput: FC<AddressSearchInputProps> = ({
 				<div className={styles.suggestions}>
 					{suggestions.map((s) => (
 						<div
-							key={s.source === 'google' ? s.data.placeId : String(s.data.place_id)}
+							key={suggestionKey(s)}
 							className={styles.suggestion}
 							onMouseDown={() => void handleSelect(s)}
 						>
-							{s.source === 'google' ? s.data.description : s.data.display_name}
+							<Icon type="mark_map" size={14} className={styles.suggestionIcon} />
+							<span>{suggestionLabel(s)}</span>
 						</div>
 					))}
 				</div>

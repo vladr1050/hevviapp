@@ -1,4 +1,4 @@
-import { type DragEvent, type FC, useRef, useState } from 'react'
+import { type DragEvent, type FC, useEffect, useRef, useState } from 'react'
 import {
 	Control,
 	Controller,
@@ -129,7 +129,7 @@ export const WhatContent: FC<WhatContentProps> = ({ control, register }) => {
 					<div className={styles.title}>Add cargo</div>
 
 					<div className={styles.items}>
-						<AddNewItem append={prepend} />
+						<AddNewItem append={prepend} autoOpen={fields.length === 0} />
 
 						{fields.map((item, idx) => (
 							<Item key={item.id} idx={idx} item={item} remove={remove} update={update} />
@@ -176,8 +176,11 @@ export const WhatContent: FC<WhatContentProps> = ({ control, register }) => {
 	)
 }
 
-const AddNewItem: FC<{ append: UseFieldArrayAppend<FormValues, 'cargo'> }> = ({ append }) => {
-	const [show, setShow] = useState(false)
+const AddNewItem: FC<{
+	append: UseFieldArrayAppend<FormValues, 'cargo'>
+	autoOpen?: boolean
+}> = ({ append, autoOpen = false }) => {
+	const [show, setShow] = useState(autoOpen)
 
 	if (show) return <Item isNew append={append} onClose={() => setShow(false)} />
 
@@ -211,11 +214,17 @@ const Item: FC<{
 	})
 
 	const [expand, setExpand] = useState(isNew ?? false)
+	const titleInputRef = useRef<HTMLInputElement>(null)
 
 	const [nameError, setNameError] = useState(false)
 	const [dimensionsError, setDimensionsError] = useState(false)
 	const [weightError, setWeightError] = useState(false)
 	const [heightError, setHeightError] = useState(false)
+
+	useEffect(() => {
+		if (!expand || !isNew) return
+		titleInputRef.current?.focus()
+	}, [expand, isNew])
 
 	const applyFieldErrors = (errors: CargoFieldErrors): void => {
 		setNameError(errors.name)
@@ -373,6 +382,7 @@ const Item: FC<{
 							<div className={styles.rowTitle}>Item</div>
 
 							<input
+								ref={titleInputRef}
 								className={cn(styles.input, '!rounded-full', { [styles.error]: nameError })}
 								value={item.name}
 								placeholder="Add title"
