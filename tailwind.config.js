@@ -105,4 +105,6 @@ module.exports = {
 	corePlugins: {
 		preflight: false,
 	},
+	// Conflicts with AdminLTE/Sonata body class `fixed` (layout mode ≠ position).
+	blocklist: ['fixed'],
 }

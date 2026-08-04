@@ -15,3 +15,10 @@
 @use "components/address-view";
 @use "components/geo-area-map";
 @use "components/geo-area-view";
+
+// AdminLTE puts `fixed` on <body> for fixed header/sidebar layout.
+// Portal Tailwind also emits `.fixed { position: fixed }`, which locks the
+// whole admin page and kills scrolling. Restore AdminLTE semantics.
+body.sonata-bc.fixed {
+  position: static;
+}
