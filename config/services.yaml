@@ -145,6 +145,11 @@ services:
         arguments:
             $apiKey: '%env(GOOGLE_MAPS_API_KEY)%'
 
+    App\Service\Map\NominatimGeocodeService:
+        arguments:
+            $nominatimUrl: '%app.map.nominatim_api_url%'
+            $nominatimUserAgent: '%app.map.user_agent%'
+
     # Email Services
     App\Service\Email\Contract\EmailServiceInterface:
         class: App\Service\Email\MailjetEmailService

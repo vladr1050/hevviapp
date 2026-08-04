@@ -13,7 +13,9 @@ use App\Entity\AppSettings;
 use App\Exception\Map\GoogleGeocodeProxyException;
 use App\Repository\AppSettingsRepository;
 use App\Service\Map\GoogleGeocodeProxyService;
+use App\Service\Map\NominatimGeocodeService;
 use JsonException;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,23 +24,22 @@ use Symfony\Component\Routing\Attribute\Route;
 
 /**
  * Places API (New) Autocomplete + Geocoding API behind the Symfony app (API key stays on the server).
+ * Falls back to Nominatim when Google returns a transient/config error.
  */
 final class PublicGeocodeController extends AbstractController
 {
     public function __construct(
         private readonly GoogleGeocodeProxyService $googleGeocodeProxy,
+        private readonly NominatimGeocodeService $nominatimGeocode,
         private readonly AppSettingsRepository $appSettingsRepository,
         private readonly ParameterBagInterface $parameterBag,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
     #[Route('/public/geocode/autocomplete', name: 'api_public_geocode_autocomplete', methods: ['POST'])]
     public function autocomplete(Request $request): JsonResponse
     {
-        if (!$this->googleGeocodeProxy->isConfigured()) {
-            return $this->json(['error' => 'Address search is not available.'], 503);
-        }
-
         try {
             /** @var array<string, mixed> $payload */
             $payload = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
@@ -64,10 +65,32 @@ final class PublicGeocodeController extends AbstractController
         }
 
         $settings = $this->appSettingsRepository->getSingleton();
-        $placesFragment = $this->buildPlacesAutocompleteFragment($settings);
+
+        if ($this->googleGeocodeProxy->isConfigured()) {
+            try {
+                $predictions = $this->googleGeocodeProxy->autocomplete(
+                    $input,
+                    $sessionToken,
+                    $this->buildPlacesAutocompleteFragment($settings),
+                );
+
+                return $this->json(['predictions' => $predictions]);
+            } catch (GoogleGeocodeProxyException $e) {
+                if ($e->getHttpStatus() === 400) {
+                    return $this->json(['error' => $e->getMessage()], 400);
+                }
+                $this->logger->warning('Google autocomplete failed; falling back to Nominatim.', [
+                    'message' => $e->getMessage(),
+                ]);
+            }
+        }
 
         try {
-            $predictions = $this->googleGeocodeProxy->autocomplete($input, $sessionToken, $placesFragment);
+            $predictions = $this->nominatimGeocode->autocomplete(
+                $input,
+                $this->nominatimCountryCodes($settings),
+                $this->nominatimViewbox($settings),
+            );
         } catch (GoogleGeocodeProxyException $e) {
             return $this->json(['error' => $e->getMessage()], $e->getHttpStatus());
         }
@@ -78,10 +101,6 @@ final class PublicGeocodeController extends AbstractController
     #[Route('/public/geocode/place', name: 'api_public_geocode_place', methods: ['POST'])]
     public function place(Request $request): JsonResponse
     {
-        if (!$this->googleGeocodeProxy->isConfigured()) {
-            return $this->json(['error' => 'Address search is not available.'], 503);
-        }
-
         try {
             /** @var array<string, mixed> $payload */
             $payload = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
@@ -102,6 +121,20 @@ final class PublicGeocodeController extends AbstractController
             return $this->json(['error' => 'Invalid session token.'], 400);
         }
 
+        if (NominatimGeocodeService::isNominatimPlaceId($placeId)) {
+            try {
+                $dto = $this->nominatimGeocode->resolvePlaceId($placeId);
+            } catch (GoogleGeocodeProxyException $e) {
+                return $this->json(['error' => $e->getMessage()], $e->getHttpStatus());
+            }
+
+            return $this->json($dto->toApiArray());
+        }
+
+        if (!$this->googleGeocodeProxy->isConfigured()) {
+            return $this->json(['error' => 'Address search is not available.'], 503);
+        }
+
         try {
             $dto = $this->googleGeocodeProxy->geocodeByPlaceId($placeId, $sessionToken);
         } catch (GoogleGeocodeProxyException $e) {
@@ -114,10 +147,6 @@ final class PublicGeocodeController extends AbstractController
     #[Route('/public/geocode/reverse', name: 'api_public_geocode_reverse', methods: ['GET'])]
     public function reverse(Request $request): JsonResponse
     {
-        if (!$this->googleGeocodeProxy->isConfigured()) {
-            return $this->json(['error' => 'Address search is not available.'], 503);
-        }
-
         $lat = $this->readCoordinate($request->query->get('lat'));
         $lng = $this->readCoordinate($request->query->get('lng'));
         if ($lat === null || $lng === null) {
@@ -127,8 +156,25 @@ final class PublicGeocodeController extends AbstractController
             return $this->json(['error' => 'Coordinates are out of range.'], 400);
         }
 
+        if ($this->googleGeocodeProxy->isConfigured()) {
+            try {
+                $dto = $this->googleGeocodeProxy->reverse($lat, $lng);
+
+                return $this->json($dto->toApiArray());
+            } catch (GoogleGeocodeProxyException $e) {
+                if ($e->getHttpStatus() === 404) {
+                    return $this->json(['error' => $e->getMessage()], 404);
+                }
+                $this->logger->warning('Google reverse geocode failed; falling back to Nominatim.', [
+                    'message' => $e->getMessage(),
+                    'lat'     => $lat,
+                    'lng'     => $lng,
+                ]);
+            }
+        }
+
         try {
-            $dto = $this->googleGeocodeProxy->reverse($lat, $lng);
+            $dto = $this->nominatimGeocode->reverse($lat, $lng);
         } catch (GoogleGeocodeProxyException $e) {
             return $this->json(['error' => $e->getMessage()], $e->getHttpStatus());
         }
@@ -204,12 +250,48 @@ final class PublicGeocodeController extends AbstractController
     /**
      * @return list<string>
      */
+    private function nominatimCountryCodes(?AppSettings $s): array
+    {
+        if ($s === null || !$s->isRestrictGeographicSearch()) {
+            return [];
+        }
+
+        return $this->parseCountryCodes($s->getNominatimCountryCodes());
+    }
+
+    /**
+     * @return array{minLatitude: float, maxLatitude: float, minLongitude: float, maxLongitude: float}|null
+     */
+    private function nominatimViewbox(?AppSettings $s): ?array
+    {
+        if ($s === null || !$s->isRestrictGeographicSearch() || !$s->hasCompleteBoundingBox()) {
+            return null;
+        }
+        $minLat = $s->getBboxMinLatitude();
+        $maxLat = $s->getBboxMaxLatitude();
+        $minLng = $s->getBboxMinLongitude();
+        $maxLng = $s->getBboxMaxLongitude();
+        if ($minLat === null || $maxLat === null || $minLng === null || $maxLng === null) {
+            return null;
+        }
+
+        return [
+            'minLatitude'  => $minLat,
+            'maxLatitude'  => $maxLat,
+            'minLongitude' => $minLng,
+            'maxLongitude' => $maxLng,
+        ];
+    }
+
+    /**
+     * @return list<string>
+     */
     private function parseCountryCodes(?string $raw): array
     {
         if ($raw === null || trim($raw) === '') {
             return [];
         }
-        $parts = preg_split('/[,\\s;]+/', strtolower(trim($raw)));
+        $parts = preg_split('/[,\s;]+/', strtolower(trim($raw)));
         if ($parts === false) {
             return [];
         }
@@ -259,7 +341,7 @@ final class PublicGeocodeController extends AbstractController
         if (\strlen($token) > 200) {
             return false;
         }
-        if (preg_match('/^[\\x20-\\x7E]+$/', $token) !== 1) {
+        if (preg_match('/^[\x20-\x7E]+$/', $token) !== 1) {
             return false;
         }
 

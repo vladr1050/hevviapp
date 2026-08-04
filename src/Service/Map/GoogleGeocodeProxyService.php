@@ -11,6 +11,7 @@ namespace App\Service\Map;
 
 use App\Dto\Map\GeocodeResolvedAddressDto;
 use App\Exception\Map\GoogleGeocodeProxyException;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
@@ -52,17 +53,21 @@ final class GoogleGeocodeProxyService
             $body['sessionToken'] = $sessionToken;
         }
 
-        $response = $this->httpClient->request('POST', self::PLACES_AUTOCOMPLETE_URL, [
-            'headers' => [
-                'Content-Type'       => 'application/json',
-                'X-Goog-Api-Key'     => $this->apiKey,
-                'X-Goog-FieldMask'   => self::AUTOCOMPLETE_FIELD_MASK,
-            ],
-            'json' => $body,
-        ]);
+        try {
+            $response = $this->httpClient->request('POST', self::PLACES_AUTOCOMPLETE_URL, [
+                'headers' => [
+                    'Content-Type'     => 'application/json',
+                    'X-Goog-Api-Key'   => $this->apiKey,
+                    'X-Goog-FieldMask' => self::AUTOCOMPLETE_FIELD_MASK,
+                ],
+                'json' => $body,
+            ]);
 
-        $statusCode = $response->getStatusCode();
-        $raw = $response->getContent(false);
+            $statusCode = $response->getStatusCode();
+            $raw = $response->getContent(false);
+        } catch (TransportExceptionInterface) {
+            throw new GoogleGeocodeProxyException('Geocoding service temporarily unavailable.', 502);
+        }
 
         if ($statusCode === 400) {
             throw new GoogleGeocodeProxyException($this->parsePlacesErrorMessage($raw) ?? 'Invalid geocoding request.', 400);
@@ -158,13 +163,20 @@ final class GoogleGeocodeProxyService
      */
     private function requestGeocode(array $query): GeocodeResolvedAddressDto
     {
-        $response = $this->httpClient->request('GET', self::GEOCODE_URL, ['query' => $query]);
-        if ($response->getStatusCode() !== 200) {
+        try {
+            $response = $this->httpClient->request('GET', self::GEOCODE_URL, ['query' => $query]);
+            if ($response->getStatusCode() !== 200) {
+                throw new GoogleGeocodeProxyException('Geocoding service temporarily unavailable.', 502);
+            }
+            /** @var array<string, mixed> $data */
+            $data = $response->toArray(false);
+        } catch (TransportExceptionInterface) {
+            throw new GoogleGeocodeProxyException('Geocoding service temporarily unavailable.', 502);
+        } catch (GoogleGeocodeProxyException $e) {
+            throw $e;
+        } catch (\Throwable) {
             throw new GoogleGeocodeProxyException('Geocoding service temporarily unavailable.', 502);
         }
-
-        /** @var array<string, mixed> $data */
-        $data = $response->toArray();
 
         return $this->parseGeocodePayload($data);
     }
@@ -179,7 +191,13 @@ final class GoogleGeocodeProxyService
             throw new GoogleGeocodeProxyException('No results for this location.', 404);
         }
         if ($status !== 'OK') {
-            throw new GoogleGeocodeProxyException('Geocoding service returned an error.', 502);
+            $detail = isset($data['error_message']) && \is_string($data['error_message'])
+                ? $data['error_message']
+                : $status;
+            throw new GoogleGeocodeProxyException(
+                $detail !== '' ? 'Geocoding service returned an error: '.$detail : 'Geocoding service returned an error.',
+                502,
+            );
         }
 
         $results = $data['results'] ?? null;
