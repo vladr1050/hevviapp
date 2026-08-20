@@ -23,6 +23,7 @@ class ServiceArea extends BaseUUID
      * @var Collection<int, MatrixItem>
      */
     #[ORM\OneToMany(targetEntity: MatrixItem::class, mappedBy: 'serviceArea', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OrderBy(['weightFrom' => 'ASC'])]
     private Collection $matrixItems;
 
     /**

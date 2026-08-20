@@ -160,6 +160,24 @@ class OrderAdmin extends BaseAdmin
             ->remove('export');
     }
 
+    /**
+     * @param array<string, array<string, mixed>> $buttonList
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    protected function configureActionButtons(array $buttonList, string $action, ?object $object = null): array
+    {
+        $buttonList = parent::configureActionButtons($buttonList, $action, $object);
+
+        if ($action === 'show' && $object instanceof Order) {
+            $buttonList['adjust_offer'] = [
+                'template' => 'admin/Button/adjust_offer_button.html.twig',
+            ];
+        }
+
+        return $buttonList;
+    }
+
     protected function configureDefaultFilterValues(array &$filterValues): void
     {
         // Default to Live orders only (BooleanType::TYPE_NO = not test).

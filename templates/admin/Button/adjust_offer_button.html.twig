@@ -1,0 +1,16 @@
+{#
+    Show-page action button: Adjust price (OFFERED + DRAFT offer only).
+    @var object App\Entity\Order|null
+#}
+{% if object is not null
+    and object.status == constant('App\\Entity\\Order::STATUS')['OFFERED']
+    and object.latestOffer is not null
+    and object.latestOffer.status == constant('App\\Entity\\OrderOffer::STATUS')['DRAFT']
+%}
+    <li>
+        <a class="sonata-action-element" href="{{ path('admin_order_adjust_offer', {id: object.id.toRfc4122()}) }}">
+            <i class="fas fa-euro-sign" aria-hidden="true"></i>
+            {{ 'order_offer.adjust.button'|trans({}, 'AppBundle') }}
+        </a>
+    </li>
+{% endif %}

@@ -57,6 +57,11 @@ export default class extends Controller {
             this.map.remove();
             this.map = null;
         }
+        document.body.classList.remove('modal-open');
+        if (this.hasModalTarget) {
+            this.modalTarget.classList.remove('show');
+            this.modalTarget.style.display = 'none';
+        }
     }
 
     /**

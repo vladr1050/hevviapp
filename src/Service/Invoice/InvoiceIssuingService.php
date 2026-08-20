@@ -165,8 +165,13 @@ final class InvoiceIssuingService
         $invoice->setOrderOffer($offer);
         $invoice->setRelatedOrder($order);
 
-        $this->em->wrapInTransaction(function () use ($invoice, $issueDate): void {
-            $number = $this->invoiceNumberGenerator->allocateNextSequence($issueDate);
+        $orderNumber = $order->getOrderNumber();
+        if ($orderNumber === null) {
+            throw new \RuntimeException('Order has no order_number; cannot allocate invoice number.');
+        }
+
+        $this->em->wrapInTransaction(function () use ($invoice, $orderNumber): void {
+            $number = $this->invoiceNumberGenerator->fromOrderNumber($orderNumber);
             $invoice->setInvoiceNumber($number);
             $this->em->persist($invoice);
             $this->em->flush();

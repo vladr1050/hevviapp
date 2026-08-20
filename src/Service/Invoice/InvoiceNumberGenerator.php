@@ -4,40 +4,30 @@ declare(strict_types=1);
 
 namespace App\Service\Invoice;
 
-use Doctrine\DBAL\Connection;
-
 /**
- * Atomic daily sequence for invoice numbers (HEV + ddmmyy + NN).
+ * Invoice numbers for new issues: HEV + zero-padded order number (e.g. HEV00034).
+ * Document numbers append -PN / -SN / -CR via {@see \App\Service\Document\DocumentNumberFormatter}.
+ *
+ * Legacy invoices keep their historical daily sequence (HEV + ddmmyy + NN); this
+ * generator is only used when issuing new invoices.
  */
 final class InvoiceNumberGenerator
 {
     private const PREFIX = 'HEV';
 
-    public function __construct(
-        private readonly Connection $connection,
-    ) {
-    }
+    private const ORDER_NUMBER_PAD = 5;
 
     /**
-     * Must run inside the same DB transaction as the invoice INSERT.
+     * Build invoice number from the order's human number.
+     *
+     * @throws \InvalidArgumentException when order number is missing or invalid
      */
-    public function allocateNextSequence(\DateTimeImmutable $issueDate): string
+    public function fromOrderNumber(int $orderNumber): string
     {
-        $day = $issueDate->format('Y-m-d');
-        $ddmmyy = $issueDate->format('dmy');
+        if ($orderNumber < 1) {
+            throw new \InvalidArgumentException('Order number must be a positive integer.');
+        }
 
-        $seq = (int) $this->connection->fetchOne(
-            <<<'SQL'
-INSERT INTO invoice_day_counter (day, last_seq) VALUES (?, 1)
-ON CONFLICT (day) DO UPDATE SET last_seq = invoice_day_counter.last_seq + 1
-RETURNING last_seq
-SQL
-            ,
-            [$day]
-        );
-
-        $nn = str_pad((string) $seq, 2, '0', STR_PAD_LEFT);
-
-        return self::PREFIX . $ddmmyy . $nn;
+        return self::PREFIX . str_pad((string) $orderNumber, self::ORDER_NUMBER_PAD, '0', STR_PAD_LEFT);
     }
 }

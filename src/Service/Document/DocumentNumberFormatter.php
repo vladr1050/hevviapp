@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace App\Service\Document;
 
 /**
- * Human-visible document numbers derived from the financial sequence (invoice table).
+ * Human-visible document numbers derived from the invoice number base.
+ *
+ * New invoices use HEV + order number (e.g. HEV00034); documents append a suffix:
+ * HEV00034-PN / HEV00034-SN / HEV00034-CR. Legacy invoice bases (HEV + ddmmyy + NN)
+ * keep working the same way.
  */
 final class DocumentNumberFormatter
 {
     /**
-     * Payment notice uses the same sequence base as the invoice row, with a -PN suffix
-     * (e.g. HEV01042501 → HEV01042501-PN), same pattern as carrier -CR.
+     * Payment notice: invoice base + -PN (e.g. HEV00034-PN).
      */
     public function formatPaymentNoticeNumber(string $invoiceNumber): string
     {
@@ -19,7 +22,7 @@ final class DocumentNumberFormatter
     }
 
     /**
-     * Customer (sender) invoice after delivery (e.g. HEV01042501-SN).
+     * Customer (sender) invoice after delivery (e.g. HEV00034-SN).
      */
     public function formatCustomerInvoiceNumber(string $invoiceNumber): string
     {
@@ -27,7 +30,7 @@ final class DocumentNumberFormatter
     }
 
     /**
-     * Carrier-facing invoice number (e.g. HEV01042501-CR).
+     * Carrier-facing invoice number (e.g. HEV00034-CR).
      */
     public function formatCarrierInvoiceNumber(string $invoiceNumber): string
     {
