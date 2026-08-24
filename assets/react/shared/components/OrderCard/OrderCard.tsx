@@ -170,13 +170,23 @@ export const OrderCard: FC<OrderCardProps> = ({
 		((!isCarrier && order.status > OrderStatusEnum.OFFERED) || (isCarrier && !isRequest))
 
 	const SenderTotalPriceBlock = () => (
-		<div className="grid grid-cols-5 gap-3 w-full">
-			<div className="col-span-4" aria-hidden="true" />
+		<div className="grid grid-cols-3 gap-3 w-full">
 			<div className={styles.item}>
-				<div className={styles.label}>
-					Total{' '}
-					<span className="font-normal text-[10px] whitespace-nowrap">(ar PVN)</span>
+				<div className={styles.label}>Total</div>
+				<div className={styles.value}>
+					{order?.sender_total_ex_vat ?? order?.subtotal ?? EMPTY_STRING}
 				</div>
+			</div>
+
+			<div className={styles.item}>
+				<div className={styles.label}>VAT 21%</div>
+				<div className={styles.value}>
+					{order?.sender_vat ?? order?.vat ?? EMPTY_STRING}
+				</div>
+			</div>
+
+			<div className={styles.item}>
+				<div className={styles.label}>Total with VAT</div>
 				<div className={styles.value}>
 					{order?.sender_total ?? order?.brutto ?? EMPTY_STRING}
 				</div>

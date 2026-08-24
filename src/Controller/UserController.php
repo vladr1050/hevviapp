@@ -256,6 +256,7 @@ class UserController extends AbstractController
         }
 
         $history = $this->resolvePickupHistory($order);
+        $senderPrice = $this->buildSenderPriceDisplay($order);
 
         $item = [
             'id' => $order->getId()?->toRfc4122(),
@@ -266,9 +267,10 @@ class UserController extends AbstractController
             'vat' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getVat(), $order->getCurrency()),
             'brutto' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getBrutto(), $order->getCurrency()),
             'fee' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getFee(), $order->getCurrency()),
-            'sender_total' => $this->computeSenderOrderTotalDisplay($order),
-            // netto в OrderOffer = base + platform fee (до НДС), см. OrderOfferCalculatorService; не суммировать с fee повторно
-            'subtotal' => $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getNetto(), $order->getCurrency()),
+            ...$senderPrice,
+            // netto = freight + platform fee (ex VAT); same as sender_total_ex_vat in split model
+            'subtotal' => $senderPrice['sender_total_ex_vat']
+                ?? $this->moneyExtension->currencyConvert($order->getLatestOffer()?->getNetto(), $order->getCurrency()),
             'address' => [
                 'from' => $order->getPickupAddress(),
                 'to' => $order->getDropoutAddress(),
@@ -554,19 +556,47 @@ class UserController extends AbstractController
     }
 
     /**
-     * Total for sender confirmation UI: (base + VAT on base) + (platform fee + VAT on fee).
-     * VAT on freight is fixed for now; VAT on fee follows issuing BillingCompany (operator).
+     * Sender offer card: Total (ex VAT) / VAT / Total with VAT from split freight+fee model.
+     *
+     * @return array{
+     *     sender_total_ex_vat: ?string,
+     *     sender_vat: ?string,
+     *     sender_total: ?string
+     * }
+     */
+    private function buildSenderPriceDisplay(Order $order): array
+    {
+        $currency = $order->getCurrency();
+        $breakdown = $this->senderOrderPayableTotalCentsCalculator->buildBreakdown(
+            $order,
+            $order->getLatestOffer(),
+        );
+
+        if ($breakdown === null) {
+            $offer = $order->getLatestOffer();
+
+            return [
+                'sender_total_ex_vat' => $this->moneyExtension->currencyConvert($offer?->getNetto(), $currency),
+                'sender_vat' => $this->moneyExtension->currencyConvert($offer?->getVat(), $currency),
+                'sender_total' => $this->moneyExtension->currencyConvert($offer?->getBrutto(), $currency),
+            ];
+        }
+
+        $exVatCents = $breakdown->freightNetCents + $breakdown->platformFeeNetCents;
+        $vatCents = $breakdown->freightVatCents + $breakdown->platformVatCents;
+
+        return [
+            'sender_total_ex_vat' => $this->moneyExtension->currencyConvert($exVatCents, $currency),
+            'sender_vat' => $this->moneyExtension->currencyConvert($vatCents, $currency),
+            'sender_total' => $this->moneyExtension->currencyConvert($breakdown->senderTotalGrossCents, $currency),
+        ];
+    }
+
+    /**
+     * Total for sender list UI: (base + VAT on base) + (platform fee + VAT on fee).
      */
     private function computeSenderOrderTotalDisplay(Order $order): ?string
     {
-        $totalCents = $this->senderOrderPayableTotalCentsCalculator->computePayableGrossCents(
-            $order->getLatestOffer(),
-            $order,
-        );
-        if ($totalCents === null) {
-            return null;
-        }
-
-        return $this->moneyExtension->currencyConvert($totalCents, $order->getCurrency());
+        return $this->buildSenderPriceDisplay($order)['sender_total'];
     }
 }
