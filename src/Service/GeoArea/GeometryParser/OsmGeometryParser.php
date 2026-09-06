@@ -118,11 +118,12 @@ class OsmGeometryParser implements GeometryParserInterface
             return false;
         }
 
-        // OSM иногда отдаёт «заглушку» (1,1) или точку вне Латвии для pagasts без polygon boundary.
+        // Reject rings that do not overlap the Baltic operating region (LV/LT/EE).
+        // Overlap test — Latvia polygons still pass after expanding south/north for LT/EE.
         $minLon = 20.0;
         $maxLon = 29.0;
-        $minLat = 55.0;
-        $maxLat = 59.0;
+        $minLat = 53.5;
+        $maxLat = 60.0;
 
         return max($lons) >= $minLon
             && min($lons) <= $maxLon
