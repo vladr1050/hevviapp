@@ -49,19 +49,19 @@ class CountryConfigProvider
             'municipalityNameRegex' => 'novads$',
             'adminLevelParish' => 7, // pagasti в OSM; не все ~500 имеют polygon boundary
         ],
-        // Добавьте другие страны здесь по мере необходимости:
-        // 'estonia' => [
-        //     'name' => 'Estonia',
-        //     'iso3' => 'EST',
-        //     'osmRelationId' => '79510',
-        //     'adminLevelCity' => 8,
-        // ],
-        // 'lithuania' => [
-        //     'name' => 'Lithuania',
-        //     'iso3' => 'LTU',
-        //     'osmRelationId' => '72596',
-        //     'adminLevelCity' => 8,
-        // ],
+        // Additive only: Latvia block above is unchanged. EE/LT enable import + ServiceArea country codes.
+        'estonia' => [
+            'name' => 'Estonia',
+            'iso3' => 'EST',
+            'osmRelationId' => '79510', // https://www.openstreetmap.org/relation/79510
+            'adminLevelCity' => 8,
+        ],
+        'lithuania' => [
+            'name' => 'Lithuania',
+            'iso3' => 'LTU',
+            'osmRelationId' => '72596', // https://www.openstreetmap.org/relation/72596
+            'adminLevelCity' => 8,
+        ],
     ];
 
     /**

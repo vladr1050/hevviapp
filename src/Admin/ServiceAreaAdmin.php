@@ -140,6 +140,8 @@ class ServiceAreaAdmin extends BaseAdmin
             ->add('country', ChoiceType::class, [
                 'choices' => [
                     'Latvia (LV)' => 'LV',
+                    'Lithuania (LT)' => 'LT',
+                    'Estonia (EE)' => 'EE',
                 ],
                 'required' => true,
                 'label' => 'form.label_service_area_country',
